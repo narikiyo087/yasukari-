@@ -85,6 +85,11 @@ const buildAdminChangeNote = (renterName: string) => {
   return Array.from(new Set(parts)).join(" / ");
 };
 
+const buildExtensionNote = (renterName: string) => {
+  const parts = [renterName.trim() || "名前未登録", "延長手続き"];
+  return Array.from(new Set(parts)).join(" / ");
+};
+
 const updateVehicleAvailability = async (
   managementNumber: string,
   updateMap: (current: RentalAvailabilityMap) => RentalAvailabilityMap
@@ -176,6 +181,30 @@ export default async function handler(
         updates.refundNote = body.refundNote;
       }
 
+      if (typeof body.returnAt === "string") {
+        updates.returnAt = body.returnAt;
+        const pickupAt = new Date(existingReservation.pickupAt);
+        const newReturnAt = new Date(body.returnAt);
+        if (!Number.isNaN(pickupAt.getTime()) && !Number.isNaN(newReturnAt.getTime())) {
+          const diff = newReturnAt.getTime() - pickupAt.getTime();
+          if (diff > 0) {
+            updates.rentalDurationHours = Math.round((diff / (1000 * 60 * 60)) * 10) / 10;
+          }
+        }
+      }
+
+      if (typeof body.paymentId === "string") {
+        updates.paymentId = body.paymentId;
+      }
+
+      if (typeof body.paymentDate === "string") {
+        updates.paymentDate = body.paymentDate;
+      }
+
+      if (typeof body.paymentAmount === "string") {
+        updates.paymentAmount = body.paymentAmount;
+      }
+
       if (typeof body.memberPhone === "string") {
         updates.memberPhone = body.memberPhone;
       }
@@ -220,6 +249,39 @@ export default async function handler(
             dateKeys.forEach((key) => {
               next[key] = { status: "RENTED", note: renterNote };
             });
+            return next;
+          });
+        }
+      }
+
+      if (typeof updates.returnAt === "string" && updates.returnAt !== existingReservation.returnAt) {
+        const previousKeys = buildDateKeysInRange(
+          existingReservation.pickupAt,
+          existingReservation.returnAt
+        );
+        const nextKeys = buildDateKeysInRange(existingReservation.pickupAt, updates.returnAt);
+        if (previousKeys.length > 0 || nextKeys.length > 0) {
+          const extensionNote = buildExtensionNote(existingReservation.memberName);
+          await updateVehicleAvailability(existingReservation.vehicleCode, (current) => {
+            const next = { ...current };
+            const previousSet = new Set(previousKeys);
+            const nextSet = new Set(nextKeys);
+
+            previousKeys.forEach((key) => {
+              if (!nextSet.has(key)) {
+                const entry = next[key];
+                if (entry?.status === "RENTED" || entry?.status === "RENTAL_COMPLETED") {
+                  delete next[key];
+                }
+              }
+            });
+
+            nextKeys.forEach((key) => {
+              if (!previousSet.has(key)) {
+                next[key] = { status: "RENTED", note: extensionNote };
+              }
+            });
+
             return next;
           });
         }

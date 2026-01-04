@@ -1,8 +1,9 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 
+import PayjpCheckout from '../../../../components/PayjpCheckout';
 import type { BikeClass, BikeModel } from '../../../../lib/dashboard/types';
 import type { Reservation } from '../../../../lib/reservations';
 
@@ -34,10 +35,17 @@ export default function RentalExtensionPage() {
   const [loadingCatalog, setLoadingCatalog] = useState(true);
   const [error, setError] = useState('');
   const [reservationError, setReservationError] = useState('');
+  const [sessionUser, setSessionUser] = useState<{ id?: string; email?: string } | null>(null);
   const [reservation, setReservation] = useState<Reservation | null>(null);
   const [bikeModels, setBikeModels] = useState<BikeModel[]>([]);
   const [bikeClasses, setBikeClasses] = useState<BikeClass[]>([]);
   const [extensionDays, setExtensionDays] = useState(1);
+  const [statusMessage, setStatusMessage] = useState('');
+  const [payjpError, setPayjpError] = useState('');
+  const [isProcessingPayment, setIsProcessingPayment] = useState(false);
+  const payjpFormRef = useRef<HTMLFormElement | null>(null);
+  const payjpSlotRef = useRef<HTMLDivElement | null>(null);
+  const processedTokenRef = useRef<string | null>(null);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -57,6 +65,8 @@ export default function RentalExtensionPage() {
           await router.replace('/login');
           return;
         }
+
+        setSessionUser({ id: data.user.id, email: data.user.email });
       } catch (err) {
         if (!controller.signal.aborted) {
           console.error(err);
@@ -185,6 +195,135 @@ export default function RentalExtensionPage() {
     setExtensionDays(Math.min(parsed, 30));
   };
 
+  const payJpPublicKey = process.env.NEXT_PUBLIC_PAYJP_PUBLIC_KEY ?? 'pk_test_sample';
+
+  const handlePaymentWithToken = useCallback(
+    async (tokenId: string) => {
+      if (!reservation) {
+        setStatusMessage('予約情報を確認できませんでした。再度お試しください。');
+        return;
+      }
+      if (!extendedReturnDate) {
+        setStatusMessage('延長後の返却日時が確定していません。');
+        return;
+      }
+      if (additionalCost == null) {
+        setStatusMessage('延長料金が確定していません。');
+        return;
+      }
+
+      setIsProcessingPayment(true);
+      setStatusMessage('決済処理を実行しています…');
+
+      try {
+        const chargeResponse = await fetch('/api/payments/payjp', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({
+            token: tokenId,
+            amount: additionalCost,
+            description: `${reservation.storeName} ${reservation.vehicleModel} 延長`,
+            metadata: {
+              reservationId: reservation.id,
+              extensionDays: extensionDays.toString(),
+            },
+          }),
+        });
+
+        if (!chargeResponse.ok) {
+          const errorPayload = (await chargeResponse.json().catch(() => null)) as { error?: string } | null;
+          throw new Error(errorPayload?.error ?? 'Pay.JP の決済処理に失敗しました。');
+        }
+
+        const chargeData = (await chargeResponse.json()) as { chargeId: string; paidAt?: string };
+
+        const updateResponse = await fetch(`/api/reservations/${reservation.id}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({
+            returnAt: extendedReturnDate.toISOString(),
+            paymentId: chargeData.chargeId,
+            paymentDate: chargeData.paidAt ?? new Date().toISOString(),
+          }),
+        });
+
+        if (!updateResponse.ok) {
+          const errorPayload = (await updateResponse.json().catch(() => null)) as { error?: string } | null;
+          throw new Error(errorPayload?.error ?? 'レンタル延長の反映に失敗しました。');
+        }
+
+        setStatusMessage('決済が完了しました。マイページに延長内容を反映しました。');
+        void router.push('/mypage');
+      } catch (err) {
+        console.error('Failed to process rental extension payment', err);
+        setStatusMessage('決済に失敗しました。入力内容を確認のうえ、再度お試しください。');
+      } finally {
+        setIsProcessingPayment(false);
+      }
+    },
+    [additionalCost, extendedReturnDate, extensionDays, reservation, router]
+  );
+
+  useEffect(() => {
+    if (!router.isReady) return;
+
+    const token = router.query['payjp-token'];
+    if (typeof token !== 'string' || !token) return;
+    if (processedTokenRef.current === token || isProcessingPayment) return;
+
+    processedTokenRef.current = token;
+    setStatusMessage('決済結果を確認しています…');
+    void handlePaymentWithToken(token);
+
+    const { ['payjp-token']: _ignored, ...restQuery } = router.query;
+    void router.replace({ pathname: router.pathname, query: restQuery }, undefined, { shallow: true });
+  }, [handlePaymentWithToken, isProcessingPayment, router]);
+
+  const handleSubmitPayment = useCallback(
+    (event: Event) => {
+      event.preventDefault();
+      setPayjpError('');
+
+      const form = payjpFormRef.current;
+      if (!form) {
+        setStatusMessage('決済フォームを確認できませんでした。再度お試しください。');
+        return;
+      }
+
+      const tokenInput = form.querySelector<HTMLInputElement>('input[name="payjp-token"]');
+      const token = tokenInput?.value;
+      if (!token) {
+        setStatusMessage('Pay.JP のトークン取得を待っています。しばらくしてから再度お試しください。');
+        return;
+      }
+
+      setStatusMessage('');
+      if (tokenInput) {
+        tokenInput.value = '';
+      }
+      void handlePaymentWithToken(token);
+    },
+    [handlePaymentWithToken]
+  );
+
+  const handlePayjpLoaded = useCallback(() => {
+    setPayjpError('');
+  }, []);
+
+  const handlePayjpLoadError = useCallback(() => {
+    setPayjpError('Pay.JP の読み込みに失敗しました。時間をおいて再度お試しください。');
+  }, []);
+
+  const canRenderPayment =
+    !loadingUser &&
+    !loadingReservation &&
+    !reservationError &&
+    reservation &&
+    additionalCost != null &&
+    sessionUser;
+
   return (
     <>
       <Head>
@@ -303,12 +442,51 @@ export default function RentalExtensionPage() {
               </div>
 
               <div className="flex flex-wrap gap-3">
-                <a
-                  href={paymentInfoUrl}
-                  className="inline-flex items-center justify-center rounded-full bg-black px-5 py-3 text-sm font-semibold text-white shadow-md transition hover:bg-gray-800"
-                >
-                  クレジット決済で延長する
-                </a>
+                <div className="flex flex-col gap-3">
+                  <div className="flex flex-wrap items-center gap-2 text-xs text-gray-600">
+                    <span className="rounded-full border border-gray-200 bg-white px-3 py-1 font-semibold text-gray-700">
+                      Apple Pay 対応
+                    </span>
+                    <span>Apple Pay での支払いも選択できます。</span>
+                  </div>
+                  {payjpError ? (
+                    <p className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+                      {payjpError}
+                    </p>
+                  ) : null}
+                  <div className="flex flex-wrap items-center gap-3">
+                    <div ref={payjpSlotRef} />
+                    {canRenderPayment ? (
+                      <PayjpCheckout
+                        formRef={payjpFormRef}
+                        placeholderRef={payjpSlotRef}
+                        onSubmit={handleSubmitPayment}
+                        onLoad={handlePayjpLoaded}
+                        onError={handlePayjpLoadError}
+                        locale="ja"
+                        publicKey={payJpPublicKey}
+                        description={`${reservation.storeName} ${reservation.vehicleModel} 延長`}
+                        amount={additionalCost ?? 0}
+                        email={sessionUser?.email ?? ''}
+                        label={isProcessingPayment ? '決済中…' : 'クレジット決済で延長する'}
+                        submitText="延長する"
+                        enableApplePay
+                      />
+                    ) : (
+                      <a
+                        href={paymentInfoUrl}
+                        className="inline-flex items-center justify-center rounded-full bg-black px-5 py-3 text-sm font-semibold text-white shadow-md transition hover:bg-gray-800"
+                      >
+                        クレジット決済で延長する
+                      </a>
+                    )}
+                  </div>
+                  {statusMessage ? (
+                    <p className="rounded-lg border border-blue-100 bg-blue-50 px-4 py-3 text-sm text-blue-800">
+                      {statusMessage}
+                    </p>
+                  ) : null}
+                </div>
                 <Link
                   href="/mypage"
                   className="inline-flex items-center justify-center rounded-full border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-700 shadow-sm transition hover:bg-gray-100"
