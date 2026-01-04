@@ -38,7 +38,7 @@ const isCanceledStatus = (status?: string) =>
   status?.toLowerCase() === 'cancelled';
 
 export default function MyPageEn() {
-  const paymentInfoUrl = process.env.NEXT_PUBLIC_PAYMENT_INFO_URL ?? '/payment-info';
+  const paymentInfoUrl = process.env.NEXT_PUBLIC_PAYMENT_INFO_URL ?? '/en/notifications';
   const rentalContractBaseUrl = process.env.NEXT_PUBLIC_RENTAL_CONTRACT_URL;
 
   const [user, setUser] = useState<SessionUser | null>(null);

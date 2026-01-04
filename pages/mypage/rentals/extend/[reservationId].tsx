@@ -27,7 +27,7 @@ const formatPrice = (value?: number | null) => {
 export default function RentalExtensionPage() {
   const router = useRouter();
   const reservationId = typeof router.query.reservationId === 'string' ? router.query.reservationId : '';
-  const paymentInfoUrl = process.env.NEXT_PUBLIC_PAYMENT_INFO_URL ?? '/payment-info';
+  const paymentInfoUrl = process.env.NEXT_PUBLIC_PAYMENT_INFO_URL ?? '/notifications';
 
   const [loadingUser, setLoadingUser] = useState(true);
   const [loadingReservation, setLoadingReservation] = useState(true);

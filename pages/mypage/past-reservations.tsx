@@ -6,7 +6,7 @@ import { useRouter } from 'next/router';
 import type { Reservation } from '../../lib/reservations';
 
 export default function PastReservationsPage() {
-  const paymentInfoUrl = process.env.NEXT_PUBLIC_PAYMENT_INFO_URL ?? '/payment-info';
+  const paymentInfoUrl = process.env.NEXT_PUBLIC_PAYMENT_INFO_URL ?? '/notifications';
   const rentalContractBaseUrl = process.env.NEXT_PUBLIC_RENTAL_CONTRACT_URL;
 
   const [loading, setLoading] = useState(true);
