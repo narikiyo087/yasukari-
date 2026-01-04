@@ -988,20 +988,18 @@ const RegistrationPage: NextPage = () => {
                 </div>
               ) : null}
 
-              <div className="flex items-center justify-between">
+              <div className="grid grid-cols-3 items-center">
                 <span />
                 <button
                   type="submit"
                   disabled={isSubmitting || loadingUser}
-                  className="inline-flex items-center justify-center rounded-full bg-red-600 px-6 py-3 text-sm font-semibold text-white transition hover:bg-red-700 disabled:cursor-not-allowed disabled:bg-red-300"
+                  className="inline-flex items-center justify-center justify-self-center rounded-full bg-red-600 px-6 py-3 text-sm font-semibold text-white transition hover:bg-red-700 disabled:cursor-not-allowed disabled:bg-red-300"
                 >
                   {isSubmitting ? '送信中…' : '完了する'}
                 </button>
-              </div>
-              <div className="flex justify-center">
                 <Link
                   href="/mypage"
-                  className="inline-flex items-center gap-2 rounded-full border border-gray-200 px-6 py-3 text-sm font-semibold text-gray-700 transition hover:border-gray-300"
+                  className="justify-self-end text-sm font-semibold text-gray-700 underline decoration-gray-300 underline-offset-4 transition hover:text-gray-900 hover:decoration-gray-500"
                 >
                   戻る
                 </Link>
