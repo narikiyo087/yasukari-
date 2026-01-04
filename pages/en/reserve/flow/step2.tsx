@@ -31,13 +31,25 @@ const ACCESSORY_DISPLAY_ORDER: Array<{ key: string; label: string }> = [
 
 const defaultFees = {
   rental: 3980,
-  highSeason: 1100,
   couponDiscount: 0,
 };
+
+const HIGH_SEASON_FEE_PER_DAY = 550;
 
 const formatAccessoryPrice = (price?: number) => `¥${(price ?? 0).toLocaleString()}`;
 const formatProtectionPrice = (price?: number) =>
   price == null ? "Calculating" : `¥${price.toLocaleString()}`;
+const formatDateKey = (date: Date): string => {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+};
+const formatMonthKey = (date: Date): string => {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  return `${year}-${month}`;
+};
 const getInsuranceDurationKey = (days: number): DurationPriceKey => {
   if (days <= 1) return "24h";
   if (days <= 2) return "2d";
@@ -69,6 +81,8 @@ export default function ReserveFlowStep2() {
   >(null);
   const [theftInsurance, setTheftInsurance] = useState<number | null>(null);
   const [protectionError, setProtectionError] = useState<string | null>(null);
+  const [highSeasonDates, setHighSeasonDates] = useState<Set<string>>(new Set());
+  const [highSeasonLoading, setHighSeasonLoading] = useState(false);
 
   const [protectionSelection, setProtectionSelection] = useState(() =>
     PROTECTION_OPTION_DEFINITIONS.reduce<Record<string, boolean>>((acc, option) => {
@@ -194,6 +208,76 @@ export default function ReserveFlowStep2() {
     return Math.max(1, Math.ceil(hours / 24));
   }, [pickupDate, pickupTime, returnDate, returnTime]);
 
+  const highSeasonMonths = useMemo(() => {
+    const pickup = new Date(`${pickupDate}T00:00:00`);
+    const dropoff = new Date(`${returnDate}T00:00:00`);
+    if (Number.isNaN(pickup.getTime()) || Number.isNaN(dropoff.getTime())) {
+      return [];
+    }
+
+    const start = new Date(pickup.getFullYear(), pickup.getMonth(), 1);
+    const end = new Date(dropoff.getFullYear(), dropoff.getMonth(), 1);
+    if (start > end) {
+      return [formatMonthKey(start)];
+    }
+
+    const months: string[] = [];
+    const cursor = new Date(start);
+    while (cursor <= end) {
+      months.push(formatMonthKey(cursor));
+      cursor.setMonth(cursor.getMonth() + 1);
+    }
+    return months;
+  }, [pickupDate, returnDate]);
+
+  useEffect(() => {
+    if (highSeasonMonths.length === 0) {
+      setHighSeasonDates(new Set());
+      return;
+    }
+
+    const controller = new AbortController();
+
+    const loadHighSeason = async () => {
+      try {
+        setHighSeasonLoading(true);
+        const responses = await Promise.all(
+          highSeasonMonths.map(async (month) => {
+            const response = await fetch(`/api/high-season?month=${month}`, {
+              signal: controller.signal,
+            });
+            if (!response.ok) {
+              throw new Error("Failed to fetch high season calendar");
+            }
+            const data = (await response.json()) as {
+              dates: { date: string; isHighSeason: boolean }[];
+            };
+            return data.dates ?? [];
+          })
+        );
+
+        const nextDates = responses
+          .flat()
+          .filter((date) => date.isHighSeason)
+          .map((date) => date.date);
+        setHighSeasonDates(new Set(nextDates));
+      } catch (error) {
+        if (!controller.signal.aborted) {
+          console.error("Failed to load high season calendar", error);
+          setHighSeasonDates(new Set());
+        }
+      } finally {
+        if (!controller.signal.aborted) {
+          setHighSeasonLoading(false);
+        }
+      }
+    };
+
+    void loadHighSeason();
+
+    return () => controller.abort();
+  }, [highSeasonMonths]);
+
   const vehicleInsuranceFee = useMemo(() => {
     if (!insurancePrices) return undefined;
 
@@ -253,25 +337,45 @@ export default function ReserveFlowStep2() {
   );
 
   const rentalFee = defaultFees.rental;
-  const highSeasonFee = defaultFees.highSeason;
   const couponDiscount = defaultFees.couponDiscount;
 
+  const highSeasonDays = useMemo(() => {
+    if (highSeasonDates.size === 0) return 0;
+    const pickup = new Date(`${pickupDate}T00:00:00`);
+    if (Number.isNaN(pickup.getTime())) return 0;
+
+    let count = 0;
+    for (let day = 0; day < rentalDays; day += 1) {
+      const current = new Date(pickup);
+      current.setDate(pickup.getDate() + day);
+      if (highSeasonDates.has(formatDateKey(current))) {
+        count += 1;
+      }
+    }
+    return count;
+  }, [highSeasonDates, pickupDate, rentalDays]);
+
+  const highSeasonFee = highSeasonDays * HIGH_SEASON_FEE_PER_DAY;
+
   const totalAmount = rentalFee + selectedAccessoryFee + selectedProtectionFee + highSeasonFee - couponDiscount;
+  const highSeasonFeeLabel = highSeasonLoading
+    ? "Calculating"
+    : `¥${highSeasonFee.toLocaleString()}`;
 
   const formatDateLabel = (dateString: string, fallback: string) => {
     const parsed = new Date(dateString);
     if (Number.isNaN(parsed.getTime())) return fallback;
 
-  return parsed.toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
+    return parsed.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
       weekday: "short",
     });
   };
 
-const pickupLabel = formatDateLabel(pickupDate, "December 26, 2025");
-const returnLabel = formatDateLabel(returnDate, "December 27, 2025");
+  const pickupLabel = formatDateLabel(pickupDate, "December 26, 2025");
+  const returnLabel = formatDateLabel(returnDate, "December 27, 2025");
 
   const toggleProtection = (key: string) => {
     setProtectionSelection((prev) => ({ ...prev, [key]: !prev[key] }));
@@ -571,8 +675,8 @@ const returnLabel = formatDateLabel(returnDate, "December 27, 2025");
                     <dd className="font-semibold text-gray-900">¥{selectedProtectionFee.toLocaleString()}</dd>
                   </div>
                   <div className="flex items-center justify-between">
-                    <dt className="text-gray-500">High-season fee</dt>
-                    <dd className="font-semibold text-gray-900">¥{highSeasonFee.toLocaleString()}</dd>
+                    <dt className="text-gray-500">High-season fee ({highSeasonDays} days)</dt>
+                    <dd className="font-semibold text-gray-900">{highSeasonFeeLabel}</dd>
                   </div>
                   <div className="flex items-center justify-between">
                     <dt className="text-gray-500">Coupon discount</dt>
