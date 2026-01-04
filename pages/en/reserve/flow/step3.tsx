@@ -7,6 +7,8 @@ import type { RegistrationData } from "../../../../types/registration";
 import type { Reservation } from "../../../../lib/reservations";
 import PayjpCheckout from "../../../../components/PayjpCheckout";
 
+const ACCESSORY_KEYS = ["halfCap", "jetHelmet", "brandHelmet", "glove"] as const;
+
 const formatDateLabel = (dateString: string, fallback: string) => {
   const parsed = new Date(dateString);
   if (Number.isNaN(parsed.getTime())) return fallback;
@@ -48,6 +50,7 @@ export default function ReserveFlowStep3() {
   const [couponCode, setCouponCode] = useState("");
   const [protectionTotal, setProtectionTotal] = useState(0);
   const [accessoryTotal, setAccessoryTotal] = useState(0);
+  const [accessorySelection, setAccessorySelection] = useState<Record<string, number>>({});
 
   useEffect(() => {
     const controller = new AbortController();
@@ -123,6 +126,18 @@ export default function ReserveFlowStep3() {
     if (typeof params.couponCode === "string") setCouponCode(params.couponCode);
     if (typeof params.accessoryTotal === "string") setAccessoryTotal(Number(params.accessoryTotal));
     if (typeof params.protectionTotal === "string") setProtectionTotal(Number(params.protectionTotal));
+
+    const nextAccessorySelection: Record<string, number> = {};
+    ACCESSORY_KEYS.forEach((key) => {
+      const value = params[key];
+      if (typeof value === "string") {
+        const parsed = Number(value);
+        if (!Number.isNaN(parsed) && parsed > 0) {
+          nextAccessorySelection[key] = parsed;
+        }
+      }
+    });
+    setAccessorySelection(nextAccessorySelection);
 
     if (missingParams.length > 0) {
       setQueryError("We could not restore your reservation details after refresh. Please start again.");
@@ -242,6 +257,8 @@ export default function ReserveFlowStep3() {
           memberPhone: registration?.mobile ?? registration?.tel ?? "",
           couponCode,
           couponDiscount: accessoryTotal + protectionTotal,
+          accessories:
+            Object.keys(accessorySelection).length > 0 ? accessorySelection : undefined,
           notes: "Saved via Pay.JP payment",
         }),
       });
@@ -284,6 +301,7 @@ export default function ReserveFlowStep3() {
     }
   }, [
     accessoryTotal,
+    accessorySelection,
     couponCode,
     managementNumber,
     modelName,

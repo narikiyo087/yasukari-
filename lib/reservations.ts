@@ -408,6 +408,26 @@ type CreateReservationInput = {
   vehicleChangedAt?: string;
   vehicleChangeNotified?: boolean;
   refundNote?: string;
+  accessories?: Record<string, number>;
+};
+
+const normalizeAccessoryInput = (
+  accessories?: Record<string, number>
+): Record<string, number> | undefined => {
+  if (!accessories) return undefined;
+
+  const normalized = Object.entries(accessories).reduce<Record<string, number>>(
+    (acc, [key, raw]) => {
+      const parsed = Number(raw);
+      if (!Number.isNaN(parsed) && parsed > 0) {
+        acc[key] = parsed;
+      }
+      return acc;
+    },
+    {}
+  );
+
+  return Object.keys(normalized).length > 0 ? normalized : undefined;
 };
 
 const toIsoStringIfPossible = (value: string | number | undefined): string | undefined => {
@@ -483,6 +503,8 @@ export async function createReservation(
 ): Promise<Reservation> {
   const client = getDocumentClient();
 
+  const accessories = normalizeAccessoryInput(input.accessories);
+
   const reservationId = input.paymentId || `rs_${Date.now()}`;
   const paymentDate = toIsoStringIfPossible(input.paymentDate) ?? new Date().toISOString();
   const reservationRecord: ReservationRecord = {
@@ -514,6 +536,15 @@ export async function createReservation(
     notes: input.notes ?? "",
     refund_note: input.refundNote ?? "",
   };
+
+  if (accessories) {
+    reservationRecord.accessories = accessories;
+    Object.entries(accessories).forEach(([key, count]) => {
+      if (typeof count === "number") {
+        reservationRecord[key] = count;
+      }
+    });
+  }
 
   await client.send(
     new PutCommand({
