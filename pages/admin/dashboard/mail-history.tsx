@@ -50,6 +50,9 @@ export default function MailHistoryPage() {
   const [history, setHistory] = useState<MailHistoryEntry[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const pageSize = 20;
 
   useEffect(() => {
     const controller = new AbortController();
@@ -78,6 +81,14 @@ export default function MailHistoryPage() {
     void loadHistory();
     return () => controller.abort();
   }, []);
+
+  const totalPages = Math.max(1, Math.ceil(history.length / pageSize));
+  useEffect(() => {
+    setCurrentPage((page) => Math.min(page, totalPages));
+  }, [totalPages]);
+  const safeCurrentPage = Math.min(currentPage, totalPages);
+  const startIndex = (safeCurrentPage - 1) * pageSize;
+  const pagedHistory = history.slice(startIndex, startIndex + pageSize);
 
   const latestThreeCategories = useMemo(() => {
     return history.reduce<
@@ -152,7 +163,7 @@ export default function MailHistoryPage() {
                     </tr>
                   </thead>
                   <tbody>
-                    {history.map((entry) => (
+                    {pagedHistory.map((entry) => (
                       <tr key={entry.id}>
                         <td>{new Date(entry.createdAt).toLocaleString("ja-JP")}</td>
                         <td>{categoryLabel(entry.category)}</td>
@@ -166,6 +177,36 @@ export default function MailHistoryPage() {
                     ))}
                   </tbody>
                 </table>
+              </div>
+              <div className={styles.tableToolbar}>
+                <div className={styles.tableToolbarGroup}>
+                  <span className={styles.tableSelectionCount}>
+                    {history.length === 0
+                      ? "0件"
+                      : `${startIndex + 1}-${Math.min(startIndex + pageSize, history.length)}件 / 全${history.length}件`}
+                  </span>
+                </div>
+                <div className={styles.tableToolbarGroup}>
+                  <button
+                    type="button"
+                    className={styles.tableToolbarButton}
+                    onClick={() => setCurrentPage((page) => Math.max(1, page - 1))}
+                    disabled={safeCurrentPage === 1}
+                  >
+                    前へ
+                  </button>
+                  <span className={styles.tableSelectionCount}>
+                    {safeCurrentPage} / {totalPages}ページ
+                  </span>
+                  <button
+                    type="button"
+                    className={styles.tableToolbarButton}
+                    onClick={() => setCurrentPage((page) => Math.min(totalPages, page + 1))}
+                    disabled={safeCurrentPage === totalPages}
+                  >
+                    次へ
+                  </button>
+                </div>
               </div>
             </div>
           )}
