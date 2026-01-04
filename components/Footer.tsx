@@ -62,6 +62,7 @@ export default function Footer() {
 
           {/* サービス案内 + SNS */}
           <div>
+            <h4 className="font-bold mb-2">サービス案内</h4>
             <ul className="space-y-1 mb-4">
               <li>
                 <Link href="/products" className="hover:underline">
@@ -95,6 +96,7 @@ export default function Footer() {
                 </Link>
               </li>
             </ul>
+            <h4 className="font-bold mb-2">SNS・動画</h4>
             <ul className="space-y-2">
               <li className="flex items-center gap-2">
                 <FaInstagram /> <a href="https://www.instagram.com/yasukari_819" className="hover:underline">Instagram</a>
