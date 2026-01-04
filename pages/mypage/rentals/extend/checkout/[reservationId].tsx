@@ -1,10 +1,11 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 
-import type { BikeClass, BikeModel } from '../../../../lib/dashboard/types';
-import type { Reservation } from '../../../../lib/reservations';
+import PayjpCheckout from '../../../../../components/PayjpCheckout';
+import type { BikeClass, BikeModel } from '../../../../../lib/dashboard/types';
+import type { Reservation } from '../../../../../lib/reservations';
 
 const formatReservationDatetime = (value: string | Date) => {
   const parsed = value instanceof Date ? value : new Date(value);
@@ -24,7 +25,9 @@ const formatPrice = (value?: number | null) => {
   return `${value.toLocaleString('ja-JP')}円`;
 };
 
-export default function RentalExtensionPage() {
+const clampExtensionDays = (value: number) => Math.min(Math.max(value, 1), 30);
+
+export default function RentalExtensionCheckoutPage() {
   const router = useRouter();
   const reservationId = typeof router.query.reservationId === 'string' ? router.query.reservationId : '';
 
@@ -38,16 +41,12 @@ export default function RentalExtensionPage() {
   const [bikeModels, setBikeModels] = useState<BikeModel[]>([]);
   const [bikeClasses, setBikeClasses] = useState<BikeClass[]>([]);
   const [extensionDays, setExtensionDays] = useState(1);
-
-  useEffect(() => {
-    if (!router.isReady) return;
-    const raw = router.query.extensionDays;
-    if (typeof raw !== 'string') return;
-    const parsed = Number(raw);
-    if (!Number.isNaN(parsed) && parsed > 0) {
-      setExtensionDays(Math.min(parsed, 30));
-    }
-  }, [router.isReady, router.query.extensionDays]);
+  const [statusMessage, setStatusMessage] = useState('');
+  const [payjpError, setPayjpError] = useState('');
+  const [isProcessingPayment, setIsProcessingPayment] = useState(false);
+  const payjpFormRef = useRef<HTMLFormElement | null>(null);
+  const payjpSlotRef = useRef<HTMLDivElement | null>(null);
+  const processedTokenRef = useRef<string | null>(null);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -86,6 +85,16 @@ export default function RentalExtensionPage() {
     void fetchUser();
     return () => controller.abort();
   }, [router]);
+
+  useEffect(() => {
+    if (!router.isReady) return;
+    const raw = router.query.extensionDays;
+    if (typeof raw !== 'string') return;
+    const parsed = Number(raw);
+    if (!Number.isNaN(parsed) && parsed > 0) {
+      setExtensionDays(clampExtensionDays(parsed));
+    }
+  }, [router.isReady, router.query.extensionDays]);
 
   useEffect(() => {
     if (loadingUser || !reservationId) return;
@@ -193,25 +202,159 @@ export default function RentalExtensionPage() {
     return extra24hPrice * extensionDays;
   }, [extra24hPrice, extensionDays]);
 
-  const handleExtensionDaysChange = (value: string) => {
-    const parsed = Number(value);
-    if (Number.isNaN(parsed) || parsed <= 0) return;
-    setExtensionDays(Math.min(parsed, 30));
-  };
+  const payJpPublicKey = process.env.NEXT_PUBLIC_PAYJP_PUBLIC_KEY ?? 'pk_test_sample';
 
-  const canProceed =
+  const handlePaymentWithToken = useCallback(
+    async (tokenId: string) => {
+      if (!reservation) {
+        setStatusMessage('予約情報を確認できませんでした。再度お試しください。');
+        return;
+      }
+      if (!extendedReturnDate) {
+        setStatusMessage('延長後の返却日時が確定していません。');
+        return;
+      }
+      if (additionalCost == null) {
+        setStatusMessage('延長料金が確定していません。');
+        return;
+      }
+
+      setIsProcessingPayment(true);
+      setStatusMessage('決済処理を実行しています…');
+
+      try {
+        const chargeResponse = await fetch('/api/payments/payjp', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({
+            token: tokenId,
+            amount: additionalCost,
+            description: `${reservation.storeName} ${reservation.vehicleModel} 延長`,
+            metadata: {
+              reservationId: reservation.id,
+              extensionDays: extensionDays.toString(),
+            },
+          }),
+        });
+
+        if (!chargeResponse.ok) {
+          const errorPayload = (await chargeResponse.json().catch(() => null)) as { error?: string } | null;
+          throw new Error(errorPayload?.error ?? 'Pay.JP の決済処理に失敗しました。');
+        }
+
+        const chargeData = (await chargeResponse.json()) as { chargeId: string; paidAt?: string };
+        const paymentDate = chargeData.paidAt ?? new Date().toISOString();
+        const updatedReturnAt = extendedReturnDate.toISOString();
+
+        const updateResponse = await fetch(`/api/reservations/${reservation.id}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({
+            returnAt: updatedReturnAt,
+            paymentId: chargeData.chargeId,
+            paymentDate,
+          }),
+        });
+
+        if (!updateResponse.ok) {
+          const errorPayload = (await updateResponse.json().catch(() => null)) as { error?: string } | null;
+          throw new Error(errorPayload?.error ?? 'レンタル延長の反映に失敗しました。');
+        }
+
+        const notifyResponse = await fetch('/api/reservations/extension/notify', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({
+            reservationId: reservation.id,
+            previousReturnAt: reservation.returnAt,
+            newReturnAt: updatedReturnAt,
+            extensionDays,
+            amount: additionalCost,
+            paymentId: chargeData.chargeId,
+          }),
+        });
+
+        if (!notifyResponse.ok) {
+          console.error('Failed to send extension completion email');
+        }
+
+        setStatusMessage('決済が完了しました。マイページに延長内容を反映しました。');
+        void router.push('/mypage');
+      } catch (err) {
+        console.error('Failed to process rental extension payment', err);
+        setStatusMessage('決済に失敗しました。入力内容を確認のうえ、再度お試しください。');
+      } finally {
+        setIsProcessingPayment(false);
+      }
+    },
+    [additionalCost, extendedReturnDate, extensionDays, reservation, router]
+  );
+
+  useEffect(() => {
+    if (!router.isReady) return;
+
+    const token = router.query['payjp-token'];
+    if (typeof token !== 'string' || !token) return;
+    if (processedTokenRef.current === token || isProcessingPayment) return;
+
+    processedTokenRef.current = token;
+    setStatusMessage('決済結果を確認しています…');
+    void handlePaymentWithToken(token);
+
+    const { ['payjp-token']: _ignored, ...restQuery } = router.query;
+    void router.replace({ pathname: router.pathname, query: restQuery }, undefined, { shallow: true });
+  }, [handlePaymentWithToken, isProcessingPayment, router]);
+
+  const handleSubmitPayment = useCallback(
+    (event: Event) => {
+      event.preventDefault();
+      setPayjpError('');
+
+      const form = payjpFormRef.current;
+      if (!form) {
+        setStatusMessage('決済フォームを確認できませんでした。再度お試しください。');
+        return;
+      }
+
+      const tokenInput = form.querySelector<HTMLInputElement>('input[name="payjp-token"]');
+      const token = tokenInput?.value;
+      if (!token) {
+        setStatusMessage('Pay.JP のトークン取得を待っています。しばらくしてから再度お試しください。');
+        return;
+      }
+
+      setStatusMessage('');
+      if (tokenInput) {
+        tokenInput.value = '';
+      }
+      void handlePaymentWithToken(token);
+    },
+    [handlePaymentWithToken]
+  );
+
+  const handlePayjpLoaded = useCallback(() => {
+    setPayjpError('');
+  }, []);
+
+  const handlePayjpLoadError = useCallback(() => {
+    setPayjpError('Pay.JP の読み込みに失敗しました。時間をおいて再度お試しください。');
+  }, []);
+
+  const canRenderPayment =
     !loadingUser &&
     !loadingReservation &&
     !reservationError &&
     reservation &&
     additionalCost != null &&
-    sessionUser &&
-    extendedReturnDate;
+    sessionUser;
 
   return (
     <>
       <Head>
-        <title>レンタル延長手続き</title>
+        <title>レンタル延長 決済確認</title>
       </Head>
       <main className="mx-auto flex min-h-screen w-full max-w-3xl flex-col gap-8 px-4 py-12">
         <header className="space-y-2 text-sm text-gray-600">
@@ -229,13 +372,17 @@ export default function RentalExtensionPage() {
                 </a>
               </li>
               <li aria-hidden="true">/</li>
-              <li className="text-gray-600">レンタル延長</li>
+              <li>
+                <a href={`/mypage/rentals/extend/${reservationId}`} className="text-red-600 hover:underline">
+                  レンタル延長
+                </a>
+              </li>
+              <li aria-hidden="true">/</li>
+              <li className="text-gray-600">決済確認</li>
             </ol>
           </nav>
-          <h1 className="text-2xl font-semibold text-gray-900">レンタル延長</h1>
-          <p className="text-sm text-gray-500">
-            現在レンタルしている車両の返却日時を延長し、追加費用を確認できます。決済は次の画面で行います。
-          </p>
+          <h1 className="text-2xl font-semibold text-gray-900">レンタル延長 決済確認</h1>
+          <p className="text-sm text-gray-500">内容をご確認のうえ、クレジット決済を行ってください。</p>
         </header>
 
         {error ? (
@@ -276,27 +423,8 @@ export default function RentalExtensionPage() {
                   <p className="mt-1 text-lg font-semibold text-emerald-900">
                     {extendedReturnDate ? formatReservationDatetime(extendedReturnDate) : '未設定'}
                   </p>
+                  <p className="mt-2 text-xs text-emerald-700">{extensionDays}日延長</p>
                 </div>
-              </div>
-
-              <div className="rounded-xl border border-gray-200 p-4">
-                <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-                  <label className="text-sm font-semibold text-gray-900" htmlFor="extension-days">
-                    延長日数 (24時間単位)
-                  </label>
-                  <input
-                    id="extension-days"
-                    type="number"
-                    min={1}
-                    max={30}
-                    value={extensionDays}
-                    onChange={(event) => handleExtensionDaysChange(event.target.value)}
-                    className="w-full max-w-[160px] rounded-lg border border-gray-300 px-3 py-2 text-right text-sm"
-                  />
-                </div>
-                <p className="mt-2 text-xs text-gray-500">
-                  レンタルクラスに設定された「追加料金(24時間)」を日数分加算して延長費用を計算します。
-                </p>
               </div>
 
               <div className="grid gap-4 md:grid-cols-2">
@@ -327,34 +455,59 @@ export default function RentalExtensionPage() {
 
               <div className="flex flex-wrap gap-3">
                 <div className="flex flex-col gap-3">
-                  <p className="text-xs text-gray-500">
-                    延長内容を確認したら、次の画面でクレジット決済を行います。
-                  </p>
-                  {canProceed ? (
-                    <Link
-                      href={{
-                        pathname: `/mypage/rentals/extend/checkout/${reservation.id}`,
-                        query: { extensionDays: extensionDays.toString() },
-                      }}
-                      className="inline-flex items-center justify-center rounded-full bg-black px-5 py-3 text-sm font-semibold text-white shadow-md transition hover:bg-gray-800"
-                    >
-                      決済確認へ進む
-                    </Link>
-                  ) : (
-                    <button
-                      type="button"
-                      className="inline-flex items-center justify-center rounded-full bg-gray-200 px-5 py-3 text-sm font-semibold text-gray-500"
-                      disabled
-                    >
-                      決済確認へ進む
-                    </button>
-                  )}
+                  <div className="flex flex-wrap items-center gap-2 text-xs text-gray-600">
+                    <span className="rounded-full border border-gray-200 bg-white px-3 py-1 font-semibold text-gray-700">
+                      Apple Pay 対応
+                    </span>
+                    <span>Apple Pay での支払いも選択できます。</span>
+                  </div>
+                  {payjpError ? (
+                    <p className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+                      {payjpError}
+                    </p>
+                  ) : null}
+                  <div className="flex flex-wrap items-center gap-3">
+                    <div ref={payjpSlotRef} />
+                    {canRenderPayment ? (
+                      <PayjpCheckout
+                        formRef={payjpFormRef}
+                        placeholderRef={payjpSlotRef}
+                        onSubmit={handleSubmitPayment}
+                        onLoad={handlePayjpLoaded}
+                        onError={handlePayjpLoadError}
+                        locale="ja"
+                        publicKey={payJpPublicKey}
+                        description={`${reservation.storeName} ${reservation.vehicleModel} 延長`}
+                        amount={additionalCost ?? 0}
+                        email={sessionUser?.email ?? ''}
+                        label={isProcessingPayment ? '決済中…' : 'クレジット決済で延長する'}
+                        submitText="延長する"
+                        enableApplePay
+                      />
+                    ) : (
+                      <button
+                        type="button"
+                        className="inline-flex items-center justify-center rounded-full bg-gray-200 px-5 py-3 text-sm font-semibold text-gray-500"
+                        disabled
+                      >
+                        クレジット決済で延長する
+                      </button>
+                    )}
+                  </div>
+                  {statusMessage ? (
+                    <p className="rounded-lg border border-blue-100 bg-blue-50 px-4 py-3 text-sm text-blue-800">
+                      {statusMessage}
+                    </p>
+                  ) : null}
                 </div>
                 <Link
-                  href="/mypage"
+                  href={{
+                    pathname: `/mypage/rentals/extend/${reservation.id}`,
+                    query: { extensionDays: extensionDays.toString() },
+                  }}
                   className="inline-flex items-center justify-center rounded-full border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-700 shadow-sm transition hover:bg-gray-100"
                 >
-                  マイページに戻る
+                  延長内容を修正
                 </Link>
               </div>
             </div>
