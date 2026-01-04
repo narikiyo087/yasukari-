@@ -77,7 +77,9 @@ const buildReservationAvailability = (reservations: Reservation[]): RentalAvaila
   reservations.forEach((reservation) => {
     const isPaid = Boolean(reservation.paymentDate || reservation.paymentId);
     const isExcludedStatus =
-      reservation.status === "キャンセル" || reservation.status === "入金待ち";
+      reservation.status === "キャンセル" ||
+      reservation.status === "入金待ち" ||
+      reservation.status === "予約完了";
 
     if (!isPaid || isExcludedStatus) {
       return;
