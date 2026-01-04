@@ -60,7 +60,9 @@ export default function RentalExtensionPage() {
           throw new Error('failed to load profile');
         }
 
-        const data = (await response.json().catch(() => ({}))) as { user?: { id?: string } | null };
+        const data = (await response.json().catch(() => ({}))) as {
+          user?: { id?: string; email?: string } | null;
+        };
         if (!data.user) {
           await router.replace('/login');
           return;
