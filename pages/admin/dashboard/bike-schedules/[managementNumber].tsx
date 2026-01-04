@@ -92,7 +92,25 @@ const buildReservationAvailability = (reservations: Reservation[]): RentalAvaila
     const renterName = reservation.memberName?.trim() || "名前未登録";
     const isRentalCompleted =
       Boolean(reservation.rentalCompletedAt) || reservation.status === "レンタル完了";
+    const completionNote = `${renterName}（バイク返却完了）`;
     const cursor = new Date(startDate);
+
+    if (isRentalCompleted) {
+      map[formatDateKey(endDate)] = { status: "AVAILABLE" };
+      while (cursor < endDate) {
+        const key = formatDateKey(cursor);
+        const existingNote = map[key]?.note;
+        const note =
+          existingNote && existingNote !== completionNote
+            ? Array.from(new Set([existingNote, completionNote])).join(" / ")
+            : completionNote;
+
+        map[key] = { status: "RENTAL_COMPLETED", note };
+        cursor.setDate(cursor.getDate() + 1);
+      }
+      return;
+    }
+
     while (cursor <= endDate) {
       const key = formatDateKey(cursor);
       const existingNote = map[key]?.note;
@@ -101,7 +119,7 @@ const buildReservationAvailability = (reservations: Reservation[]): RentalAvaila
           ? Array.from(new Set([existingNote, renterName])).join(" / ")
           : renterName;
 
-      map[key] = { status: isRentalCompleted ? "RENTAL_COMPLETED" : "RENTED", note };
+      map[key] = { status: "RENTED", note };
       cursor.setDate(cursor.getDate() + 1);
     }
   });
