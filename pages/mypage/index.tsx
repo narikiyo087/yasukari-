@@ -785,7 +785,7 @@ export default function MyPage() {
                                 </p>
                               </div>
                             </div>
-                            <div className="flex flex-col items-end gap-2">
+                            <div className="flex flex-wrap items-center gap-2 sm:flex-col sm:items-end">
                               <span className="inline-flex items-center rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-800">
                                 {reservation.status}
                               </span>
