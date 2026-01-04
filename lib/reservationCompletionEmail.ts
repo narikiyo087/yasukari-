@@ -37,9 +37,6 @@ const buildTextBody = (reservation: Reservation): string => {
     reservation.memberEmail ? `メール: ${reservation.memberEmail}` : undefined,
     "",
     "ご不明点がございましたら本メールにご返信ください。",
-    "ヤスカリ バイクレンタル",
-    "",
-    "仮登録・本登録・予約完了",
     "",
     "※本メールはお客様にご入力いただいたメールアドレスあてに発信しているため、",
     "入力ミスなどの理由によりまったく別の方にメールが届く可能性があります。",
@@ -49,7 +46,7 @@ const buildTextBody = (reservation: Reservation): string => {
     "※お問い合わせは、本メールにご返信ください。",
     "大変恐れ入りますが、お電話でのお問い合わせはお受けしておりません。",
     "",
-    "ヤスカリ https://yasukari.com",
+    "ヤスカリ https://yasukaribike.com",
     "足立小台本店 レンタル受付時間: 10:00 〜 19:00 （月曜定休）",
     "三ノ輪店 レンタル受付時間: 24時間営業",
     "事故受付専用:ロードサービス専用ダイヤル 0120-024-024",
@@ -82,7 +79,6 @@ const buildHtmlBody = (reservation: Reservation): string => {
       ${reservation.memberEmail ? `<li>メール: ${reservation.memberEmail}</li>` : ""}
     </ul>
     <p>ご不明点がございましたら本メールにご返信ください。<br />ヤスカリ バイクレンタル</p>
-    <p>仮登録・本登録・予約完了</p>
     <p>
       ※本メールはお客様にご入力いただいたメールアドレスあてに発信しているため、<br />
       入力ミスなどの理由によりまったく別の方にメールが届く可能性があります。<br />
@@ -94,7 +90,7 @@ const buildHtmlBody = (reservation: Reservation): string => {
       大変恐れ入りますが、お電話でのお問い合わせはお受けしておりません。
     </p>
     <p>
-      ヤスカリ https://yasukari.com<br />
+      ヤスカリ https://yasukaribike.com<br />
       足立小台本店 レンタル受付時間: 10:00 〜 19:00 （月曜定休）<br />
       三ノ輪店 レンタル受付時間: 24時間営業<br />
       事故受付専用:ロードサービス専用ダイヤル 0120-024-024
