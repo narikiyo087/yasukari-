@@ -3,6 +3,7 @@ import Head from 'next/head';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 
+import type { BikeClass } from '../../../lib/dashboard/types';
 import type { Reservation } from '../../../lib/reservations';
 import { getRequiredLicenseLabel } from '../../../lib/dashboard/licenseOptions';
 
@@ -95,6 +96,30 @@ const renderValue = (value?: string | number) => {
   return String(value);
 };
 
+const getInsuranceDurationKey = (days: number) => {
+  if (days <= 1) return '24h';
+  if (days <= 2) return '2d';
+  if (days <= 4) return '4d';
+  if (days <= 7) return '1w';
+  if (days <= 14) return '2w';
+  return '1m';
+};
+
+const formatRentalPeriod = (days: number) => {
+  if (days <= 1) return '24時間';
+  if (days <= 2) return '2日間';
+  if (days <= 4) return '4日間';
+  if (days <= 7) return '1週間';
+  if (days <= 14) return '2週間';
+  if (days <= 31) return '1ヶ月';
+  return `${days}日間`;
+};
+
+const formatCoverageDetail = (price: number | null | undefined, days: number | null) => {
+  if (price == null || days == null) return '未設定';
+  return `${formatRentalPeriod(days)} / ${price.toLocaleString('ja-JP')}円`;
+};
+
 const displacementLabel = (displacement?: number) => {
   if (!displacement) return undefined;
   if (displacement >= 400) return '400cc 超';
@@ -113,6 +138,8 @@ export default function RentalDetailPage() {
   const [reservationError, setReservationError] = useState('');
   const [model, setModel] = useState<BikeModelResponse | null>(null);
   const [modelError, setModelError] = useState('');
+  const [bikeClasses, setBikeClasses] = useState<BikeClass[]>([]);
+  const [classError, setClassError] = useState('');
 
   useEffect(() => {
     const controller = new AbortController();
@@ -191,14 +218,20 @@ export default function RentalDetailPage() {
     if (!reservation?.vehicleModel) return;
 
     const controller = new AbortController();
-    const fetchModels = async () => {
+    const fetchCatalog = async () => {
       try {
-        const response = await fetch('/api/bike-models', { signal: controller.signal });
-        if (!response.ok) {
-          throw new Error('failed to load bike models');
+        const [modelsResponse, classesResponse] = await Promise.all([
+          fetch('/api/bike-models', { signal: controller.signal }),
+          fetch('/api/bike-classes', { signal: controller.signal }),
+        ]);
+        if (!modelsResponse.ok || !classesResponse.ok) {
+          throw new Error('failed to load bike catalog');
         }
 
-        const models = (await response.json()) as BikeModelResponse[];
+        const models = (await modelsResponse.json()) as BikeModelResponse[];
+        const classes = (await classesResponse.json()) as BikeClass[];
+        setBikeClasses(classes);
+
         const normalized = reservation.vehicleModel.trim().toLowerCase();
         const matched = models.find((item) => item.modelName?.trim().toLowerCase() === normalized);
         if (matched) {
@@ -208,11 +241,12 @@ export default function RentalDetailPage() {
         if (!controller.signal.aborted) {
           console.error(err);
           setModelError('車種情報の取得に失敗しました。');
+          setClassError('クラス情報の取得に失敗しました。');
         }
       }
     };
 
-    void fetchModels();
+    void fetchCatalog();
     return () => controller.abort();
   }, [reservation?.vehicleModel]);
 
@@ -220,6 +254,42 @@ export default function RentalDetailPage() {
     const key = resolveStoreKey(reservation?.storeName);
     return key ? STORE_ACCESS[key] : null;
   }, [reservation?.storeName]);
+
+  const targetClass = useMemo(() => {
+    if (!model) return null;
+    return bikeClasses.find((bikeClass) => bikeClass.classId === model.classId) ?? null;
+  }, [bikeClasses, model]);
+
+  const rentalDays = useMemo(() => {
+    if (!reservation?.pickupAt || !reservation?.returnAt) return null;
+    const pickup = new Date(reservation.pickupAt);
+    const dropoff = new Date(reservation.returnAt);
+    if (Number.isNaN(pickup.getTime()) || Number.isNaN(dropoff.getTime())) return null;
+    const diffMs = dropoff.getTime() - pickup.getTime();
+    const days = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+    return days > 0 ? days : 1;
+  }, [reservation?.pickupAt, reservation?.returnAt]);
+
+  const vehicleCoverageFee = useMemo(() => {
+    if (!targetClass?.insurance_prices || rentalDays == null) return null;
+    if (rentalDays > 31) {
+      const monthlyPrice = targetClass.insurance_prices['1m'];
+      if (monthlyPrice != null) {
+        const dailyRate = monthlyPrice / 31;
+        return Math.round(dailyRate * rentalDays);
+      }
+    }
+    const key = getInsuranceDurationKey(rentalDays);
+    return targetClass.insurance_prices[key] ?? null;
+  }, [rentalDays, targetClass?.insurance_prices]);
+
+  const theftCoverageFee = useMemo(() => targetClass?.theft_insurance ?? null, [targetClass]);
+
+  const notesValue = useMemo(() => {
+    if (!reservation?.notes) return '';
+    const cleaned = reservation.notes.replace(/Pay\.JP 決済経由で保存/g, '').trim();
+    return cleaned;
+  }, [reservation?.notes]);
 
   const heroImage = reservation?.vehicleThumbnailUrl || model?.mainImageUrl || '/image/vehicle-thumbnail-placeholder.svg';
   const licenseLabel = getRequiredLicenseLabel(model?.requiredLicense) ?? '未設定';
@@ -365,12 +435,6 @@ export default function RentalDetailPage() {
                             {reservation.paymentDate ? formatReservationDatetime(reservation.paymentDate) : '未登録'}
                           </dd>
                         </div>
-                        <div className="rounded-lg bg-gray-50 px-3 py-2">
-                          <dt className="text-xs text-gray-500">完了日時（保管のみ）</dt>
-                          <dd className="font-semibold text-gray-900">
-                            {reservation.rentalCompletedAt ? formatReservationDatetime(reservation.rentalCompletedAt) : '未設定'}
-                          </dd>
-                        </div>
                       </dl>
                     </div>
                   </div>
@@ -396,24 +460,29 @@ export default function RentalDetailPage() {
 
                 <section className="grid gap-6 lg:grid-cols-[1fr_1fr]">
                   <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-                    <h3 className="text-lg font-semibold text-gray-900">オプション・補償内容</h3>
+                    <div className="flex items-center justify-between gap-2">
+                      <h3 className="text-lg font-semibold text-gray-900">オプション・補償内容</h3>
+                      {classError ? <span className="text-xs text-red-600">{classError}</span> : null}
+                    </div>
                     <dl className="mt-4 grid gap-3">
                       <div className="rounded-lg bg-gray-50 px-3 py-2">
                         <dt className="text-xs text-gray-500">車両補償</dt>
                         <dd className="font-semibold text-gray-900">
-                          {renderValue(reservation.options?.vehicleCoverage)}
+                          {formatCoverageDetail(vehicleCoverageFee, rentalDays)}
                         </dd>
                       </div>
                       <div className="rounded-lg bg-gray-50 px-3 py-2">
                         <dt className="text-xs text-gray-500">盗難補償</dt>
                         <dd className="font-semibold text-gray-900">
-                          {renderValue(reservation.options?.theftCoverage)}
+                          {formatCoverageDetail(theftCoverageFee, rentalDays)}
                         </dd>
                       </div>
-                      <div className="rounded-lg bg-gray-50 px-3 py-2">
-                        <dt className="text-xs text-gray-500">備考</dt>
-                        <dd className="font-semibold text-gray-900">{renderValue(reservation.notes)}</dd>
-                      </div>
+                      {notesValue ? (
+                        <div className="rounded-lg bg-gray-50 px-3 py-2">
+                          <dt className="text-xs text-gray-500">備考</dt>
+                          <dd className="font-semibold text-gray-900">{notesValue}</dd>
+                        </div>
+                      ) : null}
                     </dl>
                   </div>
                   <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
