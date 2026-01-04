@@ -829,12 +829,6 @@ export default function MyPage() {
                               {reservation.paymentDate ? formatReservationDatetime(reservation.paymentDate) : '未登録'}
                             </dd>
                           </div>
-                          <div className="rounded-lg bg-gray-50 px-3 py-2">
-                            <dt className="text-xs text-gray-500">完了日時（保管のみ）</dt>
-                            <dd className="font-semibold text-gray-900">
-                              {reservation.rentalCompletedAt ? formatReservationDatetime(reservation.rentalCompletedAt) : '未設定'}
-                            </dd>
-                          </div>
                         </dl>
                         {reservation.keyboxPinCode ? (
                           <div className="mt-3 rounded-lg border border-sky-200 bg-sky-50 p-3">
