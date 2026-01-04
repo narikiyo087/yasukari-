@@ -1424,13 +1424,6 @@ export default function MyPage() {
                   <p>同じ内容を通知にも掲載していますので、確認をお願いします。</p>
                 </div>
               </div>
-              <button
-                type="button"
-                onClick={handleReturnClose}
-                className="rounded-full border border-red-500 bg-red-600 px-3 py-1 text-xs font-semibold text-white transition hover:border-red-600 hover:bg-red-700"
-              >
-                閉じる
-              </button>
             </div>
             <div className="bg-yellow-50 px-6 pb-6 pt-4">
               <div className="rounded-xl bg-yellow-100 px-4 py-3 text-sm text-red-900">
