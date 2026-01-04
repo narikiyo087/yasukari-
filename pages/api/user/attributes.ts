@@ -1,7 +1,9 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 
 import { COGNITO_ACCESS_TOKEN_COOKIE } from '../../../lib/cognitoServer';
+import { hasMailHistoryEntry } from '../../../lib/mailHistory';
 import { COUNTRY_OPTIONS, findCountryByDialCodePrefix } from '../../../lib/phoneNumber';
+import { deliverProvisionalRegistrationEmail } from '../../../lib/registrationEmails';
 
 const region = process.env.COGNITO_REGION ?? process.env.NEXT_PUBLIC_COGNITO_REGION ?? 'ap-northeast-1';
 const cognitoEndpoint = `https://cognito-idp.${region}.amazonaws.com/`;
@@ -18,6 +20,8 @@ type UpdatePayload = {
   handle?: string;
   locale?: string;
 };
+
+const REQUIRED_ATTRIBUTES = ['phone_number', 'custom:handle', 'custom:locale', 'name'] as const;
 
 const normalizePhoneNumber = (value: unknown): string => {
   if (typeof value !== 'string') return '';
@@ -40,6 +44,9 @@ const normalizePhoneNumber = (value: unknown): string => {
 };
 
 const normalizeText = (value: unknown): string => (typeof value === 'string' ? value.trim() : '');
+
+const hasAllRequiredAttributes = (attributes: Record<string, string>): boolean =>
+  REQUIRED_ATTRIBUTES.every((key) => normalizeText(attributes[key]));
 
 async function callCognito<T>(target: string, accessToken: string, body: Record<string, unknown>): Promise<T> {
   const response = await fetch(cognitoEndpoint, {
@@ -142,6 +149,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       await callCognito('AWSCognitoIdentityProviderService.UpdateUserAttributes', accessToken, {
         UserAttributes: attributes,
       });
+      const user = await callCognito<GetUserResponse>('AWSCognitoIdentityProviderService.GetUser', accessToken, {});
+      const updatedAttributes = mapAttributes(user.UserAttributes);
+      const email = normalizeText(updatedAttributes.email).toLowerCase();
+      const shouldSendCompletionEmail = email && hasAllRequiredAttributes(updatedAttributes);
+
+      if (shouldSendCompletionEmail) {
+        const alreadySent = await hasMailHistoryEntry({ to: email, category: '仮登録', status: 'sent' });
+        if (!alreadySent) {
+          await deliverProvisionalRegistrationEmail(email);
+        }
+      }
       return res.status(200).json({ message: 'ユーザー情報を更新しました。' });
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'ユーザー情報の更新に失敗しました。';
