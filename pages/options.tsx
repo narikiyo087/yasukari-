@@ -9,7 +9,6 @@ const accessoryTableColumns = [
   { label: "1週間", keys: ["1w"] },
   { label: "2週間", keys: ["2w"] },
   { label: "1ヶ月", keys: ["1m"] },
-  { label: "遅延1日につき", keys: ["late", "late_1d"] },
 ] as const;
 
 const formatAccessoryTablePrice = (price?: number) =>
