@@ -249,10 +249,15 @@ export default function ReservationDetailPage() {
     return dates;
   })();
 
-  const accessorySelections = ACCESSORY_LABELS.map((option) => {
-    const count = reservation?.accessories?.[option.key] ?? 0;
-    return { ...option, count };
-  }).filter((option) => option.count > 0);
+  const accessoryLabelMap = new Map(ACCESSORY_LABELS.map((option) => [option.key, option.label]));
+  const accessorySelections = Object.entries(reservation?.accessories ?? {})
+    .map(([key, value]) => {
+      const count = Number(value);
+      return count > 0
+        ? { key, label: accessoryLabelMap.get(key) ?? key, count }
+        : null;
+    })
+    .filter((option): option is { key: string; label: string; count: number } => option !== null);
 
   const formatPhoneNumber = (phone: string, countryCode?: string) =>
     formatDisplayPhoneNumberWithCountryCode(phone, countryCode) || "-";
@@ -496,6 +501,32 @@ export default function ReservationDetailPage() {
                     <dt>用品レンタル期間</dt>
                     <dd>
                       {formatDatetime(reservation.pickupAt)} → {formatDatetime(reservation.returnAt)}
+                    </dd>
+                  </div>
+                </dl>
+              </div>
+
+              <div className={styles.detailPanel}>
+                <div className={styles.detailHeader}>
+                  <h3 className={styles.detailTitle}>返却アンケート</h3>
+                </div>
+                <dl className={styles.detailGrid}>
+                  <div className={styles.detailItem}>
+                    <dt>総合評価</dt>
+                    <dd>
+                      {reservation.returnRating && reservation.returnRating > 0
+                        ? `${reservation.returnRating} / 5`
+                        : "未入力"}
+                    </dd>
+                  </div>
+                  <div className={styles.detailItem}>
+                    <dt>アンケート</dt>
+                    <dd>
+                      {reservation.returnSurvey ? (
+                        <div style={{ whiteSpace: "pre-line" }}>{reservation.returnSurvey}</div>
+                      ) : (
+                        "未入力"
+                      )}
                     </dd>
                   </div>
                 </dl>
