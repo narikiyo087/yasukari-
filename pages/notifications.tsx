@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 
 import Head from 'next/head';
 import Link from 'next/link';
-import { FaBell, FaToggleOff, FaToggleOn } from 'react-icons/fa';
+import { FaBell } from 'react-icons/fa';
 
 import styles from '../styles/Notifications.module.css';
 
@@ -51,7 +51,6 @@ export default function NotificationsPage() {
   const [notifications, setNotifications] = useState<NotificationItem[]>([]);
   const [settings, setSettings] = useState<NotificationSettings | null>(null);
   const [loading, setLoading] = useState(true);
-  const [savingSettings, setSavingSettings] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [authRequired, setAuthRequired] = useState(false);
   const [activeNotificationId, setActiveNotificationId] = useState<string | null>(null);
@@ -84,42 +83,6 @@ export default function NotificationsPage() {
     void fetchNotifications();
   }, []);
 
-  const toggleSetting = async (key: keyof NotificationSettings) => {
-    if (!settings) return;
-    const previous = settings;
-    const next = { ...settings, [key]: !settings[key] };
-    setSettings(next);
-    setSavingSettings(true);
-    setError(null);
-
-    try {
-      const response = await fetch('/api/notifications', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          receiveEmail: next.receiveEmail,
-          receiveSite: next.receiveSite,
-        }),
-      });
-
-      if (response.status === 401) {
-        setAuthRequired(true);
-        setError(AUTH_REQUIRED_MESSAGE);
-        setSettings(previous);
-        return;
-      }
-
-      const data = (await response.json()) as { settings?: NotificationSettings };
-      setSettings(data.settings ?? next);
-    } catch (updateError) {
-      console.error('Failed to update notification settings', updateError);
-      setSettings(previous);
-      setError('通知設定の更新に失敗しました。時間をおいて再度お試しください。');
-    } finally {
-      setSavingSettings(false);
-    }
-  };
-
   const siteNotifications = useMemo(
     () =>
       notifications
@@ -130,9 +93,6 @@ export default function NotificationsPage() {
 
   const siteNotificationDisabled = settings?.receiveSite === false;
   const visibleNotifications = siteNotificationDisabled ? [] : siteNotifications;
-  const unreadCount = visibleNotifications.filter((notice) => !notice.readAt).length;
-  const latestCreatedAt = siteNotifications[0]?.createdAt ?? '';
-  const mirroredEmails = notifications.filter((notice) => notice.channels.includes('email')).length;
   const activeNotification =
     visibleNotifications.find((notice) => notice.notificationId === activeNotificationId) ??
     visibleNotifications[0] ??
@@ -222,72 +182,6 @@ export default function NotificationsPage() {
             <h1 className={styles.title}>通知</h1>
           </div>
         </header>
-
-        <div className={styles.summaryGrid}>
-          <div className={styles.summaryCard}>
-            <p className={styles.summaryLabel}>未読</p>
-            <p className={styles.summaryValue}>{unreadCount}件</p>
-          </div>
-          <div className={styles.summaryCard}>
-            <p className={styles.summaryLabel}>通知件数</p>
-            <p className={styles.summaryValue}>{siteNotifications.length}件</p>
-            <p className={styles.summaryNote}>直近: {latestCreatedAt ? formatTimestamp(latestCreatedAt) : '—'}</p>
-          </div>
-          <div className={styles.summaryCard}>
-            <p className={styles.summaryLabel}>メール連携</p>
-            <p className={styles.summaryValue}>{mirroredEmails}件</p>
-            <p className={styles.summaryNote}>メール送信分も履歴に保存します。</p>
-          </div>
-        </div>
-
-        <div className={styles.settingsGrid}>
-          <div className={styles.settingsCard}>
-            <div className={styles.settingsHeader}>
-              <div>
-                <p className={styles.settingsLabel}>受信設定</p>
-                <h2 className={styles.settingsTitle}>メールとサイト通知の受信先</h2>
-                <p className={styles.settingsNote}>
-                  メールで送信した内容をそのまま通知欄に表示します。必要に応じてサイト通知の配信をオン・オフできます。
-                </p>
-              </div>
-              <span className={styles.statusPill}>{savingSettings ? '保存中…' : '最新状態'}</span>
-            </div>
-
-            <div className={styles.toggleList}>
-              <button
-                type="button"
-                onClick={() => toggleSetting('receiveSite')}
-                className={styles.toggleRow}
-                disabled={!settings || savingSettings}
-                aria-pressed={settings?.receiveSite ?? false}
-              >
-                <div>
-                  <p className={styles.toggleLabel}>サイト全体の通知</p>
-                  <p className={styles.toggleDescription}>ログイン中に通知ページへ同じ内容を表示します。</p>
-                </div>
-                <span className={styles.toggleIcon} aria-hidden="true">
-                  {settings?.receiveSite ? <FaToggleOn /> : <FaToggleOff />}
-                </span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => toggleSetting('receiveEmail')}
-                className={styles.toggleRow}
-                disabled={!settings || savingSettings}
-                aria-pressed={settings?.receiveEmail ?? false}
-              >
-                <div>
-                  <p className={styles.toggleLabel}>メール通知</p>
-                  <p className={styles.toggleDescription}>メール送信と同時に履歴へ保存します。</p>
-                </div>
-                <span className={styles.toggleIcon} aria-hidden="true">
-                  {settings?.receiveEmail ? <FaToggleOn /> : <FaToggleOff />}
-                </span>
-              </button>
-            </div>
-          </div>
-        </div>
 
         {error ? <div className={styles.alert}>{error}</div> : null}
 
