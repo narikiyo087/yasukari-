@@ -456,6 +456,7 @@ export default function MyPage() {
     if (Number.isNaN(returnDate.getTime())) return false;
     return Date.now() > returnDate.getTime();
   }, [activeReturnReservation]);
+  const extensionTargetReservationId = activeReturnReservation?.id ?? null;
   const shouldShowRentalActions = useMemo(() => {
     if (!activeReturnReservation) return false;
     if (activeReturnReservation.status === '予約受付完了') return true;
