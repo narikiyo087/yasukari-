@@ -4,6 +4,10 @@ import Head from 'next/head';
 import Link from 'next/link';
 import { FaBell } from 'react-icons/fa';
 
+import {
+  normalizeNotificationSettings,
+  shouldIncludeNotification,
+} from '../lib/notificationFilters';
 import styles from '../styles/Notifications.module.css';
 
 type NotificationChannel = 'email' | 'site';
@@ -11,10 +15,12 @@ type NotificationChannel = 'email' | 'site';
 type NotificationSettings = {
   receiveEmail: boolean;
   receiveSite: boolean;
+  receiveMarketing: boolean;
+  receiveBroadcast: boolean;
   updatedAt: string;
 };
 
-type NotificationSettingKey = 'receiveEmail' | 'receiveSite';
+type NotificationSettingKey = 'receiveEmail' | 'receiveSite' | 'receiveMarketing' | 'receiveBroadcast';
 
 type NotificationItem = {
   notificationId: string;
@@ -57,6 +63,7 @@ export default function NotificationsPage() {
   const [authRequired, setAuthRequired] = useState(false);
   const [activeNotificationId, setActiveNotificationId] = useState<string | null>(null);
   const [savingSettings, setSavingSettings] = useState(false);
+  const normalizedSettings = normalizeNotificationSettings(settings);
 
   useEffect(() => {
     const fetchNotifications = async () => {
@@ -89,9 +96,12 @@ export default function NotificationsPage() {
   const siteNotifications = useMemo(
     () =>
       notifications
-        .filter((notice) => notice.channels?.includes('site'))
+        .filter(
+          (notice) =>
+            notice.channels?.includes('site') && shouldIncludeNotification(notice.category, settings)
+        )
         .map((notice) => ({ ...notice, channels: uniqueChannels(notice.channels) })),
-    [notifications]
+    [notifications, settings]
   );
 
   const siteNotificationDisabled = settings?.receiveSite === false;
@@ -223,10 +233,113 @@ export default function NotificationsPage() {
           <div>
             <p className={styles.eyebrow}>Notifications</p>
             <h1 className={styles.title}>通知</h1>
+            <p className={styles.lead}>
+              メールと同じ内容をまとめて確認できます。レンタルの進行状況や期限のリマインドも届きます。
+            </p>
           </div>
         </header>
 
         {error ? <div className={styles.alert}>{error}</div> : null}
+
+        <div className={styles.settingsGrid}>
+          <div className={styles.settingsCard}>
+            <div className={styles.settingsHeader}>
+              <div>
+                <p className={styles.settingsLabel}>通知の種類</p>
+                <h2 className={styles.settingsTitle}>メールと同じ内容を表示</h2>
+                <p className={styles.settingsNote}>
+                  以下の通知が一覧に表示されます。メルマガ・クーポンは任意で表示できます。
+                </p>
+              </div>
+              <span className={styles.statusPill}>対象</span>
+            </div>
+            <ul className={styles.noticeList}>
+              <li className={styles.noticeListItem}>仮登録・本登録</li>
+              <li className={styles.noticeListItem}>レンタル完了・返却完了・延長申請</li>
+              <li className={styles.noticeListItem}>レンタル開始前日・レンタル直前の案内</li>
+              <li className={styles.noticeListItem}>返却期限の前日・当日のリマインド</li>
+              <li className={styles.noticeListItem}>レビューのお願い</li>
+              <li className={styles.noticeListItem}>返却期限を過ぎた場合の通知</li>
+              <li className={styles.noticeListItem}>メルマガ・クーポン（任意）</li>
+            </ul>
+          </div>
+          <div className={styles.settingsCard}>
+            <div className={styles.settingsHeader}>
+              <div>
+                <p className={styles.settingsLabel}>通知設定</p>
+                <h2 className={styles.settingsTitle}>表示と配信のオン・オフ</h2>
+                <p className={styles.settingsNote}>
+                  個別通知と全体通知の受け取り方法を設定できます。
+                </p>
+              </div>
+              <span className={styles.statusPill}>
+                {!settings ? '読み込み中' : savingSettings ? '保存中' : '設定可能'}
+              </span>
+            </div>
+            <div className={styles.toggleList}>
+              <button
+                type="button"
+                className={styles.toggleRow}
+                onClick={() => toggleSetting('receiveSite')}
+                disabled={savingSettings || !settings}
+              >
+                <div>
+                  <p className={styles.toggleLabel}>サイト通知</p>
+                  <p className={styles.toggleDescription}>メールと同じ内容を通知一覧に表示します。</p>
+                </div>
+                <span className={styles.toggleIcon}>
+                  {normalizedSettings.receiveSite ? 'オン' : 'オフ'}
+                </span>
+              </button>
+              <button
+                type="button"
+                className={styles.toggleRow}
+                onClick={() => toggleSetting('receiveEmail')}
+                disabled={savingSettings || !settings}
+              >
+                <div>
+                  <p className={styles.toggleLabel}>メール通知</p>
+                  <p className={styles.toggleDescription}>重要なお知らせをメールで受け取ります。</p>
+                </div>
+                <span className={styles.toggleIcon}>
+                  {normalizedSettings.receiveEmail ? 'オン' : 'オフ'}
+                </span>
+              </button>
+              <button
+                type="button"
+                className={styles.toggleRow}
+                onClick={() => toggleSetting('receiveBroadcast')}
+                disabled={savingSettings || !settings}
+              >
+                <div>
+                  <p className={styles.toggleLabel}>全体通知</p>
+                  <p className={styles.toggleDescription}>
+                    キャンペーンや全体向けのお知らせを表示します。
+                  </p>
+                </div>
+                <span className={styles.toggleIcon}>
+                  {normalizedSettings.receiveBroadcast ? 'オン' : 'オフ'}
+                </span>
+              </button>
+              <button
+                type="button"
+                className={styles.toggleRow}
+                onClick={() => toggleSetting('receiveMarketing')}
+                disabled={savingSettings || !settings}
+              >
+                <div>
+                  <p className={styles.toggleLabel}>メルマガ・クーポン</p>
+                  <p className={styles.toggleDescription}>
+                    メルマガやクーポンなどの案内を表示します。
+                  </p>
+                </div>
+                <span className={styles.toggleIcon}>
+                  {normalizedSettings.receiveMarketing ? 'オン' : 'オフ'}
+                </span>
+              </button>
+            </div>
+          </div>
+        </div>
 
         {authRequired ? (
           <div className={styles.emptyState}>

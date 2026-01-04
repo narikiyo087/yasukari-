@@ -43,9 +43,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   if (req.method === "PUT") {
-    const { receiveEmail, receiveSite } = (req.body ?? {}) as {
+    const { receiveEmail, receiveSite, receiveMarketing, receiveBroadcast } = (req.body ?? {}) as {
       receiveEmail?: unknown;
       receiveSite?: unknown;
+      receiveMarketing?: unknown;
+      receiveBroadcast?: unknown;
     };
 
     if (receiveEmail !== undefined && typeof receiveEmail !== "boolean") {
@@ -54,11 +56,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (receiveSite !== undefined && typeof receiveSite !== "boolean") {
       return res.status(400).json({ message: "receiveSite must be a boolean" });
     }
+    if (receiveMarketing !== undefined && typeof receiveMarketing !== "boolean") {
+      return res.status(400).json({ message: "receiveMarketing must be a boolean" });
+    }
+    if (receiveBroadcast !== undefined && typeof receiveBroadcast !== "boolean") {
+      return res.status(400).json({ message: "receiveBroadcast must be a boolean" });
+    }
 
     try {
       const settings = await saveUserNotificationSettings(userId, {
         receiveEmail: receiveEmail as boolean | undefined,
         receiveSite: receiveSite as boolean | undefined,
+        receiveMarketing: receiveMarketing as boolean | undefined,
+        receiveBroadcast: receiveBroadcast as boolean | undefined,
       });
       return res.status(200).json({ settings });
     } catch (error) {

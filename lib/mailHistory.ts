@@ -5,7 +5,25 @@ import { getDocumentClient } from "./dynamodb";
 
 export type MailHistoryStatus = "sent" | "failed" | "skipped";
 
-export type MailHistoryCategory = "仮登録" | "本登録" | "予約完了" | "レンタル延長" | "その他";
+export type MailHistoryCategory =
+  | "仮登録"
+  | "本登録"
+  | "予約完了"
+  | "レンタル完了"
+  | "返却完了"
+  | "延長申請"
+  | "レンタル延長"
+  | "レンタル前日"
+  | "レンタル直前"
+  | "返却前日"
+  | "返却当日"
+  | "返却期限"
+  | "返却期限超過"
+  | "レビュー依頼"
+  | "全体通知"
+  | "メルマガ"
+  | "クーポン"
+  | "その他";
 
 export type MailHistoryEntry = {
   id: string;
@@ -27,11 +45,28 @@ const sortByCreatedAtDesc = (entries: MailHistoryEntry[]): MailHistoryEntry[] =>
   );
 
 const toCategory = (value?: string): MailHistoryCategory => {
-  if (value === "仮登録" || value === "本登録" || value === "予約完了" || value === "レンタル延長") {
-    return value;
+  switch (value) {
+    case "仮登録":
+    case "本登録":
+    case "予約完了":
+    case "レンタル完了":
+    case "返却完了":
+    case "延長申請":
+    case "レンタル延長":
+    case "レンタル前日":
+    case "レンタル直前":
+    case "返却前日":
+    case "返却当日":
+    case "返却期限":
+    case "返却期限超過":
+    case "レビュー依頼":
+    case "全体通知":
+    case "メルマガ":
+    case "クーポン":
+      return value;
+    default:
+      return "その他";
   }
-
-  return "その他";
 };
 
 const normalizeRecipient = (recipient: string): string => recipient.trim().toLowerCase();

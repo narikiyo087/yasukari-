@@ -362,6 +362,19 @@
   color: rgba(51, 65, 85, 0.78);
 }
 
+.noticeList {
+  margin: 0;
+  padding-left: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  color: rgba(51, 65, 85, 0.78);
+}
+
+.noticeListItem {
+  font-size: 0.9rem;
+}
+
 .statusPill {
   align-self: flex-start;
   padding: 0.35rem 0.75rem;

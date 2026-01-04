@@ -21,6 +21,8 @@ export type UserNotificationRecord = {
 export type NotificationSettings = {
   receiveEmail: boolean;
   receiveSite: boolean;
+  receiveMarketing: boolean;
+  receiveBroadcast: boolean;
   updatedAt: string;
 };
 
@@ -40,6 +42,8 @@ const TABLE_NAME = process.env.USER_NOTIFICATIONS_TABLE ?? "UserNotifications";
 const toSettings = (item: Partial<SettingsItem> | undefined): NotificationSettings => ({
   receiveEmail: item?.receiveEmail ?? true,
   receiveSite: item?.receiveSite ?? true,
+  receiveMarketing: item?.receiveMarketing ?? false,
+  receiveBroadcast: item?.receiveBroadcast ?? true,
   updatedAt: item?.updatedAt ?? new Date(0).toISOString(),
 });
 
