@@ -291,7 +291,7 @@ export default function RentalExtensionPage() {
                     max={30}
                     value={extensionDays}
                     onChange={(event) => handleExtensionDaysChange(event.target.value)}
-                    className="w-full max-w-[160px] rounded-lg border border-gray-300 px-3 py-2 text-right text-sm"
+                    className="w-full max-w-[240px] rounded-xl border border-gray-300 bg-gray-50/70 px-4 py-3 text-right text-base font-semibold text-gray-900 shadow-inner transition focus:border-red-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-red-100"
                   />
                 </div>
                 <p className="mt-2 text-xs text-gray-500">
