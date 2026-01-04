@@ -451,6 +451,11 @@ export default function ReserveFlowStep3() {
                 </span>
                 <span>Apple Pay での支払いも選択できます。</span>
               </div>
+              <ul className="space-y-1 text-xs text-gray-500">
+                <li>※ Apple Pay は対応端末・ブラウザ（Safari）でのみ表示されます。</li>
+                <li>※ Apple Pay が表示されない場合は、クレジットカード決済をご利用ください。</li>
+                <li>※ ご利用環境により表示される決済方法が異なる場合があります。</li>
+              </ul>
               {payjpError ? (
                 <p className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{payjpError}</p>
               ) : null}
