@@ -14,6 +14,8 @@ type NotificationSettings = {
   updatedAt: string;
 };
 
+type NotificationSettingKey = 'receiveEmail' | 'receiveSite';
+
 type NotificationItem = {
   notificationId: string;
   subject: string;
@@ -54,6 +56,7 @@ export default function NotificationsPage() {
   const [error, setError] = useState<string | null>(null);
   const [authRequired, setAuthRequired] = useState(false);
   const [activeNotificationId, setActiveNotificationId] = useState<string | null>(null);
+  const [savingSettings, setSavingSettings] = useState(false);
 
   useEffect(() => {
     const fetchNotifications = async () => {
@@ -163,6 +166,46 @@ export default function NotificationsPage() {
         )
       );
       setError('通知の既読処理に失敗しました。時間をおいて再度お試しください。');
+    }
+  };
+
+  const toggleSetting = async (key: NotificationSettingKey) => {
+    if (!settings) return;
+    const nextValue = !settings[key];
+    const previousSettings = settings;
+
+    setSavingSettings(true);
+    setError(null);
+    setSettings({ ...settings, [key]: nextValue });
+
+    try {
+      const response = await fetch('/api/notifications', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ [key]: nextValue }),
+      });
+
+      if (response.status === 401) {
+        setAuthRequired(true);
+        setError(AUTH_REQUIRED_MESSAGE);
+        setSettings(previousSettings);
+        return;
+      }
+
+      if (!response.ok) {
+        throw new Error('Failed to update notification settings');
+      }
+
+      const data = (await response.json()) as { settings?: NotificationSettings };
+      if (data.settings) {
+        setSettings(data.settings);
+      }
+    } catch (updateError) {
+      console.error('Failed to update notification settings', updateError);
+      setSettings(previousSettings);
+      setError('通知設定の更新に失敗しました。時間をおいて再度お試しください。');
+    } finally {
+      setSavingSettings(false);
     }
   };
 
