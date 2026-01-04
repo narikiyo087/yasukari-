@@ -395,7 +395,7 @@ export default function ReserveFlowStep3() {
                   </span>
                   <span>{totalAmount.toLocaleString()}円</span>
                 </div>
-                <dl className="mt-3 grid grid-cols-2 gap-2 text-xs text-gray-600">
+                <dl className="mt-3 grid grid-cols-1 gap-2 text-xs text-gray-600 sm:grid-cols-2">
                   <div className="flex items-center justify-between rounded-lg bg-white px-3 py-2 shadow-sm ring-1 ring-gray-100">
                     <dt>用品・補償の内訳</dt>
                     <dd className="font-semibold text-gray-900">
