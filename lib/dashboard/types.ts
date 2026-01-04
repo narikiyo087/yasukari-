@@ -83,6 +83,7 @@ export type Vehicle = {
   storeId: string;
   publishStatus: PublishStatus;
   tags: string[];
+  autoAvailabilityInitialized?: boolean;
   rentalAvailability?: RentalAvailabilityMap;
   policyNumber1?: string;
   policyBranchNumber1?: string;

@@ -13,6 +13,7 @@ type Vehicle = {
   storeId: string;
   publishStatus: "ON" | "OFF";
   tags: string[];
+  autoAvailabilityInitialized?: boolean;
   rentalAvailability?: RentalAvailabilityMap;
   policyNumber1?: string;
   policyBranchNumber1?: string;
@@ -151,6 +152,7 @@ async function handlePost(
     storeId,
     publishStatus,
     tags,
+    autoAvailabilityInitialized,
     rentalAvailability,
     policyNumber1,
     policyBranchNumber1,
@@ -227,6 +229,9 @@ async function handlePost(
       storeId: storeId.trim(),
       publishStatus,
       tags: normalizedTags,
+      ...(autoAvailabilityInitialized !== undefined
+        ? { autoAvailabilityInitialized: Boolean(autoAvailabilityInitialized) }
+        : { autoAvailabilityInitialized: false }),
       ...(normalizedAvailability !== undefined
         ? { rentalAvailability: normalizedAvailability }
         : {}),
@@ -289,6 +294,7 @@ async function handlePut(
     storeId,
     publishStatus,
     tags,
+    autoAvailabilityInitialized,
     rentalAvailability,
     policyNumber1,
     policyBranchNumber1,
@@ -401,6 +407,10 @@ async function handlePut(
 
     if (normalizedAvailability !== undefined) {
       item.rentalAvailability = normalizedAvailability;
+    }
+
+    if (autoAvailabilityInitialized !== undefined) {
+      item.autoAvailabilityInitialized = Boolean(autoAvailabilityInitialized);
     }
 
     await client.send(
