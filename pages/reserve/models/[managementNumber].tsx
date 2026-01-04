@@ -297,13 +297,13 @@ export default function ReserveModelPage({
               <div className="rounded-xl border border-gray-100 bg-gray-50 p-4 shadow-sm">
                     <div className="flex flex-wrap items-center gap-3 mb-3">
                       <p className="text-xs font-semibold text-gray-900">カレンダーから選択</p>
-                      <div className="flex gap-2 text-[11px]">
+                      <div className="grid w-full grid-cols-2 gap-2 text-[11px] sm:w-auto sm:flex sm:flex-wrap sm:items-center sm:gap-2">
                         <span className="inline-flex items-center gap-1 rounded-full bg-red-100 px-2 py-1 text-red-700">
                           <span className="h-2 w-2 rounded-full bg-red-500" />出発日
                         </span>
-                      <span className="inline-flex items-center gap-1 rounded-full bg-blue-100 px-2 py-1 text-blue-700">
-                        <span className="h-2 w-2 rounded-full bg-blue-500" />返却予定日
-                      </span>
+                        <span className="inline-flex items-center gap-1 rounded-full bg-blue-100 px-2 py-1 text-blue-700">
+                          <span className="h-2 w-2 rounded-full bg-blue-500" />返却予定日
+                        </span>
                         <span className="inline-flex items-center gap-1 rounded-full bg-green-100 px-2 py-1 text-green-700">
                           <span className="h-2 w-2 rounded-full bg-green-500" />レンタル期間
                         </span>
