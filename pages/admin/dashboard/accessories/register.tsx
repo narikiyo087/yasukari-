@@ -12,6 +12,9 @@ const priceLabels: Record<AccessoryPriceKey, string> = {
   "2d": "2日間料金",
   "4d": "4日間料金",
   "1w": "1週間料金",
+  "2w": "2週間料金",
+  "1m": "1ヶ月料金",
+  extra24h: "追加料金24時間",
 };
 
 const createEmptyPriceState = (): Record<AccessoryPriceKey, string> => ({
@@ -19,6 +22,9 @@ const createEmptyPriceState = (): Record<AccessoryPriceKey, string> => ({
   "2d": "",
   "4d": "",
   "1w": "",
+  "2w": "",
+  "1m": "",
+  extra24h: "",
 });
 
 const parsePriceInput = (value: string): number | null | undefined => {
@@ -315,4 +321,4 @@ export default function AccessoryRegisterPage() {
   );
 }
 
-const PRICE_KEYS: AccessoryPriceKey[] = ["24h", "2d", "4d", "1w"];
+const PRICE_KEYS: AccessoryPriceKey[] = ["24h", "2d", "4d", "1w", "2w", "1m", "extra24h"];
