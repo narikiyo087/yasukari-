@@ -45,6 +45,21 @@ const getHelmetSelectedTotal = (selection: Record<string, number>) =>
     (total, key) => total + (selection[key] ?? 0),
     0
   );
+const getAccessoryPrice = (
+  accessory: Accessory | undefined,
+  priceKey: AccessoryPriceKey,
+  days: number
+) => {
+  if (!accessory?.prices) return undefined;
+  if (days > 31) {
+    const monthlyPrice = accessory.prices["1m"];
+    if (monthlyPrice != null) {
+      const dailyRate = monthlyPrice / 31;
+      return Math.round(dailyRate * days);
+    }
+  }
+  return accessory.prices[priceKey];
+};
 const getInsuranceDurationKey = (days: number): DurationPriceKey => {
   if (days <= 1) return "24h";
   if (days <= 2) return "2d";
@@ -341,14 +356,14 @@ export default function ReserveFlowStep2() {
 
     return ACCESSORY_DISPLAY_ORDER.map((option) => {
       const accessory = accessoryMap.get(option.label);
-      const price = accessory?.prices?.[rentalPriceKey];
+      const price = getAccessoryPrice(accessory, rentalPriceKey, rentalDays);
 
       return {
         ...option,
         price,
       };
     });
-  }, [accessories, rentalPriceKey]);
+  }, [accessories, rentalPriceKey, rentalDays]);
 
   const selectedAccessoryFee = useMemo(
     () =>
