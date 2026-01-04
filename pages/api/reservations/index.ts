@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 
-import { GetCommand } from "@aws-sdk/lib-dynamodb";
+import { GetCommand, PutCommand } from "@aws-sdk/lib-dynamodb";
 import { verifyCognitoIdToken, COGNITO_ID_TOKEN_COOKIE } from "../../../lib/cognitoServer";
 import { getDocumentClient } from "../../../lib/dynamodb";
 import { formatDateKey } from "../../../lib/dashboard/utils";
@@ -130,6 +130,29 @@ const normalizeRentalAvailability = (
     acc[date] = day;
     return acc;
   }, {});
+};
+
+const buildDateKeysInRange = (start: string, end: string): string[] => {
+  const startDate = new Date(start);
+  const endDate = new Date(end);
+
+  if (Number.isNaN(startDate.getTime()) || Number.isNaN(endDate.getTime())) {
+    return [];
+  }
+
+  const keys: string[] = [];
+  const cursor = new Date(startDate);
+  while (cursor <= endDate) {
+    keys.push(formatDateKey(cursor));
+    cursor.setDate(cursor.getDate() + 1);
+  }
+
+  return keys;
+};
+
+const buildRenterNote = (memberName: string): string | undefined => {
+  const normalized = memberName.trim();
+  return normalized.length > 0 ? normalized : undefined;
 };
 
 const isReservationRangeAvailable = (
@@ -272,6 +295,34 @@ export default async function handler(
         },
         notes: body.notes,
       });
+
+      const reservationDateKeys = buildDateKeysInRange(
+        reservation.pickupAt,
+        reservation.returnAt
+      );
+
+      if (reservationDateKeys.length > 0) {
+        const renterNote = buildRenterNote(reservation.memberName ?? "");
+        const updatedAvailability = { ...(normalizedAvailability ?? {}) };
+
+        reservationDateKeys.forEach((key) => {
+          updatedAvailability[key] = renterNote
+            ? { status: "RENTED", note: renterNote }
+            : { status: "RENTED" };
+        });
+
+        await client.send(
+          new PutCommand({
+            TableName: VEHICLES_TABLE,
+            Item: {
+              ...vehicle,
+              rentalAvailability: updatedAvailability,
+              updatedAt: new Date().toISOString(),
+            },
+            ConditionExpression: "attribute_exists(managementNumber)",
+          })
+        );
+      }
 
       if (reservation.storeName === "三ノ輪店") {
         try {
