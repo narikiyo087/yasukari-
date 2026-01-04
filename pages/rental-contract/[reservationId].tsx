@@ -16,6 +16,7 @@ type RegistrationResponse = {
 
 const PLACEHOLDER = "＊＊＊＊＊＊＊＊";
 const PLACEHOLDER_SHORT = "＊＊＊";
+const HELMET_ACCESSORY_KEYS = ["halfCap", "jetHelmet", "brandHelmet"] as const;
 
 const displayValue = (value?: string | null, fallback = PLACEHOLDER) => {
   if (!value) return fallback;
@@ -81,6 +82,14 @@ const formatYen = (value?: string | null) => {
   if (Number.isNaN(numeric)) return `${value}円`;
   return `${numeric.toLocaleString("ja-JP")}円`;
 };
+
+const sumAccessoryCount = (
+  accessories: Record<string, number> | undefined,
+  keys: readonly string[]
+) =>
+  keys.reduce((total, key) => total + (accessories?.[key] ?? 0), 0);
+
+const formatAccessoryCount = (count: number) => (count > 0 ? `${count}個` : "なし");
 
 export default function RentalContractPage() {
   const router = useRouter();
@@ -180,6 +189,10 @@ export default function RentalContractPage() {
       </p>
     );
   }
+
+  const accessorySelections = reservation.accessories ?? {};
+  const helmetCount = sumAccessoryCount(accessorySelections, HELMET_ACCESSORY_KEYS);
+  const gloveCount = accessorySelections.glove ?? 0;
 
   return (
     <>
@@ -349,19 +362,19 @@ export default function RentalContractPage() {
             </div>
             <div className={styles.fieldRow}>
               <span className={styles.fieldLabel}>ヘルメット</span>
-              <span>なし</span>
+              <span>{formatAccessoryCount(helmetCount)}</span>
             </div>
             <div className={styles.fieldRow}>
               <span className={styles.fieldLabel}>グローブ</span>
-              <span>なし</span>
+              <span>{formatAccessoryCount(gloveCount)}</span>
             </div>
             <div className={styles.fieldRow}>
               <span className={styles.fieldLabel}>車両指定</span>
-              <span>{PLACEHOLDER_SHORT}</span>
+              <span>{displayValue(reservation.vehicleCode, PLACEHOLDER_SHORT)}</span>
             </div>
             <div className={styles.fieldRow}>
               <span className={styles.fieldLabel}>その他</span>
-              <span>{PLACEHOLDER_SHORT}</span>
+              <span>{displayValue(reservation.refundNote, PLACEHOLDER_SHORT)}</span>
             </div>
           </div>
         </section>
