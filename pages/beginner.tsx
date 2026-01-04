@@ -84,14 +84,6 @@ export default function BeginnerGuidePage() {
           <p className="mt-3 max-w-xl text-sm text-slate-600 sm:text-base">
             ご予約から返却までの流れを、ステップごとにわかりやすくまとめました。
           </p>
-          <div className="mt-5 flex flex-wrap gap-3">
-            <Link
-              href="/contact"
-              className="rounded-full bg-amber-500 px-5 py-2 text-xs font-semibold text-white shadow-sm transition hover:bg-amber-400"
-            >
-              お問い合わせ
-            </Link>
-          </div>
         </section>
 
         <section className="grid gap-4 sm:grid-cols-3">
