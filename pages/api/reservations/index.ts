@@ -1,6 +1,9 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 
+import { GetCommand } from "@aws-sdk/lib-dynamodb";
 import { verifyCognitoIdToken, COGNITO_ID_TOKEN_COOKIE } from "../../../lib/cognitoServer";
+import { getDocumentClient } from "../../../lib/dynamodb";
+import { formatDateKey } from "../../../lib/dashboard/utils";
 import {
   createReservation,
   fetchAllReservations,
@@ -35,6 +38,140 @@ type CreateReservationRequest = {
   couponCode?: string;
   couponDiscount?: number;
   notes?: string;
+};
+
+type RentalAvailabilityStatus =
+  | "AVAILABLE"
+  | "UNAVAILABLE"
+  | "MAINTENANCE"
+  | "RENTED"
+  | "RENTAL_COMPLETED";
+
+type RentalAvailabilityDay = {
+  status: RentalAvailabilityStatus;
+  note?: string;
+};
+
+type RentalAvailabilityMap = Record<string, RentalAvailabilityDay>;
+
+type VehicleRecord = {
+  managementNumber: string;
+  rentalAvailability?: RentalAvailabilityMap;
+};
+
+const VEHICLES_TABLE = process.env.VEHICLES_TABLE ?? "Vehicles";
+
+const isValidRentalStatus = (value: unknown): value is RentalAvailabilityStatus =>
+  value === "AVAILABLE" ||
+  value === "UNAVAILABLE" ||
+  value === "MAINTENANCE" ||
+  value === "RENTED" ||
+  value === "RENTAL_COMPLETED";
+
+const normalizeRentalAvailabilityDay = (
+  value: unknown
+): RentalAvailabilityDay | null => {
+  if (Array.isArray(value)) {
+    if (value.length === 0) {
+      return null;
+    }
+
+    const [firstSlot] = value as Record<string, unknown>[];
+    const noteCandidate =
+      typeof firstSlot?.note === "string" && firstSlot.note.trim().length > 0
+        ? firstSlot.note.trim()
+        : undefined;
+
+    return { status: "AVAILABLE", ...(noteCandidate ? { note: noteCandidate } : {}) };
+  }
+
+  if (typeof value !== "object" || value === null) {
+    return null;
+  }
+
+  const { status, note } = value as Record<string, unknown>;
+  if (!isValidRentalStatus(status)) {
+    return null;
+  }
+
+  const trimmedNote =
+    typeof note === "string" && note.trim().length > 0 ? note.trim() : undefined;
+
+  return { status, ...(trimmedNote ? { note: trimmedNote } : {}) } satisfies RentalAvailabilityDay;
+};
+
+const normalizeRentalAvailability = (
+  value: unknown
+): RentalAvailabilityMap | undefined => {
+  if (value === undefined) {
+    return undefined;
+  }
+
+  if (typeof value !== "object" || value === null) {
+    return undefined;
+  }
+
+  const normalizedEntries = Object.entries(value as Record<string, unknown>)
+    .map(([date, day]): [string, RentalAvailabilityDay] | null => {
+      if (typeof date !== "string") {
+        return null;
+      }
+
+      const normalizedDay = normalizeRentalAvailabilityDay(day);
+      if (!normalizedDay) {
+        return null;
+      }
+
+      return [date, normalizedDay];
+    })
+    .filter((entry): entry is [string, RentalAvailabilityDay] => entry !== null);
+
+  return normalizedEntries.reduce<RentalAvailabilityMap>((acc, [date, day]) => {
+    acc[date] = day;
+    return acc;
+  }, {});
+};
+
+const isReservationRangeAvailable = (
+  availabilityMap: RentalAvailabilityMap | undefined,
+  pickupAt: string,
+  returnAt: string
+): boolean => {
+  if (!availabilityMap) {
+    return false;
+  }
+
+  const pickupDateTime = new Date(pickupAt);
+  const returnDateTime = new Date(returnAt);
+  if (
+    Number.isNaN(pickupDateTime.getTime()) ||
+    Number.isNaN(returnDateTime.getTime())
+  ) {
+    return false;
+  }
+
+  const startDate = new Date(
+    pickupDateTime.getFullYear(),
+    pickupDateTime.getMonth(),
+    pickupDateTime.getDate()
+  );
+  const endDate = new Date(
+    returnDateTime.getFullYear(),
+    returnDateTime.getMonth(),
+    returnDateTime.getDate()
+  );
+  if (startDate > endDate) {
+    return false;
+  }
+
+  for (const cursor = new Date(startDate); cursor <= endDate; cursor.setDate(cursor.getDate() + 1)) {
+    const key = formatDateKey(cursor);
+    if (availabilityMap[key]?.status !== "AVAILABLE") {
+      return false;
+    }
+  }
+
+  return true;
 };
 
 export default async function handler(
@@ -79,6 +216,34 @@ export default async function handler(
       const existingReservation = await fetchReservationById(body.paymentId!);
       if (existingReservation) {
         return res.status(200).json({ reservations: [existingReservation] });
+      }
+
+      const client = getDocumentClient();
+      const vehicleResult = await client.send(
+        new GetCommand({
+          TableName: VEHICLES_TABLE,
+          Key: { managementNumber: body.vehicleCode },
+        })
+      );
+      const vehicle = vehicleResult.Item as VehicleRecord | undefined;
+
+      if (!vehicle) {
+        return res.status(404).json({ error: "車両情報が見つかりませんでした。" });
+      }
+
+      const normalizedAvailability = normalizeRentalAvailability(
+        vehicle.rentalAvailability
+      );
+      const isAvailable = isReservationRangeAvailable(
+        normalizedAvailability,
+        body.pickupAt!,
+        body.returnAt!
+      );
+
+      if (!isAvailable) {
+        return res.status(409).json({
+          error: "レンタル中または貸出不可のため予約できません。レンタル可の期間のみ予約可能です。",
+        });
       }
 
       let reservation = await createReservation({
