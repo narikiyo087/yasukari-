@@ -5,7 +5,7 @@ import { getDocumentClient } from "./dynamodb";
 
 export type MailHistoryStatus = "sent" | "failed" | "skipped";
 
-export type MailHistoryCategory = "仮登録" | "本登録" | "予約完了" | "その他";
+export type MailHistoryCategory = "仮登録" | "本登録" | "予約完了" | "レンタル延長" | "その他";
 
 export type MailHistoryEntry = {
   id: string;
@@ -27,7 +27,7 @@ const sortByCreatedAtDesc = (entries: MailHistoryEntry[]): MailHistoryEntry[] =>
   );
 
 const toCategory = (value?: string): MailHistoryCategory => {
-  if (value === "仮登録" || value === "本登録" || value === "予約完了") {
+  if (value === "仮登録" || value === "本登録" || value === "予約完了" || value === "レンタル延長") {
     return value;
   }
 
