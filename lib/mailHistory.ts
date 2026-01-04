@@ -34,6 +34,22 @@ const toCategory = (value?: string): MailHistoryCategory => {
   return "その他";
 };
 
+const normalizeRecipient = (recipient: string): string => recipient.trim().toLowerCase();
+
+const matchesEntry = (
+  entry: MailHistoryEntry,
+  to: string,
+  category: MailHistoryCategory,
+  status?: MailHistoryStatus
+): boolean => {
+  const normalizedTo = normalizeRecipient(to);
+  const normalizedEntryTo = normalizeRecipient(entry.to);
+  if (normalizedEntryTo !== normalizedTo) return false;
+  if (entry.category !== category) return false;
+  if (status && entry.status !== status) return false;
+  return true;
+};
+
 async function saveToDynamo(record: MailHistoryEntry): Promise<void> {
   const client = getDocumentClient();
   await client.send(
@@ -88,5 +104,51 @@ export async function getMailHistory(limit = 200): Promise<MailHistoryEntry[]> {
   } catch (error) {
     console.error(`[mailHistory] Failed to load mail history from ${TABLE_NAME}`, error);
     return inMemoryHistory.slice(0, effectiveLimit);
+  }
+}
+
+export async function hasMailHistoryEntry(options: {
+  to: string;
+  category: MailHistoryCategory;
+  status?: MailHistoryStatus;
+}): Promise<boolean> {
+  const { to, category, status } = options;
+
+  if (inMemoryHistory.some((entry) => matchesEntry(entry, to, category, status))) {
+    return true;
+  }
+
+  try {
+    const client = getDocumentClient();
+    const filterParts = ['#to = :to', '#category = :category'];
+    const values: Record<string, string> = {
+      ':to': normalizeRecipient(to),
+      ':category': category,
+    };
+
+    if (status) {
+      filterParts.push('#status = :status');
+      values[':status'] = status;
+    }
+
+    const response = await client.send(
+      new ScanCommand({
+        TableName: TABLE_NAME,
+        FilterExpression: filterParts.join(' AND '),
+        ExpressionAttributeNames: {
+          '#to': 'to',
+          '#category': 'category',
+          '#status': 'status',
+        },
+        ExpressionAttributeValues: values,
+        Limit: 1,
+      })
+    );
+
+    const entries = (response.Items ?? []) as MailHistoryEntry[];
+    return entries.length > 0;
+  } catch (error) {
+    console.error(`[mailHistory] Failed to check mail history in ${TABLE_NAME}`, error);
+    return false;
   }
 }

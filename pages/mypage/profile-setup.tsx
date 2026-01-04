@@ -257,11 +257,11 @@ const ProfileSetupPage: NextPage = () => {
                 基本情報を編集するボタンを押すと更新できます
               </div>
             ) : (
-              <div className="flex items-start gap-3 rounded-xl border-2 border-amber-300 bg-amber-50 px-4 py-3 text-sm font-semibold text-amber-900 shadow-sm">
+              <div className="flex items-start gap-3 rounded-xl border-2 border-red-300 bg-red-50 px-4 py-3 text-sm font-semibold text-red-700 shadow-sm">
                 <span aria-hidden className="text-lg">⚠️</span>
                 <p className="leading-relaxed">
                   未入力の項目があります。<br />
-                  すべて入力して本登録を完了してください。
+                  すべて入力して仮登録を完了してください。
                 </p>
               </div>
             )}
