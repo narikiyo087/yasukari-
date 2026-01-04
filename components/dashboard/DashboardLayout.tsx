@@ -140,6 +140,10 @@ const NAV_ITEMS: NavItem[] = [
     })),
   },
   {
+    label: "ハイシーズン設定",
+    href: `${ADMIN_DASHBOARD_ROOT}/high-season-manager`,
+  },
+  {
     label: "クーポン管理",
     href: `${ADMIN_DASHBOARD_ROOT}/coupon-rules`,
   },
