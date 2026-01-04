@@ -38,6 +38,7 @@ type CreateReservationRequest = {
   couponCode?: string;
   couponDiscount?: number;
   notes?: string;
+  accessories?: Record<string, number>;
 };
 
 type RentalAvailabilityStatus =
@@ -60,6 +61,27 @@ type VehicleRecord = {
 };
 
 const VEHICLES_TABLE = process.env.VEHICLES_TABLE ?? "Vehicles";
+
+const normalizeAccessorySelection = (
+  value: unknown
+): Record<string, number> | undefined => {
+  if (!value || typeof value !== "object") {
+    return undefined;
+  }
+
+  const entries = Object.entries(value as Record<string, unknown>).reduce<Record<string, number>>(
+    (acc, [key, raw]) => {
+      const parsed = typeof raw === "number" ? raw : typeof raw === "string" ? Number(raw) : NaN;
+      if (!Number.isNaN(parsed) && parsed > 0) {
+        acc[key] = parsed;
+      }
+      return acc;
+    },
+    {}
+  );
+
+  return Object.keys(entries).length > 0 ? entries : undefined;
+};
 
 const isValidRentalStatus = (value: unknown): value is RentalAvailabilityStatus =>
   value === "AVAILABLE" ||
@@ -257,6 +279,7 @@ export default async function handler(
       const normalizedAvailability = normalizeRentalAvailability(
         vehicle.rentalAvailability
       );
+      const accessories = normalizeAccessorySelection(body.accessories);
       const isAvailable = isReservationRangeAvailable(
         normalizedAvailability,
         body.pickupAt!,
@@ -293,6 +316,7 @@ export default async function handler(
           vehicleCoverage: "",
           theftCoverage: "",
         },
+        accessories,
         notes: body.notes,
       });
 
