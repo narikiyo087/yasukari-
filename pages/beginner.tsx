@@ -105,7 +105,7 @@ export default function BeginnerGuidePage() {
           ].map((item) => (
             <div
               key={item.title}
-              className="rounded-2xl border border-white bg-white px-4 py-6 text-sm shadow-sm sm:px-6"
+              className="rounded-2xl border border-white bg-white px-4 py-4 text-sm shadow-sm sm:px-6 sm:py-5"
             >
               <p className="text-xs font-semibold uppercase tracking-widest text-slate-400">
                 {item.title}
