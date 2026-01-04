@@ -1,7 +1,6 @@
 import React from "react";
 import Link from "next/link";
 import {
-  FaFacebookF,
   FaXTwitter,
   FaInstagram,
   FaYoutube,
@@ -97,11 +96,6 @@ export default function FooterEn() {
                 </Link>
               </li>
               <li>
-                <Link href="/shipping" className="hover:underline">
-                  Shipping & returns
-                </Link>
-              </li>
-              <li>
                 <Link href="/maintenance" className="hover:underline">
                   Maintenance
                 </Link>
@@ -121,19 +115,16 @@ export default function FooterEn() {
             <h4 className="font-bold mb-2">SNS & Videos</h4>
             <ul className="space-y-2">
               <li className="flex items-center gap-2">
-                <FaFacebookF /> <a href="#" className="hover:underline">Facebook</a>
+                <FaXTwitter /> <a href="https://x.com/yasukari_819" className="hover:underline">X (Twitter)</a>
               </li>
               <li className="flex items-center gap-2">
-                <FaXTwitter /> <a href="#" className="hover:underline">X (Twitter)</a>
+                <FaInstagram /> <a href="https://www.instagram.com/yasukari_819" className="hover:underline">Instagram</a>
               </li>
               <li className="flex items-center gap-2">
-                <FaInstagram /> <a href="#" className="hover:underline">Instagram</a>
+                <FaYoutube /> <a href="https://www.youtube.com/@yasukari_819" className="hover:underline">YouTube</a>
               </li>
               <li className="flex items-center gap-2">
-                <FaYoutube /> <a href="#" className="hover:underline">YouTube</a>
-              </li>
-              <li className="flex items-center gap-2">
-                <FaLine /> <a href="#" className="hover:underline">LINE Official</a>
+                <FaLine /> <a href="https://line.me/R/ti/p/@yasukari_819" className="hover:underline">LINE Official</a>
               </li>
             </ul>
           </div>
