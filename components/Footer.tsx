@@ -59,7 +59,7 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/support-policy" className="hover:underline">
+                <Link href="/contact" className="hover:underline">
                   お問い合わせ・サポートポリシー
                 </Link>
               </li>
