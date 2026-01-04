@@ -1,11 +1,6 @@
 import React from "react";
 import Link from "next/link";
-import {
-  FaXTwitter,
-  FaInstagram,
-  FaYoutube,
-  FaLine,
-} from "react-icons/fa6";
+import { FaInstagram } from "react-icons/fa6";
 
 export default function Footer() {
   return (
@@ -67,7 +62,6 @@ export default function Footer() {
 
           {/* サービス案内 + SNS */}
           <div>
-            <h4 className="font-bold mb-2">サービス案内</h4>
             <ul className="space-y-1 mb-4">
               <li>
                 <Link href="/products" className="hover:underline">
@@ -90,11 +84,6 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/maintenance" className="hover:underline">
-                  メンテナンス体制について
-                </Link>
-              </li>
-              <li>
                 <Link href="/stores" className="hover:underline">
                   店舗一覧
                 </Link>
@@ -106,19 +95,9 @@ export default function Footer() {
                 </Link>
               </li>
             </ul>
-            <h4 className="font-bold mb-2">SNS・動画</h4>
             <ul className="space-y-2">
               <li className="flex items-center gap-2">
-                <FaXTwitter /> <a href="https://x.com/yasukari_819" className="hover:underline">X (Twitter)</a>
-              </li>
-              <li className="flex items-center gap-2">
                 <FaInstagram /> <a href="https://www.instagram.com/yasukari_819" className="hover:underline">Instagram</a>
-              </li>
-              <li className="flex items-center gap-2">
-                <FaYoutube /> <a href="https://www.youtube.com/@yasukari_819" className="hover:underline">YouTube</a>
-              </li>
-              <li className="flex items-center gap-2">
-                <FaLine /> <a href="https://line.me/R/ti/p/@yasukari_819" className="hover:underline">LINE公式</a>
               </li>
             </ul>
           </div>
