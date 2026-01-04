@@ -39,6 +39,21 @@ const HIGH_SEASON_FEE_PER_DAY = 550;
 const formatAccessoryPrice = (price?: number) => `¥${(price ?? 0).toLocaleString()}`;
 const formatProtectionPrice = (price?: number) =>
   price == null ? "Calculating" : `¥${price.toLocaleString()}`;
+const getAccessoryPrice = (
+  accessory: Accessory | undefined,
+  priceKey: AccessoryPriceKey,
+  days: number
+) => {
+  if (!accessory?.prices) return undefined;
+  if (days > 31) {
+    const monthlyPrice = accessory.prices["1m"];
+    if (monthlyPrice != null) {
+      const dailyRate = monthlyPrice / 31;
+      return Math.round(dailyRate * days);
+    }
+  }
+  return accessory.prices[priceKey];
+};
 const formatDateKey = (date: Date): string => {
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, "0");
@@ -321,14 +336,14 @@ export default function ReserveFlowStep2() {
 
     return ACCESSORY_DISPLAY_ORDER.map((option) => {
       const accessory = accessoryMap.get(option.label);
-      const price = accessory?.prices?.[rentalPriceKey];
+      const price = getAccessoryPrice(accessory, rentalPriceKey, rentalDays);
 
       return {
         ...option,
         price,
       };
     });
-  }, [accessories, rentalPriceKey]);
+  }, [accessories, rentalPriceKey, rentalDays]);
 
   const selectedAccessoryFee = useMemo(
     () =>
