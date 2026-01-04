@@ -3,7 +3,13 @@ import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
 
-import type { Accessory, AccessoryPriceKey } from "../../../../lib/dashboard/types";
+import type {
+  Accessory,
+  AccessoryPriceKey,
+  BikeClass,
+  BikeModel,
+  DurationPriceKey,
+} from "../../../../lib/dashboard/types";
 
 type AddOn = {
   key: string;
@@ -11,9 +17,9 @@ type AddOn = {
   price?: number;
 };
 
-const vehicleProtectionOptions: AddOn[] = [
-  { key: "vehicle", label: "Vehicle damage cover", price: 1650 },
-  { key: "theft", label: "Theft cover", price: 1100 },
+const PROTECTION_OPTION_DEFINITIONS: Array<{ key: string; label: string }> = [
+  { key: "vehicle", label: "Vehicle damage cover" },
+  { key: "theft", label: "Theft cover" },
 ];
 
 const ACCESSORY_DISPLAY_ORDER: Array<{ key: string; label: string }> = [
@@ -30,6 +36,16 @@ const defaultFees = {
 };
 
 const formatAccessoryPrice = (price?: number) => `¥${(price ?? 0).toLocaleString()}`;
+const formatProtectionPrice = (price?: number) =>
+  price == null ? "Calculating" : `¥${price.toLocaleString()}`;
+const getInsuranceDurationKey = (days: number): DurationPriceKey => {
+  if (days <= 1) return "24h";
+  if (days <= 2) return "2d";
+  if (days <= 4) return "4d";
+  if (days <= 7) return "1w";
+  if (days <= 14) return "2w";
+  return "1m";
+};
 
 export default function ReserveFlowStep2() {
   const router = useRouter();
@@ -47,9 +63,15 @@ export default function ReserveFlowStep2() {
   const [returnTime, setReturnTime] = useState("10:00");
   const [managementNumber, setManagementNumber] = useState("");
   const [couponCode, setCouponCode] = useState("");
+  const [vehicleModelId, setVehicleModelId] = useState<number | null>(null);
+  const [insurancePrices, setInsurancePrices] = useState<
+    BikeClass["insurance_prices"] | null
+  >(null);
+  const [theftInsurance, setTheftInsurance] = useState<number | null>(null);
+  const [protectionError, setProtectionError] = useState<string | null>(null);
 
   const [protectionSelection, setProtectionSelection] = useState(() =>
-    vehicleProtectionOptions.reduce<Record<string, boolean>>((acc, option) => {
+    PROTECTION_OPTION_DEFINITIONS.reduce<Record<string, boolean>>((acc, option) => {
       acc[option.key] = true;
       return acc;
     }, {})
@@ -156,12 +178,56 @@ export default function ReserveFlowStep2() {
     return "1w";
   }, [pickupDate, pickupTime, returnDate, returnTime]);
 
+  const rentalDays = useMemo(() => {
+    const pickup = pickupTime ? `${pickupTime}:00` : "00:00:00";
+    const returnAt = returnTime ? `${returnTime}:00` : "00:00:00";
+
+    const pickupDateTime = new Date(`${pickupDate}T${pickup}`);
+    const returnDateTime = new Date(`${returnDate}T${returnAt}`);
+
+    const diffMs = returnDateTime.getTime() - pickupDateTime.getTime();
+    if (Number.isNaN(diffMs) || diffMs <= 0) {
+      return 1;
+    }
+
+    const hours = diffMs / (1000 * 60 * 60);
+    return Math.max(1, Math.ceil(hours / 24));
+  }, [pickupDate, pickupTime, returnDate, returnTime]);
+
+  const vehicleInsuranceFee = useMemo(() => {
+    if (!insurancePrices) return undefined;
+
+    if (rentalDays > 31) {
+      const monthlyPrice = insurancePrices["1m"];
+      if (monthlyPrice != null) {
+        const dailyRate = monthlyPrice / 31;
+        return Math.round(dailyRate * rentalDays);
+      }
+    }
+
+    const key = getInsuranceDurationKey(rentalDays);
+    return insurancePrices[key];
+  }, [insurancePrices, rentalDays]);
+
+  const theftInsuranceFee = useMemo(
+    () => (typeof theftInsurance === "number" ? theftInsurance : undefined),
+    [theftInsurance]
+  );
+
+  const protectionOptions = useMemo<AddOn[]>(
+    () => [
+      { key: "vehicle", label: "Vehicle damage cover", price: vehicleInsuranceFee },
+      { key: "theft", label: "Theft cover", price: theftInsuranceFee },
+    ],
+    [theftInsuranceFee, vehicleInsuranceFee]
+  );
+
   const selectedProtectionFee = useMemo(
     () =>
-      vehicleProtectionOptions.reduce((total, option) => {
+      protectionOptions.reduce((total, option) => {
         return protectionSelection[option.key] ? total + (option.price ?? 0) : total;
       }, 0),
-    [protectionSelection]
+    [protectionOptions, protectionSelection]
   );
 
   const accessoryOptions = useMemo<AddOn[]>(() => {
@@ -215,6 +281,101 @@ const returnLabel = formatDateLabel(returnDate, "December 27, 2025");
     setAccessorySelection((prev) => ({ ...prev, [key]: !prev[key] }));
   };
 
+  useEffect(() => {
+    if (!managementNumber) {
+      setVehicleModelId(null);
+      setProtectionError(null);
+      return;
+    }
+
+    const controller = new AbortController();
+
+    const loadVehicle = async () => {
+      try {
+        const vehicleResponse = await fetch(`/api/vehicles/${managementNumber}`, {
+          signal: controller.signal,
+        });
+
+        if (!vehicleResponse.ok) {
+          throw new Error("Failed to load vehicle");
+        }
+
+        const vehicleData = (await vehicleResponse.json()) as { modelId?: number };
+        if (!vehicleData.modelId) {
+          throw new Error("Vehicle model not found");
+        }
+
+        setVehicleModelId(vehicleData.modelId);
+        setProtectionError(null);
+      } catch (error) {
+        if (controller.signal.aborted) return;
+        console.error("Failed to load vehicle", error);
+        setVehicleModelId(null);
+        setProtectionError("Failed to load protection pricing.");
+      }
+    };
+
+    void loadVehicle();
+
+    return () => controller.abort();
+  }, [managementNumber]);
+
+  useEffect(() => {
+    if (!vehicleModelId) {
+      setInsurancePrices(null);
+      setTheftInsurance(null);
+      return;
+    }
+
+    const controller = new AbortController();
+
+    const loadProtectionPricing = async () => {
+      try {
+        const [modelsResponse, classesResponse] = await Promise.all([
+          fetch("/api/bike-models", { signal: controller.signal }),
+          fetch("/api/bike-classes", { signal: controller.signal }),
+        ]);
+
+        if (!modelsResponse.ok || !classesResponse.ok) {
+          throw new Error("Failed to load bike classes");
+        }
+
+        const models = (await modelsResponse.json()) as BikeModel[];
+        const classes = (await classesResponse.json()) as BikeClass[];
+
+        const targetModel = models.find((model) => model.modelId === vehicleModelId);
+        if (!targetModel) {
+          throw new Error("Bike model not found");
+        }
+
+        const targetClass = classes.find(
+          (bikeClass) => bikeClass.classId === targetModel.classId
+        );
+        if (!targetClass) {
+          throw new Error("Bike class not found");
+        }
+
+        setInsurancePrices(targetClass.insurance_prices ?? null);
+        setTheftInsurance(
+          typeof targetClass.theft_insurance === "number"
+            ? targetClass.theft_insurance
+            : null
+        );
+        setProtectionError(null);
+      } catch (error) {
+        if (controller.signal.aborted) return;
+        console.error("Failed to load protection pricing", error);
+        setInsurancePrices(null);
+        setTheftInsurance(null);
+        setProtectionError("Failed to load protection pricing.");
+      }
+    };
+
+    void loadProtectionPricing();
+
+    return () => controller.abort();
+  }, [vehicleModelId]);
+
   const handleNext = () => {
     const params = new URLSearchParams({
       store,
@@ -230,7 +391,7 @@ const returnLabel = formatDateLabel(returnDate, "December 27, 2025");
       totalAmount: totalAmount.toString(),
     });
 
-    vehicleProtectionOptions.forEach((option) => {
+    PROTECTION_OPTION_DEFINITIONS.forEach((option) => {
       params.append(option.key, protectionSelection[option.key] ? "1" : "0");
     });
 
@@ -306,8 +467,11 @@ const returnLabel = formatDateLabel(returnDate, "December 27, 2025");
                   <h3 className="text-sm font-semibold text-gray-900">Protection options</h3>
                   <span className="text-xs text-gray-500">Optional</span>
                 </div>
+                {protectionError ? (
+                  <p className="text-xs text-red-600">{protectionError}</p>
+                ) : null}
                 <div className="space-y-3">
-                  {vehicleProtectionOptions.map((option) => (
+                  {protectionOptions.map((option) => (
                     <label
                       key={option.key}
                       className="flex items-center justify-between rounded-xl border border-gray-100 bg-gray-50 px-4 py-3 shadow-sm"
@@ -317,7 +481,9 @@ const returnLabel = formatDateLabel(returnDate, "December 27, 2025");
                         <p className="text-xs text-gray-600">You can toggle on / off.</p>
                       </div>
                       <div className="flex items-center gap-3">
-                        <span className="text-sm font-semibold text-gray-900">{formatAccessoryPrice(option.price)}</span>
+                        <span className="text-sm font-semibold text-gray-900">
+                          {formatProtectionPrice(option.price)}
+                        </span>
                         <input
                           type="checkbox"
                           checked={protectionSelection[option.key]}

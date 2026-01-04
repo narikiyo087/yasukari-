@@ -3,8 +3,14 @@ import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
 
-import type { Accessory, AccessoryPriceKey } from "../../../lib/dashboard/types";
-import type { CouponRule } from "../../../lib/dashboard/types";
+import type {
+  Accessory,
+  AccessoryPriceKey,
+  BikeClass,
+  BikeModel,
+  CouponRule,
+  DurationPriceKey,
+} from "../../../lib/dashboard/types";
 
 type AddOn = {
   key: string;
@@ -12,9 +18,9 @@ type AddOn = {
   price?: number;
 };
 
-const vehicleProtectionOptions: AddOn[] = [
-  { key: "vehicle", label: "車両補償", price: 1650 },
-  { key: "theft", label: "盗難補償", price: 1100 },
+const PROTECTION_OPTION_DEFINITIONS: Array<{ key: string; label: string }> = [
+  { key: "vehicle", label: "車両補償" },
+  { key: "theft", label: "盗難補償" },
 ];
 
 const ACCESSORY_DISPLAY_ORDER: Array<{ key: string; label: string }> = [
@@ -38,6 +44,16 @@ const getHelmetSelectedTotal = (selection: Record<string, number>) =>
     (total, key) => total + (selection[key] ?? 0),
     0
   );
+const getInsuranceDurationKey = (days: number): DurationPriceKey => {
+  if (days <= 1) return "24h";
+  if (days <= 2) return "2d";
+  if (days <= 4) return "4d";
+  if (days <= 7) return "1w";
+  if (days <= 14) return "2w";
+  return "1m";
+};
+const formatProtectionPrice = (price?: number) =>
+  price == null ? "算出中" : `${price.toLocaleString()}円`;
 
 export default function ReserveFlowStep2() {
   const router = useRouter();
@@ -60,9 +76,15 @@ export default function ReserveFlowStep2() {
   const [couponMessage, setCouponMessage] = useState<string | null>(null);
   const [rentalFee, setRentalFee] = useState(defaultFees.rental);
   const [rentalFeeError, setRentalFeeError] = useState<string | null>(null);
+  const [vehicleModelId, setVehicleModelId] = useState<number | null>(null);
+  const [insurancePrices, setInsurancePrices] = useState<
+    BikeClass["insurance_prices"] | null
+  >(null);
+  const [theftInsurance, setTheftInsurance] = useState<number | null>(null);
+  const [protectionError, setProtectionError] = useState<string | null>(null);
 
   const [protectionSelection, setProtectionSelection] = useState(() =>
-    vehicleProtectionOptions.reduce<Record<string, boolean>>((acc, option) => {
+    PROTECTION_OPTION_DEFINITIONS.reduce<Record<string, boolean>>((acc, option) => {
       acc[option.key] = true;
       return acc;
     }, {})
@@ -190,12 +212,40 @@ export default function ReserveFlowStep2() {
     return Math.max(1, Math.ceil(hours / 24));
   }, [pickupDate, pickupTime, returnDate, returnTime]);
 
+  const vehicleInsuranceFee = useMemo(() => {
+    if (!insurancePrices) return undefined;
+
+    if (rentalDays > 31) {
+      const monthlyPrice = insurancePrices["1m"];
+      if (monthlyPrice != null) {
+        const dailyRate = monthlyPrice / 31;
+        return Math.round(dailyRate * rentalDays);
+      }
+    }
+
+    const key = getInsuranceDurationKey(rentalDays);
+    return insurancePrices[key];
+  }, [insurancePrices, rentalDays]);
+
+  const theftInsuranceFee = useMemo(
+    () => (typeof theftInsurance === "number" ? theftInsurance : undefined),
+    [theftInsurance]
+  );
+
+  const protectionOptions = useMemo<AddOn[]>(
+    () => [
+      { key: "vehicle", label: "車両補償", price: vehicleInsuranceFee },
+      { key: "theft", label: "盗難補償", price: theftInsuranceFee },
+    ],
+    [theftInsuranceFee, vehicleInsuranceFee]
+  );
+
   const selectedProtectionFee = useMemo(
     () =>
-      vehicleProtectionOptions.reduce((total, option) => {
+      protectionOptions.reduce((total, option) => {
         return protectionSelection[option.key] ? total + (option.price ?? 0) : total;
       }, 0),
-    [protectionSelection]
+    [protectionOptions, protectionSelection]
   );
 
   const accessoryOptions = useMemo<AddOn[]>(() => {
@@ -313,7 +363,7 @@ export default function ReserveFlowStep2() {
 
     const controller = new AbortController();
 
-    const loadRentalFee = async () => {
+    const loadVehicle = async () => {
       try {
         const vehicleResponse = await fetch(`/api/vehicles/${managementNumber}`, {
           signal: controller.signal,
@@ -328,8 +378,31 @@ export default function ReserveFlowStep2() {
           throw new Error("Vehicle model not found");
         }
 
+        setVehicleModelId(vehicleData.modelId);
+        setRentalFeeError(null);
+      } catch (error) {
+        if (controller.signal.aborted) return;
+        console.error("Failed to load vehicle", error);
+        setVehicleModelId(null);
+        setRentalFee(defaultFees.rental);
+        setRentalFeeError("車両情報の取得に失敗しました。");
+      }
+    };
+
+    void loadVehicle();
+
+    return () => controller.abort();
+  }, [managementNumber]);
+
+  useEffect(() => {
+    if (!vehicleModelId) return;
+
+    const controller = new AbortController();
+
+    const loadRentalFee = async () => {
+      try {
         const pricesResponse = await fetch(
-          `/api/vehicle-rental-prices?vehicle_type_id=${vehicleData.modelId}`,
+          `/api/vehicle-rental-prices?vehicle_type_id=${vehicleModelId}`,
           { signal: controller.signal }
         );
 
@@ -373,7 +446,64 @@ export default function ReserveFlowStep2() {
     void loadRentalFee();
 
     return () => controller.abort();
-  }, [managementNumber, rentalDays]);
+  }, [vehicleModelId, rentalDays]);
+
+  useEffect(() => {
+    if (!vehicleModelId) {
+      setInsurancePrices(null);
+      setTheftInsurance(null);
+      setProtectionError(null);
+      return;
+    }
+
+    const controller = new AbortController();
+
+    const loadProtectionPricing = async () => {
+      try {
+        const [modelsResponse, classesResponse] = await Promise.all([
+          fetch("/api/bike-models", { signal: controller.signal }),
+          fetch("/api/bike-classes", { signal: controller.signal }),
+        ]);
+
+        if (!modelsResponse.ok || !classesResponse.ok) {
+          throw new Error("Failed to load bike classes");
+        }
+
+        const models = (await modelsResponse.json()) as BikeModel[];
+        const classes = (await classesResponse.json()) as BikeClass[];
+
+        const targetModel = models.find((model) => model.modelId === vehicleModelId);
+        if (!targetModel) {
+          throw new Error("Bike model not found");
+        }
+
+        const targetClass = classes.find(
+          (bikeClass) => bikeClass.classId === targetModel.classId
+        );
+        if (!targetClass) {
+          throw new Error("Bike class not found");
+        }
+
+        setInsurancePrices(targetClass.insurance_prices ?? null);
+        setTheftInsurance(
+          typeof targetClass.theft_insurance === "number"
+            ? targetClass.theft_insurance
+            : null
+        );
+        setProtectionError(null);
+      } catch (error) {
+        if (controller.signal.aborted) return;
+        console.error("Failed to load protection pricing", error);
+        setInsurancePrices(null);
+        setTheftInsurance(null);
+        setProtectionError("補償オプションの料金を取得できませんでした。");
+      }
+    };
+
+    void loadProtectionPricing();
+
+    return () => controller.abort();
+  }, [vehicleModelId]);
 
   const handleNext = () => {
     const params = new URLSearchParams({
@@ -391,7 +521,7 @@ export default function ReserveFlowStep2() {
       totalAmount: totalAmount.toString(),
     });
 
-    vehicleProtectionOptions.forEach((option) => {
+    PROTECTION_OPTION_DEFINITIONS.forEach((option) => {
       params.append(option.key, protectionSelection[option.key] ? "1" : "0");
     });
 
@@ -467,8 +597,11 @@ export default function ReserveFlowStep2() {
                   <h3 className="text-sm font-semibold text-gray-900">補償オプションの選択</h3>
                   <span className="text-xs text-gray-500">必須ではありません</span>
                 </div>
+                {protectionError ? (
+                  <p className="text-xs text-red-600">{protectionError}</p>
+                ) : null}
                 <div className="space-y-3">
-                  {vehicleProtectionOptions.map((option) => (
+                  {protectionOptions.map((option) => (
                     <label
                       key={option.key}
                       className="flex items-center justify-between rounded-xl border border-gray-100 bg-gray-50 px-4 py-3 shadow-sm"
@@ -478,7 +611,7 @@ export default function ReserveFlowStep2() {
                       </div>
                       <div className="flex items-center gap-3">
                         <span className="text-sm font-semibold text-gray-900">
-                          {(option.price ?? 0).toLocaleString()}円
+                          {formatProtectionPrice(option.price)}
                         </span>
                         <input
                           type="checkbox"
