@@ -95,17 +95,18 @@ const buildReservationAvailability = (reservations: Reservation[]): RentalAvaila
     const completionNote = `${renterName}（バイク返却完了）`;
     const cursor = new Date(startDate);
 
+    const noteForDay = (base: string, existing?: string) =>
+      existing && existing !== base
+        ? Array.from(new Set([existing, base])).join(" / ")
+        : base;
+
     if (isRentalCompleted) {
-      map[formatDateKey(endDate)] = { status: "AVAILABLE" };
-      while (cursor < endDate) {
+      while (cursor <= endDate) {
         const key = formatDateKey(cursor);
         const existingNote = map[key]?.note;
-        const note =
-          existingNote && existingNote !== completionNote
-            ? Array.from(new Set([existingNote, completionNote])).join(" / ")
-            : completionNote;
+        const note = noteForDay(completionNote, existingNote);
 
-        map[key] = { status: "RENTAL_COMPLETED", note };
+        map[key] = { status: "AVAILABLE", note };
         cursor.setDate(cursor.getDate() + 1);
       }
       return;
@@ -114,10 +115,7 @@ const buildReservationAvailability = (reservations: Reservation[]): RentalAvaila
     while (cursor <= endDate) {
       const key = formatDateKey(cursor);
       const existingNote = map[key]?.note;
-      const note =
-        existingNote && existingNote !== renterName
-          ? Array.from(new Set([existingNote, renterName])).join(" / ")
-          : renterName;
+      const note = noteForDay(renterName, existingNote);
 
       map[key] = { status: "RENTED", note };
       cursor.setDate(cursor.getDate() + 1);
