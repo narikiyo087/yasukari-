@@ -836,9 +836,6 @@ export default function MyPage() {
                             <div className="flex flex-wrap items-start justify-between gap-3">
                               <div>
                                 <p className="text-sm font-semibold text-sky-900">無人店舗の解錠情報</p>
-                                <p className="text-xs text-sky-800">
-                                  三ノ輪店での受け取りに使えるPINを発行しました。受け取り時間の前後1時間を自動でバッファしています。
-                                </p>
                               </div>
                             <span className="inline-flex items-center rounded-full bg-white px-3 py-1 text-xs font-semibold text-sky-800 ring-1 ring-sky-200">
                               PIN発行済み
