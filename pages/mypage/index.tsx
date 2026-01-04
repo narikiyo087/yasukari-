@@ -23,7 +23,7 @@ type UserAttributes = {
 };
 
 export default function MyPage() {
-  const paymentInfoUrl = process.env.NEXT_PUBLIC_PAYMENT_INFO_URL ?? '/payment-info';
+  const paymentInfoUrl = process.env.NEXT_PUBLIC_PAYMENT_INFO_URL ?? '/notifications';
   const rentalContractBaseUrl = process.env.NEXT_PUBLIC_RENTAL_CONTRACT_URL;
   const unmannedRentalGuideUrl = '/blog_for_custmor/2025-09-10-minowa-unmanned';
   const unlockQrUrl = '/rental-status';
