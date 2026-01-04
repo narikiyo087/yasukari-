@@ -371,6 +371,30 @@ export default async function handler(
         }
       }
 
+      const isNewlyCompleted =
+        reservation.status === "予約完了" && existingReservation.status !== "予約完了";
+
+      if (isNewlyCompleted) {
+        const completionKeys = buildDateKeysInRange(
+          reservation.pickupAt,
+          reservation.returnAt
+        );
+
+        if (completionKeys.length > 0) {
+          await updateVehicleAvailability(reservation.vehicleCode, (current) => {
+            const next = { ...current };
+            completionKeys.forEach((key) => {
+              const entry = next[key];
+              if (entry?.status === "RENTED" || entry?.status === "RENTAL_COMPLETED") {
+                delete next[key];
+              }
+            });
+
+            return next;
+          });
+        }
+      }
+
       return res.status(200).json({ reservation });
     } catch (error) {
       console.error(`Failed to update reservation ${reservationId}`, error);
