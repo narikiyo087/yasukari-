@@ -90,6 +90,14 @@ export default function ReserveModelPage({
     return base;
   }, []);
 
+  const maxAdvanceDays = 93;
+  const maxDate = useMemo(() => {
+    const base = new Date();
+    base.setDate(base.getDate() + maxAdvanceDays);
+    base.setHours(0, 0, 0, 0);
+    return base;
+  }, [maxAdvanceDays]);
+
   const minDateString = useMemo(() => formatInputDate(minDate), [minDate]);
 
   const pickupDate = pickup ? new Date(pickup) : null;
@@ -326,31 +334,36 @@ export default function ReserveModelPage({
 
               <div className="space-y-4">
                 <div className="rounded-xl border border-gray-100 bg-gray-50 p-4 shadow-sm">
-                  <div className="flex flex-wrap items-center gap-3 mb-3">
-                    <p className="text-xs font-semibold text-gray-900">カレンダーから選択</p>
-                    <div className="flex gap-2 text-[11px]">
-                      <span className="inline-flex items-center gap-1 rounded-full bg-red-100 px-2 py-1 text-red-700">
-                        <span className="h-2 w-2 rounded-full bg-red-500" />出発日
-                      </span>
+                    <div className="flex flex-wrap items-center gap-3 mb-3">
+                      <p className="text-xs font-semibold text-gray-900">カレンダーから選択</p>
+                      <div className="flex gap-2 text-[11px]">
+                        <span className="inline-flex items-center gap-1 rounded-full bg-red-100 px-2 py-1 text-red-700">
+                          <span className="h-2 w-2 rounded-full bg-red-500" />出発日
+                        </span>
                       <span className="inline-flex items-center gap-1 rounded-full bg-blue-100 px-2 py-1 text-blue-700">
                         <span className="h-2 w-2 rounded-full bg-blue-500" />返却予定日
                       </span>
-                      <span className="inline-flex items-center gap-1 rounded-full bg-green-100 px-2 py-1 text-green-700">
-                        <span className="h-2 w-2 rounded-full bg-green-500" />レンタル期間
-                      </span>
+                        <span className="inline-flex items-center gap-1 rounded-full bg-green-100 px-2 py-1 text-green-700">
+                          <span className="h-2 w-2 rounded-full bg-green-500" />レンタル期間
+                        </span>
+                        <span className="inline-flex items-center gap-1 rounded-full bg-gray-200 px-2 py-1 text-gray-700">
+                          休: 店舗休業日
+                        </span>
+                      </div>
                     </div>
-                  </div>
 
-                  <Calendar
-                    month={visibleMonth}
-                    onMonthChange={setVisibleMonth}
-                    activeSelection={activeSelection}
-                    minDate={minDate}
-                    pickupDate={pickupDate}
-                    returnDate={returnDateValue}
-                    availabilityMap={availabilityMap}
-                    availabilityLoaded={availabilityLoaded}
-                    holidayDates={holidayDates}
+                    <Calendar
+                      month={visibleMonth}
+                      onMonthChange={setVisibleMonth}
+                      activeSelection={activeSelection}
+                      minDate={minDate}
+                      maxDate={maxDate}
+                      maxRentalDays={maxAdvanceDays}
+                      pickupDate={pickupDate}
+                      returnDate={returnDateValue}
+                      availabilityMap={availabilityMap}
+                      availabilityLoaded={availabilityLoaded}
+                      holidayDates={holidayDates}
                     holidayLoaded={holidayLoaded}
                     onSelectDate={(date) => {
                       const formatted = formatInputDate(date);
@@ -383,6 +396,9 @@ export default function ReserveModelPage({
                       返却予定日を選択
                     </button>
                   </div>
+                  <p className="mt-2 text-xs text-gray-600">
+                    貸出日を選択してください。3か月先までの予約が可能です。
+                  </p>
                   <p className="mt-3 text-xs text-gray-600">
                     {activeSelection === "pickup"
                       ? "明日以降の日付から出発日を選択してください"
@@ -427,6 +443,20 @@ export default function ReserveModelPage({
               >
                 車種ページに戻る
               </Link>
+            </div>
+
+            <div className="rounded-xl border border-gray-100 bg-gray-50 p-4 text-sm text-gray-700 space-y-2">
+              <p className="text-sm font-semibold text-gray-900">注意事項</p>
+              <p>
+                レンタル当日、予期せぬ車両トラブルについて（故障、事故）等で車両を変更していただく場合がございますので、ご了承ください。
+              </p>
+              <p>
+                ご予約の受付締切は、ご利用になる日の前営業日の17時までとなります。
+                （月曜は定休日となりますので、火曜のご予約の締切は前々日の日曜の17時までとなります）
+              </p>
+              <p>
+                足立小台店の休日の貸し出し返却は一切できません。ご返却期限が休日の場合前日までのご利用となります。
+              </p>
             </div>
           </section>
         </div>
@@ -505,6 +535,8 @@ interface CalendarProps {
   onSelectDate: (date: Date) => void;
   activeSelection: SelectionType;
   minDate: Date;
+  maxDate: Date;
+  maxRentalDays: number;
   pickupDate: Date | null;
   returnDate: Date | null;
   availabilityMap: RentalAvailabilityMap;
@@ -519,6 +551,8 @@ function Calendar({
   onSelectDate,
   activeSelection,
   minDate,
+  maxDate,
+  maxRentalDays,
   pickupDate,
   returnDate,
   availabilityMap,
@@ -552,15 +586,24 @@ function Calendar({
     onMonthChange(next);
   };
 
+  const isStoreHoliday = (date: Date) => holidayDates.has(formatInputDate(date));
+
+  const isBikeAvailable = (date: Date) => {
+    if (!availabilityLoaded) {
+      return false;
+    }
+    const key = formatInputDate(date);
+    return availabilityMap[key]?.status === "AVAILABLE";
+  };
+
   const isDateAvailable = (date: Date) => {
     if (!availabilityLoaded || !holidayLoaded) {
       return false;
     }
-    const key = formatInputDate(date);
-    if (holidayDates.has(key)) {
+    if (isStoreHoliday(date)) {
       return false;
     }
-    return availabilityMap[key]?.status === "AVAILABLE";
+    return isBikeAvailable(date);
   };
 
   const isRangeAvailable = (start: Date, end: Date) => {
@@ -574,22 +617,39 @@ function Calendar({
     endDate.setHours(0, 0, 0, 0);
 
     for (; cursor <= endDate; cursor.setDate(cursor.getDate() + 1)) {
-      if (!isDateAvailable(cursor)) {
+      if (!isBikeAvailable(cursor)) {
         return false;
       }
     }
     return true;
   };
 
+  const getMaxReturnDate = (start: Date) => {
+    const maxReturn = new Date(start);
+    maxReturn.setDate(maxReturn.getDate() + maxRentalDays);
+    maxReturn.setHours(0, 0, 0, 0);
+    return maxReturn > maxDate ? maxDate : maxReturn;
+  };
+
   const isDateDisabled = (date: Date) => {
     const isBeforeMin = date < minDate;
+    const isAfterMax = date > maxDate;
     const isBeforePickup = activeSelection === "return" && pickupDate ? date < pickupDate : false;
+    const maxReturnDate = pickupDate ? getMaxReturnDate(pickupDate) : maxDate;
+    const isAfterMaxReturn = activeSelection === "return" && pickupDate ? date > maxReturnDate : false;
     const isUnavailable = !isDateAvailable(date);
     const isRangeUnavailable =
       activeSelection === "return" && pickupDate
         ? !isRangeAvailable(pickupDate, date)
         : false;
-    return isBeforeMin || isBeforePickup || isUnavailable || isRangeUnavailable;
+    return (
+      isBeforeMin ||
+      isAfterMax ||
+      isBeforePickup ||
+      isAfterMaxReturn ||
+      isUnavailable ||
+      isRangeUnavailable
+    );
   };
 
   return (
@@ -626,6 +686,7 @@ function Calendar({
 
       <div className="grid grid-cols-7 gap-2">
         {days.map(({ date, inCurrentMonth }) => {
+          const holiday = isStoreHoliday(date);
           const disabled = isDateDisabled(date) || !inCurrentMonth;
           const isPickup = pickupDate ? isSameDay(date, pickupDate) : false;
           const isReturn = returnDate ? isSameDay(date, returnDate) : false;
@@ -634,7 +695,7 @@ function Calendar({
               ? date > pickupDate && date < returnDate
               : false;
 
-          const baseClasses = "flex h-12 w-full items-center justify-center rounded-lg text-sm font-semibold transition";
+          const baseClasses = "flex h-12 w-full flex-col items-center justify-center rounded-lg text-sm font-semibold transition";
 
           const stateClass = (() => {
             if (isPickup) return "bg-red-500 text-white shadow";
@@ -653,7 +714,10 @@ function Calendar({
               onClick={() => onSelectDate(date)}
               className={`${baseClasses} ${stateClass}`}
             >
-              {date.getDate()}
+              <span>{date.getDate()}</span>
+              {holiday && inCurrentMonth ? (
+                <span className="text-[10px] leading-none text-red-500">休</span>
+              ) : null}
             </button>
           );
         })}
