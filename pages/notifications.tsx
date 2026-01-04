@@ -245,27 +245,6 @@ export default function NotificationsPage() {
           <div className={styles.settingsCard}>
             <div className={styles.settingsHeader}>
               <div>
-                <p className={styles.settingsLabel}>通知の種類</p>
-                <h2 className={styles.settingsTitle}>メールと同じ内容を表示</h2>
-                <p className={styles.settingsNote}>
-                  以下の通知が一覧に表示されます。メルマガ・クーポンは任意で表示できます。
-                </p>
-              </div>
-              <span className={styles.statusPill}>対象</span>
-            </div>
-            <ul className={styles.noticeList}>
-              <li className={styles.noticeListItem}>仮登録・本登録</li>
-              <li className={styles.noticeListItem}>レンタル完了・返却完了・延長申請</li>
-              <li className={styles.noticeListItem}>レンタル開始前日・レンタル直前の案内</li>
-              <li className={styles.noticeListItem}>返却期限の前日・当日のリマインド</li>
-              <li className={styles.noticeListItem}>レビューのお願い</li>
-              <li className={styles.noticeListItem}>返却期限を過ぎた場合の通知</li>
-              <li className={styles.noticeListItem}>メルマガ・クーポン（任意）</li>
-            </ul>
-          </div>
-          <div className={styles.settingsCard}>
-            <div className={styles.settingsHeader}>
-              <div>
                 <p className={styles.settingsLabel}>通知設定</p>
                 <h2 className={styles.settingsTitle}>表示と配信のオン・オフ</h2>
                 <p className={styles.settingsNote}>
