@@ -123,12 +123,51 @@
 }
 
 @media print {
+  @page {
+    size: A4;
+    margin: 8mm;
+  }
+
   .printActions {
     display: none;
   }
 
   .page {
     margin: 0;
+    width: 100%;
+    min-height: auto;
+    padding: 8mm 8mm;
+    font-size: 10.5px;
+    line-height: 1.4;
     box-shadow: none;
+  }
+
+  .header {
+    margin-bottom: 6mm;
+  }
+
+  .section {
+    margin-top: 10px;
+  }
+
+  .sectionTitle {
+    margin-bottom: 6px;
+  }
+
+  .gridTwo {
+    gap: 6px 12px;
+  }
+
+  .table {
+    font-size: 10px;
+  }
+
+  .table th,
+  .table td {
+    padding: 4px;
+  }
+
+  .memoBox {
+    min-height: 60px;
   }
 }
