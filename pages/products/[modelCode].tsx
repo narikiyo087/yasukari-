@@ -14,6 +14,8 @@ import {
 import { readVehicleRentalPrices } from "../../lib/server/vehicleRentalPrices";
 import RecentlyViewed from "../../components/RecentlyViewed";
 import type { Reservation } from "../../lib/reservations";
+import { formatAdjustedYenPrice } from "../../lib/pricing";
+import useInternationalPricingMultiplier from "../../lib/useInternationalPricingMultiplier";
 
 interface Props {
   bike: BikeModel;
@@ -86,6 +88,25 @@ export default function ProductDetailPage({
   const [rentalCheckError, setRentalCheckError] = useState("");
   const [checkingRental, setCheckingRental] = useState(false);
   const router = useRouter();
+  const priceMultiplier = useInternationalPricingMultiplier();
+
+  const adjustedPrice24h = useMemo(
+    () => formatAdjustedYenPrice(bike.price24h, priceMultiplier),
+    [bike.price24h, priceMultiplier]
+  );
+
+  const adjustedPriceGuide = useMemo(() => {
+    const next: Partial<Record<DurationKey, string>> = {};
+    (Object.entries(priceGuide) as [DurationKey, string | undefined][])
+      .forEach(([key, value]) => {
+        if (!value || value === "-") {
+          next[key] = value ?? "-";
+          return;
+        }
+        next[key] = formatAdjustedYenPrice(value, priceMultiplier) ?? value;
+      });
+    return next;
+  }, [priceGuide, priceMultiplier]);
 
   const vehicleOptions = useMemo(
     () =>
@@ -302,7 +323,9 @@ export default function ProductDetailPage({
                   <div className="space-y-4">
                     {showPrice ? (
                       <div className="rounded-xl border border-gray-100 bg-gradient-to-br from-red-50 to-white p-4 shadow-sm">
-                        <p className="text-3xl font-bold text-gray-900">{bike.price24h}</p>
+                        <p className="text-3xl font-bold text-gray-900">
+                          {adjustedPrice24h ?? bike.price24h}
+                        </p>
                       </div>
                     ) : null}
                     <div className="rounded-xl border border-gray-100 bg-white p-4 shadow-sm flex flex-col gap-3">
@@ -489,11 +512,11 @@ export default function ProductDetailPage({
                 </p>
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 text-sm">
                   {[
-                    { label: "24時間", value: priceGuide["24h"] ?? "-" },
-                    { label: "2日間", value: priceGuide["2d"] ?? "-" },
-                    { label: "1週間", value: priceGuide["1w"] ?? "-" },
-                    { label: "2週間", value: priceGuide["2w"] ?? "-" },
-                    { label: "1ヶ月", value: priceGuide["1m"] ?? "-" },
+                    { label: "24時間", value: adjustedPriceGuide["24h"] ?? "-" },
+                    { label: "2日間", value: adjustedPriceGuide["2d"] ?? "-" },
+                    { label: "1週間", value: adjustedPriceGuide["1w"] ?? "-" },
+                    { label: "2週間", value: adjustedPriceGuide["2w"] ?? "-" },
+                    { label: "1ヶ月", value: adjustedPriceGuide["1m"] ?? "-" },
                     { label: "補償プラン", value: "加入可能" },
                   ].map((item) => (
                     <div

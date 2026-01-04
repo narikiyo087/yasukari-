@@ -11,6 +11,11 @@ import type {
   CouponRule,
   DurationPriceKey,
 } from "../../../lib/dashboard/types";
+import {
+  applyInternationalMultiplier,
+  formatYen,
+} from "../../../lib/pricing";
+import useInternationalPricingMultiplier from "../../../lib/useInternationalPricingMultiplier";
 
 type AddOn = {
   key: string;
@@ -39,7 +44,7 @@ const defaultFees = {
 
 const HIGH_SEASON_FEE_PER_DAY = 550;
 
-const formatAccessoryPrice = (price?: number) => `${(price ?? 0).toLocaleString()}円`;
+const formatAccessoryPrice = (price?: number) => formatYen(price ?? 0);
 const getHelmetSelectedTotal = (selection: Record<string, number>) =>
   Array.from(HELMET_ACCESSORY_KEYS).reduce(
     (total, key) => total + (selection[key] ?? 0),
@@ -69,7 +74,7 @@ const getInsuranceDurationKey = (days: number): DurationPriceKey => {
   return "1m";
 };
 const formatProtectionPrice = (price?: number) =>
-  price == null ? "算出中" : `${price.toLocaleString()}円`;
+  price == null ? "算出中" : formatYen(price);
 
 const formatDateKey = (date: Date): string => {
   const year = date.getFullYear();
@@ -113,6 +118,7 @@ export default function ReserveFlowStep2() {
   const [protectionError, setProtectionError] = useState<string | null>(null);
   const [highSeasonDates, setHighSeasonDates] = useState<Set<string>>(new Set());
   const [highSeasonLoading, setHighSeasonLoading] = useState(false);
+  const priceMultiplier = useInternationalPricingMultiplier();
 
   const [protectionSelection, setProtectionSelection] = useState(() =>
     PROTECTION_OPTION_DEFINITIONS.reduce<Record<string, boolean>>((acc, option) => {
@@ -335,13 +341,15 @@ export default function ReserveFlowStep2() {
     [theftInsurance]
   );
 
-  const protectionOptions = useMemo<AddOn[]>(
-    () => [
-      { key: "vehicle", label: "車両補償", price: vehicleInsuranceFee },
-      { key: "theft", label: "盗難補償", price: theftInsuranceFee },
-    ],
-    [theftInsuranceFee, vehicleInsuranceFee]
-  );
+  const protectionOptions = useMemo<AddOn[]>(() => {
+    const applyMultiplier = (value?: number) =>
+      value == null ? undefined : applyInternationalMultiplier(value, priceMultiplier);
+
+    return [
+      { key: "vehicle", label: "車両補償", price: applyMultiplier(vehicleInsuranceFee) },
+      { key: "theft", label: "盗難補償", price: applyMultiplier(theftInsuranceFee) },
+    ];
+  }, [priceMultiplier, theftInsuranceFee, vehicleInsuranceFee]);
 
   const selectedProtectionFee = useMemo(
     () =>
@@ -360,10 +368,10 @@ export default function ReserveFlowStep2() {
 
       return {
         ...option,
-        price,
+        price: price == null ? undefined : applyInternationalMultiplier(price, priceMultiplier),
       };
     });
-  }, [accessories, rentalPriceKey, rentalDays]);
+  }, [accessories, priceMultiplier, rentalPriceKey, rentalDays]);
 
   const selectedAccessoryFee = useMemo(
     () =>
@@ -391,10 +399,17 @@ export default function ReserveFlowStep2() {
   }, [highSeasonDates, pickupDate, rentalDays]);
 
   const highSeasonFee = highSeasonDays * HIGH_SEASON_FEE_PER_DAY;
-  const totalAmount = rentalFee + selectedAccessoryFee + selectedProtectionFee + highSeasonFee - couponDiscount;
+  const adjustedHighSeasonFee = applyInternationalMultiplier(highSeasonFee, priceMultiplier);
+  const adjustedRentalFee = applyInternationalMultiplier(rentalFee, priceMultiplier);
+  const totalAmount =
+    adjustedRentalFee +
+    selectedAccessoryFee +
+    selectedProtectionFee +
+    adjustedHighSeasonFee -
+    couponDiscount;
   const highSeasonFeeLabel = highSeasonLoading
     ? "算出中"
-    : `${highSeasonFee.toLocaleString()}円`;
+    : formatYen(adjustedHighSeasonFee);
 
   const formatDateLabel = (dateString: string, fallback: string) => {
     const parsed = new Date(dateString);
@@ -422,9 +437,17 @@ export default function ReserveFlowStep2() {
     return now >= start && now <= end;
   };
 
-  const calculateCouponDiscount = (coupon: CouponRule, baseAmount: number) => {
+  const calculateCouponDiscount = (
+    coupon: CouponRule,
+    baseAmount: number,
+    multiplier: number
+  ) => {
     if (typeof coupon.discount_amount === "number") {
-      return Math.min(coupon.discount_amount, baseAmount);
+      const adjustedDiscount = applyInternationalMultiplier(
+        coupon.discount_amount,
+        multiplier
+      );
+      return Math.min(adjustedDiscount, baseAmount);
     }
     if (typeof coupon.discount_percentage === "number") {
       return Math.min(Math.round((baseAmount * coupon.discount_percentage) / 100), baseAmount);
@@ -462,8 +485,12 @@ export default function ReserveFlowStep2() {
         return;
       }
 
-      const baseAmount = rentalFee + selectedAccessoryFee + selectedProtectionFee + highSeasonFee;
-      const discount = calculateCouponDiscount(matched, baseAmount);
+      const baseAmount =
+        adjustedRentalFee +
+        selectedAccessoryFee +
+        selectedProtectionFee +
+        adjustedHighSeasonFee;
+      const discount = calculateCouponDiscount(matched, baseAmount, priceMultiplier);
       if (discount <= 0) {
         setCouponError("クーポンの割引額を計算できませんでした。");
         setCouponDiscount(0);
@@ -874,18 +901,18 @@ export default function ReserveFlowStep2() {
                 <dl className="space-y-3 text-sm text-gray-700">
                   <div className="flex items-center justify-between">
                     <dt className="text-gray-500">バイクレンタル料金</dt>
-                    <dd className="font-semibold text-gray-900">{rentalFee.toLocaleString()}円</dd>
+                    <dd className="font-semibold text-gray-900">{formatYen(adjustedRentalFee)}</dd>
                   </div>
                   {rentalFeeError ? (
                     <p className="text-xs text-red-600">{rentalFeeError}</p>
                   ) : null}
                   <div className="flex items-center justify-between">
                     <dt className="text-gray-500">用品オプション料金</dt>
-                    <dd className="font-semibold text-gray-900">{selectedAccessoryFee.toLocaleString()}円</dd>
+                    <dd className="font-semibold text-gray-900">{formatYen(selectedAccessoryFee)}</dd>
                   </div>
                   <div className="flex items-center justify-between">
                     <dt className="text-gray-500">補償オプション料金</dt>
-                    <dd className="font-semibold text-gray-900">{selectedProtectionFee.toLocaleString()}円</dd>
+                    <dd className="font-semibold text-gray-900">{formatYen(selectedProtectionFee)}</dd>
                   </div>
                   <div className="flex items-center justify-between">
                     <dt className="text-gray-500">ハイシーズン追加料金（{highSeasonDays}日）</dt>
@@ -893,13 +920,13 @@ export default function ReserveFlowStep2() {
                   </div>
                   <div className="flex items-center justify-between">
                     <dt className="text-gray-500">クーポン割引額</dt>
-                    <dd className="font-semibold text-gray-900">-{couponDiscount.toLocaleString()}円</dd>
+                    <dd className="font-semibold text-gray-900">-{formatYen(couponDiscount)}</dd>
                   </div>
                 </dl>
                 <div className="border-t border-gray-100 pt-4">
                   <div className="flex items-center justify-between text-lg font-bold text-gray-900">
                     <span>合計（税込）</span>
-                    <span>{totalAmount.toLocaleString()}円</span>
+                    <span>{formatYen(totalAmount)}</span>
                   </div>
                 </div>
                 <p className="text-xs leading-relaxed text-gray-600">

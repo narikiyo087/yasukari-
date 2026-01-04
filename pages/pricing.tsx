@@ -1,5 +1,8 @@
 import Head from 'next/head'
 
+import { formatAdjustedYenPrice } from '../lib/pricing'
+import useInternationalPricingMultiplier from '../lib/useInternationalPricingMultiplier'
+
 const categories = [
   {
     name: '50cc 原付スクーター',
@@ -100,6 +103,8 @@ const categories = [
 ]
 
 export default function PricingPage() {
+  const priceMultiplier = useInternationalPricingMultiplier()
+
   return (
     <div className="max-w-3xl mx-auto p-6">
       <Head>
@@ -117,7 +122,9 @@ export default function PricingPage() {
               {c.prices.map((p) => (
                 <tr key={p.period}>
                   <th className="w-32 p-2 border text-left bg-gray-50">{p.period}</th>
-                  <td className="p-2 border">{p.price}</td>
+                  <td className="p-2 border">
+                    {formatAdjustedYenPrice(p.price, priceMultiplier) ?? p.price}
+                  </td>
                 </tr>
               ))}
             </tbody>
