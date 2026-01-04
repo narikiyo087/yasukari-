@@ -13,6 +13,9 @@ const priceLabels: Record<AccessoryPriceKey, string> = {
   "2d": "2日間料金",
   "4d": "4日間料金",
   "1w": "1週間料金",
+  "2w": "2週間料金",
+  "1m": "1ヶ月料金",
+  extra24h: "追加料金24時間",
 };
 
 const formatPrice = (value?: number): string => {
@@ -279,7 +282,10 @@ export default function AccessoryListPage() {
                   ))}
                   {filteredAccessories.length === 0 && (
                     <tr>
-                      <td colSpan={9} className={tableStyles.emptyCell}>
+                      <td
+                        colSpan={PRICE_KEYS.length + 5}
+                        className={tableStyles.emptyCell}
+                      >
                         該当する用品がありません。
                       </td>
                     </tr>
@@ -294,4 +300,4 @@ export default function AccessoryListPage() {
   );
 }
 
-const PRICE_KEYS: AccessoryPriceKey[] = ["24h", "2d", "4d", "1w"];
+const PRICE_KEYS: AccessoryPriceKey[] = ["24h", "2d", "4d", "1w", "2w", "1m", "extra24h"];

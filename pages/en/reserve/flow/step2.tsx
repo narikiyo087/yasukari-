@@ -189,7 +189,9 @@ export default function ReserveFlowStep2() {
     if (hours <= 24) return "24h";
     if (hours <= 48) return "2d";
     if (hours <= 96) return "4d";
-    return "1w";
+    if (hours <= 168) return "1w";
+    if (hours <= 336) return "2w";
+    return "1m";
   }, [pickupDate, pickupTime, returnDate, returnTime]);
 
   const rentalDays = useMemo(() => {

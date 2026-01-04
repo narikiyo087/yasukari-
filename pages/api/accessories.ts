@@ -5,7 +5,7 @@ import { generateNextNumericId, getDocumentClient } from "../../lib/dynamodb";
 import { Accessory, AccessoryPriceKey } from "../../lib/dashboard/types";
 
 const TABLE_NAME = process.env.RENTAL_ACCESSORIES_TABLE ?? "RentalAccessories";
-const PRICE_KEYS: AccessoryPriceKey[] = ["24h", "2d", "4d", "1w"];
+const PRICE_KEYS: AccessoryPriceKey[] = ["24h", "2d", "4d", "1w", "2w", "1m", "extra24h"];
 
 type AccessoryResponse =
   | Accessory

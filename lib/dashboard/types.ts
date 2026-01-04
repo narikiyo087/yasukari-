@@ -8,7 +8,7 @@ export type ExtraPriceKey = "24h";
 
 export type ExtraPriceMap = Partial<Record<ExtraPriceKey, number>>;
 
-export type AccessoryPriceKey = "24h" | "2d" | "4d" | "1w";
+export type AccessoryPriceKey = "24h" | "2d" | "4d" | "1w" | "2w" | "1m" | "extra24h";
 
 export type Accessory = {
   accessory_id: number;
