@@ -23,7 +23,6 @@ type UserAttributes = {
 };
 
 export default function MyPage() {
-  const paymentInfoUrl = process.env.NEXT_PUBLIC_PAYMENT_INFO_URL ?? '/notifications';
   const rentalContractBaseUrl = process.env.NEXT_PUBLIC_RENTAL_CONTRACT_URL;
   const unmannedRentalGuideUrl = '/blog_for_custmor/2025-09-10-minowa-unmanned';
   const unlockQrUrl = '/rental-status';
@@ -462,7 +461,6 @@ export default function MyPage() {
     if (activeReturnReservation.status === '予約受付完了') return true;
     return isRentalActive;
   }, [activeReturnReservation, isRentalActive]);
-  const extensionTargetReservationId = activeReturnReservation?.id ?? '';
 
   const handleReturnOpen = () => {
     resetReturnModal();
@@ -686,22 +684,6 @@ export default function MyPage() {
           {shouldShowRentalActions ? (
             <>
               <div className="flex flex-wrap gap-2">
-                {extensionTargetReservationId ? (
-                  <Link
-                    href={`/mypage/rentals/extend/${extensionTargetReservationId}`}
-                    className="inline-flex items-center justify-center rounded-full bg-red-600 px-4 py-2 text-xs font-semibold text-white shadow-md ring-2 ring-inset ring-red-500 ring-offset-1 ring-offset-white transition hover:bg-red-700"
-                  >
-                    レンタル延長
-                  </Link>
-                ) : (
-                  <button
-                    type="button"
-                    disabled
-                    className="inline-flex items-center justify-center rounded-full bg-red-200 px-4 py-2 text-xs font-semibold text-white/70 shadow-md ring-2 ring-inset ring-red-200 ring-offset-1 ring-offset-white"
-                  >
-                    レンタル延長
-                  </button>
-                )}
                 <button
                   type="button"
                   onClick={() => activeKeyboxQrImageUrl && setShowUnlockQrModal(true)}
@@ -880,12 +862,6 @@ export default function MyPage() {
                             >
                               詳細を見る
                             </Link>
-                            <Link
-                              href={`/mypage/rentals/extend/${reservation.id}`}
-                              className="inline-flex items-center justify-center rounded-full border border-sky-200 bg-sky-50 px-4 py-2 text-xs font-semibold text-sky-800 transition hover:border-sky-300 hover:bg-sky-100"
-                            >
-                              レンタル延長
-                            </Link>
                             {accessLink ? (
                               <a
                                 href={accessLink}
@@ -906,14 +882,6 @@ export default function MyPage() {
                               マニュアル動画を見る
                             </Link>
                           ) : null}
-                          <Link
-                            href={paymentInfoUrl}
-                            className="inline-flex items-center justify-center rounded-full border border-emerald-200 bg-emerald-50 px-4 py-2 text-xs font-semibold text-emerald-800 transition hover:border-emerald-300 hover:bg-emerald-100"
-                            target="_blank"
-                            rel="noreferrer"
-                          >
-                            決済情報を確認
-                          </Link>
                           <Link
                             href={rentalContractBaseUrl ?? `/rental-contract/${reservation.id}`}
                             className="inline-flex items-center justify-center rounded-full border border-amber-200 bg-amber-50 px-4 py-2 text-xs font-semibold text-amber-800 transition hover:border-amber-300 hover:bg-amber-100"
