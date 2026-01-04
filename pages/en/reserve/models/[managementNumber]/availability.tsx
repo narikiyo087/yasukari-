@@ -229,7 +229,7 @@ export default function BikeAvailabilityPreviewPage() {
                   <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">Calendar</p>
                   <h2 className="text-lg font-bold text-gray-900">Availability calendar</h2>
                   <p className="text-sm text-gray-600 mt-1">
-                    Select a date to review availability notes.
+                    Select a date to review availability status.
                   </p>
                 </div>
                 <div className="flex items-center gap-2">
@@ -298,11 +298,6 @@ export default function BikeAvailabilityPreviewPage() {
                                     {availabilityIcon(entry)}
                                   </span>
                                 </div>
-                                {entry?.note ? (
-                                  <p className="text-[11px] text-gray-600 leading-snug line-clamp-2">
-                                    {entry.note}
-                                  </p>
-                                ) : null}
                               </button>
                             </td>
                           );
@@ -374,13 +369,6 @@ export default function BikeAvailabilityPreviewPage() {
                         {availabilityLabel(selectedEntry)}
                       </span>
                     </p>
-                    {selectedEntry?.note ? (
-                      <p className="text-gray-700 leading-relaxed whitespace-pre-wrap">
-                        {selectedEntry.note}
-                      </p>
-                    ) : (
-                      <p className="text-gray-500">No notes are registered for this date.</p>
-                    )}
                   </div>
                 ) : (
                   <p className="mt-4 text-sm text-gray-600">Select a date to see details.</p>

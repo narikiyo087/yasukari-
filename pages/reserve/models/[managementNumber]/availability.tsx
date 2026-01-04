@@ -229,7 +229,7 @@ const availabilityIcon = (entry?: RentalAvailabilityDay) => (isAvailable(entry) 
                   <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">Calendar</p>
                   <h2 className="text-lg font-bold text-gray-900">空き状況カレンダー</h2>
                   <p className="text-sm text-gray-600 mt-1">
-                    日付をクリックすると、その日のステータスとメモを表示します。
+                    日付をクリックすると、その日のステータスを表示します。
                   </p>
                 </div>
                 <div className="flex items-center gap-2">
@@ -298,11 +298,6 @@ const availabilityIcon = (entry?: RentalAvailabilityDay) => (isAvailable(entry) 
                                     {availabilityIcon(entry)}
                                   </span>
                                 </div>
-                                {entry?.note ? (
-                                  <p className="text-[11px] text-gray-600 leading-snug line-clamp-2">
-                                    {entry.note}
-                                  </p>
-                                ) : null}
                               </button>
                             </td>
                           );
@@ -374,13 +369,6 @@ const availabilityIcon = (entry?: RentalAvailabilityDay) => (isAvailable(entry) 
                         {availabilityLabel(selectedEntry)}
                       </span>
                     </p>
-                    {selectedEntry?.note ? (
-                      <p className="text-gray-700 leading-relaxed whitespace-pre-wrap">
-                        {selectedEntry.note}
-                      </p>
-                    ) : (
-                      <p className="text-gray-500">メモは登録されていません。</p>
-                    )}
                   </div>
                 ) : (
                   <p className="mt-4 text-sm text-gray-600">日付を選択すると詳細が表示されます。</p>
