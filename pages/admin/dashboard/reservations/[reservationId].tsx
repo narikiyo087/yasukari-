@@ -25,6 +25,13 @@ const statusClassName = (status: Reservation["status"]): string => {
   return tableStyles.badge;
 };
 
+const ACCESSORY_LABELS: Array<{ key: string; label: string }> = [
+  { key: "halfCap", label: "半キャップ" },
+  { key: "jetHelmet", label: "ジェットヘル" },
+  { key: "brandHelmet", label: "ブランド・ヘルメット" },
+  { key: "glove", label: "グローブ" },
+];
+
 export default function ReservationDetailPage() {
   const router = useRouter();
   const { reservationId } = router.query;
@@ -39,6 +46,9 @@ export default function ReservationDetailPage() {
   const [isCancelling, setIsCancelling] = useState<boolean>(false);
   const [refundNote, setRefundNote] = useState<string>("");
   const [cancelError, setCancelError] = useState<string>("");
+  const [highSeasonDates, setHighSeasonDates] = useState<Set<string>>(new Set());
+  const [highSeasonLoading, setHighSeasonLoading] = useState<boolean>(false);
+  const [highSeasonError, setHighSeasonError] = useState<string>("");
   const isReservationCompleted = reservation?.status === "予約完了";
 
   useEffect(() => {
@@ -118,6 +128,79 @@ export default function ReservationDetailPage() {
     return () => controller.abort();
   }, [reservation]);
 
+  useEffect(() => {
+    if (!reservation?.pickupAt || !reservation?.returnAt) {
+      setHighSeasonDates(new Set());
+      setHighSeasonError("");
+      setHighSeasonLoading(false);
+      return;
+    }
+
+    const pickup = new Date(reservation.pickupAt);
+    const returnAt = new Date(reservation.returnAt);
+
+    if (Number.isNaN(pickup.getTime()) || Number.isNaN(returnAt.getTime())) {
+      setHighSeasonDates(new Set());
+      setHighSeasonError("ハイシーズン日付の算出に失敗しました");
+      return;
+    }
+
+    const formatMonthKey = (date: Date): string =>
+      `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
+
+    const start = new Date(pickup.getFullYear(), pickup.getMonth(), 1);
+    const end = new Date(returnAt.getFullYear(), returnAt.getMonth(), 1);
+    const months: string[] = [];
+    const cursor = new Date(start);
+    while (cursor <= end) {
+      months.push(formatMonthKey(cursor));
+      cursor.setMonth(cursor.getMonth() + 1);
+    }
+
+    const controller = new AbortController();
+
+    const loadHighSeason = async () => {
+      try {
+        setHighSeasonLoading(true);
+        setHighSeasonError("");
+        const responses = await Promise.all(
+          months.map(async (month) => {
+            const response = await fetch(`/api/high-season?month=${month}`, {
+              signal: controller.signal,
+            });
+            if (!response.ok) {
+              throw new Error("Failed to fetch high season calendar");
+            }
+            const data = (await response.json()) as {
+              dates: { date: string; isHighSeason: boolean }[];
+            };
+            return data.dates ?? [];
+          })
+        );
+
+        const nextDates = responses
+          .flat()
+          .filter((date) => date.isHighSeason)
+          .map((date) => date.date);
+        setHighSeasonDates(new Set(nextDates));
+      } catch (loadError) {
+        if (!controller.signal.aborted) {
+          console.error("Failed to load high season dates", loadError);
+          setHighSeasonDates(new Set());
+          setHighSeasonError("ハイシーズン情報の取得に失敗しました");
+        }
+      } finally {
+        if (!controller.signal.aborted) {
+          setHighSeasonLoading(false);
+        }
+      }
+    };
+
+    void loadHighSeason();
+
+    return () => controller.abort();
+  }, [reservation?.pickupAt, reservation?.returnAt]);
+
   const formatDatetime = (value: string) => {
     const parsed = new Date(value);
     if (Number.isNaN(parsed.getTime())) return "-";
@@ -132,6 +215,44 @@ export default function ReservationDetailPage() {
       minute: "2-digit",
     });
   };
+
+  const formatDateKey = (date: Date): string => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
+
+  const rentalDays = (() => {
+    if (!reservation?.pickupAt || !reservation?.returnAt) return 0;
+    const pickupDateTime = new Date(reservation.pickupAt);
+    const returnDateTime = new Date(reservation.returnAt);
+    const diffMs = returnDateTime.getTime() - pickupDateTime.getTime();
+    if (Number.isNaN(diffMs) || diffMs <= 0) return 1;
+    const hours = diffMs / (1000 * 60 * 60);
+    return Math.max(1, Math.ceil(hours / 24));
+  })();
+
+  const highSeasonDateList = (() => {
+    if (!reservation?.pickupAt || highSeasonDates.size === 0 || rentalDays === 0) return [];
+    const pickup = new Date(reservation.pickupAt);
+    if (Number.isNaN(pickup.getTime())) return [];
+    const dates: string[] = [];
+    for (let day = 0; day < rentalDays; day += 1) {
+      const current = new Date(pickup);
+      current.setDate(pickup.getDate() + day);
+      const key = formatDateKey(current);
+      if (highSeasonDates.has(key)) {
+        dates.push(key);
+      }
+    }
+    return dates;
+  })();
+
+  const accessorySelections = ACCESSORY_LABELS.map((option) => {
+    const count = reservation?.accessories?.[option.key] ?? 0;
+    return { ...option, count };
+  }).filter((option) => option.count > 0);
 
   const formatPhoneNumber = (phone: string, countryCode?: string) =>
     formatDisplayPhoneNumberWithCountryCode(phone, countryCode) || "-";
@@ -318,6 +439,64 @@ export default function ReservationDetailPage() {
                   <div className={styles.detailItem}>
                     <dt>返金メモ</dt>
                     <dd>{reservation.refundNote || "返金設定は未入力です"}</dd>
+                  </div>
+                </dl>
+              </div>
+
+              <div className={styles.detailPanel}>
+                <div className={styles.detailHeader}>
+                  <h3 className={styles.detailTitle}>ハイシーズン・用品オプション</h3>
+                </div>
+                <dl className={styles.detailGrid}>
+                  <div className={styles.detailItem}>
+                    <dt>ハイシーズン</dt>
+                    <dd>
+                      {highSeasonError
+                        ? highSeasonError
+                        : highSeasonLoading
+                          ? "算出中..."
+                          : highSeasonDateList.length > 0
+                            ? `該当 (${highSeasonDateList.length}日)`
+                            : "対象外"}
+                    </dd>
+                  </div>
+                  <div className={styles.detailItem}>
+                    <dt>ハイシーズン対象日</dt>
+                    <dd>
+                      {highSeasonError
+                        ? "取得に失敗しました"
+                        : highSeasonLoading
+                          ? "算出中..."
+                          : highSeasonDateList.length > 0
+                            ? highSeasonDateList
+                                .map((date) =>
+                                  new Date(`${date}T00:00:00`).toLocaleDateString("ja-JP")
+                                )
+                                .join(" / ")
+                            : "該当なし"}
+                    </dd>
+                  </div>
+                  <div className={styles.detailItem}>
+                    <dt>用品オプション</dt>
+                    <dd>
+                      {accessorySelections.length === 0 ? (
+                        "選択なし"
+                      ) : (
+                        <ul className={styles.optionList}>
+                          {accessorySelections.map((option) => (
+                            <li key={option.key}>
+                              {option.label} × {option.count}
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </dd>
+                  </div>
+                  <div className={styles.detailItem}>
+                    <dt>用品レンタル期間</dt>
+                    <dd>
+                      {formatDatetime(reservation.pickupAt)} → {formatDatetime(reservation.returnAt)}
+                    </dd>
                   </div>
                 </dl>
               </div>

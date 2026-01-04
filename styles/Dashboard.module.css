@@ -1589,6 +1589,17 @@
   word-break: break-word;
 }
 
+.optionList {
+  margin: 0.25rem 0 0;
+  padding-left: 1.2rem;
+  display: grid;
+  gap: 0.35rem;
+}
+
+.optionList li {
+  list-style: disc;
+}
+
 .splitLayout {
   display: grid;
   grid-template-columns: minmax(0, 1.3fr) minmax(320px, 1fr);

@@ -58,6 +58,7 @@ export type Reservation = {
   keyboxWindowEnd?: string;
   keyboxTargetName?: string;
   keyboxSignUsed?: string;
+  accessories?: Record<string, number>;
 };
 
 type ReservationRecord = {
@@ -135,10 +136,14 @@ type ReservationRecord = {
   keyboxTargetName?: string;
   keybox_sign_used?: string;
   keyboxSignUsed?: string;
+  accessories?: Record<string, number> | string;
+  accessoryOptions?: Record<string, number> | string;
+  accessory_options?: Record<string, number> | string;
   [key: string]: unknown;
 };
 
 const RESERVATIONS_TABLE = process.env.RESERVATIONS_TABLE ?? "yoyakuKanri";
+const ACCESSORY_KEYS = ["halfCap", "jetHelmet", "brandHelmet", "glove"] as const;
 
 const stringFrom = (record: ReservationRecord, keys: string[], fallback = ""): string => {
   for (const key of keys) {
@@ -185,7 +190,67 @@ const booleanFrom = (record: ReservationRecord, keys: string[], fallback = false
   return fallback;
 };
 
+const toSnakeCase = (value: string): string =>
+  value.replace(/[A-Z]/g, (char) => `_${char.toLowerCase()}`);
+
+const numberFromLoose = (value: unknown): number | null => {
+  if (typeof value === "number") return value;
+  if (typeof value === "string") {
+    const parsed = Number(value);
+    return Number.isNaN(parsed) ? null : parsed;
+  }
+  return null;
+};
+
 const normalizeReservation = (record: ReservationRecord): Reservation => {
+  const accessorySelections: Record<string, number> = {};
+  const accessoryContainers = [
+    record.accessories,
+    record.accessoryOptions,
+    record.accessory_options,
+  ];
+
+  accessoryContainers.forEach((container) => {
+    if (typeof container === "string") {
+      try {
+        const parsed = JSON.parse(container) as Record<string, unknown>;
+        ACCESSORY_KEYS.forEach((key) => {
+          const value = numberFromLoose(parsed[key]);
+          if (value != null && value > 0) {
+            accessorySelections[key] = value;
+          }
+        });
+      } catch (_error) {
+        // ignore parsing errors
+      }
+      return;
+    }
+
+    if (container && typeof container === "object") {
+      const recordValue = container as Record<string, unknown>;
+      ACCESSORY_KEYS.forEach((key) => {
+        const value = numberFromLoose(recordValue[key]);
+        if (value != null && value > 0) {
+          accessorySelections[key] = value;
+        }
+      });
+    }
+  });
+
+  ACCESSORY_KEYS.forEach((key) => {
+    if (accessorySelections[key] != null) return;
+    const snakeKey = toSnakeCase(key);
+    const value = numberFrom(record, [
+      key,
+      snakeKey,
+      `accessory_${key}`,
+      `accessory_${snakeKey}`,
+    ]);
+    if (value != null && value > 0) {
+      accessorySelections[key] = value;
+    }
+  });
+
   return {
     id: stringFrom(record, ["reservation_id", "reservationId", "id"], "(不明なID)"),
     storeName: stringFrom(record, ["store_name", "storeName", "store"], "未設定"),
@@ -243,6 +308,7 @@ const normalizeReservation = (record: ReservationRecord): Reservation => {
     keyboxWindowEnd: datetimeFrom(record, ["keybox_window_end", "keyboxWindowEnd"]),
     keyboxTargetName: stringFrom(record, ["keybox_target_name", "keyboxTargetName"], ""),
     keyboxSignUsed: stringFrom(record, ["keybox_sign_used", "keyboxSignUsed"], ""),
+    accessories: Object.keys(accessorySelections).length ? accessorySelections : undefined,
   };
 };
 
@@ -348,7 +414,7 @@ const toIsoStringIfPossible = (value: string | number | undefined): string | und
 };
 
 const reservationToRecord = (reservation: Reservation): ReservationRecord => {
-  return {
+  const record: ReservationRecord = {
     reservation_id: reservation.id,
     store_name: reservation.storeName,
     vehicle_model: reservation.vehicleModel,
@@ -391,6 +457,18 @@ const reservationToRecord = (reservation: Reservation): ReservationRecord => {
     keybox_target_name: reservation.keyboxTargetName ?? "",
     keybox_sign_used: reservation.keyboxSignUsed ?? "",
   };
+
+  if (reservation.accessories) {
+    record.accessories = reservation.accessories;
+    ACCESSORY_KEYS.forEach((key) => {
+      const count = reservation.accessories?.[key];
+      if (typeof count === "number") {
+        record[key] = count;
+      }
+    });
+  }
+
+  return record;
 };
 
 export async function createReservation(
