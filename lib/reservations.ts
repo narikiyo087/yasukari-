@@ -301,7 +301,7 @@ const normalizeReservation = (record: ReservationRecord): Reservation => {
       theftCoverage: stringFrom(record, ["options_theft_coverage", "theftCoverage"], "-"),
     },
     notes: stringFrom(record, ["notes"], ""),
-    returnRating: numberFrom(record, ["return_rating", "returnRating"]),
+    returnRating: numberFrom(record, ["return_rating", "returnRating"]) ?? undefined,
     returnSurvey: stringFrom(record, ["return_survey", "returnSurvey"], ""),
     refundNote: stringFrom(record, ["refund_note", "refundNote"], ""),
     keyboxPinCode: stringFrom(record, ["keybox_pin_code", "keyboxPinCode"], ""),
