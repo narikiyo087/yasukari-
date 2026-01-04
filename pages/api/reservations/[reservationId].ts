@@ -25,6 +25,7 @@ type ReservationDetailResponse = {
 };
 
 const VEHICLES_TABLE = process.env.VEHICLES_TABLE ?? "Vehicles";
+const REFUND_LIMIT_DAYS = 180;
 
 const isValidRentalStatus = (value: unknown): value is RentalAvailabilityStatus =>
   value === "AVAILABLE" ||
@@ -88,6 +89,49 @@ const buildAdminChangeNote = (renterName: string) => {
 const buildExtensionNote = (renterName: string) => {
   const parts = [renterName.trim() || "名前未登録", "延長手続き"];
   return Array.from(new Set(parts)).join(" / ");
+};
+
+const parsePaymentAmount = (amount: unknown): number | null => {
+  if (typeof amount === "number") return amount;
+  if (typeof amount !== "string") return null;
+  const normalized = amount.replace(/[,\s円]/g, "");
+  const parsed = Number(normalized);
+  return Number.isNaN(parsed) ? null : parsed;
+};
+
+const isWithinRefundWindow = (paymentDate: string | undefined): boolean => {
+  if (!paymentDate) return false;
+  const paidAt = new Date(paymentDate);
+  if (Number.isNaN(paidAt.getTime())) return false;
+
+  const now = new Date();
+  const diffMs = now.getTime() - paidAt.getTime();
+  const diffDays = diffMs / (1000 * 60 * 60 * 24);
+  return diffDays <= REFUND_LIMIT_DAYS;
+};
+
+const requestPayjpRefund = async (chargeId: string, amount: number) => {
+  const secretKey = process.env.PAYJP_SECRET_KEY;
+  if (!secretKey) {
+    throw new Error("PAYJP_SECRET_KEY が設定されていません。");
+  }
+
+  const basicAuth = Buffer.from(`${secretKey}:`).toString("base64");
+  const params = new URLSearchParams({ amount: amount.toString() });
+
+  const response = await fetch(`https://api.pay.jp/v1/charges/${chargeId}/refund`, {
+    method: "POST",
+    headers: {
+      Authorization: `Basic ${basicAuth}`,
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+    body: params.toString(),
+  });
+
+  const responseData = (await response.json()) as { error?: { message?: string } };
+  if (!response.ok) {
+    throw new Error(responseData.error?.message ?? "Pay.jp 返金処理に失敗しました。");
+  }
 };
 
 const updateVehicleAvailability = async (
@@ -227,6 +271,38 @@ export default async function handler(
 
       if (typeof body.vehicleChangeNotified === "boolean" && !updates.vehicleChangedAt) {
         updates.vehicleChangeNotified = body.vehicleChangeNotified;
+      }
+
+      const isCancelling =
+        updates.status === "キャンセル" && existingReservation.status !== "キャンセル";
+
+      if (isCancelling) {
+        if (!existingReservation.paymentId) {
+          return res.status(400).json({ error: "決済番号が登録されていないため返金できません。" });
+        }
+
+        const paymentAmount = parsePaymentAmount(existingReservation.paymentAmount);
+        if (paymentAmount === null) {
+          return res.status(400).json({ error: "決済金額の形式が不正なため返金できません。" });
+        }
+
+        if (!isWithinRefundWindow(existingReservation.paymentDate)) {
+          return res
+            .status(400)
+            .json({ error: "売上日から180日を経過しているため返金できません。" });
+        }
+
+        try {
+          await requestPayjpRefund(existingReservation.paymentId, paymentAmount);
+          updates.refundNote =
+            updates.refundNote ??
+            `${existingReservation.paymentAmount}円 / ${existingReservation.paymentId} の返金を実行`; 
+        } catch (refundError) {
+          const message =
+            refundError instanceof Error ? refundError.message : "返金処理に失敗しました";
+          console.error(`Failed to refund reservation ${reservationId}`, refundError);
+          return res.status(500).json({ error: message });
+        }
       }
 
       const reservation = await updateReservation(reservationId, updates);

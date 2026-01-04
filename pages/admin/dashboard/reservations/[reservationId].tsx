@@ -31,6 +31,7 @@ const ACCESSORY_LABELS: Array<{ key: string; label: string }> = [
   { key: "brandHelmet", label: "ブランド・ヘルメット" },
   { key: "glove", label: "グローブ" },
 ];
+const REFUND_LIMIT_DAYS = 180;
 
 export default function ReservationDetailPage() {
   const router = useRouter();
@@ -50,6 +51,26 @@ export default function ReservationDetailPage() {
   const [highSeasonLoading, setHighSeasonLoading] = useState<boolean>(false);
   const [highSeasonError, setHighSeasonError] = useState<string>("");
   const isReservationCompleted = reservation?.status === "予約完了";
+
+  const paymentDateInfo = (() => {
+    if (!reservation?.paymentDate) return { label: "決済日時未登録", isEligible: false };
+    const paidAt = new Date(reservation.paymentDate);
+    if (Number.isNaN(paidAt.getTime())) {
+      return { label: "決済日時の形式が不正です", isEligible: false };
+    }
+
+    const deadline = new Date(paidAt);
+    deadline.setDate(deadline.getDate() + REFUND_LIMIT_DAYS);
+    const now = new Date();
+    const isEligible = deadline >= now;
+
+    return {
+      label: `返金期限: ${deadline.toLocaleDateString("ja-JP")} (売上日から${REFUND_LIMIT_DAYS}日以内 ${
+        isEligible ? ": 返金可能" : ": 期限切れ"
+      })`,
+      isEligible,
+    };
+  })();
 
   useEffect(() => {
     if (!router.isReady || typeof reservationId !== "string") return;
@@ -262,6 +283,12 @@ export default function ReservationDetailPage() {
   const formatPhoneNumber = (phone: string, countryCode?: string) =>
     formatDisplayPhoneNumberWithCountryCode(phone, countryCode) || "-";
 
+  const formatPaymentAmount = (amount?: string) => {
+    if (!amount?.trim().length) return "決済金額未登録";
+    const normalized = amount.trim().replace(/円$/, "");
+    return `${normalized}円`;
+  };
+
   const handleVehicleChange = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!reservation || typeof reservationId !== "string") return;
@@ -315,6 +342,28 @@ export default function ReservationDetailPage() {
     if (!reservation || typeof reservationId !== "string") return;
     if (reservation.status === "予約完了") return;
 
+    const userNotificationMessage =
+      reservation.status === "キャンセル"
+        ? ""
+        : `予約がキャンセルされました。決済いただいた金額（${formatPaymentAmount(
+            reservation.paymentAmount
+          )}）は自動で返金されます。`;
+
+    const confirmationLines = [
+      "予約をキャンセルし、下記の内容で返金処理を行います。",
+      `決済番号 (pay.jp): ${reservation.paymentId || "未登録"}`,
+      `決済金額: ${formatPaymentAmount(reservation.paymentAmount)}`,
+      paymentDateInfo.label,
+      "",
+      userNotificationMessage
+        ? `ユーザー側ポップアップ想定: ${userNotificationMessage}`
+        : "ユーザー向けの案内メッセージも併せて表示されます。",
+    ];
+
+    if (!window.confirm(confirmationLines.join("\n"))) {
+      return;
+    }
+
     setIsCancelling(true);
     setCancelError("");
 
@@ -325,13 +374,15 @@ export default function ReservationDetailPage() {
         body: JSON.stringify({ status: "キャンセル", refundNote: refundNote || "返金設定未入力" }),
       });
 
+      const data = (await response.json()) as { reservation?: Reservation; error?: string };
       if (!response.ok) {
-        throw new Error(`キャンセル処理に失敗しました (${response.status})`);
+        throw new Error(data.error || `キャンセル処理に失敗しました (${response.status})`);
       }
-
-      const data = (await response.json()) as { reservation?: Reservation };
       if (data.reservation) {
         setReservation(data.reservation);
+        if (userNotificationMessage) {
+          window.alert(userNotificationMessage);
+        }
       }
     } catch (cancelErrorResponse) {
       const message =
@@ -648,6 +699,12 @@ export default function ReservationDetailPage() {
                 <div className={`${styles.inlineNotice} ${styles.noticeNeutral}`}>
                   返金設定は後から行えるようにするため、現時点では返金メモのみを残します。
                   ステータスをキャンセルに変更すると、ユーザー側で最新状態が確認できます。
+                  キャンセル時は決済番号 (pay.jp) と決済金額を参照して自動で返金処理を実行します。
+                  {paymentDateInfo.label}
+                </div>
+                <div className={`${styles.inlineNotice} ${styles.noticeSuccess}`}>
+                  ユーザー表示: 予約がキャンセルされました。決済いただいた金額（
+                  {formatPaymentAmount(reservation.paymentAmount)}）は自動で返金されます。
                 </div>
                 <label className={styles.inputLabel} htmlFor="refund-note">
                   返金メモ
