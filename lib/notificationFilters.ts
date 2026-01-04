@@ -11,7 +11,10 @@ export const isBroadcastCategory = (category?: string): boolean =>
 
 export const normalizeNotificationSettings = (
   settings?: Partial<NotificationSettings> | null
-): Required<Pick<NotificationSettings, 'receiveSite' | 'receiveMarketing' | 'receiveBroadcast'>> => ({
+): Required<
+  Pick<NotificationSettings, 'receiveEmail' | 'receiveSite' | 'receiveMarketing' | 'receiveBroadcast'>
+> => ({
+  receiveEmail: settings?.receiveEmail ?? true,
   receiveSite: settings?.receiveSite ?? true,
   receiveMarketing: settings?.receiveMarketing ?? false,
   receiveBroadcast: settings?.receiveBroadcast ?? true,
