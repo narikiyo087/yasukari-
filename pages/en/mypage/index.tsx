@@ -477,6 +477,8 @@ export default function MyPageEn() {
         body: JSON.stringify({
           status: '予約完了',
           reservationCompletedFlag: true,
+          returnRating,
+          returnSurvey,
         }),
       });
 

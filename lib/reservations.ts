@@ -48,6 +48,8 @@ export type Reservation = {
     theftCoverage: string;
   };
   notes: string;
+  returnRating?: number;
+  returnSurvey?: string;
   refundNote?: string;
   keyboxPinCode?: string;
   keyboxPinId?: string;
@@ -139,6 +141,10 @@ type ReservationRecord = {
   accessories?: Record<string, number> | string;
   accessoryOptions?: Record<string, number> | string;
   accessory_options?: Record<string, number> | string;
+  return_rating?: number | string;
+  returnRating?: number | string;
+  return_survey?: string;
+  returnSurvey?: string;
   [key: string]: unknown;
 };
 
@@ -210,16 +216,18 @@ const normalizeReservation = (record: ReservationRecord): Reservation => {
     record.accessory_options,
   ];
 
+  const addAccessorySelection = (key: string, rawValue: unknown) => {
+    const value = numberFromLoose(rawValue);
+    if (value != null && value > 0) {
+      accessorySelections[key] = value;
+    }
+  };
+
   accessoryContainers.forEach((container) => {
     if (typeof container === "string") {
       try {
         const parsed = JSON.parse(container) as Record<string, unknown>;
-        ACCESSORY_KEYS.forEach((key) => {
-          const value = numberFromLoose(parsed[key]);
-          if (value != null && value > 0) {
-            accessorySelections[key] = value;
-          }
-        });
+        Object.entries(parsed).forEach(([key, value]) => addAccessorySelection(key, value));
       } catch (_error) {
         // ignore parsing errors
       }
@@ -228,12 +236,7 @@ const normalizeReservation = (record: ReservationRecord): Reservation => {
 
     if (container && typeof container === "object") {
       const recordValue = container as Record<string, unknown>;
-      ACCESSORY_KEYS.forEach((key) => {
-        const value = numberFromLoose(recordValue[key]);
-        if (value != null && value > 0) {
-          accessorySelections[key] = value;
-        }
-      });
+      Object.entries(recordValue).forEach(([key, value]) => addAccessorySelection(key, value));
     }
   });
 
@@ -247,7 +250,7 @@ const normalizeReservation = (record: ReservationRecord): Reservation => {
       `accessory_${snakeKey}`,
     ]);
     if (value != null && value > 0) {
-      accessorySelections[key] = value;
+      addAccessorySelection(key, value);
     }
   });
 
@@ -298,6 +301,8 @@ const normalizeReservation = (record: ReservationRecord): Reservation => {
       theftCoverage: stringFrom(record, ["options_theft_coverage", "theftCoverage"], "-"),
     },
     notes: stringFrom(record, ["notes"], ""),
+    returnRating: numberFrom(record, ["return_rating", "returnRating"]),
+    returnSurvey: stringFrom(record, ["return_survey", "returnSurvey"], ""),
     refundNote: stringFrom(record, ["refund_note", "refundNote"], ""),
     keyboxPinCode: stringFrom(record, ["keybox_pin_code", "keyboxPinCode"], ""),
     keyboxPinId: stringFrom(record, ["keybox_pin_id", "keyboxPinId"], ""),
@@ -444,6 +449,8 @@ const reservationToRecord = (reservation: Reservation): ReservationRecord => {
     options_vehicle_coverage: reservation.options?.vehicleCoverage ?? "",
     options_theft_coverage: reservation.options?.theftCoverage ?? "",
     notes: reservation.notes ?? "",
+    return_rating: reservation.returnRating ?? undefined,
+    return_survey: reservation.returnSurvey ?? "",
     refund_note: reservation.refundNote ?? "",
     keybox_pin_code: reservation.keyboxPinCode ?? "",
     keybox_pin_id: reservation.keyboxPinId ?? "",

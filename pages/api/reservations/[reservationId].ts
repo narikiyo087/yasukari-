@@ -181,6 +181,14 @@ export default async function handler(
         updates.refundNote = body.refundNote;
       }
 
+      if (typeof body.returnRating === "number") {
+        updates.returnRating = Math.max(0, Math.min(5, body.returnRating));
+      }
+
+      if (typeof body.returnSurvey === "string") {
+        updates.returnSurvey = body.returnSurvey.trim();
+      }
+
       if (typeof body.returnAt === "string") {
         updates.returnAt = body.returnAt;
         const pickupAt = new Date(existingReservation.pickupAt);
