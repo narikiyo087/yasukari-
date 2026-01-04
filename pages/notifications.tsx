@@ -227,7 +227,6 @@ export default function NotificationsPage() {
           <div className={styles.summaryCard}>
             <p className={styles.summaryLabel}>未読</p>
             <p className={styles.summaryValue}>{unreadCount}件</p>
-            <p className={styles.summaryNote}>新着の通知をチェックしましょう。</p>
           </div>
           <div className={styles.summaryCard}>
             <p className={styles.summaryLabel}>通知件数</p>
