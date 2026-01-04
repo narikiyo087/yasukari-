@@ -83,6 +83,12 @@ export default function ReserveModelPage({
   const [holidayLoaded, setHolidayLoaded] = useState(false);
   const [holidayError, setHolidayError] = useState<string | null>(null);
 
+  useEffect(() => {
+    if (!store && storeOptions.length > 0) {
+      setStore(storeOptions[0]);
+    }
+  }, [store, storeOptions]);
+
   const minDate = useMemo(() => {
     const base = new Date();
     base.setDate(base.getDate() + 1);
@@ -265,9 +271,9 @@ export default function ReserveModelPage({
             <p className="text-xs font-semibold uppercase tracking-wide text-red-500">
               Reservation
             </p>
-            <h1 className="mt-2 text-2xl font-bold text-gray-900">店舗・日時の選択</h1>
+            <h1 className="mt-2 text-2xl font-bold text-gray-900">日時の選択</h1>
             <p className="mt-2 text-gray-700">
-              {resolvedModelName} の予約リクエストです。店舗と日時を選択してお進みください。
+              {resolvedModelName} の予約リクエストです。日時を選択してお進みください。
             </p>
           </header>
 
@@ -287,53 +293,8 @@ export default function ReserveModelPage({
               ) : null}
             </div>
 
-            <div className="grid gap-6 sm:grid-cols-2">
-              <div className="space-y-2">
-                <label className="text-sm font-semibold text-gray-900" htmlFor="store">
-                  店舗の選択
-                </label>
-                <p className="text-xs text-gray-500">店舗を選択してください</p>
-                <select
-                  id="store"
-                  value={store}
-                  onChange={(e) => setStore(e.target.value)}
-                  className="w-full rounded-lg border border-gray-200 bg-white px-4 py-3 text-sm shadow-sm focus:border-red-500 focus:outline-none disabled:cursor-not-allowed disabled:bg-gray-100"
-                  disabled={storeOptions.length === 0}
-                >
-                  {storeOptions.length === 0 ? (
-                    <option value="" disabled>
-                      取扱店舗の準備中です
-                    </option>
-                  ) : (
-                    <>
-                      <option value="" disabled>
-                        店舗を選択してください
-                      </option>
-                      {storeOptions.map((storeName) => (
-                        <option key={storeName} value={storeName}>
-                          {storeName}
-                        </option>
-                      ))}
-                    </>
-                  )}
-                </select>
-                {storeNotice ? (
-                  <div className="rounded-lg bg-gray-50 p-3 text-xs text-gray-700 leading-relaxed">
-                    三ノ輪店は無人店の為、詳しい操作の説明ができません。
-                    <br />
-                    バイクの操作に不安のある方、日本語での説明に不安がある方は、
-                    <Link
-                      href="/stores#adachi"
-                      className="ml-1 font-semibold text-red-600 hover:underline"
-                    >
-                      足立小台本店の利用をお願いします。
-                    </Link>
-                  </div>
-                ) : null}
-              </div>
-
-              <div className="space-y-4">
-                <div className="rounded-xl border border-gray-100 bg-gray-50 p-4 shadow-sm">
+            <div className="space-y-4">
+              <div className="rounded-xl border border-gray-100 bg-gray-50 p-4 shadow-sm">
                     <div className="flex flex-wrap items-center gap-3 mb-3">
                       <p className="text-xs font-semibold text-gray-900">カレンダーから選択</p>
                       <div className="flex gap-2 text-[11px]">
@@ -413,8 +374,17 @@ export default function ReserveModelPage({
                   ) : holidayError ? (
                     <p className="mt-2 text-xs text-red-500">{holidayError}</p>
                   ) : null}
-                </div>
               </div>
+              {storeNotice ? (
+                <div className="rounded-lg bg-gray-50 p-3 text-xs text-gray-700 leading-relaxed">
+                  三ノ輪店は無人店の為、詳しい操作の説明ができません。
+                  <br />
+                  バイクの操作に不安のある方、日本語での説明に不安がある方は、
+                  <Link href="/stores#adachi" className="ml-1 font-semibold text-red-600 hover:underline">
+                    足立小台本店の利用をお願いします。
+                  </Link>
+                </div>
+              ) : null}
             </div>
 
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
