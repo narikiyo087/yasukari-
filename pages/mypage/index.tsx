@@ -457,6 +457,22 @@ export default function MyPage() {
     return Date.now() > returnDate.getTime();
   }, [activeReturnReservation]);
   const extensionTargetReservationId = activeReturnReservation?.id ?? null;
+  const reviewStore = useMemo(() => {
+    const storeName = activeReturnReservation?.storeName ?? '';
+    if (storeName.includes('足立小台')) {
+      return {
+        name: 'ヤスカリ足立小台本店',
+        url: 'https://www.google.com/search?q=%E3%83%A4%E3%82%B9%E3%82%AB%E3%83%AA%E8%B6%B3%E7%AB%8B%E5%B0%8F%E5%8F%B0%E6%9C%AC%E5%BA%97&ludocid=7979404986309780694#lrd=0x60188d90c0ff8031:0x6ebc8a8eeff9a4d6,3,,,',
+      };
+    }
+    if (storeName.includes('三ノ輪')) {
+      return {
+        name: 'ヤスカリ 三ノ輪店',
+        url: 'https://www.google.com/search?q=%E3%83%A4%E3%82%B9%E3%82%AB%E3%83%AA%E4%B8%89%E3%83%8E%E8%BC%AA%E5%BA%97&ludocid=7113364738940764838#lrd=0x60188f4a72299455:0x62b7bf8ab65a82a6,3,,,',
+      };
+    }
+    return null;
+  }, [activeReturnReservation?.storeName]);
   const shouldShowRentalActions = useMemo(() => {
     if (!activeReturnReservation) return false;
     if (activeReturnReservation.status === '予約受付完了') return true;
@@ -1375,10 +1391,48 @@ export default function MyPage() {
                 <p className="rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-emerald-800">
                   ご協力ありがとうございました。レンタル中のバイク情報を更新しました。
                 </p>
+                <div className="rounded-lg border border-gray-200 bg-gray-50 px-3 py-3">
+                  <p className="text-sm font-semibold text-gray-900">よろしければシェアをお願いします。</p>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    <a
+                      href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(
+                        reviewStore ? `${reviewStore.name}でレンタルしました！` : 'ヤスカリでレンタルしました！'
+                      )}&url=${encodeURIComponent(reviewStore?.url ?? 'https://yasukaribike.com')}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center justify-center rounded-full bg-red-600 px-4 py-2 text-xs font-semibold text-white shadow-sm transition hover:bg-red-700"
+                    >
+                      Twitterでシェア
+                    </a>
+                    <a
+                      href={`https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(
+                        reviewStore?.url ?? 'https://yasukaribike.com'
+                      )}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center justify-center rounded-full bg-red-600 px-4 py-2 text-xs font-semibold text-white shadow-sm transition hover:bg-red-700"
+                    >
+                      LINEでシェア
+                    </a>
+                  </div>
+                </div>
+                {reviewStore ? (
+                  <div className="rounded-lg border border-gray-200 bg-white px-3 py-3">
+                    <p className="text-sm font-semibold text-gray-900">レビュー口コミはこちら</p>
+                    <a
+                      href={reviewStore.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="mt-3 inline-flex w-full items-center justify-center rounded-full bg-red-600 px-4 py-2 text-xs font-semibold text-white shadow-sm transition hover:bg-red-700"
+                    >
+                      {reviewStore.name}
+                    </a>
+                  </div>
+                ) : null}
                 <button
                   type="button"
                   onClick={handleReturnClose}
-                  className="inline-flex w-full items-center justify-center rounded-full bg-emerald-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-emerald-700"
+                  className="inline-flex w-full items-center justify-center rounded-full bg-red-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-red-700"
                 >
                   閉じる
                 </button>
