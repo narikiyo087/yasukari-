@@ -38,8 +38,8 @@ const isCanceledStatus = (status?: string) =>
   status?.toLowerCase() === 'cancelled';
 
 export default function MyPageEn() {
-  const paymentInfoUrl = process.env.NEXT_PUBLIC_PAYMENT_INFO_URL ?? '/en/notifications';
   const rentalContractBaseUrl = process.env.NEXT_PUBLIC_RENTAL_CONTRACT_URL;
+  const unmannedRentalGuideUrl = '/blog_for_custmor/2025-09-01-minowa-procedures';
 
   const [user, setUser] = useState<SessionUser | null>(null);
   const [loading, setLoading] = useState(true);
@@ -61,6 +61,8 @@ export default function MyPageEn() {
   const [accidentUploading, setAccidentUploading] = useState(false);
   const [accidentSubmitted, setAccidentSubmitted] = useState(false);
   const [showReturnModal, setShowReturnModal] = useState(false);
+  const [showReturnExpiredModal, setShowReturnExpiredModal] = useState(false);
+  const [showUnlockQrModal, setShowUnlockQrModal] = useState(false);
   const [returnFile, setReturnFile] = useState<File | null>(null);
   const [returnError, setReturnError] = useState('');
   const [returnUploading, setReturnUploading] = useState(false);
@@ -68,7 +70,15 @@ export default function MyPageEn() {
   const [returnRating, setReturnRating] = useState(0);
   const [returnSurvey, setReturnSurvey] = useState('');
   const [returnSubmitting, setReturnSubmitting] = useState(false);
+  const [mobileSectionsOpen, setMobileSectionsOpen] = useState({
+    reservations: true,
+    profile: false,
+    registration: false,
+    logout: false,
+    links: false,
+  });
   const router = useRouter();
+  const sectionActionClass = 'inline-flex items-center justify-center rounded-full px-4 py-2 text-sm font-semibold';
 
   const resetAccidentModal = () => {
     setAccidentFile(null);
@@ -85,6 +95,13 @@ export default function MyPageEn() {
     setReturnRating(0);
     setReturnSurvey('');
     setReturnSubmitting(false);
+  };
+
+  const toggleMobileSection = (key: keyof typeof mobileSectionsOpen) => {
+    setMobileSectionsOpen((prevState) => ({
+      ...prevState,
+      [key]: !prevState[key],
+    }));
   };
 
   useEffect(() => {
@@ -230,8 +247,8 @@ export default function MyPageEn() {
 
         const data = (await response.json()) as { reservations?: Reservation[] };
         const allReservations = data.reservations ?? [];
-        const canceledReservations = allReservations.filter(
-          (reservation) => isCanceledStatus(reservation.status)
+        const canceledReservations = allReservations.filter((reservation) =>
+          isCanceledStatus(reservation.status)
         );
         const activeReservations = allReservations.filter((reservation) => {
           const isCompleted =
@@ -240,30 +257,7 @@ export default function MyPageEn() {
         });
 
         if (canceledReservations.length > 0 && typeof window !== 'undefined') {
-          const storageKey = 'yasukari-cancelled-reservation-ids';
-          let seenIds: string[] = [];
-
-          try {
-            const stored = window.localStorage.getItem(storageKey);
-            if (stored) {
-              const parsed = JSON.parse(stored) as unknown;
-              if (Array.isArray(parsed)) {
-                seenIds = parsed.filter((value): value is string => typeof value === 'string');
-              }
-            }
-          } catch (storageError) {
-            console.warn('Failed to parse cancelled reservation cache', storageError);
-          }
-
-          const canceledIds = canceledReservations.map((reservation) => reservation.id);
-          const unseenIds = canceledIds.filter((id) => !seenIds.includes(id));
-
-          if (unseenIds.length > 0) {
-            setShowCancelNotice(true);
-          }
-
-          const mergedIds = Array.from(new Set([...seenIds, ...canceledIds]));
-          window.localStorage.setItem(storageKey, JSON.stringify(mergedIds));
+          setShowCancelNotice(true);
         }
 
         setReservations(activeReservations);
@@ -307,6 +301,17 @@ export default function MyPageEn() {
     return REQUIRED_REGISTRATION_FIELDS.every((field) => Boolean(registration[field]));
   }, [registration]);
 
+  useEffect(() => {
+    if (loadingRegistration || !registration || isRegistrationComplete) return;
+    if (typeof window === 'undefined') return;
+
+    const storageKey = 'mypage.registration-incomplete-alert';
+    if (window.sessionStorage.getItem(storageKey)) return;
+
+    window.sessionStorage.setItem(storageKey, 'true');
+    window.alert('Your registration is incomplete or needs to be updated.');
+  }, [isRegistrationComplete, loadingRegistration, registration]);
+
   const formatReservationDatetime = (value: string) => {
     const parsed = new Date(value);
     if (Number.isNaN(parsed.getTime())) return '-';
@@ -321,6 +326,17 @@ export default function MyPageEn() {
   };
 
   const reservationCompletionLabel = (flag: boolean) => (flag ? 'Reservation complete' : 'In use');
+
+  const activeKeyboxQrImageUrl = useMemo(() => {
+    const withQr = reservations.find((reservation) => reservation.keyboxQrImageUrl);
+    return withQr?.keyboxQrImageUrl ?? null;
+  }, [reservations]);
+
+  useEffect(() => {
+    if (!activeKeyboxQrImageUrl) {
+      setShowUnlockQrModal(false);
+    }
+  }, [activeKeyboxQrImageUrl]);
 
   const markVehicleChangeSeen = async (reservationId: string) => {
     try {
@@ -415,16 +431,106 @@ export default function MyPageEn() {
   const activeReturnReservation =
     reservations.find((reservation) => !reservation.reservationCompletedFlag) ?? null;
   const hasActiveReservation = reservations.length > 0;
+  const isRentalActive = useMemo(() => {
+    if (!activeReturnReservation) return false;
+    const pickupDate = new Date(activeReturnReservation.pickupAt);
+    const returnDate = new Date(activeReturnReservation.returnAt);
+    if (Number.isNaN(pickupDate.getTime()) || Number.isNaN(returnDate.getTime())) {
+      return true;
+    }
+    const now = Date.now();
+    return now >= pickupDate.getTime() && now <= returnDate.getTime();
+  }, [activeReturnReservation]);
+  const isReturnOverdue = useMemo(() => {
+    if (!activeReturnReservation?.returnAt) return false;
+    const returnDate = new Date(activeReturnReservation.returnAt);
+    if (Number.isNaN(returnDate.getTime())) return false;
+    return Date.now() > returnDate.getTime();
+  }, [activeReturnReservation]);
+  const extensionTargetReservationId = activeReturnReservation?.id ?? null;
+  const reviewStore = useMemo(() => {
+    const storeName = activeReturnReservation?.storeName ?? '';
+    if (storeName.includes('足立小台')) {
+      return {
+        name: 'ヤスカリ足立小台本店',
+        url: 'https://www.google.com/search?q=%E3%83%A4%E3%82%B9%E3%82%AB%E3%83%AA%E8%B6%B3%E7%AB%8B%E5%B0%8F%E5%8F%B0%E6%9C%AC%E5%BA%97&ludocid=7979404986309780694#lrd=0x60188d90c0ff8031:0x6ebc8a8eeff9a4d6,3,,,',
+      };
+    }
+    if (storeName.includes('三ノ輪')) {
+      return {
+        name: 'ヤスカリ 三ノ輪店',
+        url: 'https://www.google.com/search?q=%E3%83%A4%E3%82%B9%E3%82%AB%E3%83%AA%E4%B8%89%E3%83%8E%E8%BC%AA%E5%BA%97&ludocid=7113364738940764838#lrd=0x60188f4a72299455:0x62b7bf8ab65a82a6,3,,,',
+      };
+    }
+    return null;
+  }, [activeReturnReservation?.storeName]);
+  const shouldShowRentalActions = useMemo(() => {
+    if (!activeReturnReservation) return false;
+    if (activeReturnReservation.status === '予約受付完了') return true;
+    return isRentalActive;
+  }, [activeReturnReservation, isRentalActive]);
 
   const handleReturnOpen = () => {
     resetReturnModal();
+    if (isReturnOverdue) {
+      setShowReturnExpiredModal(true);
+      return;
+    }
     setShowReturnModal(true);
   };
 
   const handleReturnClose = () => {
     setShowReturnModal(false);
+    setShowReturnExpiredModal(false);
     resetReturnModal();
   };
+
+  useEffect(() => {
+    if (!isReturnOverdue || !activeReturnReservation) return;
+
+    setShowReturnExpiredModal(true);
+
+    if (typeof window === 'undefined') return;
+
+    const storageKey = 'yasukari-return-overdue-ids';
+    let seenIds: string[] = [];
+
+    try {
+      const stored = window.localStorage.getItem(storageKey);
+      if (stored) {
+        const parsed = JSON.parse(stored) as unknown;
+        if (Array.isArray(parsed)) {
+          seenIds = parsed.filter((value): value is string => typeof value === 'string');
+        }
+      }
+    } catch (storageError) {
+      console.warn('Failed to parse overdue return cache', storageError);
+    }
+
+    const reservationId = activeReturnReservation.id;
+    if (seenIds.includes(reservationId)) return;
+
+    const notifyOverdue = async () => {
+      try {
+        await fetch('/api/notifications/overdue-return', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            reservationId,
+            returnAt: activeReturnReservation.returnAt,
+            vehicleModel: activeReturnReservation.vehicleModel,
+          }),
+        });
+      } catch (error) {
+        console.error('Failed to notify overdue return', error);
+      }
+    };
+
+    void notifyOverdue();
+
+    const mergedIds = Array.from(new Set([...seenIds, reservationId]));
+    window.localStorage.setItem(storageKey, JSON.stringify(mergedIds));
+  }, [activeReturnReservation, isReturnOverdue]);
 
   const handleReturnComplete = async () => {
     if (!returnFile) {
@@ -490,10 +596,15 @@ export default function MyPageEn() {
       setReservations((prev) =>
         prev.map((reservation) =>
           reservation.id === activeReturnReservation.id
-            ? { ...reservation, status: '予約完了', reservationCompletedFlag: true }
+            ? {
+                ...reservation,
+                status: '予約完了',
+                reservationCompletedFlag: true,
+              }
             : reservation
         )
       );
+
       setReturnStep('done');
     } catch (error) {
       console.error('Failed to submit return survey', error);
@@ -565,255 +676,389 @@ export default function MyPageEn() {
 
             <section className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
               <div className="flex flex-wrap items-start justify-between gap-4">
-                <div>
-                  <h2 className="text-lg font-semibold text-gray-900">Reservations</h2>
-                  <p className="mt-1 text-sm text-gray-600">Your latest bookings and usage will appear here.</p>
+                <button
+                  type="button"
+                  aria-expanded={mobileSectionsOpen.reservations}
+                  onClick={() => toggleMobileSection('reservations')}
+                  className="group flex flex-1 items-start justify-between gap-3 text-left md:pointer-events-none md:cursor-default"
+                >
+                  <div>
+                    <h2 className="text-lg font-semibold text-gray-900">Current rentals</h2>
+                    <p className="mt-1 text-sm text-gray-600">Your active rental information appears here.</p>
+                  </div>
+                  <span
+                    aria-hidden
+                    className={`ml-3 inline-flex h-9 w-9 items-center justify-center rounded-full border border-gray-200 bg-gray-50 text-xs font-semibold text-gray-600 transition-transform md:hidden ${
+                      mobileSectionsOpen.reservations ? 'rotate-180' : ''
+                    }`}
+                  >
+                    ▼
+                  </span>
+                </button>
+              </div>
+              <div className={`${mobileSectionsOpen.reservations ? 'mt-4 block' : 'hidden'} md:mt-4 md:block`}>
+                {shouldShowRentalActions ? (
+                  <>
+                    <div className="flex flex-wrap gap-2">
+                      {extensionTargetReservationId ? (
+                        <Link
+                          href={`/mypage/rentals/extend/${extensionTargetReservationId}`}
+                          className="inline-flex items-center justify-center rounded-full bg-red-600 px-4 py-2 text-xs font-semibold text-white shadow-md ring-2 ring-inset ring-red-500 ring-offset-1 ring-offset-white transition hover:bg-red-700"
+                        >
+                          Extend rental
+                        </Link>
+                      ) : (
+                        <button
+                          type="button"
+                          disabled
+                          className="inline-flex items-center justify-center rounded-full bg-red-200 px-4 py-2 text-xs font-semibold text-white/70 shadow-md ring-2 ring-inset ring-red-200 ring-offset-1 ring-offset-white"
+                        >
+                          Extend rental
+                        </button>
+                      )}
+                      <button
+                        type="button"
+                        onClick={() => activeKeyboxQrImageUrl && setShowUnlockQrModal(true)}
+                        className="inline-flex items-center justify-center rounded-full bg-white px-4 py-2 text-xs font-semibold text-gray-700 shadow-md ring-2 ring-inset ring-gray-200 ring-offset-1 ring-offset-white transition hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-60 sm:hidden"
+                        disabled={!activeKeyboxQrImageUrl}
+                      >
+                        Show unlock QR
+                      </button>
+                      <button
+                        type="button"
+                        onClick={handleReturnOpen}
+                        disabled={!activeReturnReservation}
+                        className="inline-flex items-center justify-center rounded-full bg-red-600 px-4 py-2 text-xs font-semibold text-white shadow-md ring-2 ring-inset ring-red-500 ring-offset-1 ring-offset-white transition hover:bg-red-700 disabled:cursor-not-allowed disabled:bg-red-200 disabled:text-white/70 disabled:ring-red-200"
+                      >
+                        Return
+                      </button>
+                      <button
+                        type="button"
+                        onClick={handleAccidentOpen}
+                        className="inline-flex items-center justify-center rounded-full bg-red-600 px-4 py-2 text-xs font-semibold text-white shadow-md ring-2 ring-inset ring-red-500 ring-offset-1 ring-offset-white transition hover:bg-red-700"
+                      >
+                        Accident / fall
+                      </button>
+                    </div>
+                    <div className="mt-2 text-sm text-gray-700">
+                      <Link
+                        href={unmannedRentalGuideUrl}
+                        className="text-sky-700 underline underline-offset-2 transition hover:text-sky-800"
+                      >
+                        About rentals at unmanned stores
+                      </Link>
+                    </div>
+                  </>
+                ) : null}
+
+                <div className="mt-4 space-y-3 text-sm text-gray-700">
+                  {reservationsError ? (
+                    <p className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-red-700">{reservationsError}</p>
+                  ) : loadingReservations ? (
+                    <p className="rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-gray-700">Loading reservation data…</p>
+                  ) : reservations.length === 0 ? (
+                    <p className="rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-gray-700">
+                      You have no active reservations right now. Completed bookings are listed under Past reservations.
+                    </p>
+                  ) : (
+                    <ul className="space-y-3">
+                      {reservations.map((reservation) => {
+                        const manualVideoUrl = reservation.videoUrl?.trim();
+                        const accessLink = reservation.storeName?.includes('三ノ輪')
+                          ? 'https://yasukaribike.com/stores#minowa'
+                          : reservation.storeName?.includes('足立小台')
+                            ? 'https://yasukaribike.com/stores#adachi'
+                            : null;
+
+                        return (
+                          <li
+                            key={reservation.id}
+                            className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm ring-1 ring-gray-100"
+                          >
+                            <div className="flex flex-wrap items-start justify-between gap-3">
+                              <div className="flex items-start gap-3">
+                                <img
+                                  src={
+                                    reservation.vehicleThumbnailUrl ||
+                                    '/image/vehicle-thumbnail-placeholder.svg'
+                                  }
+                                  alt={
+                                    reservation.vehicleModel
+                                      ? `${reservation.vehicleModel} thumbnail`
+                                      : 'Vehicle thumbnail'
+                                  }
+                                  className="h-12 w-12 rounded-md border border-gray-200 bg-white object-cover shadow-sm"
+                                  loading="lazy"
+                                />
+                                <div>
+                                  <p className="text-sm font-semibold text-gray-900">
+                                    {reservation.storeName} / {reservation.vehicleModel}
+                                  </p>
+                                  <p className="text-xs text-gray-600">
+                                    {reservation.vehicleCode} {reservation.vehiclePlate}
+                                  </p>
+                                </div>
+                              </div>
+                              <div className="flex flex-wrap items-center gap-2 sm:flex-col sm:items-end">
+                                <span className="inline-flex items-center rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-800">
+                                  {statusLabel(reservation.status)}
+                                </span>
+                                <span
+                                  className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold ${
+                                    reservation.reservationCompletedFlag
+                                      ? 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200'
+                                      : 'bg-amber-50 text-amber-700 ring-1 ring-amber-200'
+                                  }`}
+                                >
+                                  {reservationCompletionLabel(reservation.reservationCompletedFlag)}
+                                </span>
+                              </div>
+                            </div>
+                            {reservation.vehicleChangedAt && !reservation.vehicleChangeNotified ? (
+                              <p className="mt-3 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs font-semibold text-amber-800">
+                                The vehicle has been updated by our staff. New vehicle: {reservation.vehicleCode} /{' '}
+                                {reservation.vehiclePlate || 'Not set'}
+                              </p>
+                            ) : null}
+                            <dl className="mt-3 grid gap-2 sm:grid-cols-2">
+                              <div className="rounded-lg bg-gray-50 px-3 py-2">
+                                <dt className="text-xs text-gray-500">Pickup → Return</dt>
+                                <dd className="font-semibold text-gray-900">
+                                  {formatReservationDatetime(reservation.pickupAt)} → {formatReservationDatetime(reservation.returnAt)}
+                                </dd>
+                              </div>
+                              <div className="rounded-lg bg-gray-50 px-3 py-2">
+                                <dt className="text-xs text-gray-500">Reservation details</dt>
+                                <dd className="font-semibold text-gray-900">
+                                  Vehicle code: {reservation.vehicleCode || '-'} / Plate number: {reservation.vehiclePlate || 'Not set'}
+                                </dd>
+                              </div>
+                              <div className="rounded-lg bg-gray-50 px-3 py-2">
+                                <dt className="text-xs text-gray-500">Payment amount</dt>
+                                <dd className="font-semibold text-gray-900">{reservation.paymentAmount} yen</dd>
+                              </div>
+                              <div className="rounded-lg bg-gray-50 px-3 py-2">
+                                <dt className="text-xs text-gray-500">Payment date</dt>
+                                <dd className="font-semibold text-gray-900">
+                                  {reservation.paymentDate ? formatReservationDatetime(reservation.paymentDate) : 'Not recorded'}
+                                </dd>
+                              </div>
+                            </dl>
+                            {reservation.keyboxPinCode ? (
+                              <div className="mt-3 rounded-lg border border-sky-200 bg-sky-50 p-3">
+                                <div className="flex flex-wrap items-start justify-between gap-3">
+                                  <div>
+                                    <p className="text-sm font-semibold text-sky-900">Unmanned store unlock info</p>
+                                  </div>
+                                  <span className="inline-flex items-center rounded-full bg-white px-3 py-1 text-xs font-semibold text-sky-800 ring-1 ring-sky-200">
+                                    PIN issued
+                                  </span>
+                                </div>
+                                <div className="mt-3 grid gap-3">
+                                  <div className="rounded-lg bg-white px-3 py-2 shadow-sm">
+                                    <dt className="text-xs text-gray-600">PIN code</dt>
+                                    <dd className="font-mono text-lg font-semibold text-gray-900">{reservation.keyboxPinCode}</dd>
+                                  </div>
+                                </div>
+                                <div className="mt-3 flex flex-wrap items-center gap-3">
+                                  {reservation.keyboxQrImageUrl ? (
+                                    <div className="flex items-center gap-2 rounded-lg bg-white p-2 shadow-sm">
+                                      <button
+                                        type="button"
+                                        onClick={() => setShowUnlockQrModal(true)}
+                                        className="group rounded border border-transparent focus:outline-none focus:ring-2 focus:ring-sky-300"
+                                      >
+                                        <img
+                                          src={reservation.keyboxQrImageUrl}
+                                          alt="Unlock QR code"
+                                          className="h-20 w-20 rounded border border-gray-200 object-contain transition group-hover:scale-105"
+                                        />
+                                      </button>
+                                      <div className="text-xs text-gray-600">Hold it over the keybox reader to unlock.</div>
+                                    </div>
+                                  ) : null}
+                                </div>
+                              </div>
+                            ) : reservation.storeName === '三ノ輪店' ? (
+                              <p className="mt-3 rounded-lg border border-sky-100 bg-sky-50 px-3 py-2 text-xs font-semibold text-sky-800">
+                                We are preparing the keybox unlock information. Please check again soon.
+                              </p>
+                            ) : null}
+                            <div className="mt-4 flex flex-wrap gap-2">
+                              <Link
+                                href={`/mypage/rentals/${reservation.id}`}
+                                className="inline-flex items-center justify-center rounded-full border border-slate-200 bg-slate-50 px-4 py-2 text-xs font-semibold text-slate-700 transition hover:border-slate-300 hover:bg-slate-100"
+                              >
+                                View details
+                              </Link>
+                              {accessLink ? (
+                                <a
+                                  href={accessLink}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="inline-flex items-center justify-center rounded-full border border-gray-200 bg-white px-4 py-2 text-xs font-semibold text-gray-700 transition hover:border-gray-300 hover:bg-gray-50"
+                                >
+                                  Directions to the store
+                                </a>
+                              ) : null}
+                              {manualVideoUrl ? (
+                                <Link
+                                  href={manualVideoUrl}
+                                  className="inline-flex items-center justify-center rounded-full border border-blue-200 bg-blue-50 px-4 py-2 text-xs font-semibold text-blue-800 transition hover:border-blue-300 hover:bg-blue-100"
+                                  target="_blank"
+                                  rel="noreferrer"
+                                >
+                                  Watch manual video
+                                </Link>
+                              ) : null}
+                              <Link
+                                href={rentalContractBaseUrl ?? `/rental-contract/${reservation.id}`}
+                                className="inline-flex items-center justify-center rounded-full border border-amber-200 bg-amber-50 px-4 py-2 text-xs font-semibold text-amber-800 transition hover:border-amber-300 hover:bg-amber-100"
+                                target="_blank"
+                                rel="noreferrer"
+                              >
+                                View rental contract
+                              </Link>
+                            </div>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  )}
                 </div>
-                <div className="flex flex-wrap items-center gap-2">
+                <div
+                  className={`${mobileSectionsOpen.reservations ? 'mt-4 flex' : 'hidden'} flex-wrap items-center justify-end gap-2 md:mt-6 md:flex`}
+                >
                   <Link
                     href="/en/mypage/past-reservations"
                     target="_blank"
                     rel="noreferrer"
-                    className="inline-flex items-center rounded-full border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-700 transition hover:border-gray-300 hover:bg-gray-50"
+                    className={`${sectionActionClass} border border-gray-200 bg-white text-gray-700 transition hover:border-gray-300 hover:bg-gray-50`}
                   >
                     Past reservations
                   </Link>
                   {hasActiveReservation ? (
                     <button
                       type="button"
-                      className="inline-flex items-center rounded-full bg-emerald-50 px-4 py-2 text-sm font-semibold text-emerald-700 ring-1 ring-inset ring-emerald-200"
+                      className={`${sectionActionClass} bg-emerald-50 text-emerald-700 ring-1 ring-inset ring-emerald-200`}
                     >
                       Reservation details
                     </button>
                   ) : null}
                 </div>
               </div>
-              <div className="mt-4 flex flex-wrap gap-2">
-                <button
-                  type="button"
-                  className="inline-flex items-center justify-center rounded-full bg-sky-600 px-4 py-2 text-xs font-semibold text-white shadow-md ring-2 ring-inset ring-sky-200 ring-offset-1 ring-offset-white transition hover:bg-sky-700"
-                >
-                  Extend rental
-                </button>
-                <button
-                  type="button"
-                  onClick={handleReturnOpen}
-                  disabled={!activeReturnReservation}
-                  className="inline-flex items-center justify-center rounded-full bg-emerald-600 px-4 py-2 text-xs font-semibold text-white shadow-md ring-2 ring-inset ring-emerald-200 ring-offset-1 ring-offset-white transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:bg-emerald-300 disabled:text-white disabled:ring-emerald-100"
-                >
-                  Return
-                </button>
-                <button
-                  type="button"
-                  onClick={handleAccidentOpen}
-                  className="inline-flex items-center justify-center rounded-full bg-rose-600 px-4 py-2 text-xs font-semibold text-white shadow-md ring-2 ring-inset ring-rose-200 ring-offset-1 ring-offset-white transition hover:bg-rose-700"
-                >
-                  Accident / fall
-                </button>
-              </div>
-
-              <div className="mt-4 space-y-3 text-sm text-gray-700">
-                {reservationsError ? (
-                  <p className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-red-700">{reservationsError}</p>
-                ) : loadingReservations ? (
-                  <p className="rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-gray-700">Loading reservation data…</p>
-                ) : reservations.length === 0 ? (
-                  <p className="rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-gray-700">
-                    You have no active reservations right now. Completed bookings are listed under Past reservations.
-                  </p>
-                ) : (
-                  <ul className="space-y-3">
-                    {reservations.map((reservation) => {
-                      const manualVideoUrl = reservation.videoUrl?.trim();
-
-                      return (
-                        <li
-                          key={reservation.id}
-                          className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm ring-1 ring-gray-100"
-                        >
-                          <div className="flex flex-wrap items-start justify-between gap-3">
-                            <div className="flex items-start gap-3">
-                              <img
-                                src={
-                                  reservation.vehicleThumbnailUrl ||
-                                  '/image/vehicle-thumbnail-placeholder.svg'
-                                }
-                                alt={
-                                  reservation.vehicleModel
-                                    ? `${reservation.vehicleModel} thumbnail`
-                                    : 'Vehicle thumbnail'
-                                }
-                                className="h-12 w-12 rounded-md border border-gray-200 bg-white object-cover shadow-sm"
-                                loading="lazy"
-                              />
-                              <div>
-                                <p className="text-sm font-semibold text-gray-900">
-                                  {reservation.storeName} / {reservation.vehicleModel}
-                                </p>
-                                <p className="text-xs text-gray-600">
-                                  {reservation.vehicleCode} {reservation.vehiclePlate}
-                                </p>
-                              </div>
-                            </div>
-                            <div className="flex flex-col items-end gap-2">
-                              <span className="inline-flex items-center rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-800">
-                                {statusLabel(reservation.status)}
-                              </span>
-                              <span
-                                className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold ${
-                                  reservation.reservationCompletedFlag
-                                    ? 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200'
-                                    : 'bg-amber-50 text-amber-700 ring-1 ring-amber-200'
-                                }`}
-                              >
-                                {reservationCompletionLabel(reservation.reservationCompletedFlag)}
-                              </span>
-                            </div>
-                          </div>
-                          {reservation.vehicleChangedAt && !reservation.vehicleChangeNotified && (
-                            <p className="mt-3 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs font-semibold text-amber-800">
-                              The vehicle has been updated by our staff. New vehicle: {reservation.vehicleCode} /{' '}
-                              {reservation.vehiclePlate || 'Not set'}
-                            </p>
-                          )}
-                          <dl className="mt-3 grid gap-2 sm:grid-cols-2">
-                            <div className="rounded-lg bg-gray-50 px-3 py-2">
-                              <dt className="text-xs text-gray-500">Pickup → Return</dt>
-                              <dd className="font-semibold text-gray-900">
-                                {formatReservationDatetime(reservation.pickupAt)} → {formatReservationDatetime(reservation.returnAt)}
-                              </dd>
-                            </div>
-                            <div className="rounded-lg bg-gray-50 px-3 py-2">
-                              <dt className="text-xs text-gray-500">Reservation details</dt>
-                              <dd className="font-semibold text-gray-900">
-                                Vehicle code: {reservation.vehicleCode || '-'} / Plate number: {reservation.vehiclePlate || 'Not set'}
-                              </dd>
-                            </div>
-                            <div className="rounded-lg bg-gray-50 px-3 py-2">
-                              <dt className="text-xs text-gray-500">Payment amount</dt>
-                              <dd className="font-semibold text-gray-900">{reservation.paymentAmount} yen</dd>
-                            </div>
-                            <div className="rounded-lg bg-gray-50 px-3 py-2">
-                              <dt className="text-xs text-gray-500">Payment date</dt>
-                              <dd className="font-semibold text-gray-900">
-                                {reservation.paymentDate ? formatReservationDatetime(reservation.paymentDate) : 'Not recorded'}
-                              </dd>
-                            </div>
-                            <div className="rounded-lg bg-gray-50 px-3 py-2">
-                              <dt className="text-xs text-gray-500">Completion date (storage only)</dt>
-                              <dd className="font-semibold text-gray-900">
-                                {reservation.rentalCompletedAt ? formatReservationDatetime(reservation.rentalCompletedAt) : 'Not set'}
-                              </dd>
-                            </div>
-                          </dl>
-                          <div className="mt-4 flex flex-wrap gap-2">
-                            {manualVideoUrl ? (
-                              <Link
-                                href={manualVideoUrl}
-                                className="inline-flex items-center justify-center rounded-full border border-blue-200 bg-blue-50 px-4 py-2 text-xs font-semibold text-blue-800 transition hover:border-blue-300 hover:bg-blue-100"
-                                target="_blank"
-                                rel="noreferrer"
-                              >
-                                Watch manual video
-                              </Link>
-                            ) : null}
-                            <Link
-                              href={paymentInfoUrl}
-                              className="inline-flex items-center justify-center rounded-full border border-emerald-200 bg-emerald-50 px-4 py-2 text-xs font-semibold text-emerald-800 transition hover:border-emerald-300 hover:bg-emerald-100"
-                              target="_blank"
-                              rel="noreferrer"
-                            >
-                              Check payment info
-                            </Link>
-                            <Link
-                              href={rentalContractBaseUrl ?? `/rental-contract/${reservation.id}`}
-                              className="inline-flex items-center justify-center rounded-full border border-amber-200 bg-amber-50 px-4 py-2 text-xs font-semibold text-amber-800 transition hover:border-amber-300 hover:bg-amber-100"
-                              target="_blank"
-                              rel="noreferrer"
-                            >
-                              View rental contract
-                            </Link>
-                          </div>
-                        </li>
-                      );
-                    })}
-                  </ul>
-                )}
-              </div>
             </section>
 
             <section className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
               <div className="flex flex-wrap items-start justify-between gap-4">
-                <div>
+                <button
+                  type="button"
+                  aria-expanded={mobileSectionsOpen.profile}
+                  onClick={() => toggleMobileSection('profile')}
+                  className="group flex flex-1 items-center justify-between gap-3 text-left md:pointer-events-none md:cursor-default"
+                >
                   <h2 className="text-lg font-semibold text-gray-900">Profile information</h2>
-                </div>
+                  <span
+                    aria-hidden
+                    className={`ml-3 inline-flex h-9 w-9 items-center justify-center rounded-full border border-gray-200 bg-gray-50 text-xs font-semibold text-gray-600 transition-transform md:hidden ${
+                      mobileSectionsOpen.profile ? 'rotate-180' : ''
+                    }`}
+                  >
+                    ▼
+                  </span>
+                </button>
                 <Link
                   href="/en/mypage/profile-setup"
-                  className="inline-flex items-center rounded-full border border-red-200 px-4 py-2 text-sm font-semibold text-red-700 transition hover:border-red-300 hover:text-red-800"
+                  className={`${sectionActionClass} hidden border border-red-200 text-red-700 transition hover:border-red-300 hover:text-red-800 md:inline-flex`}
                 >
                   Edit basic info
                 </Link>
               </div>
 
-              {attributesError ? (
-                <p className="mt-3 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-600">{attributesError}</p>
-              ) : null}
+              <div className={`${mobileSectionsOpen.profile ? 'mt-3 block' : 'hidden'} md:mt-3 md:block`}>
+                {attributesError ? (
+                  <p className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-600">{attributesError}</p>
+                ) : null}
 
-              {loadingAttributes ? (
-                <p className="mt-3 text-sm text-gray-700">Loading your profile…</p>
-              ) : attributes ? (
-                <dl className="mt-4 grid gap-4 text-sm text-gray-700 md:grid-cols-2">
-                  <div>
-                    <dt className="font-medium text-gray-600">Phone number</dt>
-                    <dd className="mt-1 text-gray-800">{formatPhoneLabel(attributes.phone_number)}</dd>
-                  </div>
-                  <div>
-                    <dt className="font-medium text-gray-600">Handle name</dt>
-                    <dd className="mt-1 text-gray-800">{attributes['custom:handle'] ?? 'Not set'}</dd>
-                  </div>
-                  <div>
-                    <dt className="font-medium text-gray-600">Location / language</dt>
-                    <dd className="mt-1 text-gray-800">{localeLabel(attributes['custom:locale'])}</dd>
-                  </div>
-                  <div>
-                    <dt className="font-medium text-gray-600">Nickname</dt>
-                    <dd className="mt-1 text-gray-800">{attributes.name ?? 'Not set'}</dd>
-                  </div>
-                </dl>
-              ) : (
-                <p className="mt-3 text-sm text-gray-700">We couldn&apos;t load your profile details.</p>
-              )}
+                {loadingAttributes ? (
+                  <p className="mt-3 text-sm text-gray-700">Loading your profile…</p>
+                ) : attributes ? (
+                  <dl className="mt-4 grid gap-4 text-sm text-gray-700 md:grid-cols-2">
+                    <div>
+                      <dt className="font-medium text-gray-600">Phone number</dt>
+                      <dd className="mt-1 text-gray-800">{formatPhoneLabel(attributes.phone_number)}</dd>
+                    </div>
+                    <div>
+                      <dt className="font-medium text-gray-600">Handle name</dt>
+                      <dd className="mt-1 text-gray-800">{attributes['custom:handle'] ?? 'Not set'}</dd>
+                    </div>
+                    <div>
+                      <dt className="font-medium text-gray-600">Location / language</dt>
+                      <dd className="mt-1 text-gray-800">{localeLabel(attributes['custom:locale'])}</dd>
+                    </div>
+                    <div>
+                      <dt className="font-medium text-gray-600">Nickname</dt>
+                      <dd className="mt-1 text-gray-800">{attributes.name ?? 'Not set'}</dd>
+                    </div>
+                  </dl>
+                ) : (
+                  <p className="mt-3 text-sm text-gray-700">We couldn&apos;t load your profile details.</p>
+                )}
+              </div>
+              <div className={`${mobileSectionsOpen.profile ? 'mt-4 flex' : 'hidden'} justify-center md:hidden`}>
+                <Link
+                  href="/en/mypage/profile-setup"
+                  className={`${sectionActionClass} border border-red-200 text-red-700 transition hover:border-red-300 hover:text-red-800`}
+                >
+                  Edit basic info
+                </Link>
+              </div>
             </section>
 
             <section className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
               <div className="flex flex-wrap items-start justify-between gap-4">
-                <div>
-                  <h2 className="text-lg font-semibold text-gray-900">Full registration</h2>
-                  <p className="mt-1 text-sm text-gray-600">Enter the required details for rentals.</p>
-                  {loadingRegistration ? null : registration ? (
-                    isRegistrationComplete ? (
-                      <p className="mt-2 inline-flex items-center rounded-full bg-green-50 px-3 py-1 text-xs font-semibold text-green-700 ring-1 ring-inset ring-green-200">
-                        Registration complete
-                      </p>
+                <button
+                  type="button"
+                  aria-expanded={mobileSectionsOpen.registration}
+                  onClick={() => toggleMobileSection('registration')}
+                  className="group flex flex-1 items-start justify-between gap-3 text-left md:pointer-events-none md:cursor-default"
+                >
+                  <div>
+                    <h2 className="text-lg font-semibold text-gray-900">Full registration</h2>
+                    <p className="mt-1 text-sm text-gray-600">Enter the required details for rentals.</p>
+                    {loadingRegistration ? null : registration ? (
+                      isRegistrationComplete ? (
+                        <p className="mt-2 inline-flex items-center rounded-full bg-green-50 px-3 py-1 text-xs font-semibold text-green-700 ring-1 ring-inset ring-green-200">
+                          Registration complete
+                        </p>
+                      ) : (
+                        <p className="mt-2 inline-flex items-center rounded-full bg-amber-50 px-3 py-1 text-xs font-semibold text-amber-700 ring-1 ring-inset ring-amber-200">
+                          Registration incomplete
+                        </p>
+                      )
                     ) : (
-                      <p className="mt-2 inline-flex items-center rounded-full bg-amber-50 px-3 py-1 text-xs font-semibold text-amber-700 ring-1 ring-inset ring-amber-200">
-                        Registration incomplete
+                      <p className="mt-2 inline-flex items-center rounded-full bg-gray-50 px-3 py-1 text-xs font-semibold text-gray-700 ring-1 ring-inset ring-gray-200">
+                        No registration saved yet
                       </p>
-                    )
-                  ) : (
-                    <p className="mt-2 inline-flex items-center rounded-full bg-gray-50 px-3 py-1 text-xs font-semibold text-gray-700 ring-1 ring-inset ring-gray-200">
-                      No registration saved yet
-                    </p>
-                  )}
-                </div>
+                    )}
+                  </div>
+                  <span
+                    aria-hidden
+                    className={`ml-3 inline-flex h-9 w-9 items-center justify-center rounded-full border border-gray-200 bg-gray-50 text-xs font-semibold text-gray-600 transition-transform md:hidden ${
+                      mobileSectionsOpen.registration ? 'rotate-180' : ''
+                    }`}
+                  >
+                    ▼
+                  </span>
+                </button>
                 <Link
                   href="/en/mypage/registration"
-                  className="inline-flex items-center rounded-full bg-red-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-red-700"
+                  className={`${sectionActionClass} hidden bg-red-600 text-white transition hover:bg-red-700 md:inline-flex`}
                 >
                   Go to registration form
                 </Link>
               </div>
-              <div className="mt-4 space-y-3 text-sm text-gray-700">
+              <div className={`${mobileSectionsOpen.registration ? 'mt-4 block' : 'hidden'} md:mt-4 md:block`}>
                 {registrationError ? (
                   <p className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-red-700">{registrationError}</p>
                 ) : null}
@@ -860,39 +1105,83 @@ export default function MyPageEn() {
                   </p>
                 )}
               </div>
+              <div className={`${mobileSectionsOpen.registration ? 'mt-4 flex' : 'hidden'} justify-center md:hidden`}>
+                <Link
+                  href="/en/mypage/registration"
+                  className={`${sectionActionClass} bg-red-600 text-white transition hover:bg-red-700`}
+                >
+                  Go to registration form
+                </Link>
+              </div>
             </section>
 
             <section className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-              <h2 className="text-lg font-semibold text-gray-900">Log out</h2>
-              <p className="mt-2 text-sm text-gray-600">
-                Logging out will hide My Page until you sign in again.
-              </p>
               <button
                 type="button"
-                onClick={handleLogout}
-                className="mt-4 inline-flex items-center justify-center rounded-full bg-red-600 px-6 py-3 text-sm font-semibold text-white transition hover:bg-red-700"
-                disabled={!user || loggingOut}
+                aria-expanded={mobileSectionsOpen.logout}
+                onClick={() => toggleMobileSection('logout')}
+                className="group flex w-full items-start justify-between gap-3 text-left md:pointer-events-none md:cursor-default"
               >
-                {loggingOut ? 'Processing…' : 'Log out'}
+                <div>
+                  <h2 className="text-lg font-semibold text-gray-900">Log out</h2>
+                  <p className="mt-2 text-sm text-gray-600">
+                    Logging out will hide My Page until you sign in again.
+                  </p>
+                </div>
+                <span
+                  aria-hidden
+                  className={`ml-3 inline-flex h-9 w-9 items-center justify-center rounded-full border border-gray-200 bg-gray-50 text-xs font-semibold text-gray-600 transition-transform md:hidden ${
+                    mobileSectionsOpen.logout ? 'rotate-180' : ''
+                  }`}
+                >
+                  ▼
+                </span>
               </button>
+              <div className={`${mobileSectionsOpen.logout ? 'mt-4 block' : 'hidden'} md:mt-4 md:block`}>
+                <button
+                  type="button"
+                  onClick={handleLogout}
+                  className={`${sectionActionClass} bg-red-600 text-white transition hover:bg-red-700`}
+                  disabled={!user || loggingOut}
+                >
+                  {loggingOut ? 'Processing…' : 'Log out'}
+                </button>
+              </div>
             </section>
           </>
         )}
 
         <section className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-          <h2 className="text-lg font-semibold text-gray-900">Helpful links</h2>
-          <ul className="mt-3 space-y-2 text-sm text-gray-700">
-            <li>
-              <Link className="text-red-600 hover:underline" href="/en/pricing">
-                View pricing
-              </Link>
-            </li>
-            <li>
-              <Link className="text-red-600 hover:underline" href="/en/help">
-                Help center
-              </Link>
-            </li>
-          </ul>
+          <button
+            type="button"
+            aria-expanded={mobileSectionsOpen.links}
+            onClick={() => toggleMobileSection('links')}
+            className="group flex w-full items-center justify-between gap-3 text-left md:pointer-events-none md:cursor-default"
+          >
+            <h2 className="text-lg font-semibold text-gray-900">Helpful links</h2>
+            <span
+              aria-hidden
+              className={`ml-3 inline-flex h-9 w-9 items-center justify-center rounded-full border border-gray-200 bg-gray-50 text-xs font-semibold text-gray-600 transition-transform md:hidden ${
+                mobileSectionsOpen.links ? 'rotate-180' : ''
+              }`}
+            >
+              ▼
+            </span>
+          </button>
+          <div className={`${mobileSectionsOpen.links ? 'mt-3 block' : 'hidden'} md:mt-3 md:block`}>
+            <ul className="space-y-2 text-sm text-gray-700">
+              <li>
+                <Link className="text-red-600 hover:underline" href="/en/pricing">
+                  View pricing
+                </Link>
+              </li>
+              <li>
+                <Link className="text-red-600 hover:underline" href="/en/help">
+                  Help center
+                </Link>
+              </li>
+            </ul>
+          </div>
         </section>
       </main>
       {showCancelNotice ? (
@@ -900,8 +1189,7 @@ export default function MyPageEn() {
           <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl">
             <h2 className="text-lg font-semibold text-gray-900">Reservation cancellation notice</h2>
             <p className="mt-3 text-sm text-gray-700">
-              Your reservation has been marked as cancelled by our staff. If you have any
-              questions, please contact support.
+              Your reservation has been marked as cancelled by our staff. If you have any questions, please contact support.
             </p>
             <button
               type="button"
@@ -1098,15 +1386,109 @@ export default function MyPageEn() {
                 <p className="rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-emerald-800">
                   Thanks for your cooperation. Your reservation status has been updated.
                 </p>
+                <div className="rounded-lg border border-gray-200 bg-gray-50 px-3 py-3">
+                  <p className="text-sm font-semibold text-gray-900">We&apos;d love it if you shared your experience.</p>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    <a
+                      href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(
+                        reviewStore ? `Rented from ${reviewStore.name}!` : 'I rented from Yasukari!'
+                      )}&url=${encodeURIComponent(reviewStore?.url ?? 'https://yasukaribike.com')}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center justify-center rounded-full bg-red-600 px-4 py-2 text-xs font-semibold text-white shadow-sm transition hover:bg-red-700"
+                    >
+                      Share on Twitter
+                    </a>
+                    <a
+                      href={`https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(
+                        reviewStore?.url ?? 'https://yasukaribike.com'
+                      )}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center justify-center rounded-full bg-red-600 px-4 py-2 text-xs font-semibold text-white shadow-sm transition hover:bg-red-700"
+                    >
+                      Share on LINE
+                    </a>
+                  </div>
+                </div>
+                {reviewStore ? (
+                  <div className="rounded-lg border border-gray-200 bg-white px-3 py-3">
+                    <p className="text-sm font-semibold text-gray-900">Leave a review here</p>
+                    <a
+                      href={reviewStore.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="mt-3 inline-flex w-full items-center justify-center rounded-full bg-red-600 px-4 py-2 text-xs font-semibold text-white shadow-sm transition hover:bg-red-700"
+                    >
+                      {reviewStore.name}
+                    </a>
+                  </div>
+                ) : null}
                 <button
                   type="button"
                   onClick={handleReturnClose}
-                  className="inline-flex w-full items-center justify-center rounded-full bg-emerald-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-emerald-700"
+                  className="inline-flex w-full items-center justify-center rounded-full bg-red-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-red-700"
                 >
                   Close
                 </button>
               </div>
             ) : null}
+          </div>
+        </div>
+      ) : null}
+      {showReturnExpiredModal ? (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
+          <div className="w-full max-w-md overflow-hidden rounded-2xl border-2 border-red-500 bg-yellow-50 shadow-2xl ring-4 ring-yellow-200">
+            <div className="flex items-start gap-3 bg-yellow-100 px-5 py-4">
+              <div className="flex h-11 w-11 items-center justify-center rounded-full bg-white text-red-600 shadow-inner">
+                <span className="text-xl font-bold">!</span>
+              </div>
+              <div className="flex-1">
+                <h2 className="text-lg font-semibold text-red-900">Return deadline notice</h2>
+                <div className="mt-2 space-y-1 text-sm text-red-900">
+                  <p className="font-semibold">Your return time has passed.</p>
+                  <p>Please contact support for return or extension guidance.</p>
+                  <p>We also shared the same details in your notifications.</p>
+                </div>
+              </div>
+            </div>
+            <div className="bg-yellow-50 px-6 pb-6 pt-4">
+              <div className="rounded-xl bg-yellow-100 px-4 py-3 text-sm text-red-900">
+                <ul className="list-disc space-y-2 pl-4">
+                  <li>Please keep the bike in a safe location until the return is complete.</li>
+                  <li>If you need more time, use the Extend rental option.</li>
+                  <li>Contact chat support or call us if you need assistance.</li>
+                </ul>
+              </div>
+              <button
+                type="button"
+                onClick={handleReturnClose}
+                className="mt-4 inline-flex w-full items-center justify-center rounded-full bg-red-600 px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-red-700"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
+      {showUnlockQrModal && activeKeyboxQrImageUrl ? (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-4 py-6">
+          <div className="w-full max-w-lg rounded-3xl bg-white p-4 shadow-2xl">
+            <div className="flex justify-center">
+              <img
+                src={activeKeyboxQrImageUrl}
+                alt="Unlock QR code"
+                className="h-[70vh] w-full max-w-sm rounded-2xl border border-gray-200 bg-white object-contain"
+              />
+            </div>
+            <p className="mt-4 text-center text-sm text-gray-700">Hold it over the keybox reader.</p>
+            <button
+              type="button"
+              onClick={() => setShowUnlockQrModal(false)}
+              className="mt-4 inline-flex w-full items-center justify-center rounded-full bg-gray-900 px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-gray-800"
+            >
+              Close
+            </button>
           </div>
         </div>
       ) : null}
