@@ -100,7 +100,14 @@ export default function VehicleListPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<"ALL" | "ON" | "OFF">("ALL");
   const [sortState, setSortState] = useState<{
-    key: "managementNumber" | "modelName" | "storeId" | "publishStatus";
+    key:
+      | "managementNumber"
+      | "className"
+      | "modelName"
+      | "storeId"
+      | "inspectionExpiryDate"
+      | "liabilityInsuranceExpiryDate"
+      | "publishStatus";
     direction: "asc" | "desc";
   }>({ key: "managementNumber", direction: "asc" });
   const [deleteConfirmationChecked, setDeleteConfirmationChecked] = useState(false);
@@ -276,10 +283,16 @@ export default function VehicleListPage() {
         switch (sortState.key) {
           case "managementNumber":
             return vehicle.managementNumber;
+          case "className":
+            return getClassNameByModelId(vehicle.modelId);
           case "modelName":
             return modelNameMap[vehicle.modelId] ?? "";
           case "storeId":
             return getStoreLabel(vehicle.storeId);
+          case "inspectionExpiryDate":
+            return vehicle.inspectionExpiryDate ?? "";
+          case "liabilityInsuranceExpiryDate":
+            return vehicle.liabilityInsuranceExpiryDate ?? "";
           case "publishStatus":
             return vehicle.publishStatus ?? "";
           default:
@@ -299,6 +312,8 @@ export default function VehicleListPage() {
 
     return sorted;
   }, [
+    classNameMap,
+    modelMap,
     modelNameMap,
     searchTerm,
     sortState.direction,
@@ -308,7 +323,14 @@ export default function VehicleListPage() {
   ]);
 
   const handleSort = (
-    key: "managementNumber" | "modelName" | "storeId" | "publishStatus"
+    key:
+      | "managementNumber"
+      | "className"
+      | "modelName"
+      | "storeId"
+      | "inspectionExpiryDate"
+      | "liabilityInsuranceExpiryDate"
+      | "publishStatus"
   ) => {
     setSortState((current) =>
       current.key === key
@@ -882,8 +904,13 @@ export default function VehicleListPage() {
                     onChange={handleSortKeyChange}
                   >
                     <option value="managementNumber">管理番号で並び替え</option>
+                    <option value="className">バイククラスで並び替え</option>
                     <option value="modelName">車種名で並び替え</option>
                     <option value="storeId">店舗で並び替え</option>
+                    <option value="inspectionExpiryDate">車検満了日で並び替え</option>
+                    <option value="liabilityInsuranceExpiryDate">
+                      自賠責満了日で並び替え
+                    </option>
                     <option value="publishStatus">掲載状態で並び替え</option>
                   </select>
                 </label>
@@ -998,7 +1025,40 @@ export default function VehicleListPage() {
                         </span>
                       </button>
                     </th>
-                    <th>バイククラス</th>
+                    <th
+                      aria-sort={
+                        sortState.key === "className"
+                          ? sortState.direction === "asc"
+                            ? "ascending"
+                            : "descending"
+                          : "none"
+                      }
+                    >
+                      <button
+                        type="button"
+                        className={tableStyles.sortableHeaderButton}
+                        onClick={() => handleSort("className")}
+                      >
+                        <span>バイククラス</span>
+                        <span
+                          aria-hidden
+                          className={`${tableStyles.sortIcon} ${
+                            sortState.key === "className"
+                              ? sortState.direction === "asc"
+                                ? tableStyles.sortIconAsc
+                                : tableStyles.sortIconDesc
+                              : ""
+                          }`}
+                        />
+                        <span className={tableStyles.visuallyHidden}>
+                          {sortState.key === "className"
+                            ? sortState.direction === "asc"
+                              ? "昇順に並び替え"
+                              : "降順に並び替え"
+                            : "クリックして並び替え"}
+                        </span>
+                      </button>
+                    </th>
                     <th
                       aria-sort={
                         sortState.key === "modelName"
@@ -1067,8 +1127,74 @@ export default function VehicleListPage() {
                         </span>
                       </button>
                     </th>
-                    <th>車検満了日</th>
-                    <th>自賠責満了日</th>
+                    <th
+                      aria-sort={
+                        sortState.key === "inspectionExpiryDate"
+                          ? sortState.direction === "asc"
+                            ? "ascending"
+                            : "descending"
+                          : "none"
+                      }
+                    >
+                      <button
+                        type="button"
+                        className={tableStyles.sortableHeaderButton}
+                        onClick={() => handleSort("inspectionExpiryDate")}
+                      >
+                        <span>車検満了日</span>
+                        <span
+                          aria-hidden
+                          className={`${tableStyles.sortIcon} ${
+                            sortState.key === "inspectionExpiryDate"
+                              ? sortState.direction === "asc"
+                                ? tableStyles.sortIconAsc
+                                : tableStyles.sortIconDesc
+                              : ""
+                          }`}
+                        />
+                        <span className={tableStyles.visuallyHidden}>
+                          {sortState.key === "inspectionExpiryDate"
+                            ? sortState.direction === "asc"
+                              ? "昇順に並び替え"
+                              : "降順に並び替え"
+                            : "クリックして並び替え"}
+                        </span>
+                      </button>
+                    </th>
+                    <th
+                      aria-sort={
+                        sortState.key === "liabilityInsuranceExpiryDate"
+                          ? sortState.direction === "asc"
+                            ? "ascending"
+                            : "descending"
+                          : "none"
+                      }
+                    >
+                      <button
+                        type="button"
+                        className={tableStyles.sortableHeaderButton}
+                        onClick={() => handleSort("liabilityInsuranceExpiryDate")}
+                      >
+                        <span>自賠責満了日</span>
+                        <span
+                          aria-hidden
+                          className={`${tableStyles.sortIcon} ${
+                            sortState.key === "liabilityInsuranceExpiryDate"
+                              ? sortState.direction === "asc"
+                                ? tableStyles.sortIconAsc
+                                : tableStyles.sortIconDesc
+                              : ""
+                          }`}
+                        />
+                        <span className={tableStyles.visuallyHidden}>
+                          {sortState.key === "liabilityInsuranceExpiryDate"
+                            ? sortState.direction === "asc"
+                              ? "昇順に並び替え"
+                              : "降順に並び替え"
+                            : "クリックして並び替え"}
+                        </span>
+                      </button>
+                    </th>
                     <th
                       aria-sort={
                         sortState.key === "publishStatus"
