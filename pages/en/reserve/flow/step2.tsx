@@ -8,8 +8,14 @@ import type {
   AccessoryPriceKey,
   BikeClass,
   BikeModel,
+  CouponRule,
   DurationPriceKey,
 } from "../../../../lib/dashboard/types";
+import {
+  applyInternationalMultiplier,
+  formatYen,
+} from "../../../../lib/pricing";
+import useInternationalPricingMultiplier from "../../../../lib/useInternationalPricingMultiplier";
 
 type AddOn = {
   key: string;
@@ -29,6 +35,8 @@ const ACCESSORY_DISPLAY_ORDER: Array<{ key: string; label: string }> = [
   { key: "glove", label: "Gloves" },
 ];
 
+const HELMET_ACCESSORY_KEYS = new Set(["halfCap", "jetHelmet", "brandHelmet"]);
+
 const defaultFees = {
   rental: 3980,
   couponDiscount: 0,
@@ -36,9 +44,12 @@ const defaultFees = {
 
 const HIGH_SEASON_FEE_PER_DAY = 550;
 
-const formatAccessoryPrice = (price?: number) => `¥${(price ?? 0).toLocaleString()}`;
-const formatProtectionPrice = (price?: number) =>
-  price == null ? "Calculating" : `¥${price.toLocaleString()}`;
+const formatAccessoryPrice = (price?: number) => formatYen(price ?? 0);
+const getHelmetSelectedTotal = (selection: Record<string, number>) =>
+  Array.from(HELMET_ACCESSORY_KEYS).reduce(
+    (total, key) => total + (selection[key] ?? 0),
+    0
+  );
 const getAccessoryPrice = (
   accessory: Accessory | undefined,
   priceKey: AccessoryPriceKey,
@@ -54,17 +65,6 @@ const getAccessoryPrice = (
   }
   return accessory.prices[priceKey];
 };
-const formatDateKey = (date: Date): string => {
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const day = String(date.getDate()).padStart(2, "0");
-  return `${year}-${month}-${day}`;
-};
-const formatMonthKey = (date: Date): string => {
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  return `${year}-${month}`;
-};
 const getInsuranceDurationKey = (days: number): DurationPriceKey => {
   if (days <= 1) return "24h";
   if (days <= 2) return "2d";
@@ -72,6 +72,21 @@ const getInsuranceDurationKey = (days: number): DurationPriceKey => {
   if (days <= 7) return "1w";
   if (days <= 14) return "2w";
   return "1m";
+};
+const formatProtectionPrice = (price?: number) =>
+  price == null ? "Calculating" : formatYen(price);
+
+const formatDateKey = (date: Date): string => {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+};
+
+const formatMonthKey = (date: Date): string => {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  return `${year}-${month}`;
 };
 
 export default function ReserveFlowStep2() {
@@ -82,14 +97,19 @@ export default function ReserveFlowStep2() {
   const [accessories, setAccessories] = useState<Accessory[]>([]);
   const [accessoryError, setAccessoryError] = useState<string | null>(null);
 
-  const [store, setStore] = useState("Adachi-Odai Store");
-  const [modelName, setModelName] = useState("Vehicle");
+  const [store, setStore] = useState("足立小台店");
+  const [modelName, setModelName] = useState("車両");
   const [pickupDate, setPickupDate] = useState("2025-12-26");
   const [returnDate, setReturnDate] = useState("2025-12-27");
   const [pickupTime, setPickupTime] = useState("10:00");
   const [returnTime, setReturnTime] = useState("10:00");
   const [managementNumber, setManagementNumber] = useState("");
   const [couponCode, setCouponCode] = useState("");
+  const [couponDiscount, setCouponDiscount] = useState(defaultFees.couponDiscount);
+  const [couponError, setCouponError] = useState<string | null>(null);
+  const [couponMessage, setCouponMessage] = useState<string | null>(null);
+  const [rentalFee, setRentalFee] = useState(defaultFees.rental);
+  const [rentalFeeError, setRentalFeeError] = useState<string | null>(null);
   const [vehicleModelId, setVehicleModelId] = useState<number | null>(null);
   const [insurancePrices, setInsurancePrices] = useState<
     BikeClass["insurance_prices"] | null
@@ -98,6 +118,7 @@ export default function ReserveFlowStep2() {
   const [protectionError, setProtectionError] = useState<string | null>(null);
   const [highSeasonDates, setHighSeasonDates] = useState<Set<string>>(new Set());
   const [highSeasonLoading, setHighSeasonLoading] = useState(false);
+  const priceMultiplier = useInternationalPricingMultiplier();
 
   const [protectionSelection, setProtectionSelection] = useState(() =>
     PROTECTION_OPTION_DEFINITIONS.reduce<Record<string, boolean>>((acc, option) => {
@@ -107,10 +128,15 @@ export default function ReserveFlowStep2() {
   );
 
   const [accessorySelection, setAccessorySelection] = useState(() =>
-    ACCESSORY_DISPLAY_ORDER.reduce<Record<string, boolean>>((acc, option) => {
-      acc[option.key] = false;
+    ACCESSORY_DISPLAY_ORDER.reduce<Record<string, number>>((acc, option) => {
+      acc[option.key] = 0;
       return acc;
     }, {})
+  );
+
+  const helmetSelectionTotal = useMemo(
+    () => getHelmetSelectedTotal(accessorySelection),
+    [accessorySelection]
   );
 
   useEffect(() => {
@@ -170,7 +196,7 @@ export default function ReserveFlowStep2() {
         const response = await fetch("/api/accessories", { signal: controller.signal });
 
         if (!response.ok) {
-          throw new Error("Failed to load accessories");
+          throw new Error("Failed to load accessories.");
         }
 
         const data: Accessory[] = await response.json();
@@ -315,13 +341,15 @@ export default function ReserveFlowStep2() {
     [theftInsurance]
   );
 
-  const protectionOptions = useMemo<AddOn[]>(
-    () => [
-      { key: "vehicle", label: "Vehicle damage cover", price: vehicleInsuranceFee },
-      { key: "theft", label: "Theft cover", price: theftInsuranceFee },
-    ],
-    [theftInsuranceFee, vehicleInsuranceFee]
-  );
+  const protectionOptions = useMemo<AddOn[]>(() => {
+    const applyMultiplier = (value?: number) =>
+      value == null ? undefined : applyInternationalMultiplier(value, priceMultiplier);
+
+    return [
+      { key: "vehicle", label: "Vehicle damage cover", price: applyMultiplier(vehicleInsuranceFee) },
+      { key: "theft", label: "Theft cover", price: applyMultiplier(theftInsuranceFee) },
+    ];
+  }, [priceMultiplier, theftInsuranceFee, vehicleInsuranceFee]);
 
   const selectedProtectionFee = useMemo(
     () =>
@@ -340,21 +368,19 @@ export default function ReserveFlowStep2() {
 
       return {
         ...option,
-        price,
+        price: price == null ? undefined : applyInternationalMultiplier(price, priceMultiplier),
       };
     });
-  }, [accessories, rentalPriceKey, rentalDays]);
+  }, [accessories, priceMultiplier, rentalPriceKey, rentalDays]);
 
   const selectedAccessoryFee = useMemo(
     () =>
       accessoryOptions.reduce((total, option) => {
-        return accessorySelection[option.key] ? total + (option.price ?? 0) : total;
+        const selectedCount = accessorySelection[option.key] ?? 0;
+        return total + (option.price ?? 0) * selectedCount;
       }, 0),
     [accessoryOptions, accessorySelection]
   );
-
-  const rentalFee = defaultFees.rental;
-  const couponDiscount = defaultFees.couponDiscount;
 
   const highSeasonDays = useMemo(() => {
     if (highSeasonDates.size === 0) return 0;
@@ -373,17 +399,23 @@ export default function ReserveFlowStep2() {
   }, [highSeasonDates, pickupDate, rentalDays]);
 
   const highSeasonFee = highSeasonDays * HIGH_SEASON_FEE_PER_DAY;
-
-  const totalAmount = rentalFee + selectedAccessoryFee + selectedProtectionFee + highSeasonFee - couponDiscount;
+  const adjustedHighSeasonFee = applyInternationalMultiplier(highSeasonFee, priceMultiplier);
+  const adjustedRentalFee = applyInternationalMultiplier(rentalFee, priceMultiplier);
+  const totalAmount =
+    adjustedRentalFee +
+    selectedAccessoryFee +
+    selectedProtectionFee +
+    adjustedHighSeasonFee -
+    couponDiscount;
   const highSeasonFeeLabel = highSeasonLoading
     ? "Calculating"
-    : `¥${highSeasonFee.toLocaleString()}`;
+    : formatYen(adjustedHighSeasonFee);
 
   const formatDateLabel = (dateString: string, fallback: string) => {
     const parsed = new Date(dateString);
     if (Number.isNaN(parsed.getTime())) return fallback;
 
-    return parsed.toLocaleDateString("en-US", {
+    return parsed.toLocaleDateString("ja-JP", {
       year: "numeric",
       month: "long",
       day: "numeric",
@@ -398,16 +430,85 @@ export default function ReserveFlowStep2() {
     setProtectionSelection((prev) => ({ ...prev, [key]: !prev[key] }));
   };
 
-  const toggleAccessory = (key: string) => {
-    setAccessorySelection((prev) => ({ ...prev, [key]: !prev[key] }));
+  const isCouponActive = (coupon: CouponRule, now: Date) => {
+    const start = new Date(`${coupon.start_date}T00:00:00`);
+    const end = new Date(`${coupon.end_date}T23:59:59`);
+    if (Number.isNaN(start.getTime()) || Number.isNaN(end.getTime())) return false;
+    return now >= start && now <= end;
+  };
+
+  const calculateCouponDiscount = (
+    coupon: CouponRule,
+    baseAmount: number,
+    multiplier: number
+  ) => {
+    if (typeof coupon.discount_amount === "number") {
+      const adjustedDiscount = applyInternationalMultiplier(
+        coupon.discount_amount,
+        multiplier
+      );
+      return Math.min(adjustedDiscount, baseAmount);
+    }
+    if (typeof coupon.discount_percentage === "number") {
+      return Math.min(Math.round((baseAmount * coupon.discount_percentage) / 100), baseAmount);
+    }
+    return 0;
+  };
+
+  const handleApplyCoupon = async () => {
+    const trimmedCode = couponCode.trim();
+    setCouponMessage(null);
+    if (!trimmedCode) {
+      setCouponError("Please enter a coupon code.");
+      setCouponDiscount(0);
+      return;
+    }
+
+    try {
+      const response = await fetch("/api/coupon-rules");
+      if (!response.ok) {
+        throw new Error("Failed to fetch coupons");
+      }
+
+      const coupons = (await response.json()) as CouponRule[];
+      const matched = coupons.find((coupon) => coupon.coupon_code === trimmedCode);
+      if (!matched) {
+        setCouponError("Coupon code not found.");
+        setCouponDiscount(0);
+        return;
+      }
+
+      const now = new Date();
+      if (!isCouponActive(matched, now)) {
+        setCouponError("This coupon is not currently valid.");
+        setCouponDiscount(0);
+        return;
+      }
+
+      const baseAmount =
+        adjustedRentalFee +
+        selectedAccessoryFee +
+        selectedProtectionFee +
+        adjustedHighSeasonFee;
+      const discount = calculateCouponDiscount(matched, baseAmount, priceMultiplier);
+      if (discount <= 0) {
+        setCouponError("Could not calculate the coupon discount.");
+        setCouponDiscount(0);
+        return;
+      }
+
+      setCouponDiscount(discount);
+      setCouponError(null);
+      setCouponMessage("Coupon applied.");
+    } catch (error) {
+      console.error("Failed to apply coupon", error);
+      setCouponError("Failed to apply the coupon. Please try again later.");
+      setCouponDiscount(0);
+    }
   };
 
   useEffect(() => {
-    if (!managementNumber) {
-      setVehicleModelId(null);
-      setProtectionError(null);
-      return;
-    }
+    if (!managementNumber) return;
 
     const controller = new AbortController();
 
@@ -427,12 +528,13 @@ export default function ReserveFlowStep2() {
         }
 
         setVehicleModelId(vehicleData.modelId);
-        setProtectionError(null);
+        setRentalFeeError(null);
       } catch (error) {
         if (controller.signal.aborted) return;
         console.error("Failed to load vehicle", error);
         setVehicleModelId(null);
-        setProtectionError("Failed to load protection pricing.");
+        setRentalFee(defaultFees.rental);
+        setRentalFeeError("Failed to load vehicle information.");
       }
     };
 
@@ -442,9 +544,64 @@ export default function ReserveFlowStep2() {
   }, [managementNumber]);
 
   useEffect(() => {
+    if (!vehicleModelId) return;
+
+    const controller = new AbortController();
+
+    const loadRentalFee = async () => {
+      try {
+        const pricesResponse = await fetch(
+          `/api/vehicle-rental-prices?vehicle_type_id=${vehicleModelId}`,
+          { signal: controller.signal }
+        );
+
+        if (!pricesResponse.ok) {
+          throw new Error("Failed to load rental prices");
+        }
+
+        const prices = (await pricesResponse.json()) as Array<{
+          days: number;
+          price: number;
+        }>;
+        const matched = prices.find((item) => item.days === rentalDays);
+
+        if (matched?.price != null) {
+          setRentalFee(matched.price);
+          setRentalFeeError(null);
+          return;
+        }
+
+        if (rentalDays > 31) {
+          const monthPrice = prices.find((item) => item.days === 31)?.price;
+          if (monthPrice != null) {
+            const dailyRate = monthPrice / 31;
+            const prorated = Math.round(dailyRate * rentalDays);
+            setRentalFee(prorated);
+            setRentalFeeError(null);
+            return;
+          }
+        }
+
+        setRentalFee(defaultFees.rental);
+        setRentalFeeError("Rental pricing is not configured.");
+      } catch (error) {
+        if (controller.signal.aborted) return;
+        console.error("Failed to load rental fee", error);
+        setRentalFee(defaultFees.rental);
+        setRentalFeeError("Failed to load rental pricing.");
+      }
+    };
+
+    void loadRentalFee();
+
+    return () => controller.abort();
+  }, [vehicleModelId, rentalDays]);
+
+  useEffect(() => {
     if (!vehicleModelId) {
       setInsurancePrices(null);
       setTheftInsurance(null);
+      setProtectionError(null);
       return;
     }
 
@@ -507,6 +664,7 @@ export default function ReserveFlowStep2() {
       pickupTime,
       returnTime,
       couponCode,
+      couponDiscount: couponDiscount.toString(),
       accessoryTotal: selectedAccessoryFee.toString(),
       protectionTotal: selectedProtectionFee.toString(),
       totalAmount: totalAmount.toString(),
@@ -517,7 +675,7 @@ export default function ReserveFlowStep2() {
     });
 
     accessoryOptions.forEach((option) => {
-      params.append(option.key, accessorySelection[option.key] ? "1" : "0");
+      params.append(option.key, String(accessorySelection[option.key] ?? 0));
     });
 
     void router.push(`/en/reserve/flow/step3?${params.toString()}`);
@@ -599,7 +757,6 @@ export default function ReserveFlowStep2() {
                     >
                       <div className="space-y-1">
                         <p className="text-sm font-semibold text-gray-900">{option.label}</p>
-                        <p className="text-xs text-gray-600">You can toggle on / off.</p>
                       </div>
                       <div className="flex items-center gap-3">
                         <span className="text-sm font-semibold text-gray-900">
@@ -622,6 +779,17 @@ export default function ReserveFlowStep2() {
                   <h3 className="text-sm font-semibold text-gray-900">Gear options</h3>
                   <span className="text-xs text-gray-500">Select what you need</span>
                 </div>
+                <p className="text-xs text-gray-500">
+                  Options: up to 2 per type / up to 2 helmets total
+                </p>
+                <Link
+                  href="/options"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center text-xs font-semibold text-red-600 hover:text-red-700"
+                >
+                  Accessory option details
+                </Link>
                 {accessoryError ? (
                   <p className="text-xs text-red-600">{accessoryError}</p>
                 ) : null}
@@ -633,16 +801,57 @@ export default function ReserveFlowStep2() {
                     >
                       <div className="space-y-1">
                         <p className="text-sm font-semibold text-gray-900">{option.label}</p>
-                        <p className="text-xs text-gray-600">You can toggle on / off.</p>
                       </div>
                       <div className="flex items-center gap-3">
                         <span className="text-sm font-semibold text-gray-900">{formatAccessoryPrice(option.price)}</span>
-                        <input
-                          type="checkbox"
-                          checked={accessorySelection[option.key]}
-                          onChange={() => toggleAccessory(option.key)}
-                          className="h-5 w-5 rounded border-gray-300 text-red-500 focus:ring-red-500"
-                        />
+                        {(() => {
+                          const isHelmetAccessory = HELMET_ACCESSORY_KEYS.has(option.key);
+                          const currentValue = accessorySelection[option.key] ?? 0;
+                          const otherHelmetCount = isHelmetAccessory
+                            ? helmetSelectionTotal - currentValue
+                            : helmetSelectionTotal;
+                          const remainingHelmetSlots = Math.max(0, 2 - otherHelmetCount);
+                          const maxSelectable = isHelmetAccessory
+                            ? Math.min(2, remainingHelmetSlots)
+                            : 2;
+                          const selectableCounts = Array.from(
+                            { length: maxSelectable + 1 },
+                            (_, index) => index
+                          );
+
+                          return (
+                        <select
+                          value={accessorySelection[option.key]}
+                          onChange={(event) => {
+                            const selected = Number(event.target.value);
+                            setAccessorySelection((prev) => ({
+                              ...prev,
+                              [option.key]: (() => {
+                                const parsed = Number.isNaN(selected)
+                                  ? 0
+                                  : Math.min(2, Math.max(0, selected));
+
+                                if (!HELMET_ACCESSORY_KEYS.has(option.key)) {
+                                  return parsed;
+                                }
+
+                                const currentHelmetValue = prev[option.key] ?? 0;
+                                const otherHelmets = getHelmetSelectedTotal(prev) - currentHelmetValue;
+                                return Math.min(parsed, Math.max(0, 2 - otherHelmets));
+                              })(),
+                            }));
+                          }}
+                          className="rounded-lg border border-gray-200 px-2 py-1 text-sm shadow-sm focus:border-red-500 focus:outline-none focus:ring-1 focus:ring-red-500"
+                          aria-label={`${option.label} quantity`}
+                        >
+                            {selectableCounts.map((count) => (
+                              <option key={count} value={count}>
+                                {count}
+                              </option>
+                            ))}
+                          </select>
+                          );
+                        })()}
                       </div>
                     </label>
                   ))}
@@ -659,16 +868,27 @@ export default function ReserveFlowStep2() {
                     type="text"
                     placeholder="Coupon code"
                     value={couponCode}
-                    onChange={(e) => setCouponCode(e.target.value)}
+                    onChange={(e) => {
+                      setCouponCode(e.target.value);
+                      setCouponError(null);
+                      setCouponMessage(null);
+                      setCouponDiscount(0);
+                    }}
                     className="flex-1 rounded-lg border border-gray-200 px-3 py-3 text-sm shadow-sm focus:border-red-500 focus:outline-none"
                   />
                   <button
                     type="button"
+                    onClick={handleApplyCoupon}
                     className="inline-flex items-center justify-center rounded-full border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-700 shadow-sm hover:border-gray-300"
                   >
                     Apply
                   </button>
                 </div>
+                {couponError ? (
+                  <p className="text-xs text-red-600">{couponError}</p>
+                ) : couponMessage ? (
+                  <p className="text-xs text-emerald-600">{couponMessage}</p>
+                ) : null}
               </div>
             </div>
 
@@ -681,15 +901,18 @@ export default function ReserveFlowStep2() {
                 <dl className="space-y-3 text-sm text-gray-700">
                   <div className="flex items-center justify-between">
                     <dt className="text-gray-500">Bike rental fee</dt>
-                    <dd className="font-semibold text-gray-900">¥{rentalFee.toLocaleString()}</dd>
+                    <dd className="font-semibold text-gray-900">{formatYen(adjustedRentalFee)}</dd>
                   </div>
+                  {rentalFeeError ? (
+                    <p className="text-xs text-red-600">{rentalFeeError}</p>
+                  ) : null}
                   <div className="flex items-center justify-between">
                     <dt className="text-gray-500">Gear options</dt>
-                    <dd className="font-semibold text-gray-900">¥{selectedAccessoryFee.toLocaleString()}</dd>
+                    <dd className="font-semibold text-gray-900">{formatYen(selectedAccessoryFee)}</dd>
                   </div>
                   <div className="flex items-center justify-between">
                     <dt className="text-gray-500">Protection options</dt>
-                    <dd className="font-semibold text-gray-900">¥{selectedProtectionFee.toLocaleString()}</dd>
+                    <dd className="font-semibold text-gray-900">{formatYen(selectedProtectionFee)}</dd>
                   </div>
                   <div className="flex items-center justify-between">
                     <dt className="text-gray-500">High-season fee ({highSeasonDays} days)</dt>
@@ -697,13 +920,13 @@ export default function ReserveFlowStep2() {
                   </div>
                   <div className="flex items-center justify-between">
                     <dt className="text-gray-500">Coupon discount</dt>
-                    <dd className="font-semibold text-gray-900">-¥{couponDiscount.toLocaleString()}</dd>
+                    <dd className="font-semibold text-gray-900">-{formatYen(couponDiscount)}</dd>
                   </div>
                 </dl>
                 <div className="border-t border-gray-100 pt-4">
                   <div className="flex items-center justify-between text-lg font-bold text-gray-900">
                     <span>Total (tax included)</span>
-                    <span>¥{totalAmount.toLocaleString()}</span>
+                    <span>{formatYen(totalAmount)}</span>
                   </div>
                 </div>
                 <p className="text-xs leading-relaxed text-gray-600">

@@ -166,13 +166,13 @@ export default function BikeAvailabilityPreviewPage() {
     return new Date(today.getFullYear(), today.getMonth() + calendarMonthOffset, 1);
   }, [calendarMonthOffset]);
 
-  const calendarWeeks = useMemo(() => buildCalendarGrid(displayMonth), [displayMonth]);
+const calendarWeeks = useMemo(() => buildCalendarGrid(displayMonth), [displayMonth]);
 
-  const selectedEntry = selectedDate ? availabilityMap[selectedDate] : undefined;
-  const isAvailable = (entry?: RentalAvailabilityDay) => entry?.status === "AVAILABLE";
-  const availabilityLabel = (entry?: RentalAvailabilityDay) =>
-    isAvailable(entry) ? "Available" : "Unavailable";
-  const availabilityIcon = (entry?: RentalAvailabilityDay) => (isAvailable(entry) ? "○" : "✕");
+const selectedEntry = selectedDate ? availabilityMap[selectedDate] : undefined;
+const isAvailable = (entry?: RentalAvailabilityDay) => entry?.status === "AVAILABLE";
+const availabilityLabel = (entry?: RentalAvailabilityDay) =>
+  isAvailable(entry) ? "Available" : "Unavailable";
+const availabilityIcon = (entry?: RentalAvailabilityDay) => (isAvailable(entry) ? "⚪︎" : "❌");
 
   const resolvedModelName = model?.modelName ?? "Model";
   const resolvedStoreLabel = vehicle?.storeId ? getStoreLabel(vehicle.storeId) : "Store";
@@ -338,7 +338,7 @@ export default function BikeAvailabilityPreviewPage() {
               <div className="bg-white shadow-sm ring-1 ring-gray-100 rounded-2xl p-6 sm:p-8 space-y-4">
                 <div>
                   <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">Legend</p>
-                  <h2 className="text-lg font-bold text-gray-900">Status legend</h2>
+                  <h2 className="text-lg font-bold text-gray-900">Legend</h2>
                 </div>
                 <ul className="space-y-2 text-sm text-gray-700">
                   <li className="flex items-center gap-3">

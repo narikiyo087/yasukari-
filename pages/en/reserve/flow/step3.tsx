@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Head from "next/head";
-import Link from "next/link";
 import { useRouter } from "next/router";
 
 import type { RegistrationData } from "../../../../types/registration";
@@ -14,7 +13,7 @@ const formatDateLabel = (dateString: string, fallback: string) => {
   const parsed = new Date(dateString);
   if (Number.isNaN(parsed.getTime())) return fallback;
 
-  return parsed.toLocaleDateString("en-US", {
+  return parsed.toLocaleDateString("ja-JP", {
     year: "numeric",
     month: "long",
     day: "numeric",
@@ -40,8 +39,8 @@ export default function ReserveFlowStep3() {
   const payjpSlotRef = useRef<HTMLDivElement | null>(null);
   const processedTokenRef = useRef<string | null>(null);
 
-  const [store, setStore] = useState("Adachi-Odai");
-  const [modelName, setModelName] = useState("Vehicle");
+  const [store, setStore] = useState("足立小台店");
+  const [modelName, setModelName] = useState("車両");
   const [managementNumber, setManagementNumber] = useState("Not set");
   const [pickupDate, setPickupDate] = useState("2025-12-26");
   const [returnDate, setReturnDate] = useState("2025-12-27");
@@ -49,6 +48,7 @@ export default function ReserveFlowStep3() {
   const [returnTime, setReturnTime] = useState("10:00");
   const [totalAmount, setTotalAmount] = useState(7830);
   const [couponCode, setCouponCode] = useState("");
+  const [couponDiscount, setCouponDiscount] = useState(0);
   const [protectionTotal, setProtectionTotal] = useState(0);
   const [accessoryTotal, setAccessoryTotal] = useState(0);
   const [accessorySelection, setAccessorySelection] = useState<Record<string, number>>({});
@@ -125,6 +125,7 @@ export default function ReserveFlowStep3() {
       }
     }
     if (typeof params.couponCode === "string") setCouponCode(params.couponCode);
+    if (typeof params.couponDiscount === "string") setCouponDiscount(Number(params.couponDiscount));
     if (typeof params.accessoryTotal === "string") setAccessoryTotal(Number(params.accessoryTotal));
     if (typeof params.protectionTotal === "string") setProtectionTotal(Number(params.protectionTotal));
 
@@ -200,12 +201,7 @@ export default function ReserveFlowStep3() {
 
   useEffect(() => {
     if (payjpKeyError) {
-      const isTestKeyError = payjpKeyError.includes("テスト公開鍵");
-      setPayjpError(
-        isTestKeyError
-          ? "Pay.JP test public key is missing. Please contact support."
-          : "Pay.JP public key is missing. Please contact support."
-      );
+      setPayjpError(payjpKeyError);
     }
   }, [payjpKeyError]);
 
@@ -271,7 +267,7 @@ export default function ReserveFlowStep3() {
           memberEmail: registration?.email ?? sessionUser.email ?? "",
           memberPhone: registration?.mobile ?? registration?.tel ?? "",
           couponCode,
-          couponDiscount: accessoryTotal + protectionTotal,
+          couponDiscount,
           accessories:
             Object.keys(accessorySelection).length > 0 ? accessorySelection : undefined,
           notes: "Saved via Pay.JP payment",
@@ -318,11 +314,11 @@ export default function ReserveFlowStep3() {
     accessoryTotal,
     accessorySelection,
     couponCode,
+    couponDiscount,
     managementNumber,
     modelName,
     pickupDate,
     pickupTime,
-    protectionTotal,
     payjpCustomerEmail,
     registration,
     rentalDurationHours,
@@ -354,14 +350,14 @@ export default function ReserveFlowStep3() {
 
     const form = payjpFormRef.current;
     if (!form) {
-      setStatusMessage("We could not access the payment form. Please try again.");
+      setStatusMessage("We could not confirm the payment form. Please try again.");
       return;
     }
 
     const tokenInput = form.querySelector<HTMLInputElement>('input[name="payjp-token"]');
     const token = tokenInput?.value;
     if (!token) {
-      setStatusMessage("Waiting for Pay.JP token generation. Please try again shortly.");
+      setStatusMessage("Waiting to retrieve the Pay.JP token. Please try again shortly.");
       return;
     }
 
@@ -377,53 +373,23 @@ export default function ReserveFlowStep3() {
   }, []);
 
   const handlePayjpLoadError = useCallback(() => {
-    setPayjpError("Failed to load Pay.JP. Please try again shortly.");
+    setPayjpError("Failed to load Pay.JP. Please try again later.");
   }, []);
-
-  const handleBack = () => {
-    if (queryError) {
-      void router.push("/en/reserve/flow/step1");
-      return;
-    }
-
-    const params = new URLSearchParams({
-      store,
-      modelName,
-      managementNumber,
-      pickupDate,
-      returnDate,
-      pickupTime,
-      returnTime,
-      couponCode,
-      accessoryTotal: accessoryTotal.toString(),
-      protectionTotal: protectionTotal.toString(),
-      totalAmount: totalAmount.toString(),
-    });
-
-    void router.push(`/en/reserve/flow/step2?${params.toString()}`);
-  };
 
   const canRenderPayment = authChecked && !authError && queryReady && !queryError && Boolean(payJpPublicKey);
 
   return (
     <>
       <Head>
-        <title>Payment details - Step 3</title>
+        <title>Enter payment information - Step 3</title>
       </Head>
       <main className="min-h-screen bg-gray-50 pb-16">
         <div className="mx-auto max-w-4xl px-4 py-10 sm:px-6 lg:px-8 space-y-8">
           <header className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <p className="text-xs font-semibold uppercase tracking-wide text-red-500">Step 3 / 3</p>
-              <h1 className="text-2xl font-bold text-gray-900">Enter payment details</h1>
-              <p className="text-sm text-gray-600">Complete your payment securely through our external payment form.</p>
+              <h1 className="text-2xl font-bold text-gray-900">Enter payment information</h1>
             </div>
-            <Link
-              href="/en/products"
-              className="inline-flex items-center justify-center rounded-full border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-700 shadow-sm hover:border-gray-300"
-            >
-              Back to models
-            </Link>
           </header>
 
           {authError ? (
@@ -432,7 +398,7 @@ export default function ReserveFlowStep3() {
           {queryError ? (
             <div className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
               <p>{queryError}</p>
-              <p className="mt-1">Please restart from the first step.</p>
+              <p className="mt-1">Please start over from the first page.</p>
             </div>
           ) : null}
 
@@ -441,30 +407,33 @@ export default function ReserveFlowStep3() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">Pickup & return</p>
-                  <h2 className="text-lg font-bold text-gray-900">
+                  <h2 className="text-base font-bold text-gray-900">
                     {pickupLabel} {pickupTime} → {returnLabel} {returnTime}
                   </h2>
                 </div>
                 <div className="flex flex-col items-end gap-1 text-right">
                   <span className="rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-700">{store}</span>
-                  <span className="text-xs text-gray-500">{modelName} / {managementNumber}</span>
+                  <p className="text-xs text-gray-500">{modelName} / {managementNumber}</p>
                 </div>
               </div>
               <div className="rounded-xl bg-gray-50 p-4">
                 <div className="flex items-center justify-between text-lg font-bold text-gray-900">
-                  <span>Total rental fee (tax included)</span>
+                  <span className="flex flex-col leading-tight">
+                    <span>Rental fee</span>
+                    <span>Total (tax included)</span>
+                  </span>
                   <span>¥{totalAmount.toLocaleString()}</span>
                 </div>
-                <dl className="mt-3 grid grid-cols-2 gap-2 text-xs text-gray-600">
+                <dl className="mt-3 grid grid-cols-1 gap-2 text-xs text-gray-600 sm:grid-cols-2">
                   <div className="flex items-center justify-between rounded-lg bg-white px-3 py-2 shadow-sm ring-1 ring-gray-100">
-                    <dt>Accessories & protection</dt>
+                    <dt>Accessories & protection breakdown</dt>
                     <dd className="font-semibold text-gray-900">
                       ¥{(accessoryTotal + protectionTotal).toLocaleString()}
                     </dd>
                   </div>
                   <div className="flex items-center justify-between rounded-lg bg-white px-3 py-2 shadow-sm ring-1 ring-gray-100">
                     <dt>Coupon</dt>
-                    <dd className="font-semibold text-gray-900">{couponCode || "None"}</dd>
+                    <dd className="font-semibold text-gray-900">{couponCode || "Not applied"}</dd>
                   </div>
                   <div className="flex items-center justify-between rounded-lg bg-white px-3 py-2 shadow-sm ring-1 ring-gray-100">
                     <dt>Estimated rental duration</dt>
@@ -472,54 +441,57 @@ export default function ReserveFlowStep3() {
                       {rentalDurationHours ? `${rentalDurationHours} hours` : "Unavailable"}
                     </dd>
                   </div>
-                  <div className="flex items-center justify-between rounded-lg bg-white px-3 py-2 shadow-sm ring-1 ring-gray-100">
-                    <dt>Completion flag</dt>
-                    <dd className="font-semibold text-gray-900">Incomplete</dd>
-                  </div>
                 </dl>
               </div>
             </div>
 
             <div className="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-gray-100 space-y-4">
-              <div className="flex items-center justify-between">
+              <div className="flex flex-wrap items-center justify-between gap-2">
                 <h3 className="text-sm font-semibold text-gray-900">Credit card payment</h3>
-                <span className="text-xs text-gray-500">Secure payment form</span>
+                <span className="text-xs text-gray-500">Secure card payment form</span>
               </div>
               <p className="text-sm text-gray-600">
-                Click the payment button to open the secure payment form. Enter your card details there.
+                Press the payment button to open the secure checkout and enter your card details there.
               </p>
+              <p className="text-sm font-semibold text-red-600">
+                Please do not refresh or go back during payment.
+              </p>
+              <div className="flex flex-wrap items-center gap-2 text-xs text-gray-600">
+                <span className="rounded-full border border-gray-200 bg-white px-3 py-1 font-semibold text-gray-700">
+                  Apple Pay supported
+                </span>
+                <span>You can also pay with Apple Pay.</span>
+              </div>
+              <ul className="space-y-1 text-xs text-gray-500">
+                <li>* Apple Pay is shown only on supported devices and Safari.</li>
+                <li>* If Apple Pay is not shown, please use credit card payment.</li>
+                <li>* Available payment methods may vary by environment.</li>
+              </ul>
               {payjpError ? (
                 <p className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{payjpError}</p>
               ) : null}
-              <div className="flex flex-wrap items-center gap-3">
-                <button
-                  type="button"
-                  onClick={handleBack}
-                  className="inline-flex items-center justify-center rounded-full border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-700 shadow-sm hover:border-gray-300"
-                >
-                  Back
-                </button>
-                <div ref={payjpSlotRef} />
-                {canRenderPayment ? (
-                  <PayjpCheckout
-                    formRef={payjpFormRef}
-                    placeholderRef={payjpSlotRef}
-                    onSubmit={handleSubmitPayment}
-                    onLoad={handlePayjpLoaded}
-                    onError={handlePayjpLoadError}
-                    locale="en"
-                    publicKey={payJpPublicKey}
-                    description={`${store} ${modelName} ${managementNumber}`}
-                    amount={totalAmount}
+                <div className="flex flex-wrap items-center gap-3">
+                  <div ref={payjpSlotRef} />
+                  {canRenderPayment ? (
+                    <PayjpCheckout
+                      formRef={payjpFormRef}
+                      placeholderRef={payjpSlotRef}
+                      onSubmit={handleSubmitPayment}
+                      onLoad={handlePayjpLoaded}
+                      onError={handlePayjpLoadError}
+                      locale="en"
+                      publicKey={payJpPublicKey}
+                      description={`${store} ${modelName} ${managementNumber}`}
+                      amount={totalAmount}
                       email={payjpCustomerEmail}
-                    label={isSavingReservation ? "Processing..." : "Submit payment"}
-                    submitText="Submit payment"
-                    enableApplePay
-                  />
-                ) : (
-                  <p className="text-sm text-gray-500">Preparing the payment form…</p>
-                )}
-              </div>
+                      label={isSavingReservation ? "Processing..." : "Complete payment"}
+                      submitText="Complete payment"
+                      enableApplePay
+                    />
+                  ) : (
+                    <p className="text-sm text-gray-500">Preparing the payment form...</p>
+                  )}
+                </div>
               {statusMessage ? (
                 <p className="rounded-lg border border-blue-100 bg-blue-50 px-4 py-3 text-sm text-blue-800">{statusMessage}</p>
               ) : null}
@@ -539,14 +511,14 @@ export default function ReserveFlowStep3() {
                       <dd>{reservationPreview.status}</dd>
                     </div>
                     <div>
-                      <dt className="text-xs text-emerald-800">Pickup → return</dt>
+                      <dt className="text-xs text-emerald-800">Pickup to return</dt>
                       <dd>
                         {formatDateLabel(reservationPreview.pickupAt, pickupLabel)} → {formatDateLabel(reservationPreview.returnAt, returnLabel)}
                       </dd>
                     </div>
                     <div>
                       <dt className="text-xs text-emerald-800">Payment amount</dt>
-                      <dd>¥{reservationPreview.paymentAmount}</dd>
+                      <dd>{reservationPreview.paymentAmount} yen</dd>
                     </div>
                   </dl>
                 </div>
