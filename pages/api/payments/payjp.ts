@@ -1,12 +1,14 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 
 import { COGNITO_ID_TOKEN_COOKIE, verifyCognitoIdToken } from "../../../lib/cognitoServer";
+import { getPayjpSecretKey, getPayjpSecretKeyError } from "../../../lib/payjpServer";
 
 type PayjpChargeRequest = {
   token?: string;
   amount?: number;
   description?: string;
   metadata?: Record<string, string>;
+  email?: string;
 };
 
 type PayjpChargeResponse = {
@@ -41,17 +43,18 @@ export default async function handler(
     return res.status(401).json({ error: "認証が必要です" });
   }
 
-  const secretKey = process.env.PAYJP_SECRET_KEY;
-  if (!secretKey) {
-    return res.status(500).json({ error: "PAYJP_SECRET_KEY が設定されていません。" });
-  }
-
   const body = req.body as PayjpChargeRequest;
   if (!body.token || !body.amount) {
     return res.status(400).json({ error: "token と amount が必要です。" });
   }
 
   try {
+    const secretKeyError = getPayjpSecretKeyError(body.email);
+    if (secretKeyError) {
+      return res.status(500).json({ error: secretKeyError });
+    }
+
+    const secretKey = getPayjpSecretKey(body.email);
     const basicAuth = Buffer.from(`${secretKey}:`).toString("base64");
 
     const params = new URLSearchParams({
