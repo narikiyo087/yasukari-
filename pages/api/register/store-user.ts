@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { PutCommand } from '@aws-sdk/lib-dynamodb';
+import { GetCommand, PutCommand } from '@aws-sdk/lib-dynamodb';
 import { getDocumentClient } from '../../../lib/dynamodb';
 import { COGNITO_ID_TOKEN_COOKIE, verifyCognitoIdToken } from '../../../lib/cognitoServer';
 import { RegistrationData, REQUIRED_REGISTRATION_FIELDS } from '../../../types/registration';
@@ -73,12 +73,22 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     const client = getDocumentClient();
 
+    const existingUser = await client.send(
+      new GetCommand({
+        TableName: TABLE_NAME,
+        Key: { user_id: userId },
+      })
+    );
+    const existingItem = existingUser.Item ?? {};
+
     await client.send(
       new PutCommand({
         TableName: TABLE_NAME,
         Item: {
+          ...existingItem,
           ...payload,
-          created_at: new Date().toISOString(),
+          created_at: existingItem.created_at ?? new Date().toISOString(),
+          rental_terms_agreed_at: existingItem.rental_terms_agreed_at,
         },
       })
     );
