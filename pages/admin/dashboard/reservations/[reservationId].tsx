@@ -1,7 +1,7 @@
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useEffect, useMemo, useState } from "react";
 
 import DashboardLayout from "../../../../components/dashboard/DashboardLayout";
 import { formatDisplayPhoneNumberWithCountryCode } from "../../../../lib/phoneNumber";
@@ -50,6 +50,11 @@ export default function ReservationDetailPage() {
   const [highSeasonDates, setHighSeasonDates] = useState<Set<string>>(new Set());
   const [highSeasonLoading, setHighSeasonLoading] = useState<boolean>(false);
   const [highSeasonError, setHighSeasonError] = useState<string>("");
+  const [pickupInput, setPickupInput] = useState<string>("");
+  const [returnInput, setReturnInput] = useState<string>("");
+  const [scheduleMessage, setScheduleMessage] = useState<string>("");
+  const [scheduleError, setScheduleError] = useState<string>("");
+  const [isUpdatingSchedule, setIsUpdatingSchedule] = useState<boolean>(false);
   const isReservationCompleted = reservation?.status === "予約完了";
 
   const paymentDateInfo = (() => {
@@ -237,6 +242,14 @@ export default function ReservationDetailPage() {
     });
   };
 
+  const formatDatetimeLocal = (value: string) => {
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return "";
+
+    const offsetDate = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
+    return offsetDate.toISOString().slice(0, 16);
+  };
+
   const formatDateKey = (date: Date): string => {
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, "0");
@@ -270,6 +283,20 @@ export default function ReservationDetailPage() {
     return dates;
   })();
 
+  const rentalDurationMs = useMemo(() => {
+    if (!reservation?.pickupAt || !reservation?.returnAt) return null;
+    const pickup = new Date(reservation.pickupAt);
+    const returnAt = new Date(reservation.returnAt);
+    const diff = returnAt.getTime() - pickup.getTime();
+
+    if (!Number.isNaN(diff) && diff > 0) return diff;
+    if (reservation.rentalDurationHours && reservation.rentalDurationHours > 0) {
+      return reservation.rentalDurationHours * 60 * 60 * 1000;
+    }
+
+    return 24 * 60 * 60 * 1000;
+  }, [reservation?.pickupAt, reservation?.rentalDurationHours, reservation?.returnAt]);
+
   const accessoryLabelMap = new Map(ACCESSORY_LABELS.map((option) => [option.key, option.label]));
   const accessorySelections = Object.entries(reservation?.accessories ?? {})
     .map(([key, value]) => {
@@ -287,6 +314,81 @@ export default function ReservationDetailPage() {
     if (!amount?.trim().length) return "決済金額未登録";
     const normalized = amount.trim().replace(/円$/, "");
     return `${normalized}円`;
+  };
+
+  useEffect(() => {
+    if (!reservation) return;
+
+    setPickupInput(formatDatetimeLocal(reservation.pickupAt));
+    setReturnInput(formatDatetimeLocal(reservation.returnAt));
+  }, [reservation]);
+
+  const handlePickupChange = (value: string) => {
+    setPickupInput(value);
+    setScheduleMessage("");
+    setScheduleError("");
+
+    if (!rentalDurationMs) {
+      setReturnInput("");
+      return;
+    }
+
+    const pickupDate = new Date(value);
+    if (Number.isNaN(pickupDate.getTime())) {
+      setReturnInput("");
+      return;
+    }
+
+    const nextReturn = new Date(pickupDate.getTime() + rentalDurationMs);
+    setReturnInput(formatDatetimeLocal(nextReturn.toISOString()));
+  };
+
+  const handleScheduleUpdate = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (!reservation || typeof reservationId !== "string" || !rentalDurationMs) return;
+
+    const pickupAt = new Date(pickupInput);
+    if (Number.isNaN(pickupAt.getTime())) {
+      setScheduleError("貸出日時の形式が正しくありません。");
+      return;
+    }
+
+    const returnAt = new Date(pickupAt.getTime() + rentalDurationMs);
+    const pickupIso = pickupAt.toISOString();
+    const returnIso = returnAt.toISOString();
+
+    setScheduleMessage("");
+    setScheduleError("");
+    setIsUpdatingSchedule(true);
+
+    try {
+      const response = await fetch(`/api/reservations/${reservationId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          pickupAt: pickupIso,
+          returnAt: returnIso,
+        }),
+      });
+
+      const data = (await response.json()) as { reservation?: Reservation; error?: string };
+      if (!response.ok) {
+        throw new Error(data.error || "貸出日時の更新に失敗しました");
+      }
+
+      if (data.reservation) {
+        setReservation(data.reservation);
+        setScheduleMessage("貸出日時と返却日時を更新しました (貸出期間は変更されません)。");
+      }
+    } catch (scheduleUpdateError) {
+      const message =
+        scheduleUpdateError instanceof Error
+          ? scheduleUpdateError.message
+          : "貸出日時の更新中にエラーが発生しました";
+      setScheduleError(message);
+    } finally {
+      setIsUpdatingSchedule(false);
+    }
   };
 
   const handleVehicleChange = async (event: FormEvent<HTMLFormElement>) => {
@@ -497,6 +599,56 @@ export default function ReservationDetailPage() {
                     <dd>{reservation.refundNote || "返金設定は未入力です"}</dd>
                   </div>
                 </dl>
+              </div>
+
+              <div className={styles.detailPanel}>
+                <div className={styles.detailHeader}>
+                  <h3 className={styles.detailTitle}>貸出日時の変更</h3>
+                </div>
+                <form onSubmit={handleScheduleUpdate}>
+                  <label className={styles.inputLabel} htmlFor="pickupAt">
+                    貸出日時
+                  </label>
+                  <input
+                    id="pickupAt"
+                    className={styles.input}
+                    type="datetime-local"
+                    value={pickupInput}
+                    onChange={(event) => handlePickupChange(event.target.value)}
+                    required
+                  />
+                  <label className={styles.inputLabel} htmlFor="returnAt">
+                    返却日時 (貸出期間に合わせて自動更新)
+                  </label>
+                  <input
+                    id="returnAt"
+                    className={styles.input}
+                    type="datetime-local"
+                    value={returnInput}
+                    readOnly
+                  />
+                  <p className={styles.mutedText}>
+                    貸出期間を変えずに日時をずらすことができます。同じ時間の範囲のみ変更可能です。
+                  </p>
+                  <div className={`${styles.inlineNotice} ${styles.noticeNeutral}`}>
+                    注意事項: 貸出期間が延びる場合は、追加予約の受付、もしくは別途ユーザーの決済が必要になります。
+                  </div>
+                  <div className={styles.detailActions}>
+                    <button
+                      className={`${styles.iconButton} ${styles.iconButtonAccent}`}
+                      type="submit"
+                      disabled={isUpdatingSchedule || isReservationCompleted}
+                    >
+                      {isUpdatingSchedule ? "更新中..." : "日時を更新"}
+                    </button>
+                  </div>
+                  {scheduleError && (
+                    <p className={`${styles.inlineNotice} ${styles.noticeDanger}`}>{scheduleError}</p>
+                  )}
+                  {scheduleMessage && (
+                    <p className={`${styles.inlineNotice} ${styles.noticeSuccess}`}>{scheduleMessage}</p>
+                  )}
+                </form>
               </div>
 
               <div className={styles.detailPanel}>

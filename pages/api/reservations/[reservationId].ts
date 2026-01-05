@@ -87,11 +87,6 @@ const buildAdminChangeNote = (renterName: string) => {
   return Array.from(new Set(parts)).join(" / ");
 };
 
-const buildExtensionNote = (renterName: string) => {
-  const parts = [renterName.trim() || "名前未登録", "延長手続き"];
-  return Array.from(new Set(parts)).join(" / ");
-};
-
 const parsePaymentAmount = (amount: unknown): number | null => {
   if (typeof amount === "number") return amount;
   if (typeof amount !== "string") return null;
@@ -202,6 +197,10 @@ export default async function handler(
 
       const body = req.body as Partial<Reservation> & { vehicleModel?: string };
       const updates: Partial<Reservation> = {};
+      const pickupAtUpdated =
+        typeof body.pickupAt === "string" && body.pickupAt !== existingReservation.pickupAt;
+      const returnAtUpdated =
+        typeof body.returnAt === "string" && body.returnAt !== existingReservation.returnAt;
 
       if (typeof body.vehicleCode === "string") {
         updates.vehicleCode = body.vehicleCode;
@@ -236,12 +235,19 @@ export default async function handler(
         updates.returnSurvey = body.returnSurvey.trim();
       }
 
+      if (typeof body.pickupAt === "string") {
+        updates.pickupAt = body.pickupAt;
+      }
+
       if (typeof body.returnAt === "string") {
         updates.returnAt = body.returnAt;
-        const pickupAt = new Date(existingReservation.pickupAt);
-        const newReturnAt = new Date(body.returnAt);
-        if (!Number.isNaN(pickupAt.getTime()) && !Number.isNaN(newReturnAt.getTime())) {
-          const diff = newReturnAt.getTime() - pickupAt.getTime();
+      }
+
+      if (pickupAtUpdated || returnAtUpdated) {
+        const pickupAt = new Date(updates.pickupAt ?? existingReservation.pickupAt);
+        const returnAt = new Date(updates.returnAt ?? existingReservation.returnAt);
+        if (!Number.isNaN(pickupAt.getTime()) && !Number.isNaN(returnAt.getTime())) {
+          const diff = returnAt.getTime() - pickupAt.getTime();
           if (diff > 0) {
             updates.rentalDurationHours = Math.round((diff / (1000 * 60 * 60)) * 10) / 10;
           }
@@ -314,19 +320,23 @@ export default async function handler(
 
       const reservation = await updateReservation(reservationId, updates);
 
+      const scheduleChanged = pickupAtUpdated || returnAtUpdated;
+
       if (
         typeof updates.vehicleCode === "string" &&
         updates.vehicleCode !== existingReservation.vehicleCode
       ) {
-        const dateKeys = buildDateKeysInRange(
+        const previousKeys = buildDateKeysInRange(
           existingReservation.pickupAt,
           existingReservation.returnAt
         );
-        if (dateKeys.length > 0) {
-          const renterNote = buildAdminChangeNote(existingReservation.memberName);
+        const nextKeys = buildDateKeysInRange(reservation.pickupAt, reservation.returnAt);
+        const renterNote = buildAdminChangeNote(existingReservation.memberName);
+
+        if (previousKeys.length > 0) {
           await updateVehicleAvailability(existingReservation.vehicleCode, (current) => {
             const next = { ...current };
-            dateKeys.forEach((key) => {
+            previousKeys.forEach((key) => {
               const entry = next[key];
               if (entry?.status === "RENTED" || entry?.status === "RENTAL_COMPLETED") {
                 delete next[key];
@@ -334,10 +344,12 @@ export default async function handler(
             });
             return next;
           });
+        }
 
+        if (nextKeys.length > 0) {
           await updateVehicleAvailability(updates.vehicleCode, (current) => {
             const next = { ...current };
-            dateKeys.forEach((key) => {
+            nextKeys.forEach((key) => {
               next[key] = { status: "RENTED", note: renterNote };
             });
             return next;
@@ -345,14 +357,15 @@ export default async function handler(
         }
       }
 
-      if (typeof updates.returnAt === "string" && updates.returnAt !== existingReservation.returnAt) {
+      if (scheduleChanged && reservation.vehicleCode === existingReservation.vehicleCode) {
         const previousKeys = buildDateKeysInRange(
           existingReservation.pickupAt,
           existingReservation.returnAt
         );
-        const nextKeys = buildDateKeysInRange(existingReservation.pickupAt, updates.returnAt);
+        const nextKeys = buildDateKeysInRange(reservation.pickupAt, reservation.returnAt);
+
         if (previousKeys.length > 0 || nextKeys.length > 0) {
-          const extensionNote = buildExtensionNote(existingReservation.memberName);
+          const scheduleUpdateNote = buildAdminChangeNote(existingReservation.memberName);
           await updateVehicleAvailability(existingReservation.vehicleCode, (current) => {
             const next = { ...current };
             const previousSet = new Set(previousKeys);
@@ -369,7 +382,7 @@ export default async function handler(
 
             nextKeys.forEach((key) => {
               if (!previousSet.has(key)) {
-                next[key] = { status: "RENTED", note: extensionNote };
+                next[key] = { status: "RENTED", note: scheduleUpdateNote };
               }
             });
 
