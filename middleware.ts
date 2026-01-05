@@ -10,7 +10,7 @@ import {
   isBasicAuthValid,
 } from './lib/basicAuth';
 
-const FORCE_HOME_MAINTENANCE = true;
+const FORCE_HOME_MAINTENANCE = false;
 
 const decodeLocaleFromToken = (token: string | undefined): string | null => {
   if (!token) return null;
