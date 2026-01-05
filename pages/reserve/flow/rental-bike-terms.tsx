@@ -21,7 +21,7 @@ export default function ReserveTermsAgreement() {
 
   const nextSearch = useMemo(() => {
     const params = new URLSearchParams();
-    const keys: (keyof typeof router.query)[] = [
+    const keys = [
       'store',
       'modelName',
       'managementNumber',
