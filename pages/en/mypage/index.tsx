@@ -70,10 +70,16 @@ export default function MyPageEn() {
   const [returnRating, setReturnRating] = useState(0);
   const [returnSurvey, setReturnSurvey] = useState('');
   const [returnSubmitting, setReturnSubmitting] = useState(false);
+  const [rentalTermsAgreed, setRentalTermsAgreed] = useState(false);
+  const [loadingRentalTerms, setLoadingRentalTerms] = useState(true);
+  const [rentalTermsError, setRentalTermsError] = useState('');
+  const [savingRentalTerms, setSavingRentalTerms] = useState(false);
+  const [rentalTermsUpdatedAt, setRentalTermsUpdatedAt] = useState<string | null>(null);
   const [mobileSectionsOpen, setMobileSectionsOpen] = useState({
     reservations: true,
     profile: false,
     registration: false,
+    rentalTerms: true,
     logout: false,
     links: false,
   });
@@ -226,6 +232,50 @@ export default function MyPageEn() {
   }, [loading, router]);
 
   useEffect(() => {
+    if (!user || error) return;
+
+    const controller = new AbortController();
+    const fetchRentalTerms = async () => {
+      try {
+        setRentalTermsError('');
+        setLoadingRentalTerms(true);
+        const response = await fetch('/api/user/rental-terms', { signal: controller.signal });
+
+        if (response.status === 401) {
+          await router.replace('/en/login');
+          return;
+        }
+
+        if (response.status === 404) {
+          setRentalTermsAgreed(false);
+          setRentalTermsUpdatedAt(null);
+          return;
+        }
+
+        if (!response.ok) {
+          throw new Error('Failed to load rental terms status');
+        }
+
+        const data = (await response.json()) as { agreed?: boolean; agreedAt?: string | null };
+        setRentalTermsAgreed(Boolean(data.agreed));
+        setRentalTermsUpdatedAt(data.agreedAt ?? null);
+      } catch (err) {
+        if (!controller.signal.aborted) {
+          console.error(err);
+          setRentalTermsError('Unable to load your rental terms agreement status. Please try again later.');
+        }
+      } finally {
+        if (!controller.signal.aborted) {
+          setLoadingRentalTerms(false);
+        }
+      }
+    };
+
+    void fetchRentalTerms();
+    return () => controller.abort();
+  }, [error, router, user]);
+
+  useEffect(() => {
     if (loading) return;
 
     const controller = new AbortController();
@@ -325,6 +375,22 @@ export default function MyPageEn() {
     });
   };
 
+  const formatAgreementTimestamp = (value: string | null) => {
+    if (!value) return 'Not agreed yet.';
+
+    const parsed = new Date(value);
+    if (Number.isNaN(parsed.getTime())) return value;
+
+    return parsed.toLocaleString('en-US', {
+      timeZone: 'Asia/Tokyo',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+  };
+
   const reservationCompletionLabel = (flag: boolean) => (flag ? 'Reservation complete' : 'In use');
 
   const activeKeyboxQrImageUrl = useMemo(() => {
@@ -365,6 +431,45 @@ export default function MyPageEn() {
       }
     });
   }, [reservations]);
+
+  const handleRentalTermsToggle = async () => {
+    if (loadingRentalTerms || savingRentalTerms) return;
+
+    setSavingRentalTerms(true);
+    setRentalTermsError('');
+
+    try {
+      const nextAgreed = !rentalTermsAgreed;
+      const response = await fetch('/api/user/rental-terms', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ agreed: nextAgreed }),
+      });
+
+      if (response.status === 401) {
+        await router.replace('/en/login');
+        return;
+      }
+
+      const payload = (await response.json().catch(() => ({}))) as { agreedAt?: string | null; message?: string };
+
+      if (response.status === 404) {
+        throw new Error(payload.message ?? 'User data was not found. Please complete your registration first.');
+      }
+
+      if (!response.ok) {
+        throw new Error(payload.message ?? 'Failed to update your rental terms agreement.');
+      }
+
+      setRentalTermsAgreed(nextAgreed);
+      setRentalTermsUpdatedAt(nextAgreed ? payload.agreedAt ?? new Date().toISOString() : null);
+    } catch (err) {
+      console.error(err);
+      setRentalTermsError(err instanceof Error ? err.message : 'Failed to update your rental terms agreement.');
+    } finally {
+      setSavingRentalTerms(false);
+    }
+  };
 
   const handleLogout = async () => {
     setLoggingOut(true);
@@ -1112,6 +1217,69 @@ export default function MyPageEn() {
                 >
                   Go to registration form
                 </Link>
+              </div>
+            </section>
+
+            <section className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+              <button
+                type="button"
+                aria-expanded={mobileSectionsOpen.rentalTerms}
+                onClick={() => toggleMobileSection('rentalTerms')}
+                className="group flex w-full items-start justify-between gap-3 text-left md:pointer-events-none md:cursor-default"
+              >
+                <div>
+                  <h2 className="text-lg font-semibold text-gray-900">Rental terms agreement</h2>
+                  <p className="mt-2 text-sm text-gray-600">Check and update your agreement to the motorcycle rental terms.</p>
+                  {loadingRentalTerms ? null : rentalTermsAgreed ? (
+                    <p className="mt-2 inline-flex items-center rounded-full bg-green-50 px-3 py-1 text-xs font-semibold text-green-700 ring-1 ring-inset ring-green-200">
+                      Agreed
+                    </p>
+                  ) : (
+                    <p className="mt-2 inline-flex items-center rounded-full bg-amber-50 px-3 py-1 text-xs font-semibold text-amber-700 ring-1 ring-inset ring-amber-200">
+                      Not agreed
+                    </p>
+                  )}
+                </div>
+                <span
+                  aria-hidden
+                  className={`ml-3 inline-flex h-9 w-9 items-center justify-center rounded-full border border-gray-200 bg-gray-50 text-xs font-semibold text-gray-600 transition-transform md:hidden ${
+                    mobileSectionsOpen.rentalTerms ? 'rotate-180' : ''
+                  }`}
+                >
+                  ▼
+                </span>
+              </button>
+              <div className={`${mobileSectionsOpen.rentalTerms ? 'mt-4 block' : 'hidden'} md:mt-4 md:block`}>
+                <p className="text-sm text-gray-700">
+                  Tick the box below to save your agreement status in the database. You can read the full terms <Link className="text-red-600 underline underline-offset-2" href="/rental-bike-terms">here</Link>.
+                </p>
+                {rentalTermsError ? (
+                  <p className="mt-3 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">{rentalTermsError}</p>
+                ) : null}
+
+                {registration ? (
+                  <label className="mt-4 inline-flex items-start gap-3 text-sm text-gray-900">
+                    <input
+                      type="checkbox"
+                      className="mt-1 h-4 w-4 rounded border-gray-300 text-red-600 focus:ring-red-500"
+                      onChange={handleRentalTermsToggle}
+                      checked={rentalTermsAgreed}
+                      disabled={loadingRentalTerms || savingRentalTerms || loadingRegistration}
+                    />
+                    <span className="leading-relaxed">
+                      Do you agree to the motorcycle rental terms?
+                      <span className="mt-1 block text-xs text-gray-500">Unchecking will save you as not agreed.</span>
+                    </span>
+                  </label>
+                ) : (
+                  <p className="mt-4 rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-700">
+                    You can set your agreement status after saving your registration details. Please complete the registration form first.
+                  </p>
+                )}
+
+                <p className="mt-3 text-xs text-gray-500">
+                  Last updated: {loadingRentalTerms ? 'Checking…' : formatAgreementTimestamp(rentalTermsUpdatedAt)}
+                </p>
               </div>
             </section>
 
