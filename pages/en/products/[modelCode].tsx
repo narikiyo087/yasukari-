@@ -13,6 +13,7 @@ import {
 } from "../../../lib/bikes";
 import { readVehicleRentalPrices } from "../../../lib/server/vehicleRentalPrices";
 import RecentlyViewedEn from "../../../components/RecentlyViewedEn";
+import type { Reservation } from "../../../lib/reservations";
 
 interface Props {
   bike: BikeModel;
@@ -46,10 +47,15 @@ const durationDays = {
 
 type DurationKey = keyof typeof durationDays;
 
+const priceMultiplier = 1.5;
+
 const formatPrice = (price: number | undefined) =>
   typeof price === "number" && Number.isFinite(price)
     ? `${price.toLocaleString()} JPY`
-    : undefined;
+    : "-";
+
+const applyPriceMultiplier = (price: number) =>
+  Math.round(price * priceMultiplier);
 
 const normalizePrice = (value: unknown): number | undefined => {
   if (typeof value === "number" && Number.isFinite(value)) {
@@ -77,10 +83,13 @@ export default function ProductDetailPageEn({
   vehicles,
   priceGuide,
 }: Props) {
-  const [selectedVehicle, setSelectedVehicle] = useState<string>(
-    vehicles[0]?.managementNumber ?? ""
-  );
+  const [selectedVehicle, setSelectedVehicle] = useState<string>("");
+  const [selectedStoreId, setSelectedStoreId] = useState<string>("");
   const [showAuthModal, setShowAuthModal] = useState(false);
+  const [showRentalLimitModal, setShowRentalLimitModal] = useState(false);
+  const [showStoreRequiredModal, setShowStoreRequiredModal] = useState(false);
+  const [rentalCheckError, setRentalCheckError] = useState("");
+  const [checkingRental, setCheckingRental] = useState(false);
   const router = useRouter();
 
   const vehicleOptions = useMemo(
@@ -94,7 +103,21 @@ export default function ProductDetailPageEn({
   );
 
   const hasStock = vehicleOptions.length > 0;
-  const showPrice = Boolean(priceGuide["24h"]);
+  const storeOptions = useMemo(() => {
+    const uniqueStores = new Set<string>();
+    vehicles.forEach((vehicle) => {
+      if (vehicle.storeId) uniqueStores.add(vehicle.storeId);
+    });
+    return Array.from(uniqueStores);
+  }, [vehicles]);
+
+  const filteredVehicleOptions = useMemo(() => {
+    if (!selectedStoreId) return [];
+    return vehicleOptions.filter((vehicle) => vehicle.storeId === selectedStoreId);
+  }, [vehicleOptions, selectedStoreId]);
+
+  const hasFilteredStock = filteredVehicleOptions.length > 0;
+  const showPrice = Boolean(priceGuide["24h"] && priceGuide["24h"] !== "-");
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -149,6 +172,58 @@ export default function ProductDetailPageEn({
     () => vehicleOptions.find((option) => option.value === selectedVehicle)?.storeId,
     [selectedVehicle, vehicleOptions]
   );
+
+  useEffect(() => {
+    setSelectedVehicle("");
+  }, [selectedStoreId]);
+
+  const hasActiveRental = (reservations: Reservation[]) =>
+    reservations.some((reservation) => {
+      const isCompleted =
+        reservation.reservationCompletedFlag || reservation.status === "予約完了";
+      return !isCompleted && reservation.status !== "キャンセル";
+    });
+
+  const handleReserveClick = async () => {
+    if (!selectedStoreId) {
+      setShowStoreRequiredModal(true);
+      return;
+    }
+    if (!selectedVehicle || checkingRental) return;
+    setCheckingRental(true);
+    setRentalCheckError("");
+
+    try {
+      const response = await fetch("/api/reservations/me", {
+        credentials: "include",
+      });
+
+      if (response.status === 401) {
+        setShowAuthModal(true);
+        return;
+      }
+
+      if (!response.ok) {
+        throw new Error("failed to load reservations");
+      }
+
+      const data = (await response.json()) as { reservations?: Reservation[] };
+      const reservations = data.reservations ?? [];
+
+      if (hasActiveRental(reservations)) {
+        setShowRentalLimitModal(true);
+        return;
+      }
+
+      await router.push(`/en/reserve/models/${selectedVehicle}`);
+    } catch (error) {
+      console.error("Failed to verify rental status", error);
+      setRentalCheckError("We could not confirm your rental status. Please try again later.");
+      setShowRentalLimitModal(true);
+    } finally {
+      setCheckingRental(false);
+    }
+  };
 
   return (
     <>
@@ -225,19 +300,69 @@ export default function ProductDetailPageEn({
                     ) : null}
                     <div className="rounded-xl border border-gray-100 bg-white p-4 shadow-sm flex flex-col gap-3">
                       <div className="flex items-center justify-between">
-                        <p className="text-sm font-semibold text-gray-900">Choose a vehicle</p>
-                        <span className="text-xs text-gray-500">{vehicles.length} options</span>
+                        <p className="text-sm font-semibold text-gray-900">Choose availability</p>
+                        <span className="text-xs text-gray-500">
+                          {selectedStoreId
+                            ? `${filteredVehicleOptions.length} options`
+                            : `${vehicles.length} options`}
+                        </span>
                       </div>
-                      <p className="text-xs text-gray-600">
-                        Select a management number registered in the Vehicles table. The option label uses the partition key.
-                      </p>
+                      <div className="rounded-lg border border-dashed border-gray-200 bg-gray-50 p-3">
+                        <p className="text-xs font-semibold text-gray-700">Select a rental store</p>
+                        <p className="mt-1 text-xs text-gray-500">
+                          Choose a store first, then select a vehicle.
+                        </p>
+                        <div className="mt-3 flex flex-wrap gap-2">
+                          {storeOptions.length === 0 ? (
+                            <span className="text-xs text-gray-500">
+                              No stock available at the moment.
+                            </span>
+                          ) : (
+                            storeOptions.map((storeId) => {
+                              const isSelected = storeId === selectedStoreId;
+                              return (
+                                <button
+                                  key={storeId}
+                                  type="button"
+                                  onClick={() => setSelectedStoreId(storeId)}
+                                  className={`rounded-full px-4 py-2 text-xs font-semibold shadow-sm transition ${
+                                    isSelected
+                                      ? "bg-red-500 text-white"
+                                      : "bg-white text-gray-700 ring-1 ring-gray-200 hover:ring-red-200"
+                                  }`}
+                                >
+                                  {storeId}
+                                </button>
+                              );
+                            })
+                          )}
+                        </div>
+                      </div>
+                      <div
+                        onMouseDown={() => {
+                          if (!selectedStoreId) setShowStoreRequiredModal(true);
+                        }}
+                        onFocus={() => {
+                          if (!selectedStoreId) setShowStoreRequiredModal(true);
+                        }}
+                      >
                       <select
                         value={selectedVehicle}
-                        onChange={(e) => setSelectedVehicle(e.target.value)}
+                        onChange={(e) => {
+                          if (!selectedStoreId) {
+                            setShowStoreRequiredModal(true);
+                            return;
+                          }
+                          setSelectedVehicle(e.target.value);
+                        }}
                         className="w-full rounded-lg border border-gray-200 bg-white px-4 py-3 text-sm shadow-sm focus:border-red-500 focus:outline-none disabled:cursor-not-allowed disabled:bg-gray-100"
-                        disabled={vehicleOptions.length === 0}
+                        disabled={selectedStoreId ? filteredVehicleOptions.length === 0 : false}
                       >
-                        {vehicleOptions.length === 0 ? (
+                        {!selectedStoreId ? (
+                          <option value="" disabled>
+                            Please select a store first
+                          </option>
+                        ) : filteredVehicleOptions.length === 0 ? (
                           <option value="" disabled>
                             No stock available
                           </option>
@@ -246,7 +371,7 @@ export default function ProductDetailPageEn({
                             <option value="" disabled>
                               Select a management number
                             </option>
-                            {vehicleOptions.map((vehicle) => (
+                            {filteredVehicleOptions.map((vehicle) => (
                               <option key={vehicle.value} value={vehicle.value}>
                                 {vehicle.label}
                               </option>
@@ -254,18 +379,25 @@ export default function ProductDetailPageEn({
                           </>
                         )}
                       </select>
+                      </div>
                       {selectedVehicleStore ? (
                         <p className="text-xs text-gray-600">
                           Linked store ID: <span className="font-semibold">{selectedVehicleStore}</span>
                         </p>
                       ) : null}
                       {hasStock ? (
-                        <Link
-                          href={`/en/reserve/models/${selectedVehicle}`}
-                          className="inline-flex w-full items-center justify-center rounded-lg bg-red-500 px-4 py-2 text-sm font-semibold text-white shadow hover:bg-red-600 transition"
+                        <button
+                          type="button"
+                          onClick={handleReserveClick}
+                          disabled={
+                            selectedStoreId
+                              ? !selectedVehicle || !hasFilteredStock || checkingRental
+                              : false
+                          }
+                          className="inline-flex w-full items-center justify-center rounded-lg bg-red-500 px-4 py-2 text-sm font-semibold text-white shadow transition hover:bg-red-600 disabled:cursor-not-allowed disabled:bg-red-300"
                         >
-                          Reserve this bike
-                        </Link>
+                          {checkingRental ? "Checking reservation status…" : "Reserve this bike"}
+                        </button>
                       ) : (
                         <button
                           className="inline-flex w-full items-center justify-center rounded-lg bg-gray-200 px-4 py-2 text-sm font-semibold text-gray-500 shadow cursor-not-allowed"
@@ -362,7 +494,7 @@ export default function ProductDetailPageEn({
                     >
                       <div className="text-xs font-semibold text-gray-500">{item.label}</div>
                       <div className="mt-1 text-base font-bold text-gray-900">
-                        {item.value ?? "Contact us"}
+                        {item.value}
                       </div>
                     </div>
                   ))}
@@ -447,6 +579,72 @@ export default function ProductDetailPageEn({
           </div>
         </div>
       ) : null}
+      {showRentalLimitModal ? (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
+          <div className="relative w-full max-w-lg overflow-hidden rounded-2xl bg-white shadow-2xl">
+            <div className="border-b border-emerald-100 bg-emerald-50 px-6 py-4 text-gray-900">
+              <p className="text-sm font-semibold uppercase tracking-wide text-gray-900">Rental Notice</p>
+              <h2 className="mt-1 text-xl font-bold text-red-600">Please return your current rental bike</h2>
+            </div>
+            <div className="space-y-4 px-6 py-5 text-gray-700">
+              {rentalCheckError ? (
+                <p className="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
+                  {rentalCheckError}
+                </p>
+              ) : (
+                <>
+                  <p className="text-sm leading-relaxed">
+                    You already have an active rental, so we cannot accept a new reservation.
+                  </p>
+                  <div className="rounded-xl bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
+                    Please check your return status on My Page → Reservation Status.
+                  </div>
+                </>
+              )}
+              <div className="flex flex-col gap-2 pt-2">
+                <button
+                  type="button"
+                  className="inline-flex w-full items-center justify-center rounded-lg bg-red-600 px-4 py-3 text-sm font-semibold text-white shadow transition hover:bg-red-700"
+                  onClick={() => router.push("/en/mypage")}
+                >
+                  Go to My Page
+                </button>
+                <button
+                  type="button"
+                  className="inline-flex w-full items-center justify-center rounded-lg border border-gray-200 px-4 py-2 text-sm font-semibold text-gray-600 hover:border-gray-300"
+                  onClick={() => setShowRentalLimitModal(false)}
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : null}
+      {showStoreRequiredModal ? (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
+          <div className="relative w-full max-w-md overflow-hidden rounded-2xl bg-white shadow-2xl">
+            <div className="border-b border-amber-100 bg-amber-50 px-6 py-4 text-gray-900">
+              <p className="text-sm font-semibold uppercase tracking-wide text-gray-900">Store Notice</p>
+              <h2 className="mt-1 text-xl font-bold text-amber-700">Please select a rental store</h2>
+            </div>
+            <div className="space-y-4 px-6 py-5 text-gray-700">
+              <p className="text-sm leading-relaxed">
+                Select a store first, then choose an available vehicle to continue.
+              </p>
+              <div className="flex flex-col gap-2 pt-2">
+                <button
+                  type="button"
+                  className="inline-flex w-full items-center justify-center rounded-lg bg-red-600 px-4 py-3 text-sm font-semibold text-white shadow transition hover:bg-red-700"
+                  onClick={() => setShowStoreRequiredModal(false)}
+                >
+                  OK
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : null}
     </>
   );
 }
@@ -474,23 +672,31 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({ params }) 
     acc[record.days] = record.price;
     return acc;
   }, {});
+  const base24hPrice =
+    rentalPriceMap[durationDays["24h"]] ??
+    normalizePrice(classPriceMap["24h"]) ??
+    normalizePrice(bike.price24h);
 
   const priceGuide = (Object.entries(durationDays) as [DurationKey, number][])
     .map(([key, days]) => {
       const rentalPrice = rentalPriceMap[days];
       if (typeof rentalPrice === "number") {
-        return [key, formatPrice(rentalPrice)] as [DurationKey, string | undefined];
+        return [key, formatPrice(applyPriceMultiplier(rentalPrice))] as [DurationKey, string];
       }
       const classPrice = normalizePrice(classPriceMap[key]);
       if (classPrice != null) {
-        return [key, formatPrice(classPrice)] as [DurationKey, string | undefined];
+        return [key, formatPrice(applyPriceMultiplier(classPrice))] as [DurationKey, string];
       }
-      return [key, undefined] as [DurationKey, undefined];
+      if (key === "2d" && typeof base24hPrice === "number") {
+        return [key, formatPrice(applyPriceMultiplier(base24hPrice * durationDays["2d"]))] as [
+          DurationKey,
+          string
+        ];
+      }
+      return [key, "-"] as [DurationKey, string];
     })
     .reduce<Partial<Record<DurationKey, string>>>((acc, [key, value]) => {
-      if (value) {
-        acc[key] = value;
-      }
+      acc[key] = value;
       return acc;
     }, {});
 
