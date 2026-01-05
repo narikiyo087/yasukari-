@@ -23,11 +23,13 @@ const mockRes = () => {
 describe("POST /api/payments/payjp", () => {
   beforeEach(() => {
     jest.resetAllMocks();
-    process.env.PAYJP_SECRET_KEY = "sk_test_sample";
+    process.env.PAYJP_SECRET_KEY = "sk_live_sample";
+    process.env.PAYJP_SECRET_KEY_TEST = "sk_test_sample";
   });
 
   afterEach(() => {
     delete process.env.PAYJP_SECRET_KEY;
+    delete process.env.PAYJP_SECRET_KEY_TEST;
     global.fetch = originalFetch;
   });
 
@@ -73,6 +75,37 @@ describe("POST /api/payments/payjp", () => {
       amount: 1200,
       paidAt: new Date(1700000000 * 1000).toISOString(),
     });
+    expect(global.fetch).toHaveBeenCalledWith("https://api.pay.jp/v1/charges", {
+      method: "POST",
+      headers: expect.objectContaining({
+        Authorization: "Basic c2tfbGl2ZV9zYW1wbGU6",
+      }),
+      body: expect.any(String),
+    });
+  });
+
+  it("uses test key when email is in the test allowlist", async () => {
+    (verifyCognitoIdToken as jest.Mock).mockResolvedValue({ sub: "user" });
+    global.fetch = jest.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({ id: "ch_test", amount: 1200, created: 1700000000 }),
+    }) as unknown as typeof fetch;
+
+    const req = mockReq({
+      method: "POST",
+      cookies: { cognito_id_token: "token" },
+      body: {
+        token: "tok_test",
+        amount: 1200,
+        description: "Test",
+        email: "info@yasukaribike.com",
+      },
+    });
+    const res = mockRes();
+
+    await handler(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(200);
     expect(global.fetch).toHaveBeenCalledWith("https://api.pay.jp/v1/charges", {
       method: "POST",
       headers: expect.objectContaining({

@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 import type { RegistrationData } from "../../../types/registration";
 import type { Reservation } from "../../../lib/reservations";
 import PayjpCheckout from "../../../components/PayjpCheckout";
+import { getPayjpPublicKey, getPayjpPublicKeyError } from "../../../lib/payjp";
 
 const ACCESSORY_KEYS = ["halfCap", "jetHelmet", "brandHelmet", "glove"] as const;
 
@@ -194,7 +195,15 @@ export default function ReserveFlowStep3() {
     return Math.round((diff / (1000 * 60 * 60)) * 10) / 10;
   }, [pickupDate, pickupTime, returnDate, returnTime]);
 
-  const payJpPublicKey = process.env.NEXT_PUBLIC_PAYJP_PUBLIC_KEY ?? "pk_test_sample";
+  const payjpCustomerEmail = registration?.email ?? sessionUser?.email ?? "";
+  const payJpPublicKey = useMemo(() => getPayjpPublicKey(payjpCustomerEmail), [payjpCustomerEmail]);
+  const payjpKeyError = useMemo(() => getPayjpPublicKeyError(payjpCustomerEmail), [payjpCustomerEmail]);
+
+  useEffect(() => {
+    if (payjpKeyError) {
+      setPayjpError(payjpKeyError);
+    }
+  }, [payjpKeyError]);
 
   const handlePaymentWithToken = useCallback(async (tokenId: string) => {
     if (!sessionUser) {
@@ -217,6 +226,7 @@ export default function ReserveFlowStep3() {
           token: tokenId,
           amount: totalAmount,
           description: `${store} ${modelName} ${managementNumber}`,
+          email: payjpCustomerEmail,
           metadata: {
             pickupAt,
             returnAt,
@@ -309,6 +319,7 @@ export default function ReserveFlowStep3() {
     modelName,
     pickupDate,
     pickupTime,
+    payjpCustomerEmail,
     registration,
     rentalDurationHours,
     returnDate,
@@ -365,7 +376,7 @@ export default function ReserveFlowStep3() {
     setPayjpError("Pay.JP の読み込みに失敗しました。時間をおいて再度お試しください。");
   }, []);
 
-  const canRenderPayment = authChecked && !authError && queryReady && !queryError;
+  const canRenderPayment = authChecked && !authError && queryReady && !queryError && Boolean(payJpPublicKey);
 
   return (
     <>
@@ -472,7 +483,7 @@ export default function ReserveFlowStep3() {
                       publicKey={payJpPublicKey}
                       description={`${store} ${modelName} ${managementNumber}`}
                       amount={totalAmount}
-                      email={sessionUser?.email ?? ""}
+                      email={payjpCustomerEmail}
                       label={isSavingReservation ? "決済中…" : "決済する"}
                       submitText="決済する"
                       enableApplePay

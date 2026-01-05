@@ -12,6 +12,7 @@ import {
   Reservation,
   updateReservation,
 } from "../../../lib/reservations";
+import { getPayjpSecretKey, getPayjpSecretKeyError } from "../../../lib/payjpServer";
 
 type VehicleRecord = {
   managementNumber: string;
@@ -110,11 +111,13 @@ const isWithinRefundWindow = (paymentDate: string | undefined): boolean => {
   return diffDays <= REFUND_LIMIT_DAYS;
 };
 
-const requestPayjpRefund = async (chargeId: string, amount: number) => {
-  const secretKey = process.env.PAYJP_SECRET_KEY;
-  if (!secretKey) {
-    throw new Error("PAYJP_SECRET_KEY が設定されていません。");
+const requestPayjpRefund = async (chargeId: string, amount: number, email?: string) => {
+  const secretKeyError = getPayjpSecretKeyError(email);
+  if (secretKeyError) {
+    throw new Error(secretKeyError);
   }
+
+  const secretKey = getPayjpSecretKey(email);
 
   const basicAuth = Buffer.from(`${secretKey}:`).toString("base64");
   const params = new URLSearchParams({ amount: amount.toString() });
@@ -293,7 +296,11 @@ export default async function handler(
         }
 
         try {
-          await requestPayjpRefund(existingReservation.paymentId, paymentAmount);
+          await requestPayjpRefund(
+            existingReservation.paymentId,
+            paymentAmount,
+            existingReservation.memberEmail
+          );
           updates.refundNote =
             updates.refundNote ??
             `${existingReservation.paymentAmount}円 / ${existingReservation.paymentId} の返金を実行`; 

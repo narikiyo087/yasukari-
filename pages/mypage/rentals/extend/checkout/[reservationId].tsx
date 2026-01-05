@@ -6,6 +6,7 @@ import { useRouter } from 'next/router';
 import PayjpCheckout from '../../../../../components/PayjpCheckout';
 import type { BikeClass, BikeModel } from '../../../../../lib/dashboard/types';
 import type { Reservation } from '../../../../../lib/reservations';
+import { getPayjpPublicKey, getPayjpPublicKeyError } from '../../../../../lib/payjp';
 
 const formatReservationDatetime = (value: string | Date) => {
   const parsed = value instanceof Date ? value : new Date(value);
@@ -202,7 +203,15 @@ export default function RentalExtensionCheckoutPage() {
     return extra24hPrice * extensionDays;
   }, [extra24hPrice, extensionDays]);
 
-  const payJpPublicKey = process.env.NEXT_PUBLIC_PAYJP_PUBLIC_KEY ?? 'pk_test_sample';
+  const payjpCustomerEmail = sessionUser?.email ?? '';
+  const payJpPublicKey = useMemo(() => getPayjpPublicKey(payjpCustomerEmail), [payjpCustomerEmail]);
+  const payjpKeyError = useMemo(() => getPayjpPublicKeyError(payjpCustomerEmail), [payjpCustomerEmail]);
+
+  useEffect(() => {
+    if (payjpKeyError) {
+      setPayjpError(payjpKeyError);
+    }
+  }, [payjpKeyError]);
 
   const handlePaymentWithToken = useCallback(
     async (tokenId: string) => {
@@ -231,6 +240,7 @@ export default function RentalExtensionCheckoutPage() {
             token: tokenId,
             amount: additionalCost,
             description: `${reservation.storeName} ${reservation.vehicleModel} 延長`,
+            email: payjpCustomerEmail,
             metadata: {
               reservationId: reservation.id,
               extensionDays: extensionDays.toString(),
@@ -290,7 +300,7 @@ export default function RentalExtensionCheckoutPage() {
         setIsProcessingPayment(false);
       }
     },
-    [additionalCost, extendedReturnDate, extensionDays, reservation, router]
+    [additionalCost, extendedReturnDate, extensionDays, payjpCustomerEmail, reservation, router]
   );
 
   useEffect(() => {
@@ -349,7 +359,8 @@ export default function RentalExtensionCheckoutPage() {
     !reservationError &&
     reservation &&
     additionalCost != null &&
-    sessionUser;
+    sessionUser &&
+    Boolean(payJpPublicKey);
 
   return (
     <>
@@ -484,7 +495,7 @@ export default function RentalExtensionCheckoutPage() {
                         publicKey={payJpPublicKey}
                         description={`${reservation.storeName} ${reservation.vehicleModel} 延長`}
                         amount={additionalCost ?? 0}
-                        email={sessionUser?.email ?? ''}
+                        email={payjpCustomerEmail}
                         label={isProcessingPayment ? '決済中…' : 'クレジット決済で延長する'}
                         submitText="延長する"
                         enableApplePay
