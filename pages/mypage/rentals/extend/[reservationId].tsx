@@ -199,6 +199,14 @@ export default function RentalExtensionPage() {
     setExtensionDays(Math.min(parsed, 30));
   };
 
+  const adjustExtensionDays = (delta: number) => {
+    setExtensionDays((current) => {
+      const next = current + delta;
+      if (Number.isNaN(next)) return 1;
+      return Math.min(Math.max(next, 1), 30);
+    });
+  };
+
   const canProceed =
     !loadingUser &&
     !loadingReservation &&
@@ -284,15 +292,36 @@ export default function RentalExtensionPage() {
                   <label className="text-sm font-semibold text-gray-900" htmlFor="extension-days">
                     延長日数 (24時間単位)
                   </label>
-                  <input
-                    id="extension-days"
-                    type="number"
-                    min={1}
-                    max={30}
-                    value={extensionDays}
-                    onChange={(event) => handleExtensionDaysChange(event.target.value)}
-                    className="w-full max-w-[240px] rounded-xl border border-gray-300 bg-gray-50/70 px-4 py-3 text-right text-base font-semibold text-gray-900 shadow-inner transition focus:border-red-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-red-100"
-                  />
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      aria-label="延長日数を1日減らす"
+                      onClick={() => adjustExtensionDays(-1)}
+                      className="inline-flex h-11 w-11 items-center justify-center rounded-xl border border-gray-300 bg-white text-lg font-semibold text-gray-700 shadow-sm transition hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-red-100 disabled:cursor-not-allowed disabled:border-gray-200 disabled:text-gray-300"
+                      disabled={extensionDays <= 1}
+                    >
+                      −
+                    </button>
+                    <input
+                      id="extension-days"
+                      type="number"
+                      inputMode="numeric"
+                      min={1}
+                      max={30}
+                      value={extensionDays}
+                      onChange={(event) => handleExtensionDaysChange(event.target.value)}
+                      className="w-[120px] rounded-xl border border-gray-300 bg-gray-50/70 px-4 py-3 text-right text-base font-semibold text-gray-900 shadow-inner transition focus:border-red-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-red-100"
+                    />
+                    <button
+                      type="button"
+                      aria-label="延長日数を1日増やす"
+                      onClick={() => adjustExtensionDays(1)}
+                      className="inline-flex h-11 w-11 items-center justify-center rounded-xl border border-gray-300 bg-white text-lg font-semibold text-gray-700 shadow-sm transition hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-red-100 disabled:cursor-not-allowed disabled:border-gray-200 disabled:text-gray-300"
+                      disabled={extensionDays >= 30}
+                    >
+                      ＋
+                    </button>
+                  </div>
                 </div>
                 <p className="mt-2 text-xs text-gray-500">
                   レンタルクラスに設定された「追加料金(24時間)」を日数分加算して延長費用を計算します。
