@@ -6,18 +6,11 @@ import { useRouter } from "next/router";
 import type { RegistrationData } from "../../../../types/registration";
 import { REQUIRED_REGISTRATION_FIELDS } from "../../../../types/registration";
 
-const timeOptions = [
-  "08:00",
-  "09:00",
-  "10:00",
-  "11:00",
-  "12:00",
-  "13:00",
-  "14:00",
-  "15:00",
-  "16:00",
-  "17:00",
-];
+const buildTimeOptions = (startHour: number, endHour: number) =>
+  Array.from({ length: endHour - startHour + 1 }, (_, index) => {
+    const hour = String(startHour + index).padStart(2, "0");
+    return `${hour}:00`;
+  });
 
 const formatDateLabel = (dateString: string, fallback: string) => {
   if (!dateString) return fallback;
@@ -37,8 +30,8 @@ export default function ReserveFlowStep1() {
   const [authChecked, setAuthChecked] = useState(false);
   const [authError, setAuthError] = useState("");
 
-  const [store, setStore] = useState("Adachi-Odai Store");
-  const [modelName, setModelName] = useState("Vehicle");
+  const [store, setStore] = useState("足立小台店");
+  const [modelName, setModelName] = useState("車両");
   const [managementNumber, setManagementNumber] = useState("");
   const [customerName, setCustomerName] = useState("");
   const [email, setEmail] = useState("");
@@ -49,6 +42,16 @@ export default function ReserveFlowStep1() {
   const [registration, setRegistration] = useState<RegistrationData | null>(null);
   const [registrationChecked, setRegistrationChecked] = useState(false);
   const [registrationError, setRegistrationError] = useState("");
+
+  const timeOptions = useMemo(() => {
+    if (store.includes("三ノ輪")) {
+      return buildTimeOptions(0, 23);
+    }
+    if (store.includes("足立")) {
+      return buildTimeOptions(10, 18);
+    }
+    return buildTimeOptions(8, 17);
+  }, [store]);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -205,6 +208,14 @@ export default function ReserveFlowStep1() {
 
     setReturnTime((prev) => (prev === pickupTime ? prev : pickupTime));
   }, [pickupTime]);
+
+  useEffect(() => {
+    if (!pickupTime) return;
+    if (!timeOptions.includes(pickupTime)) {
+      setPickupTime("");
+      setReturnTime("");
+    }
+  }, [pickupTime, timeOptions]);
 
   const handleNext = () => {
     if (!registrationChecked) return;

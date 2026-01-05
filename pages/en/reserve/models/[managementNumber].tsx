@@ -3,13 +3,12 @@ import Head from "next/head";
 import Link from "next/link";
 import { GetServerSideProps } from "next";
 import { GetCommand } from "@aws-sdk/lib-dynamodb";
-import { useRouter } from "next/router";
-
 import { getDocumentClient } from "../../../../lib/dynamodb";
 import { BikeModel as LegacyBikeModel, getBikeModels } from "../../../../lib/bikes";
 import { getStoreLabel } from "../../../../lib/dashboard/storeOptions";
 import { fetchMonthlyHolidays } from "../../../../lib/dashboard/holidayManager";
 import { findHolidayStoreByLabel } from "../../../../lib/dashboard/holidayStores";
+import { useRouter } from "next/router";
 import { RentalAvailabilityMap } from "../../../../lib/dashboard/types";
 
 interface VehicleRecord {
@@ -84,12 +83,26 @@ export default function ReserveModelPage({
   const [holidayLoaded, setHolidayLoaded] = useState(false);
   const [holidayError, setHolidayError] = useState<string | null>(null);
 
+  useEffect(() => {
+    if (!store && storeOptions.length > 0) {
+      setStore(storeOptions[0]);
+    }
+  }, [store, storeOptions]);
+
   const minDate = useMemo(() => {
     const base = new Date();
     base.setDate(base.getDate() + 1);
     base.setHours(0, 0, 0, 0);
     return base;
   }, []);
+
+  const maxAdvanceDays = 93;
+  const maxDate = useMemo(() => {
+    const base = new Date();
+    base.setDate(base.getDate() + maxAdvanceDays);
+    base.setHours(0, 0, 0, 0);
+    return base;
+  }, [maxAdvanceDays]);
 
   const minDateString = useMemo(() => formatInputDate(minDate), [minDate]);
 
@@ -194,7 +207,7 @@ export default function ReserveModelPage({
 
       const data = (await response.json().catch(() => ({}))) as { user?: { id?: string } | null };
       if (!data.user) {
-        await router.push("/en/login");
+        await router.push("/login");
         return;
       }
 
@@ -206,7 +219,7 @@ export default function ReserveModelPage({
         managementNumber,
       });
 
-      await router.push(`/en/reserve/flow/step1?${params.toString()}`);
+      await router.push(`/reserve/flow/step1?${params.toString()}`);
     } catch (error) {
       console.error(error);
     } finally {
@@ -262,20 +275,6 @@ export default function ReserveModelPage({
             <p className="mt-2 text-gray-700">
               Booking request for {resolvedModelName}. Select your preferred store and dates to proceed.
             </p>
-            <div className="mt-4 flex flex-wrap gap-3">
-              <Link
-                href={`/en/reserve/models/${managementNumber}/availability`}
-                className="inline-flex items-center justify-center rounded-lg bg-gray-900 px-4 py-2 text-sm font-semibold text-white shadow hover:bg-black transition"
-              >
-                Check availability
-              </Link>
-              <Link
-                href={resolvedModelCode ? `/en/products/${resolvedModelCode}` : "/en/products"}
-                className="inline-flex items-center justify-center rounded-lg border border-gray-200 px-4 py-2 text-sm font-semibold text-gray-700 hover:border-gray-300 transition"
-              >
-                Back to model page
-              </Link>
-            </div>
           </header>
 
           <section className="bg-white shadow-sm ring-1 ring-gray-100 rounded-2xl p-6 sm:p-8 space-y-6">
@@ -294,96 +293,38 @@ export default function ReserveModelPage({
               ) : null}
             </div>
 
-            <div className="grid gap-6 sm:grid-cols-2">
-              <div className="space-y-2">
-                <label className="text-sm font-semibold text-gray-900" htmlFor="store">
-                  Choose a store
-                </label>
-                <p className="text-xs text-gray-500">Please select a pickup location.</p>
-                <select
-                  id="store"
-                  value={store}
-                  onChange={(e) => setStore(e.target.value)}
-                  className="w-full rounded-lg border border-gray-200 bg-white px-4 py-3 text-sm shadow-sm focus:border-red-500 focus:outline-none disabled:cursor-not-allowed disabled:bg-gray-100"
-                  disabled={storeOptions.length === 0}
-                >
-                  {storeOptions.length === 0 ? (
-                    <option value="" disabled>
-                      Stores coming soon
-                    </option>
-                  ) : (
-                    <>
-                      <option value="" disabled>
-                        Select a store
-                      </option>
-                      {storeOptions.map((storeName) => (
-                        <option key={storeName} value={storeName}>
-                          {storeName}
-                        </option>
-                      ))}
-                    </>
-                  )}
-                </select>
-                {storeNotice ? (
-                  <div className="rounded-lg bg-gray-50 p-3 text-xs text-gray-700 leading-relaxed">
-                    Minowa is an unmanned store, so staff cannot provide detailed instructions.
-                    <br />
-                    If you are unsure how to operate the bike or prefer assistance in Japanese,
-                    <Link
-                      href="/stores#adachi"
-                      className="ml-1 font-semibold text-red-600 hover:underline"
-                    >
-                      please choose Adachi-Odai main store instead.
-                    </Link>
-                  </div>
-                ) : null}
-              </div>
-
-              <div className="space-y-4">
-                <div className="rounded-xl border border-gray-100 bg-gray-50 p-4 shadow-sm">
-                  <div className="flex flex-wrap items-center gap-3 mb-3">
-                    <p className="text-sm font-semibold text-gray-900">Select from calendar</p>
-                    <div className="flex gap-2 text-xs">
-                      <span className="inline-flex items-center gap-1 rounded-full bg-red-100 px-2 py-1 text-red-700">
-                        <span className="h-2 w-2 rounded-full bg-red-500" />Pickup date
-                      </span>
-                      <span className="inline-flex items-center gap-1 rounded-full bg-blue-100 px-2 py-1 text-blue-700">
-                        <span className="h-2 w-2 rounded-full bg-blue-500" />Return date
-                      </span>
-                      <span className="inline-flex items-center gap-1 rounded-full bg-green-100 px-2 py-1 text-green-700">
-                        <span className="h-2 w-2 rounded-full bg-green-500" />Rental period
-                      </span>
+            <div className="space-y-4">
+              <div className="rounded-xl border border-gray-100 bg-gray-50 p-4 shadow-sm">
+                    <div className="flex flex-wrap items-center gap-3 mb-3">
+                      <p className="text-xs font-semibold text-gray-900">Select from calendar</p>
+                      <div className="grid w-full grid-cols-2 gap-2 text-[11px] sm:w-auto sm:flex sm:flex-wrap sm:items-center sm:gap-2">
+                        <span className="inline-flex items-center gap-1 rounded-full bg-red-100 px-2 py-1 text-red-700">
+                          <span className="h-2 w-2 rounded-full bg-red-500" />Pickup date
+                        </span>
+                        <span className="inline-flex items-center gap-1 rounded-full bg-blue-100 px-2 py-1 text-blue-700">
+                          <span className="h-2 w-2 rounded-full bg-blue-500" />Return date
+                        </span>
+                        <span className="inline-flex items-center gap-1 rounded-full bg-green-100 px-2 py-1 text-green-700">
+                          <span className="h-2 w-2 rounded-full bg-green-500" />Rental period
+                        </span>
+                        <span className="inline-flex items-center gap-1 rounded-full bg-gray-200 px-2 py-1 text-gray-700">
+                          Closed: Store holiday
+                        </span>
+                      </div>
                     </div>
-                  </div>
 
-                  <div className="flex flex-wrap items-center gap-2 text-sm">
-                    <button
-                      type="button"
-                      className={`rounded-full px-3 py-1 font-semibold shadow-sm transition focus:outline-none focus:ring-2 focus:ring-offset-2 ${activeSelection === "pickup" ? "bg-red-500 text-white focus:ring-red-500" : "bg-white text-gray-700 ring-1 ring-gray-200 hover:bg-gray-100 focus:ring-gray-300"}`}
-                      onClick={() => setActiveSelection("pickup")}
-                    >
-                      Choose pickup date
-                    </button>
-                    <button
-                      type="button"
-                      className={`rounded-full px-3 py-1 font-semibold shadow-sm transition focus:outline-none focus:ring-2 focus:ring-offset-2 ${activeSelection === "return" ? "bg-blue-500 text-white focus:ring-blue-500" : "bg-white text-gray-700 ring-1 ring-gray-200 hover:bg-gray-100 focus:ring-gray-300"}`}
-                      onClick={() => setActiveSelection("return")}
-                      disabled={!pickup}
-                    >
-                      Choose return date
-                    </button>
-                  </div>
-
-                  <Calendar
-                    month={visibleMonth}
-                    onMonthChange={setVisibleMonth}
-                    activeSelection={activeSelection}
-                    minDate={minDate}
-                    pickupDate={pickupDate}
-                    returnDate={returnDateValue}
-                    availabilityMap={availabilityMap}
-                    availabilityLoaded={availabilityLoaded}
-                    holidayDates={holidayDates}
+                    <Calendar
+                      month={visibleMonth}
+                      onMonthChange={setVisibleMonth}
+                      activeSelection={activeSelection}
+                      minDate={minDate}
+                      maxDate={maxDate}
+                      maxRentalDays={maxAdvanceDays}
+                      pickupDate={pickupDate}
+                      returnDate={returnDateValue}
+                      availabilityMap={availabilityMap}
+                      availabilityLoaded={availabilityLoaded}
+                      holidayDates={holidayDates}
                     holidayLoaded={holidayLoaded}
                     onSelectDate={(date) => {
                       const formatted = formatInputDate(date);
@@ -399,10 +340,30 @@ export default function ReserveModelPage({
                       }
                     }}
                   />
+                  <div className="mt-3 flex flex-wrap items-center gap-2 text-sm">
+                    <button
+                      type="button"
+                    className={`rounded-full px-3 py-1 font-semibold shadow-sm transition focus:outline-none focus:ring-2 focus:ring-offset-2 ${activeSelection === "pickup" ? "bg-red-500 text-white focus:ring-red-500" : "bg-white text-gray-700 ring-1 ring-gray-200 hover:bg-gray-100 focus:ring-gray-300"}`}
+                    onClick={() => setActiveSelection("pickup")}
+                  >
+                      Choose pickup date
+                  </button>
+                    <button
+                      type="button"
+                    className={`rounded-full px-3 py-1 font-semibold shadow-sm transition focus:outline-none focus:ring-2 focus:ring-offset-2 ${activeSelection === "return" ? "bg-blue-500 text-white focus:ring-blue-500" : "bg-white text-gray-700 ring-1 ring-gray-200 hover:bg-gray-100 focus:ring-gray-300"}`}
+                    onClick={() => setActiveSelection("return")}
+                    disabled={!pickup}
+                  >
+                      Choose return date
+                  </button>
+                  </div>
+                  <p className="mt-2 text-xs text-gray-600">
+                    Select a pickup date. Reservations are available up to 3 months ahead.
+                  </p>
                   <p className="mt-3 text-xs text-gray-600">
                     {activeSelection === "pickup"
-                      ? "Please choose a pickup date from tomorrow onwards."
-                      : "Choose a return date on or after your pickup date."}
+                      ? "Please choose a pickup date from tomorrow onwards"
+                      : "Choose a return date on or after your pickup date"}
                   </p>
                   {!availabilityLoaded ? (
                     <p className="mt-2 text-xs text-gray-500">Loading availability...</p>
@@ -413,13 +374,21 @@ export default function ReserveModelPage({
                   ) : holidayError ? (
                     <p className="mt-2 text-xs text-red-500">{holidayError}</p>
                   ) : null}
-                </div>
               </div>
+              {storeNotice ? (
+                <div className="rounded-lg bg-gray-50 p-3 text-xs text-gray-700 leading-relaxed">
+                  Minowa is an unmanned store, so staff cannot provide detailed instructions.
+                  <br />
+                  If you are unsure how to operate the bike or prefer assistance in Japanese,
+                  <Link href="/stores#adachi" className="ml-1 font-semibold text-red-600 hover:underline">
+                    please choose Adachi-Odai main store instead.
+                  </Link>
+                </div>
+              ) : null}
             </div>
 
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <p className="text-sm text-gray-600">
-                After you submit, our staff will check availability and contact you by email.
               </p>
               <button
                 type="button"
@@ -429,6 +398,35 @@ export default function ReserveModelPage({
               >
                 {checkingSession ? "Checking..." : "Review reservation details"}
               </button>
+            </div>
+
+            <div className="flex flex-wrap gap-3 pt-2 border-t border-gray-100">
+              <Link
+                href={`/en/reserve/models/${managementNumber}/availability`}
+                className="inline-flex items-center justify-center rounded-lg bg-gray-900 px-4 py-2 text-sm font-semibold text-white shadow hover:bg-black transition"
+              >
+                Check availability
+              </Link>
+              <Link
+                href={resolvedModelCode ? `/en/products/${resolvedModelCode}` : "/en/products"}
+                className="inline-flex items-center justify-center rounded-lg border border-gray-200 px-4 py-2 text-sm font-semibold text-gray-700 hover:border-gray-300 transition"
+              >
+                Back to model page
+              </Link>
+            </div>
+
+            <div className="rounded-xl border border-gray-100 bg-gray-50 p-4 text-sm text-gray-700 space-y-2">
+              <p className="text-sm font-semibold text-gray-900">Important notes</p>
+              <p>
+                We may need to change the vehicle on the rental day due to unexpected issues such as breakdowns or accidents.
+              </p>
+              <p>
+                Reservations close at 5:00 p.m. on the business day before your rental date.
+                (Mondays are closed, so Tuesday rentals must be booked by 5:00 p.m. on the preceding Sunday.)
+              </p>
+              <p>
+                Adachi-Odai store is closed on holidays. If your return date falls on a holiday, please return the bike by the previous day.
+              </p>
             </div>
           </section>
         </div>
@@ -507,6 +505,8 @@ interface CalendarProps {
   onSelectDate: (date: Date) => void;
   activeSelection: SelectionType;
   minDate: Date;
+  maxDate: Date;
+  maxRentalDays: number;
   pickupDate: Date | null;
   returnDate: Date | null;
   availabilityMap: RentalAvailabilityMap;
@@ -521,6 +521,8 @@ function Calendar({
   onSelectDate,
   activeSelection,
   minDate,
+  maxDate,
+  maxRentalDays,
   pickupDate,
   returnDate,
   availabilityMap,
@@ -554,15 +556,24 @@ function Calendar({
     onMonthChange(next);
   };
 
+  const isStoreHoliday = (date: Date) => holidayDates.has(formatInputDate(date));
+
+  const isBikeAvailable = (date: Date) => {
+    if (!availabilityLoaded) {
+      return false;
+    }
+    const key = formatInputDate(date);
+    return availabilityMap[key]?.status === "AVAILABLE";
+  };
+
   const isDateAvailable = (date: Date) => {
     if (!availabilityLoaded || !holidayLoaded) {
       return false;
     }
-    const key = formatInputDate(date);
-    if (holidayDates.has(key)) {
+    if (isStoreHoliday(date)) {
       return false;
     }
-    return availabilityMap[key]?.status === "AVAILABLE";
+    return isBikeAvailable(date);
   };
 
   const isRangeAvailable = (start: Date, end: Date) => {
@@ -576,22 +587,39 @@ function Calendar({
     endDate.setHours(0, 0, 0, 0);
 
     for (; cursor <= endDate; cursor.setDate(cursor.getDate() + 1)) {
-      if (!isDateAvailable(cursor)) {
+      if (!isBikeAvailable(cursor)) {
         return false;
       }
     }
     return true;
   };
 
+  const getMaxReturnDate = (start: Date) => {
+    const maxReturn = new Date(start);
+    maxReturn.setDate(maxReturn.getDate() + maxRentalDays);
+    maxReturn.setHours(0, 0, 0, 0);
+    return maxReturn > maxDate ? maxDate : maxReturn;
+  };
+
   const isDateDisabled = (date: Date) => {
     const isBeforeMin = date < minDate;
+    const isAfterMax = date > maxDate;
     const isBeforePickup = activeSelection === "return" && pickupDate ? date < pickupDate : false;
+    const maxReturnDate = pickupDate ? getMaxReturnDate(pickupDate) : maxDate;
+    const isAfterMaxReturn = activeSelection === "return" && pickupDate ? date > maxReturnDate : false;
     const isUnavailable = !isDateAvailable(date);
     const isRangeUnavailable =
       activeSelection === "return" && pickupDate
         ? !isRangeAvailable(pickupDate, date)
         : false;
-    return isBeforeMin || isBeforePickup || isUnavailable || isRangeUnavailable;
+    return (
+      isBeforeMin ||
+      isAfterMax ||
+      isBeforePickup ||
+      isAfterMaxReturn ||
+      isUnavailable ||
+      isRangeUnavailable
+    );
   };
 
   return (
@@ -628,6 +656,7 @@ function Calendar({
 
       <div className="grid grid-cols-7 gap-2">
         {days.map(({ date, inCurrentMonth }) => {
+          const holiday = isStoreHoliday(date);
           const disabled = isDateDisabled(date) || !inCurrentMonth;
           const isPickup = pickupDate ? isSameDay(date, pickupDate) : false;
           const isReturn = returnDate ? isSameDay(date, returnDate) : false;
@@ -636,7 +665,7 @@ function Calendar({
               ? date > pickupDate && date < returnDate
               : false;
 
-          const baseClasses = "flex h-12 w-full items-center justify-center rounded-lg text-sm font-semibold transition";
+          const baseClasses = "flex h-12 w-full flex-col items-center justify-center rounded-lg text-sm font-semibold transition";
 
           const stateClass = (() => {
             if (isPickup) return "bg-red-500 text-white shadow";
@@ -655,7 +684,10 @@ function Calendar({
               onClick={() => onSelectDate(date)}
               className={`${baseClasses} ${stateClass}`}
             >
-              {date.getDate()}
+              <span>{date.getDate()}</span>
+              {holiday && inCurrentMonth ? (
+                <span className="text-[10px] leading-none text-red-500">Closed</span>
+              ) : null}
             </button>
           );
         })}
