@@ -36,7 +36,7 @@ export default function ReserveTermsAgreementEn() {
     keys.forEach((key) => {
       const value = router.query[key];
       if (typeof value === 'string' && value) {
-        params.set(key, value);
+        params.set(String(key), value);
       }
     });
 
