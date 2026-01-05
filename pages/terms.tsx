@@ -1,4 +1,5 @@
 import Head from 'next/head';
+import Link from 'next/link';
 
 export default function TermsPage() {
   const items = [
@@ -31,6 +32,14 @@ export default function TermsPage() {
       <Head>
         <title>利用規約・注意事項</title>
       </Head>
+      <div className="mb-6">
+        <Link
+          href="/rental-bike-terms"
+          className="inline-block rounded-md bg-red-600 px-4 py-2 text-white shadow hover:bg-red-700"
+        >
+          レンタルバイク利用規約はこちら
+        </Link>
+      </div>
       <h1 className="text-2xl font-bold mb-4">利用規約・注意事項</h1>
       <ol className="list-decimal pl-5 space-y-4 text-sm leading-relaxed">
         {items.map((item, idx) => (
