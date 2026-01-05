@@ -1,4 +1,4 @@
-import { KeyboardEvent, useEffect, useState } from "react";
+import { KeyboardEvent, useEffect, useMemo, useState } from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
 
@@ -28,6 +28,23 @@ export default function ReservationListPage() {
   const [reservations, setReservations] = useState<Reservation[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState("ALL");
+  const [sortState, setSortState] = useState<{
+    key:
+      | "storeName"
+      | "status"
+      | "vehicleModel"
+      | "vehicleCode"
+      | "pickupAt"
+      | "returnAt"
+      | "memberName"
+      | "memberEmail";
+    direction: "asc" | "desc";
+  }>({
+    key: "pickupAt",
+    direction: "asc",
+  });
 
   useEffect(() => {
     const controller = new AbortController();
@@ -84,6 +101,82 @@ export default function ReservationListPage() {
     }
   };
 
+  const statusOptions = useMemo(() => {
+    const statuses = new Set<string>();
+    reservations.forEach((reservation) => {
+      if (reservation.status) {
+        statuses.add(reservation.status);
+      }
+    });
+    return Array.from(statuses).sort((a, b) => a.localeCompare(b, "ja"));
+  }, [reservations]);
+
+  const filteredReservations = useMemo(() => {
+    const normalizedTerm = searchTerm.trim().toLowerCase();
+
+    const filtered = reservations.filter((reservation) => {
+      const matchesStatus =
+        statusFilter === "ALL" ? true : reservation.status === statusFilter;
+
+      const matchesTerm = normalizedTerm
+        ? [
+            reservation.storeName,
+            reservation.status,
+            reservation.vehicleModel,
+            reservation.vehicleCode,
+            reservation.memberName,
+            reservation.memberEmail,
+          ].some((value) => value?.toLowerCase().includes(normalizedTerm))
+        : true;
+
+      return matchesStatus && matchesTerm;
+    });
+
+    const directionMultiplier = sortState.direction === "asc" ? 1 : -1;
+
+    return [...filtered].sort((a, b) => {
+      const getValue = (reservation: Reservation): string | number => {
+        switch (sortState.key) {
+          case "storeName":
+            return reservation.storeName ?? "";
+          case "status":
+            return reservation.status ?? "";
+          case "vehicleModel":
+            return reservation.vehicleModel ?? "";
+          case "vehicleCode":
+            return reservation.vehicleCode ?? "";
+          case "pickupAt":
+            return new Date(reservation.pickupAt).getTime() || 0;
+          case "returnAt":
+            return new Date(reservation.returnAt).getTime() || 0;
+          case "memberName":
+            return reservation.memberName ?? "";
+          case "memberEmail":
+            return reservation.memberEmail ?? "";
+          default:
+            return "";
+        }
+      };
+
+      const aValue = getValue(a);
+      const bValue = getValue(b);
+
+      if (typeof aValue === "number" && typeof bValue === "number") {
+        return (aValue - bValue) * directionMultiplier;
+      }
+
+      return String(aValue).localeCompare(String(bValue), "ja") * directionMultiplier;
+    });
+  }, [reservations, searchTerm, sortState.direction, sortState.key, statusFilter]);
+
+  const handleSort = (key: typeof sortState.key) => {
+    setSortState((current) =>
+      current.key === key
+        ? { key, direction: current.direction === "asc" ? "desc" : "asc" }
+        : { key, direction: "asc" }
+    );
+  };
+
   return (
     <>
       <Head>
@@ -118,45 +211,364 @@ export default function ReservationListPage() {
               </p>
             </div>
           ) : (
+            <>
+              <div className={styles.tableToolbar}>
+                <div className={styles.tableToolbarGroup}>
+                  <input
+                    type="search"
+                    className={styles.tableSearchInput}
+                    placeholder="店舗・予約状態・車種・管理番号・会員情報で検索"
+                    value={searchTerm}
+                    onChange={(event) => setSearchTerm(event.target.value)}
+                    aria-label="予約一覧を検索"
+                  />
+                </div>
+                <div className={styles.tableToolbarGroup}>
+                  <label className={tableStyles.selectionLabel}>
+                    予約状態:
+                    <select
+                      className={styles.tableSelect}
+                      value={statusFilter}
+                      onChange={(event) => setStatusFilter(event.target.value)}
+                      aria-label="予約状態で絞り込む"
+                    >
+                      <option value="ALL">すべて</option>
+                      {statusOptions.map((status) => (
+                        <option key={status} value={status}>
+                          {status}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                </div>
+                <div className={styles.tableToolbarGroup}>
+                  <span className={styles.tableSelectionCount}>
+                    該当: {filteredReservations.length}件
+                  </span>
+                </div>
+              </div>
             <div className={`${tableStyles.wrapper} ${tableStyles.tableWrapper}`}>
               <table className={`${tableStyles.table} ${tableStyles.dataTable}`}>
                 <thead>
                   <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">店舗</th>
-                    <th scope="col">予約状態</th>
-                    <th scope="col">車種</th>
-                    <th scope="col">車両管理番号</th>
-                    <th scope="col">貸出日時</th>
-                    <th scope="col">返却日時</th>
+                    <th
+                      scope="col"
+                      aria-sort={
+                        sortState.key === "storeName"
+                          ? sortState.direction === "asc"
+                            ? "ascending"
+                            : "descending"
+                          : "none"
+                      }
+                    >
+                      <button
+                        type="button"
+                        className={tableStyles.sortableHeaderButton}
+                        onClick={() => handleSort("storeName")}
+                      >
+                        <span>店舗</span>
+                        <span
+                          aria-hidden
+                          className={`${tableStyles.sortIcon} ${
+                            sortState.key === "storeName"
+                              ? sortState.direction === "asc"
+                                ? tableStyles.sortIconAsc
+                                : tableStyles.sortIconDesc
+                              : ""
+                          }`}
+                        />
+                        <span className={tableStyles.visuallyHidden}>
+                          {sortState.key === "storeName"
+                            ? sortState.direction === "asc"
+                              ? "昇順に並び替え"
+                              : "降順に並び替え"
+                            : "クリックして並び替え"}
+                        </span>
+                      </button>
+                    </th>
+                    <th
+                      scope="col"
+                      aria-sort={
+                        sortState.key === "status"
+                          ? sortState.direction === "asc"
+                            ? "ascending"
+                            : "descending"
+                          : "none"
+                      }
+                    >
+                      <button
+                        type="button"
+                        className={tableStyles.sortableHeaderButton}
+                        onClick={() => handleSort("status")}
+                      >
+                        <span>予約状態</span>
+                        <span
+                          aria-hidden
+                          className={`${tableStyles.sortIcon} ${
+                            sortState.key === "status"
+                              ? sortState.direction === "asc"
+                                ? tableStyles.sortIconAsc
+                                : tableStyles.sortIconDesc
+                              : ""
+                          }`}
+                        />
+                        <span className={tableStyles.visuallyHidden}>
+                          {sortState.key === "status"
+                            ? sortState.direction === "asc"
+                              ? "昇順に並び替え"
+                              : "降順に並び替え"
+                            : "クリックして並び替え"}
+                        </span>
+                      </button>
+                    </th>
+                    <th
+                      scope="col"
+                      aria-sort={
+                        sortState.key === "vehicleModel"
+                          ? sortState.direction === "asc"
+                            ? "ascending"
+                            : "descending"
+                          : "none"
+                      }
+                    >
+                      <button
+                        type="button"
+                        className={tableStyles.sortableHeaderButton}
+                        onClick={() => handleSort("vehicleModel")}
+                      >
+                        <span>車種</span>
+                        <span
+                          aria-hidden
+                          className={`${tableStyles.sortIcon} ${
+                            sortState.key === "vehicleModel"
+                              ? sortState.direction === "asc"
+                                ? tableStyles.sortIconAsc
+                                : tableStyles.sortIconDesc
+                              : ""
+                          }`}
+                        />
+                        <span className={tableStyles.visuallyHidden}>
+                          {sortState.key === "vehicleModel"
+                            ? sortState.direction === "asc"
+                              ? "昇順に並び替え"
+                              : "降順に並び替え"
+                            : "クリックして並び替え"}
+                        </span>
+                      </button>
+                    </th>
+                    <th
+                      scope="col"
+                      aria-sort={
+                        sortState.key === "vehicleCode"
+                          ? sortState.direction === "asc"
+                            ? "ascending"
+                            : "descending"
+                          : "none"
+                      }
+                    >
+                      <button
+                        type="button"
+                        className={tableStyles.sortableHeaderButton}
+                        onClick={() => handleSort("vehicleCode")}
+                      >
+                        <span>車両管理番号</span>
+                        <span
+                          aria-hidden
+                          className={`${tableStyles.sortIcon} ${
+                            sortState.key === "vehicleCode"
+                              ? sortState.direction === "asc"
+                                ? tableStyles.sortIconAsc
+                                : tableStyles.sortIconDesc
+                              : ""
+                          }`}
+                        />
+                        <span className={tableStyles.visuallyHidden}>
+                          {sortState.key === "vehicleCode"
+                            ? sortState.direction === "asc"
+                              ? "昇順に並び替え"
+                              : "降順に並び替え"
+                            : "クリックして並び替え"}
+                        </span>
+                      </button>
+                    </th>
+                    <th
+                      scope="col"
+                      aria-sort={
+                        sortState.key === "pickupAt"
+                          ? sortState.direction === "asc"
+                            ? "ascending"
+                            : "descending"
+                          : "none"
+                      }
+                    >
+                      <button
+                        type="button"
+                        className={tableStyles.sortableHeaderButton}
+                        onClick={() => handleSort("pickupAt")}
+                      >
+                        <span>貸出日時</span>
+                        <span
+                          aria-hidden
+                          className={`${tableStyles.sortIcon} ${
+                            sortState.key === "pickupAt"
+                              ? sortState.direction === "asc"
+                                ? tableStyles.sortIconAsc
+                                : tableStyles.sortIconDesc
+                              : ""
+                          }`}
+                        />
+                        <span className={tableStyles.visuallyHidden}>
+                          {sortState.key === "pickupAt"
+                            ? sortState.direction === "asc"
+                              ? "昇順に並び替え"
+                              : "降順に並び替え"
+                            : "クリックして並び替え"}
+                        </span>
+                      </button>
+                    </th>
+                    <th
+                      scope="col"
+                      aria-sort={
+                        sortState.key === "returnAt"
+                          ? sortState.direction === "asc"
+                            ? "ascending"
+                            : "descending"
+                          : "none"
+                      }
+                    >
+                      <button
+                        type="button"
+                        className={tableStyles.sortableHeaderButton}
+                        onClick={() => handleSort("returnAt")}
+                      >
+                        <span>返却日時</span>
+                        <span
+                          aria-hidden
+                          className={`${tableStyles.sortIcon} ${
+                            sortState.key === "returnAt"
+                              ? sortState.direction === "asc"
+                                ? tableStyles.sortIconAsc
+                                : tableStyles.sortIconDesc
+                              : ""
+                          }`}
+                        />
+                        <span className={tableStyles.visuallyHidden}>
+                          {sortState.key === "returnAt"
+                            ? sortState.direction === "asc"
+                              ? "昇順に並び替え"
+                              : "降順に並び替え"
+                            : "クリックして並び替え"}
+                        </span>
+                      </button>
+                    </th>
+                    <th
+                      scope="col"
+                      aria-sort={
+                        sortState.key === "memberName"
+                          ? sortState.direction === "asc"
+                            ? "ascending"
+                            : "descending"
+                          : "none"
+                      }
+                    >
+                      <button
+                        type="button"
+                        className={tableStyles.sortableHeaderButton}
+                        onClick={() => handleSort("memberName")}
+                      >
+                        <span>会員名</span>
+                        <span
+                          aria-hidden
+                          className={`${tableStyles.sortIcon} ${
+                            sortState.key === "memberName"
+                              ? sortState.direction === "asc"
+                                ? tableStyles.sortIconAsc
+                                : tableStyles.sortIconDesc
+                              : ""
+                          }`}
+                        />
+                        <span className={tableStyles.visuallyHidden}>
+                          {sortState.key === "memberName"
+                            ? sortState.direction === "asc"
+                              ? "昇順に並び替え"
+                              : "降順に並び替え"
+                            : "クリックして並び替え"}
+                        </span>
+                      </button>
+                    </th>
+                    <th
+                      scope="col"
+                      aria-sort={
+                        sortState.key === "memberEmail"
+                          ? sortState.direction === "asc"
+                            ? "ascending"
+                            : "descending"
+                          : "none"
+                      }
+                    >
+                      <button
+                        type="button"
+                        className={tableStyles.sortableHeaderButton}
+                        onClick={() => handleSort("memberEmail")}
+                      >
+                        <span>メールアドレス</span>
+                        <span
+                          aria-hidden
+                          className={`${tableStyles.sortIcon} ${
+                            sortState.key === "memberEmail"
+                              ? sortState.direction === "asc"
+                                ? tableStyles.sortIconAsc
+                                : tableStyles.sortIconDesc
+                              : ""
+                          }`}
+                        />
+                        <span className={tableStyles.visuallyHidden}>
+                          {sortState.key === "memberEmail"
+                            ? sortState.direction === "asc"
+                              ? "昇順に並び替え"
+                              : "降順に並び替え"
+                            : "クリックして並び替え"}
+                        </span>
+                      </button>
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
-                  {reservations.map((reservation) => (
-                    <tr
-                      key={reservation.id}
-                      className={tableStyles.clickableRow}
-                      onClick={() =>
-                        void router.push(`/admin/dashboard/reservations/${reservation.id}`)
-                      }
-                      onKeyDown={(event) => handleRowKeyDown(event, reservation.id)}
-                      tabIndex={0}
-                      aria-label={`${reservation.id} の詳細を開く`}
-                    >
-                      <td className={tableStyles.monospace}>{reservation.id}</td>
-                      <td>{reservation.storeName}</td>
-                      <td>
-                        <span className={statusClassName(reservation.status)}>{reservation.status}</span>
-                      </td>
-                      <td>{reservation.vehicleModel}</td>
-                      <td className={tableStyles.monospace}>{reservation.vehicleCode}</td>
-                      <td>{formatDatetime(reservation.pickupAt)}</td>
-                      <td>{formatDatetime(reservation.returnAt)}</td>
+                  {filteredReservations.length === 0 ? (
+                    <tr>
+                      <td colSpan={8}>該当する予約が見つかりませんでした。</td>
                     </tr>
-                  ))}
+                  ) : (
+                    filteredReservations.map((reservation) => (
+                      <tr
+                        key={reservation.id}
+                        className={tableStyles.clickableRow}
+                        onClick={() =>
+                          void router.push(`/admin/dashboard/reservations/${reservation.id}`)
+                        }
+                        onKeyDown={(event) => handleRowKeyDown(event, reservation.id)}
+                        tabIndex={0}
+                        aria-label={`${reservation.id} の詳細を開く`}
+                      >
+                        <td>{reservation.storeName}</td>
+                        <td>
+                          <span className={statusClassName(reservation.status)}>
+                            {reservation.status}
+                          </span>
+                        </td>
+                        <td>{reservation.vehicleModel}</td>
+                        <td className={tableStyles.monospace}>{reservation.vehicleCode}</td>
+                        <td>{formatDatetime(reservation.pickupAt)}</td>
+                        <td>{formatDatetime(reservation.returnAt)}</td>
+                        <td>{reservation.memberName}</td>
+                        <td>{reservation.memberEmail}</td>
+                      </tr>
+                    ))
+                  )}
                 </tbody>
               </table>
             </div>
+            </>
           )}
         </section>
       </DashboardLayout>
