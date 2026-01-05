@@ -31,6 +31,7 @@ export type RegistrationData = {
   accident_report_uploaded_at?: string;
   return_report_url?: string;
   return_report_uploaded_at?: string;
+  rental_terms_agreed_at?: string;
   notes?: string;
 };
 

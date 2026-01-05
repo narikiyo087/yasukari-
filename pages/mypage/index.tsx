@@ -56,10 +56,16 @@ export default function MyPage() {
   const [returnRating, setReturnRating] = useState(0);
   const [returnSurvey, setReturnSurvey] = useState('');
   const [returnSubmitting, setReturnSubmitting] = useState(false);
+  const [rentalTermsAgreed, setRentalTermsAgreed] = useState(false);
+  const [loadingRentalTerms, setLoadingRentalTerms] = useState(true);
+  const [rentalTermsError, setRentalTermsError] = useState('');
+  const [savingRentalTerms, setSavingRentalTerms] = useState(false);
+  const [rentalTermsUpdatedAt, setRentalTermsUpdatedAt] = useState<string | null>(null);
   const [mobileSectionsOpen, setMobileSectionsOpen] = useState({
     reservations: true,
     profile: false,
     registration: false,
+    rentalTerms: true,
     logout: false,
     links: false,
   });
@@ -212,6 +218,50 @@ export default function MyPage() {
   }, [loading, router]);
 
   useEffect(() => {
+    if (!user || error) return;
+
+    const controller = new AbortController();
+    const fetchRentalTerms = async () => {
+      try {
+        setRentalTermsError('');
+        setLoadingRentalTerms(true);
+        const response = await fetch('/api/user/rental-terms', { signal: controller.signal });
+
+        if (response.status === 401) {
+          await router.replace('/login');
+          return;
+        }
+
+        if (response.status === 404) {
+          setRentalTermsAgreed(false);
+          setRentalTermsUpdatedAt(null);
+          return;
+        }
+
+        if (!response.ok) {
+          throw new Error('Failed to load rental terms status');
+        }
+
+        const data = (await response.json()) as { agreed?: boolean; agreedAt?: string | null };
+        setRentalTermsAgreed(Boolean(data.agreed));
+        setRentalTermsUpdatedAt(data.agreedAt ?? null);
+      } catch (err) {
+        if (!controller.signal.aborted) {
+          console.error(err);
+          setRentalTermsError('利用規約の同意状況を読み込めませんでした。時間をおいて再度お試しください。');
+        }
+      } finally {
+        if (!controller.signal.aborted) {
+          setLoadingRentalTerms(false);
+        }
+      }
+    };
+
+    void fetchRentalTerms();
+    return () => controller.abort();
+  }, [error, router, user]);
+
+  useEffect(() => {
     if (loading) return;
 
     const controller = new AbortController();
@@ -334,6 +384,22 @@ export default function MyPage() {
     });
   };
 
+  const formatAgreementTimestamp = (value: string | null) => {
+    if (!value) return 'まだ同意されていません。';
+
+    const parsed = new Date(value);
+    if (Number.isNaN(parsed.getTime())) return value;
+
+    return parsed.toLocaleString('ja-JP', {
+      timeZone: 'Asia/Tokyo',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+  };
+
   const reservationCompletionLabel = (flag: boolean) => (flag ? '予約完了' : '利用中');
 
   const activeKeyboxQrImageUrl = useMemo(() => {
@@ -374,6 +440,45 @@ export default function MyPage() {
       }
     });
   }, [reservations]);
+
+  const handleRentalTermsToggle = async () => {
+    if (loadingRentalTerms || savingRentalTerms) return;
+
+    setSavingRentalTerms(true);
+    setRentalTermsError('');
+
+    try {
+      const nextAgreed = !rentalTermsAgreed;
+      const response = await fetch('/api/user/rental-terms', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ agreed: nextAgreed }),
+      });
+
+      if (response.status === 401) {
+        await router.replace('/login');
+        return;
+      }
+
+      const payload = (await response.json().catch(() => ({}))) as { agreedAt?: string | null; message?: string };
+
+      if (response.status === 404) {
+        throw new Error(payload.message ?? 'ユーザーデータが見つかりません。本登録を完了してください。');
+      }
+
+      if (!response.ok) {
+        throw new Error(payload.message ?? '利用規約への同意更新に失敗しました。');
+      }
+
+      setRentalTermsAgreed(nextAgreed);
+      setRentalTermsUpdatedAt(nextAgreed ? payload.agreedAt ?? new Date().toISOString() : null);
+    } catch (err) {
+      console.error(err);
+      setRentalTermsError(err instanceof Error ? err.message : '利用規約への同意更新に失敗しました。');
+    } finally {
+      setSavingRentalTerms(false);
+    }
+  };
 
   const handleLogout = async () => {
     setLoggingOut(true);
@@ -1119,6 +1224,72 @@ export default function MyPage() {
             </section>
 
             
+
+            <section className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+              <button
+                type="button"
+                aria-expanded={mobileSectionsOpen.rentalTerms}
+                onClick={() => toggleMobileSection('rentalTerms')}
+                className="group flex w-full items-start justify-between gap-3 text-left md:pointer-events-none md:cursor-default"
+              >
+                <div>
+                  <h2 className="text-lg font-semibold text-gray-900">利用規約への同意</h2>
+                  <p className="mt-2 text-sm text-gray-600">バイクレンタル利用規約への同意状況を確認・更新できます。</p>
+                  {loadingRentalTerms ? null : rentalTermsAgreed ? (
+                    <p className="mt-2 inline-flex items-center rounded-full bg-green-50 px-3 py-1 text-xs font-semibold text-green-700 ring-1 ring-inset ring-green-200">
+                      同意済み
+                    </p>
+                  ) : (
+                    <p className="mt-2 inline-flex items-center rounded-full bg-amber-50 px-3 py-1 text-xs font-semibold text-amber-700 ring-1 ring-inset ring-amber-200">
+                      未同意
+                    </p>
+                  )}
+                </div>
+                <span
+                  aria-hidden
+                  className={`ml-3 inline-flex h-9 w-9 items-center justify-center rounded-full border border-gray-200 bg-gray-50 text-xs font-semibold text-gray-600 transition-transform md:hidden ${
+                    mobileSectionsOpen.rentalTerms ? 'rotate-180' : ''
+                  }`}
+                >
+                  ▼
+                </span>
+              </button>
+              <div className={`${mobileSectionsOpen.rentalTerms ? 'mt-4 block' : 'hidden'} md:mt-4 md:block`}>
+                <p className="text-sm text-gray-700">
+                  下記のチェックボックスにチェックを入れると、バイクレンタル利用規約への同意がデータベースに保存されます。
+                  規約の内容は <Link className="text-red-600 underline underline-offset-2" href="/rental-bike-terms">こちら</Link> から確認できます。
+                </p>
+                {rentalTermsError ? (
+                  <p className="mt-3 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">{rentalTermsError}</p>
+                ) : null}
+
+                {registration ? (
+                  <label className="mt-4 inline-flex items-start gap-3 text-sm text-gray-900">
+                    <input
+                      type="checkbox"
+                      className="mt-1 h-4 w-4 rounded border-gray-300 text-red-600 focus:ring-red-500"
+                      onChange={handleRentalTermsToggle}
+                      checked={rentalTermsAgreed}
+                      disabled={loadingRentalTerms || savingRentalTerms || loadingRegistration}
+                    />
+                    <span className="leading-relaxed">
+                      バイクレンタル利用規約に同意しますか？
+                      <span className="mt-1 block text-xs text-gray-500">
+                        チェックを外すと未同意の状態として保存されます。
+                      </span>
+                    </span>
+                  </label>
+                ) : (
+                  <p className="mt-4 rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-700">
+                    本登録情報が保存されてから利用規約への同意を設定できます。まずは本登録フォームから登録を完了してください。
+                  </p>
+                )}
+
+                <p className="mt-3 text-xs text-gray-500">
+                  最終更新: {loadingRentalTerms ? '確認中…' : formatAgreementTimestamp(rentalTermsUpdatedAt)}
+                </p>
+              </div>
+            </section>
 
             <section className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
               <button

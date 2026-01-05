@@ -164,7 +164,22 @@ export default function ReserveFlowStep1() {
     return REQUIRED_REGISTRATION_FIELDS.every((field) => Boolean(registration[field]));
   }, [registration]);
 
+  const hasAgreedToRentalTerms = Boolean(registration?.rental_terms_agreed_at);
+
   const canProceed = Boolean(pickupTime && returnTime);
+
+  const buildStepParams = () =>
+    new URLSearchParams({
+      store,
+      modelName,
+      managementNumber,
+      pickupDate,
+      returnDate,
+      pickupTime,
+      returnTime,
+      customerName,
+      email,
+    });
 
   useEffect(() => {
     if (!pickupDate) return;
@@ -204,17 +219,12 @@ export default function ReserveFlowStep1() {
       return;
     }
 
-    const params = new URLSearchParams({
-      store,
-      modelName,
-      managementNumber,
-      pickupDate,
-      returnDate,
-      pickupTime,
-      returnTime,
-      customerName,
-      email,
-    });
+    const params = buildStepParams();
+
+    if (!hasAgreedToRentalTerms) {
+      void router.push(`/en/reserve/flow/rental-bike-terms?${params.toString()}`);
+      return;
+    }
 
     void router.push(`/en/reserve/flow/step2?${params.toString()}`);
   };
@@ -328,6 +338,11 @@ export default function ReserveFlowStep1() {
                       </Link>
                     </div>
                   </div>
+                ) : null}
+                {registrationChecked && isRegistrationComplete && !registrationError && !hasAgreedToRentalTerms ? (
+                  <p className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+                    You need to agree to the motorcycle rental terms before moving to the next step. You can review them on the next screen and agree.
+                  </p>
                 ) : null}
               </div>
 

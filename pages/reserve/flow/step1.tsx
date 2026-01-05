@@ -167,7 +167,22 @@ export default function ReserveFlowStep1() {
     return REQUIRED_REGISTRATION_FIELDS.every((field) => Boolean(registration[field]));
   }, [registration]);
 
+  const hasAgreedToRentalTerms = Boolean(registration?.rental_terms_agreed_at);
+
   const canProceed = Boolean(pickupTime && returnTime);
+
+  const buildStepParams = () =>
+    new URLSearchParams({
+      store,
+      modelName,
+      managementNumber,
+      pickupDate,
+      returnDate,
+      pickupTime,
+      returnTime,
+      customerName,
+      email,
+    });
 
   useEffect(() => {
     if (!pickupDate) return;
@@ -215,17 +230,12 @@ export default function ReserveFlowStep1() {
       return;
     }
 
-    const params = new URLSearchParams({
-      store,
-      modelName,
-      managementNumber,
-      pickupDate,
-      returnDate,
-      pickupTime,
-      returnTime,
-      customerName,
-      email,
-    });
+    const params = buildStepParams();
+
+    if (!hasAgreedToRentalTerms) {
+      void router.push(`/reserve/flow/rental-bike-terms?${params.toString()}`);
+      return;
+    }
 
     void router.push(`/reserve/flow/step2?${params.toString()}`);
   };
@@ -339,6 +349,11 @@ export default function ReserveFlowStep1() {
                       </Link>
                     </div>
                   </div>
+                ) : null}
+                {registrationChecked && isRegistrationComplete && !registrationError && !hasAgreedToRentalTerms ? (
+                  <p className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+                    オプション選択へ進む前に、レンタルバイク利用規約への同意が必要です。次の画面で規約を確認のうえ、同意してください。
+                  </p>
                 ) : null}
               </div>
 
