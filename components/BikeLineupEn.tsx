@@ -94,7 +94,7 @@ export default function BikeLineupEn({ bikes, classes }: Props) {
             key={bike.modelCode}
             className="group relative overflow-hidden rounded-2xl border border-white/60 bg-white/80 shadow-[0_28px_42px_-30px_rgba(15,23,42,0.6)] transition-transform duration-200 hover:-translate-y-1 hover:shadow-[0_32px_56px_-28px_rgba(220,38,38,0.4)]"
           >
-            <Link href={`/products/${bike.modelCode}`} className="flex h-full flex-col">
+            <Link href={`/en/products/${bike.modelCode}`} className="flex h-full flex-col">
               <div className="bike-lineup-card__image relative aspect-[3/4] w-full overflow-hidden">
                 <img
                   src={bike.img}
@@ -124,7 +124,7 @@ export default function BikeLineupEn({ bikes, classes }: Props) {
 
       {filtered.length > displayList.length ? (
         <div className="mt-8 text-center">
-          <Link href="/products" className="btn-primary">
+          <Link href="/en/products" className="btn-primary">
             View all bikes by displacement
           </Link>
         </div>

@@ -207,7 +207,7 @@ export default function ReserveModelPage({
 
       const data = (await response.json().catch(() => ({}))) as { user?: { id?: string } | null };
       if (!data.user) {
-        await router.push("/login");
+        await router.push("/en/login");
         return;
       }
 
@@ -219,7 +219,7 @@ export default function ReserveModelPage({
         managementNumber,
       });
 
-      await router.push(`/reserve/flow/step1?${params.toString()}`);
+      await router.push(`/en/reserve/flow/step1?${params.toString()}`);
     } catch (error) {
       console.error(error);
     } finally {
