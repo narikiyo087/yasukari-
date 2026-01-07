@@ -4,7 +4,7 @@ export const isInternationalLocale = (locale?: string): boolean => {
   if (!locale) return false;
   const normalized = locale.trim().toLowerCase();
   if (!normalized) return false;
-  return !normalized.startsWith("ja");
+  return !(normalized.startsWith("ja") || normalized.startsWith("jp"));
 };
 
 export const parseYenPrice = (value: string): number | undefined => {

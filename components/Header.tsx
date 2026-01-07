@@ -117,7 +117,7 @@ export default function Header() {
           ? router.asPath.slice(3) || '/'
           : router.asPath || '/';
 
-    void updatePreferredLocale(target === 'en' ? 'en-US' : 'ja-JP');
+    void updatePreferredLocale(target === 'en' ? 'en' : 'jp');
     await router.push(nextPath);
   };
 

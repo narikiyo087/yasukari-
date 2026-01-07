@@ -242,7 +242,10 @@ const mapRegistrationStatus = (
 const mapInternational = (attributes: Record<string, string>): boolean => {
   const locale = attributes.locale ?? attributes["custom:locale"] ?? "";
   const country = attributes["custom:country"] ?? attributes.country ?? "";
-  if (locale && !locale.toLowerCase().startsWith("ja")) return true;
+  if (locale) {
+    const normalized = locale.toLowerCase();
+    if (!(normalized.startsWith("ja") || normalized.startsWith("jp"))) return true;
+  }
   if (country && !["jp", "japan", "日本"].includes(country.toLowerCase())) return true;
   return false;
 };

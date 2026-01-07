@@ -92,7 +92,7 @@ export default function HeaderEn() {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           credentials: 'include',
-          body: JSON.stringify({ locale: target === 'en' ? 'en-US' : 'ja-JP' }),
+          body: JSON.stringify({ locale: target === 'en' ? 'en' : 'jp' }),
         });
       } catch (error) {
         console.error('Failed to update locale', error);
