@@ -45,12 +45,19 @@ export default function ReserveFlowStep1() {
 
   const timeOptions = useMemo(() => {
     if (store.includes("三ノ輪")) {
-      return buildTimeOptions(0, 23);
+      return buildTimeOptions(10, 19);
     }
     if (store.includes("足立")) {
       return buildTimeOptions(10, 18);
     }
     return buildTimeOptions(8, 17);
+  }, [store]);
+
+  const storeNotice = useMemo(() => {
+    if (store.includes("三ノ輪")) {
+      return "三ノ輪店の24時間営業は2月後半からを予定しております。";
+    }
+    return "";
   }, [store]);
 
   useEffect(() => {
@@ -400,6 +407,7 @@ export default function ReserveFlowStep1() {
                     <p className="text-xs text-gray-500">貸出希望日の24時間後が返却日時になります。</p>
                   </div>
                 </div>
+                {storeNotice ? <p className="text-xs text-gray-500">{storeNotice}</p> : null}
                 {!canProceed ? (
                   <p className="text-sm text-red-600">貸出と返却の時間を選択すると、オプション選択へ進めます。</p>
                 ) : null}
