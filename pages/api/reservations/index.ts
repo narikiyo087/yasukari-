@@ -57,6 +57,7 @@ type RentalAvailabilityMap = Record<string, RentalAvailabilityDay>;
 
 type VehicleRecord = {
   managementNumber: string;
+  licensePlateNumber?: string;
   rentalAvailability?: RentalAvailabilityMap;
 };
 
@@ -296,7 +297,11 @@ export default async function handler(
         storeName: body.storeName!,
         vehicleModel: body.vehicleModel!,
         vehicleCode: body.vehicleCode!,
-        vehiclePlate: body.vehiclePlate ?? body.vehicleCode ?? "未設定",
+        vehiclePlate:
+          vehicle.licensePlateNumber ??
+          body.vehiclePlate ??
+          body.vehicleCode ??
+          "未設定",
         pickupAt: body.pickupAt!,
         returnAt: body.returnAt!,
         status: (body.status as Reservation["status"]) || "予約受付完了",

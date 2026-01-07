@@ -1,4 +1,4 @@
-import { GetCommand, PutCommand } from "@aws-sdk/lib-dynamodb";
+import { BatchGetCommand, GetCommand, PutCommand } from "@aws-sdk/lib-dynamodb";
 
 import { getBikeModels } from "./bikes";
 import { getDocumentClient, scanAllItems } from "./dynamodb";
@@ -148,7 +148,13 @@ type ReservationRecord = {
   [key: string]: unknown;
 };
 
+type VehicleRecord = {
+  managementNumber: string;
+  licensePlateNumber?: string;
+};
+
 const RESERVATIONS_TABLE = process.env.RESERVATIONS_TABLE ?? "yoyakuKanri";
+const VEHICLES_TABLE = process.env.VEHICLES_TABLE ?? "Vehicles";
 const ACCESSORY_KEYS = ["halfCap", "jetHelmet", "brandHelmet", "glove"] as const;
 
 const stringFrom = (record: ReservationRecord, keys: string[], fallback = ""): string => {
@@ -198,6 +204,89 @@ const booleanFrom = (record: ReservationRecord, keys: string[], fallback = false
 
 const toSnakeCase = (value: string): string =>
   value.replace(/[A-Z]/g, (char) => `_${char.toLowerCase()}`);
+
+const chunkArray = <T,>(items: T[], size: number): T[][] => {
+  const chunks: T[][] = [];
+  for (let i = 0; i < items.length; i += size) {
+    chunks.push(items.slice(i, i + size));
+  }
+  return chunks;
+};
+
+const fetchVehiclePlateMap = async (vehicleCodes: string[]): Promise<Map<string, string>> => {
+  const uniqueCodes = Array.from(
+    new Set(vehicleCodes.filter((code) => typeof code === "string" && code.trim()))
+  ) as string[];
+
+  if (uniqueCodes.length === 0) {
+    return new Map();
+  }
+
+  const client = getDocumentClient();
+  const plateMap = new Map<string, string>();
+  const batches = chunkArray(uniqueCodes, 100);
+
+  await Promise.all(
+    batches.map(async (batch) => {
+      const response = await client.send(
+        new BatchGetCommand({
+          RequestItems: {
+            [VEHICLES_TABLE]: {
+              Keys: batch.map((managementNumber) => ({ managementNumber })),
+              ProjectionExpression: "managementNumber, licensePlateNumber",
+            },
+          },
+        })
+      );
+
+      const items = response.Responses?.[VEHICLES_TABLE] as VehicleRecord[] | undefined;
+      if (!items) {
+        return;
+      }
+
+      items.forEach((item) => {
+        if (item.managementNumber && item.licensePlateNumber) {
+          plateMap.set(item.managementNumber, item.licensePlateNumber);
+        }
+      });
+    })
+  );
+
+  return plateMap;
+};
+
+const attachVehiclePlates = async (
+  reservations: Reservation[]
+): Promise<Reservation[]> => {
+  try {
+    const plateMap = await fetchVehiclePlateMap(
+      reservations.map((reservation) => reservation.vehicleCode)
+    );
+
+    if (plateMap.size === 0) {
+      return reservations;
+    }
+
+    return reservations.map((reservation) => {
+      const plate = plateMap.get(reservation.vehicleCode);
+      if (!plate) {
+        return reservation;
+      }
+
+      if (reservation.vehiclePlate === plate) {
+        return reservation;
+      }
+
+      return {
+        ...reservation,
+        vehiclePlate: plate,
+      };
+    });
+  } catch (error) {
+    console.error("Failed to resolve reservation license plates", error);
+    return reservations;
+  }
+};
 
 const numberFromLoose = (value: unknown): number | null => {
   if (typeof value === "number") return value;
@@ -319,9 +408,10 @@ const normalizeReservation = (record: ReservationRecord): Reservation => {
 
 export async function fetchAllReservations(): Promise<Reservation[]> {
   const items = await scanAllItems<ReservationRecord>({ TableName: RESERVATIONS_TABLE });
-  return items
+  const reservations = items
     .map(normalizeReservation)
     .sort((a, b) => (a.pickupAt || "") > (b.pickupAt || "") ? -1 : 1);
+  return attachVehiclePlates(reservations);
 }
 
 export async function fetchReservationsByMember(memberId: string): Promise<Reservation[]> {
@@ -331,9 +421,7 @@ export async function fetchReservationsByMember(memberId: string): Promise<Reser
     .filter((reservation) => reservation.memberId === memberId)
     .sort((a, b) => (a.pickupAt || "") > (b.pickupAt || "") ? -1 : 1);
 
-  if (reservations.every((reservation) => reservation.vehicleThumbnailUrl)) {
-    return reservations;
-  }
+  const withPlates = await attachVehiclePlates(reservations);
 
   try {
     const models = await getBikeModels();
@@ -341,7 +429,7 @@ export async function fetchReservationsByMember(memberId: string): Promise<Reser
       models.map((model) => [model.modelName.trim(), model.img])
     );
 
-    return reservations.map((reservation) => {
+    return withPlates.map((reservation) => {
       if (reservation.vehicleThumbnailUrl) {
         return reservation;
       }
@@ -358,7 +446,7 @@ export async function fetchReservationsByMember(memberId: string): Promise<Reser
     });
   } catch (error) {
     console.error("Failed to resolve reservation thumbnails", error);
-    return reservations;
+    return withPlates;
   }
 }
 
@@ -376,7 +464,9 @@ export async function fetchReservationById(reservationId: string): Promise<Reser
     return null;
   }
 
-  return normalizeReservation(record);
+  const reservation = normalizeReservation(record);
+  const [withPlate] = await attachVehiclePlates([reservation]);
+  return withPlate ?? reservation;
 }
 
 type CreateReservationInput = {
