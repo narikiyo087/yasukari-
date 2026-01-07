@@ -36,6 +36,7 @@ export default function ReservationListPage() {
       | "status"
       | "vehicleModel"
       | "vehicleCode"
+      | "vehiclePlate"
       | "pickupAt"
       | "returnAt"
       | "paymentDate"
@@ -125,6 +126,7 @@ export default function ReservationListPage() {
             reservation.status,
             reservation.vehicleModel,
             reservation.vehicleCode,
+            reservation.vehiclePlate,
             reservation.memberName,
             reservation.memberEmail,
           ].some((value) => value?.toLowerCase().includes(normalizedTerm))
@@ -146,6 +148,8 @@ export default function ReservationListPage() {
             return reservation.vehicleModel ?? "";
           case "vehicleCode":
             return reservation.vehicleCode ?? "";
+          case "vehiclePlate":
+            return reservation.vehiclePlate ?? "";
           case "pickupAt":
             return new Date(reservation.pickupAt).getTime() || 0;
           case "returnAt":
@@ -282,6 +286,41 @@ export default function ReservationListPage() {
                         />
                         <span className={tableStyles.visuallyHidden}>
                           {sortState.key === "storeName"
+                            ? sortState.direction === "asc"
+                              ? "昇順に並び替え"
+                              : "降順に並び替え"
+                            : "クリックして並び替え"}
+                        </span>
+                      </button>
+                    </th>
+                    <th
+                      scope="col"
+                      aria-sort={
+                        sortState.key === "vehiclePlate"
+                          ? sortState.direction === "asc"
+                            ? "ascending"
+                            : "descending"
+                          : "none"
+                      }
+                    >
+                      <button
+                        type="button"
+                        className={tableStyles.sortableHeaderButton}
+                        onClick={() => handleSort("vehiclePlate")}
+                      >
+                        <span>ナンバープレート</span>
+                        <span
+                          aria-hidden
+                          className={`${tableStyles.sortIcon} ${
+                            sortState.key === "vehiclePlate"
+                              ? sortState.direction === "asc"
+                                ? tableStyles.sortIconAsc
+                                : tableStyles.sortIconDesc
+                              : ""
+                          }`}
+                        />
+                        <span className={tableStyles.visuallyHidden}>
+                          {sortState.key === "vehiclePlate"
                             ? sortState.direction === "asc"
                               ? "昇順に並び替え"
                               : "降順に並び替え"
@@ -574,7 +613,7 @@ export default function ReservationListPage() {
                 <tbody>
                   {filteredReservations.length === 0 ? (
                     <tr>
-                      <td colSpan={9}>該当する予約が見つかりませんでした。</td>
+                      <td colSpan={10}>該当する予約が見つかりませんでした。</td>
                     </tr>
                   ) : (
                     filteredReservations.map((reservation) => (
@@ -596,6 +635,9 @@ export default function ReservationListPage() {
                         </td>
                         <td>{reservation.vehicleModel}</td>
                         <td className={tableStyles.monospace}>{reservation.vehicleCode}</td>
+                        <td className={tableStyles.monospace}>
+                          {reservation.vehiclePlate || "-"}
+                        </td>
                         <td>{formatDatetime(reservation.pickupAt)}</td>
                         <td>{formatDatetime(reservation.returnAt)}</td>
                         <td>{formatDatetime(reservation.paymentDate)}</td>
