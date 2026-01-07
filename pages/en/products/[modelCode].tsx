@@ -14,7 +14,10 @@ import {
 import { readVehicleRentalPrices } from "../../../lib/server/vehicleRentalPrices";
 import RecentlyViewedEn from "../../../components/RecentlyViewedEn";
 import type { Reservation } from "../../../lib/reservations";
-import useInternationalPricingMultiplier from "../../../lib/useInternationalPricingMultiplier";
+import {
+  applyInternationalMultiplier,
+  INTERNATIONAL_PRICE_MULTIPLIER,
+} from "../../../lib/pricing";
 
 interface Props {
   bike: BikeModel;
@@ -73,6 +76,9 @@ const normalizePrice = (value: unknown): number | undefined => {
   return undefined;
 };
 
+const applyPriceMultiplier = (price: number) =>
+  applyInternationalMultiplier(price, INTERNATIONAL_PRICE_MULTIPLIER);
+
 export default function ProductDetailPageEn({
   bike,
   className,
@@ -87,10 +93,6 @@ export default function ProductDetailPageEn({
   const [rentalCheckError, setRentalCheckError] = useState("");
   const [checkingRental, setCheckingRental] = useState(false);
   const router = useRouter();
-  const priceMultiplier = useInternationalPricingMultiplier("en");
-
-  const applyPriceMultiplier = (price: number) =>
-    Math.round(price * priceMultiplier);
 
   const vehicleOptions = useMemo(
     () =>
