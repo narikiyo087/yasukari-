@@ -37,6 +37,10 @@ type CreateReservationRequest = {
   memberPhone?: string;
   couponCode?: string;
   couponDiscount?: number;
+  options?: {
+    vehicleCoverage?: string;
+    theftCoverage?: string;
+  };
   notes?: string;
   accessories?: Record<string, number>;
 };
@@ -83,6 +87,9 @@ const normalizeAccessorySelection = (
 
   return Object.keys(entries).length > 0 ? entries : undefined;
 };
+
+const normalizeCoverageOption = (value: unknown): string =>
+  typeof value === "string" ? value.trim() : "";
 
 const isValidRentalStatus = (value: unknown): value is RentalAvailabilityStatus =>
   value === "AVAILABLE" ||
@@ -281,6 +288,8 @@ export default async function handler(
         vehicle.rentalAvailability
       );
       const accessories = normalizeAccessorySelection(body.accessories);
+      const vehicleCoverage = normalizeCoverageOption(body.options?.vehicleCoverage);
+      const theftCoverage = normalizeCoverageOption(body.options?.theftCoverage);
       const isAvailable = isReservationRangeAvailable(
         normalizedAvailability,
         body.pickupAt!,
@@ -318,8 +327,8 @@ export default async function handler(
         couponCode: body.couponCode,
         couponDiscount: body.couponDiscount,
         options: {
-          vehicleCoverage: "",
-          theftCoverage: "",
+          vehicleCoverage,
+          theftCoverage,
         },
         accessories,
         notes: body.notes,

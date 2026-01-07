@@ -52,6 +52,10 @@ export default function ReserveFlowStep3() {
   const [protectionTotal, setProtectionTotal] = useState(0);
   const [accessoryTotal, setAccessoryTotal] = useState(0);
   const [accessorySelection, setAccessorySelection] = useState<Record<string, number>>({});
+  const [protectionSelection, setProtectionSelection] = useState({
+    vehicle: true,
+    theft: true,
+  });
 
   useEffect(() => {
     const controller = new AbortController();
@@ -140,6 +144,12 @@ export default function ReserveFlowStep3() {
       }
     });
     setAccessorySelection(nextAccessorySelection);
+
+    const vehicleSelection =
+      params.vehicle === "1" ? true : params.vehicle === "0" ? false : protectionSelection.vehicle;
+    const theftSelection =
+      params.theft === "1" ? true : params.theft === "0" ? false : protectionSelection.theft;
+    setProtectionSelection({ vehicle: vehicleSelection, theft: theftSelection });
 
     if (missingParams.length > 0) {
       setQueryError("画面を更新したため予約情報が取得できませんでした。最初のページからやり直してください。");
@@ -268,6 +278,10 @@ export default function ReserveFlowStep3() {
           memberPhone: registration?.mobile ?? registration?.tel ?? "",
           couponCode,
           couponDiscount,
+          options: {
+            vehicleCoverage: protectionSelection.vehicle ? "加入" : "未加入",
+            theftCoverage: protectionSelection.theft ? "加入" : "未加入",
+          },
           accessories:
             Object.keys(accessorySelection).length > 0 ? accessorySelection : undefined,
           notes: "Pay.JP 決済経由で保存",
@@ -327,6 +341,7 @@ export default function ReserveFlowStep3() {
     sessionUser,
     store,
     totalAmount,
+    protectionSelection,
   ]);
 
   useEffect(() => {
