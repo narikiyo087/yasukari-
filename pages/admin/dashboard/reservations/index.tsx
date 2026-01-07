@@ -296,41 +296,6 @@ export default function ReservationListPage() {
                     <th
                       scope="col"
                       aria-sort={
-                        sortState.key === "vehiclePlate"
-                          ? sortState.direction === "asc"
-                            ? "ascending"
-                            : "descending"
-                          : "none"
-                      }
-                    >
-                      <button
-                        type="button"
-                        className={tableStyles.sortableHeaderButton}
-                        onClick={() => handleSort("vehiclePlate")}
-                      >
-                        <span>ナンバープレート</span>
-                        <span
-                          aria-hidden
-                          className={`${tableStyles.sortIcon} ${
-                            sortState.key === "vehiclePlate"
-                              ? sortState.direction === "asc"
-                                ? tableStyles.sortIconAsc
-                                : tableStyles.sortIconDesc
-                              : ""
-                          }`}
-                        />
-                        <span className={tableStyles.visuallyHidden}>
-                          {sortState.key === "vehiclePlate"
-                            ? sortState.direction === "asc"
-                              ? "昇順に並び替え"
-                              : "降順に並び替え"
-                            : "クリックして並び替え"}
-                        </span>
-                      </button>
-                    </th>
-                    <th
-                      scope="col"
-                      aria-sort={
                         sortState.key === "status"
                           ? sortState.direction === "asc"
                             ? "ascending"
@@ -426,6 +391,41 @@ export default function ReservationListPage() {
                         />
                         <span className={tableStyles.visuallyHidden}>
                           {sortState.key === "vehicleCode"
+                            ? sortState.direction === "asc"
+                              ? "昇順に並び替え"
+                              : "降順に並び替え"
+                            : "クリックして並び替え"}
+                        </span>
+                      </button>
+                    </th>
+                    <th
+                      scope="col"
+                      aria-sort={
+                        sortState.key === "vehiclePlate"
+                          ? sortState.direction === "asc"
+                            ? "ascending"
+                            : "descending"
+                          : "none"
+                      }
+                    >
+                      <button
+                        type="button"
+                        className={tableStyles.sortableHeaderButton}
+                        onClick={() => handleSort("vehiclePlate")}
+                      >
+                        <span>ナンバープレート</span>
+                        <span
+                          aria-hidden
+                          className={`${tableStyles.sortIcon} ${
+                            sortState.key === "vehiclePlate"
+                              ? sortState.direction === "asc"
+                                ? tableStyles.sortIconAsc
+                                : tableStyles.sortIconDesc
+                              : ""
+                          }`}
+                        />
+                        <span className={tableStyles.visuallyHidden}>
+                          {sortState.key === "vehiclePlate"
                             ? sortState.direction === "asc"
                               ? "昇順に並び替え"
                               : "降順に並び替え"
