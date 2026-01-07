@@ -38,12 +38,13 @@ export default function ReservationListPage() {
       | "vehicleCode"
       | "pickupAt"
       | "returnAt"
+      | "paymentDate"
       | "memberName"
       | "memberEmail";
     direction: "asc" | "desc";
   }>({
-    key: "pickupAt",
-    direction: "asc",
+    key: "paymentDate",
+    direction: "desc",
   });
 
   useEffect(() => {
@@ -149,6 +150,8 @@ export default function ReservationListPage() {
             return new Date(reservation.pickupAt).getTime() || 0;
           case "returnAt":
             return new Date(reservation.returnAt).getTime() || 0;
+          case "paymentDate":
+            return new Date(reservation.paymentDate).getTime() || 0;
           case "memberName":
             return reservation.memberName ?? "";
           case "memberEmail":
@@ -464,6 +467,41 @@ export default function ReservationListPage() {
                     <th
                       scope="col"
                       aria-sort={
+                        sortState.key === "paymentDate"
+                          ? sortState.direction === "asc"
+                            ? "ascending"
+                            : "descending"
+                          : "none"
+                      }
+                    >
+                      <button
+                        type="button"
+                        className={tableStyles.sortableHeaderButton}
+                        onClick={() => handleSort("paymentDate")}
+                      >
+                        <span>決済日時</span>
+                        <span
+                          aria-hidden
+                          className={`${tableStyles.sortIcon} ${
+                            sortState.key === "paymentDate"
+                              ? sortState.direction === "asc"
+                                ? tableStyles.sortIconAsc
+                                : tableStyles.sortIconDesc
+                              : ""
+                          }`}
+                        />
+                        <span className={tableStyles.visuallyHidden}>
+                          {sortState.key === "paymentDate"
+                            ? sortState.direction === "asc"
+                              ? "昇順に並び替え"
+                              : "降順に並び替え"
+                            : "クリックして並び替え"}
+                        </span>
+                      </button>
+                    </th>
+                    <th
+                      scope="col"
+                      aria-sort={
                         sortState.key === "memberName"
                           ? sortState.direction === "asc"
                             ? "ascending"
@@ -536,7 +574,7 @@ export default function ReservationListPage() {
                 <tbody>
                   {filteredReservations.length === 0 ? (
                     <tr>
-                      <td colSpan={8}>該当する予約が見つかりませんでした。</td>
+                      <td colSpan={9}>該当する予約が見つかりませんでした。</td>
                     </tr>
                   ) : (
                     filteredReservations.map((reservation) => (
@@ -560,6 +598,7 @@ export default function ReservationListPage() {
                         <td className={tableStyles.monospace}>{reservation.vehicleCode}</td>
                         <td>{formatDatetime(reservation.pickupAt)}</td>
                         <td>{formatDatetime(reservation.returnAt)}</td>
+                        <td>{formatDatetime(reservation.paymentDate)}</td>
                         <td>{reservation.memberName}</td>
                         <td>{reservation.memberEmail}</td>
                       </tr>
