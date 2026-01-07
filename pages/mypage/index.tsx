@@ -339,7 +339,7 @@ export default function MyPage() {
   const localeLabel = (value: string | undefined) => {
     if (!value) return '未設定';
     const normalized = value.toLowerCase();
-    if (normalized.startsWith('ja') || normalized.startsWith('jp')) return '日本語語';
+    if (normalized.startsWith('ja') || normalized.startsWith('jp')) return '日本語';
     if (normalized.startsWith('en')) return '英語圏';
     return value;
   };
