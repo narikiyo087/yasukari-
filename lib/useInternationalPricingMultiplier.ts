@@ -11,14 +11,17 @@ const getLocaleFromAttributes = (attributes?: Record<string, string>): string =>
   return attributes["custom:locale"] ?? attributes.locale ?? "";
 };
 
-const getInitialMultiplier = (): number => {
-  if (typeof window === "undefined") return 1;
-  const browserLocale = window.navigator?.language ?? "";
-  return isInternationalLocale(browserLocale) ? INTERNATIONAL_PRICE_MULTIPLIER : 1;
+const resolveMultiplier = (pageLocale?: string, userLocale?: string): number => {
+  const isPageInternational = pageLocale ? isInternationalLocale(pageLocale) : false;
+  const isUserInternational = userLocale ? isInternationalLocale(userLocale) : false;
+  return isPageInternational || isUserInternational ? INTERNATIONAL_PRICE_MULTIPLIER : 1;
 };
 
-export default function useInternationalPricingMultiplier(): number {
-  const [multiplier, setMultiplier] = useState(getInitialMultiplier);
+const getInitialMultiplier = (pageLocale?: string): number =>
+  resolveMultiplier(pageLocale);
+
+export default function useInternationalPricingMultiplier(pageLocale?: string): number {
+  const [multiplier, setMultiplier] = useState(() => getInitialMultiplier(pageLocale));
 
   useEffect(() => {
     let active = true;
@@ -30,11 +33,9 @@ export default function useInternationalPricingMultiplier(): number {
 
         const data = (await response.json()) as UserAttributesResponse;
         const locale = getLocaleFromAttributes(data.attributes);
-        if (!locale || !active) return;
+        if (!active) return;
 
-        setMultiplier(
-          isInternationalLocale(locale) ? INTERNATIONAL_PRICE_MULTIPLIER : 1
-        );
+        setMultiplier(resolveMultiplier(pageLocale, locale));
       } catch (error) {
         if (active) {
           console.error("Failed to load user locale for pricing", error);
@@ -47,7 +48,7 @@ export default function useInternationalPricingMultiplier(): number {
     return () => {
       active = false;
     };
-  }, []);
+  }, [pageLocale]);
 
   return multiplier;
 }

@@ -88,7 +88,7 @@ export default function ProductDetailPage({
   const [rentalCheckError, setRentalCheckError] = useState("");
   const [checkingRental, setCheckingRental] = useState(false);
   const router = useRouter();
-  const priceMultiplier = useInternationalPricingMultiplier();
+  const priceMultiplier = useInternationalPricingMultiplier("ja");
 
   const adjustedPrice24h = useMemo(
     () => formatAdjustedYenPrice(bike.price24h, priceMultiplier),

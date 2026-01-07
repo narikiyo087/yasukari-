@@ -14,8 +14,8 @@ import type {
 import {
   applyInternationalMultiplier,
   formatYen,
-  INTERNATIONAL_PRICE_MULTIPLIER,
 } from "../../../../lib/pricing";
+import useInternationalPricingMultiplier from "../../../../lib/useInternationalPricingMultiplier";
 
 type AddOn = {
   key: string;
@@ -118,7 +118,7 @@ export default function ReserveFlowStep2() {
   const [protectionError, setProtectionError] = useState<string | null>(null);
   const [highSeasonDates, setHighSeasonDates] = useState<Set<string>>(new Set());
   const [highSeasonLoading, setHighSeasonLoading] = useState(false);
-  const priceMultiplier = INTERNATIONAL_PRICE_MULTIPLIER;
+  const priceMultiplier = useInternationalPricingMultiplier("en");
 
   const [protectionSelection, setProtectionSelection] = useState(() =>
     PROTECTION_OPTION_DEFINITIONS.reduce<Record<string, boolean>>((acc, option) => {

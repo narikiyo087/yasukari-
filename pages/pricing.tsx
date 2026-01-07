@@ -103,7 +103,7 @@ const categories = [
 ]
 
 export default function PricingPage() {
-  const priceMultiplier = useInternationalPricingMultiplier()
+  const priceMultiplier = useInternationalPricingMultiplier("ja")
 
   return (
     <div className="max-w-3xl mx-auto p-6">

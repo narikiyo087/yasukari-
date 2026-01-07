@@ -118,7 +118,7 @@ export default function ReserveFlowStep2() {
   const [protectionError, setProtectionError] = useState<string | null>(null);
   const [highSeasonDates, setHighSeasonDates] = useState<Set<string>>(new Set());
   const [highSeasonLoading, setHighSeasonLoading] = useState(false);
-  const priceMultiplier = useInternationalPricingMultiplier();
+  const priceMultiplier = useInternationalPricingMultiplier("ja");
 
   const [protectionSelection, setProtectionSelection] = useState(() =>
     PROTECTION_OPTION_DEFINITIONS.reduce<Record<string, boolean>>((acc, option) => {
