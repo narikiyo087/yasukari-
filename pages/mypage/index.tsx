@@ -938,7 +938,7 @@ export default function MyPage() {
                           <div className="rounded-lg bg-gray-50 px-3 py-2">
                             <dt className="text-xs text-gray-500">ご予約情報</dt>
                             <dd className="font-semibold text-gray-900">
-                              車両コード: {reservation.vehicleCode || '-'} / ナンバープレート: {reservation.vehiclePlate || '未設定'}
+                              ナンバープレート: {reservation.vehiclePlate || '未設定'}
                             </dd>
                           </div>
                           <div className="rounded-lg bg-gray-50 px-3 py-2">
