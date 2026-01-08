@@ -24,6 +24,22 @@ const displayValue = (value?: string | null, fallback = PLACEHOLDER) => {
   return trimmed ? trimmed : fallback;
 };
 
+const formatPhoneNumber = (value?: string | null) => {
+  if (!value) return "";
+  const trimmed = value.trim();
+  if (!trimmed) return "";
+  if (trimmed.startsWith("0")) return trimmed;
+
+  const withoutCountry = trimmed.startsWith("+81")
+    ? trimmed.slice(3)
+    : trimmed.startsWith("81")
+      ? trimmed.slice(2)
+      : trimmed;
+
+  if (withoutCountry === trimmed) return trimmed;
+  return `0${withoutCountry}`;
+};
+
 const formatDateParts = (value?: string) => {
   if (!value) return null;
   const date = new Date(value);
@@ -214,14 +230,14 @@ export default function RentalContractPage() {
         </header>
 
         <section className={styles.contractInfo}>
-          <div className={styles.infoRow}>
+          <div className={`${styles.infoRow} ${styles.infoRowNoBorder}`}>
             <div className={styles.infoLeft}>
               <span className={styles.infoLabel}>ふりがな</span>
               <span className={styles.infoValue}>{displayValue(nameKana, PLACEHOLDER_SHORT)}</span>
             </div>
             <div className={styles.infoRight}>
-              <span className={styles.infoLabel}>予約番号</span>
-              <span className={styles.infoValue}>{reservation.id}</span>
+              <span className={styles.infoLabel}>予約番号：</span>
+              <span className={styles.reservationValue}>{reservation.id}</span>
             </div>
           </div>
           <div className={styles.infoRow}>
@@ -230,7 +246,7 @@ export default function RentalContractPage() {
               <span className={styles.infoValue}>{displayValue(name, PLACEHOLDER_SHORT)}</span>
             </div>
           </div>
-          <div className={styles.infoRow}>
+          <div className={`${styles.infoRow} ${styles.infoRowRight20}`}>
             <div className={styles.infoLeft}>
               <span className={styles.infoLabel}>住所</span>
               <span className={styles.infoValue}>{displayValue(address)}</span>
@@ -251,16 +267,20 @@ export default function RentalContractPage() {
               <span className={styles.infoAge}>（{age ? `${age}歳` : "＊＊歳"}）</span>
             </div>
           </div>
-          <div className={styles.infoRow}>
+          <div className={`${styles.infoRow} ${styles.infoRowRight50}`}>
             <div className={styles.infoLeft}>
               <span className={styles.infoLabel}>携帯電話</span>
               <span className={styles.infoValue}>
-                {displayValue(registration?.mobile ?? reservation.memberPhone)}
+                {displayValue(
+                  formatPhoneNumber(registration?.mobile ?? reservation.memberPhone)
+                )}
               </span>
             </div>
             <div className={styles.infoRight}>
               <span className={styles.infoLabel}>自宅番号</span>
-              <span className={styles.infoValue}>{displayValue(registration?.tel)}</span>
+              <span className={styles.infoValue}>
+                {displayValue(formatPhoneNumber(registration?.tel))}
+              </span>
             </div>
           </div>
           <div className={styles.infoRow}>
@@ -274,22 +294,35 @@ export default function RentalContractPage() {
         </section>
 
         <section className={styles.section}>
-          <div className={styles.sectionTitle}>勤務先・連絡先情報</div>
-          <div className={styles.fieldRow}>
-            <span className={styles.fieldLabel}>勤務先名</span>
-            <span>{displayValue(registration?.work_place)}</span>
+          <div className={styles.fieldRowSplit}>
+            <div className={styles.fieldGroup}>
+              <span className={styles.fieldLabel}>勤務先名</span>
+              <span>{displayValue(registration?.work_place)}</span>
+            </div>
+            <div className={styles.fieldGroup}>
+              <span className={styles.fieldLabel}>左記以外の連絡先（氏名）</span>
+              <span>{displayValue(registration?.other_name)}</span>
+            </div>
           </div>
-          <div className={styles.fieldRow}>
-            <span className={styles.fieldLabel}>左記以外の連絡先（氏名）</span>
-            <span>{displayValue(registration?.other_name)}</span>
+          <div className={styles.fieldRowSplit}>
+            <div className={styles.fieldGroup}>
+              <span className={styles.fieldLabel}>勤務先住所</span>
+              <span>{displayValue(registration?.work_address)}</span>
+            </div>
+            <div className={styles.fieldGroup}>
+              <span className={styles.fieldLabel}>（その他の）住所</span>
+              <span>{displayValue(registration?.other_address)}</span>
+            </div>
           </div>
-          <div className={styles.fieldRow}>
-            <span className={styles.fieldLabel}>勤務先住所</span>
-            <span>{displayValue(registration?.work_address)}</span>
-          </div>
-          <div className={styles.fieldRow}>
-            <span className={styles.fieldLabel}>勤務先電話番号</span>
-            <span>{displayValue(registration?.work_tel)}</span>
+          <div className={styles.fieldRowSplit}>
+            <div className={styles.fieldGroup}>
+              <span className={styles.fieldLabel}>勤務先電話番号</span>
+              <span>{displayValue(formatPhoneNumber(registration?.work_tel))}</span>
+            </div>
+            <div className={styles.fieldGroup}>
+              <span className={styles.fieldLabel}>（その他の）電話番号</span>
+              <span>{displayValue(formatPhoneNumber(registration?.other_tel))}</span>
+            </div>
           </div>
         </section>
 
