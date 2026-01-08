@@ -19,7 +19,7 @@ export default function MyApp({ Component, pageProps }: AppProps) {
   const isAdminRoute = router.pathname.startsWith('/admin');
   const pathWithoutQuery = router.asPath.split('?')[0];
   const isRentalContractPage = pathWithoutQuery.startsWith('/rental-contract/');
-  const isChatbotVisible = router.pathname === '/test' && !isRentalContractPage;
+  const isChatbotVisible = !isRentalContractPage;
 
   if (isAdminRoute) {
     return <Component {...pageProps} />;
