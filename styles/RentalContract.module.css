@@ -151,9 +151,6 @@
   margin: 8px 0 6px;
 }
 
-.muted {
-  color: #555;
-}
 
 .contractGrid {
   display: grid;
@@ -178,10 +175,6 @@
   padding: 8px;
 }
 
-.selectionHeader {
-  font-weight: 700;
-  margin-bottom: 6px;
-}
 
 .selectionChecks {
   display: grid;
