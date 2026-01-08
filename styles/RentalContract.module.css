@@ -13,7 +13,7 @@
 
 .header {
   text-align: center;
-  margin-bottom: 8mm;
+  margin-bottom: 6mm;
 }
 
 .title {
@@ -22,13 +22,57 @@
   letter-spacing: 0.2em;
 }
 
-.subtitle {
-  margin-top: 4px;
-  font-size: 11px;
-}
-
 .section {
   margin-top: 14px;
+}
+
+.contractInfo {
+  border-top: 1px solid #333;
+  border-bottom: 1px solid #333;
+}
+
+.infoRow {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 16px;
+  align-items: center;
+  border-bottom: 1px solid #333;
+  padding: 4px 0;
+}
+
+.infoRow:last-child {
+  border-bottom: none;
+}
+
+.infoLeft,
+.infoRight,
+.infoRightStrong {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.infoLabel {
+  min-width: 72px;
+  font-weight: 600;
+}
+
+.infoValue {
+  flex: 1;
+}
+
+.infoAge {
+  margin-left: 4px;
+}
+
+.infoRightStrong .infoLabel {
+  min-width: auto;
+}
+
+.storeName {
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
 }
 
 .sectionTitle {
@@ -148,6 +192,15 @@
 
   .section {
     margin-top: 10px;
+  }
+
+  .infoRow {
+    gap: 12px;
+    padding: 3px 0;
+  }
+
+  .storeName {
+    font-size: 16px;
   }
 
   .sectionTitle {
