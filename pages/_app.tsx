@@ -18,6 +18,7 @@ export default function MyApp({ Component, pageProps }: AppProps) {
   const isEn = router.pathname.startsWith('/en');
   const isAdminRoute = router.pathname.startsWith('/admin');
   const isChatbotVisible = router.pathname === '/test';
+  const isRentalContractSample = router.asPath.split('?')[0] === '/rental-contract/sample';
 
   if (isAdminRoute) {
     return <Component {...pageProps} />;
@@ -25,11 +26,11 @@ export default function MyApp({ Component, pageProps }: AppProps) {
 
   return (
     <>
-      {isEn ? <HeaderEn /> : <Header />}
+      {!isRentalContractSample && (isEn ? <HeaderEn /> : <Header />)}
       <Layout>
         <Component {...pageProps} />
       </Layout>
-      {isEn ? <FooterEn /> : <Footer />}
+      {!isRentalContractSample && (isEn ? <FooterEn /> : <Footer />)}
       <ChatBotWidget visible={isChatbotVisible} />
       <MobileNav />
     </>
