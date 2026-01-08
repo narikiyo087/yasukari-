@@ -344,10 +344,9 @@ export default function RentalContractPage() {
                 <span>
                   {reservation.rentalCompletedAt
                     ? formatJapaneseDateTime(reservation.rentalCompletedAt)
-                    : PLACEHOLDER}
+                    : ""}
                 </span>
               </div>
-              <div className={styles.subsectionTitle}>車両情報</div>
               <div className={styles.fieldRow}>
                 <span className={styles.fieldLabel}>車両名</span>
                 <span>{displayValue(reservation.vehicleModel)}</span>
@@ -386,7 +385,7 @@ export default function RentalContractPage() {
               </div>
               <div className={styles.fieldRow}>
                 <span className={styles.fieldLabel}>その他</span>
-                <span>{displayValue(reservation.refundNote, PLACEHOLDER_SHORT)}</span>
+                <span>{displayValue(reservation.refundNote, "")}</span>
               </div>
               <div className={styles.fieldRow}>
                 <span className={styles.fieldLabel}>合計金額</span>
@@ -399,13 +398,9 @@ export default function RentalContractPage() {
             </div>
             <div className={styles.contractColumn}>
               <div className={styles.subsectionTitle}>延長・車両変更・遅滞・免責 等（選択欄）</div>
-              <p className={styles.muted}>
-                ※ 延長・車両変更・返却遅滞・免責適用・その他の発生時にチェックしてください。
-              </p>
               <div className={styles.selectionList}>
-                {["1回目", "2回目"].map((label) => (
-                  <div key={label} className={styles.selectionBlock}>
-                    <div className={styles.selectionHeader}>{label}</div>
+                {[0, 1].map((index) => (
+                  <div key={index} className={styles.selectionBlock}>
                     <div className={styles.selectionChecks}>
                       <div>
                         <span className={styles.checkbox} />
@@ -442,27 +437,31 @@ export default function RentalContractPage() {
           <div className={styles.memoGrid}>
             <div className={styles.memoColumn}>
               <div className={styles.fieldLabel}>MEMO</div>
-              <div className={styles.memoBox}>{displayValue(reservation.notes, "")}</div>
+              <div className={styles.memoBox} />
               <div className={styles.fieldLabel}>返金振込先</div>
-              <div className={styles.fieldRow}>
-                <span className={styles.fieldLabel}>銀行名</span>
-                <span>{PLACEHOLDER_SHORT}</span>
+              <div className={styles.fieldRowSplit}>
+                <div className={styles.fieldGroup}>
+                  <span className={styles.fieldLabel}>銀行名</span>
+                  <span />
+                </div>
+                <div className={styles.fieldGroup}>
+                  <span className={styles.fieldLabel}>支店名</span>
+                  <span />
+                </div>
               </div>
-              <div className={styles.fieldRow}>
-                <span className={styles.fieldLabel}>支店名</span>
-                <span>{PLACEHOLDER_SHORT}</span>
-              </div>
-              <div className={styles.fieldRow}>
-                <span className={styles.fieldLabel}>口座種別</span>
-                <span>普通</span>
-              </div>
-              <div className={styles.fieldRow}>
-                <span className={styles.fieldLabel}>口座番号</span>
-                <span>{PLACEHOLDER_SHORT}</span>
+              <div className={styles.fieldRowSplit}>
+                <div className={styles.fieldGroup}>
+                  <span className={styles.fieldLabel}>口座種別</span>
+                  <span>普通</span>
+                </div>
+                <div className={styles.fieldGroup}>
+                  <span className={styles.fieldLabel}>口座番号</span>
+                  <span />
+                </div>
               </div>
               <div className={styles.fieldRow}>
                 <span className={styles.fieldLabel}>口座名義</span>
-                <span>{PLACEHOLDER_SHORT}</span>
+                <span />
               </div>
             </div>
             <div className={styles.memoColumn}>
