@@ -9,10 +9,12 @@ type ChatBotWidgetProps = {
 
 export default function ChatBotWidget({ visible = true }: ChatBotWidgetProps) {
   const [open, setOpen] = useState(false);
+  if (!visible) {
+    return null;
+  }
   return (
     <div
       className="fixed bottom-[46px] right-4 z-50 flex flex-col items-end sm:bottom-4"
-      hidden={!visible}
       aria-hidden={!visible}
     >
       {open && (
