@@ -90,6 +90,7 @@ export default function MemberListPage() {
       const searchableValues = [
         member.email,
         member.name,
+        member.nameKana,
         member.role,
         member.registrationStatus,
       ];
@@ -153,6 +154,7 @@ export default function MemberListPage() {
                 <tr>
                   <th scope="col">メールアドレス</th>
                   <th scope="col">会員名</th>
+                  <th scope="col">カナ氏名</th>
                   <th scope="col">権限</th>
                   <th scope="col">海外ユーザー</th>
                   <th scope="col">状態</th>
@@ -162,7 +164,7 @@ export default function MemberListPage() {
               <tbody>
                 {!isLoading && filteredMembers.length === 0 ? (
                   <tr>
-                    <td colSpan={6}>該当する会員が見つかりませんでした。</td>
+                    <td colSpan={7}>該当する会員が見つかりませんでした。</td>
                   </tr>
                 ) : (
                   pagedMembers.map((member) => (
@@ -176,6 +178,7 @@ export default function MemberListPage() {
                       >
                         <td>{member.email}</td>
                         <td>{member.name}</td>
+                        <td>{member.nameKana}</td>
                         <td>{member.role}</td>
                         <td>{member.isInternational ? "海外利用あり" : "国内のみ"}</td>
                         <td>
