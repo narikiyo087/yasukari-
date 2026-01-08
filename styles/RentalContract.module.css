@@ -245,8 +245,12 @@
 
 .memoBox {
   border: 1px solid #333;
-  min-height: 80px;
+  min-height: 60px;
   padding: 8px;
+}
+
+.refundRow {
+  padding: 2px 0;
 }
 
 .footerInfo {
@@ -345,6 +349,6 @@
   }
 
   .memoBox {
-    min-height: 60px;
+    min-height: 50px;
   }
 }
