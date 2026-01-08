@@ -472,7 +472,7 @@ export default function RentalContractPage() {
                 <div>所在地：東京都足立区小台2-9-7-1階</div>
                 <div>電話番号：03-5856-8200</div>
                 <div>営業時間：10:00〜19:00</div>
-                <div>定休日：月曜日</div>
+                <div>定休日：月曜日・木曜日</div>
                 <div>ロードサービス専用ダイヤル：0120-024-024</div>
               </div>
             </div>
