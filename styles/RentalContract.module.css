@@ -27,7 +27,6 @@
 }
 
 .contractInfo {
-  border-top: 1px solid #333;
   border-bottom: 1px solid #333;
 }
 
@@ -42,6 +41,24 @@
 
 .infoRow:last-child {
   border-bottom: none;
+}
+
+.infoRowNoBorder {
+  border-bottom: none;
+}
+
+.infoRowRight20 {
+  grid-template-columns: 1fr 20%;
+}
+
+.infoRowRight50 {
+  grid-template-columns: 1fr 50%;
+}
+
+.infoRowRight20 .infoRightStrong,
+.infoRowRight50 .infoRight {
+  justify-self: start;
+  text-align: left;
 }
 
 .infoLeft,
@@ -59,6 +76,11 @@
 
 .infoValue {
   flex: 1;
+}
+
+.reservationValue {
+  border-bottom: 1px solid #333;
+  padding: 0 2px;
 }
 
 .infoAge {
@@ -94,6 +116,21 @@
   gap: 8px;
   border-bottom: 1px solid #333;
   padding: 4px 0;
+}
+
+.fieldRowSplit {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  border-bottom: 1px solid #333;
+  padding: 4px 0;
+}
+
+.fieldGroup {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  gap: 8px;
+  align-items: center;
 }
 
 .fieldLabel {
