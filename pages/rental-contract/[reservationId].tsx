@@ -304,9 +304,9 @@ export default function RentalContractPage() {
             </div>
             <div className={styles.fieldGroup}>
               <span className={styles.fieldLabel}>
-                <span className={styles.fieldLabelSmall}>左記以外の連絡先</span>：氏名
+                <span className={styles.fieldLabelSmall}>左記以外の連絡先</span>
               </span>
-              <span>{displayValue(registration?.other_name)}</span>
+              <span>{displayValue(registration?.other_name, "")}</span>
             </div>
           </div>
           <div className={styles.fieldRowSplit}>
@@ -442,7 +442,7 @@ export default function RentalContractPage() {
               <div className={styles.fieldLabel}>MEMO</div>
               <div className={styles.memoBox} />
               <div className={styles.fieldLabel}>返金振込先</div>
-              <div className={styles.fieldRowSplit}>
+              <div className={`${styles.fieldRowSplit} ${styles.refundRow}`}>
                 <div className={styles.fieldGroup}>
                   <span className={styles.fieldLabel}>銀行名</span>
                   <span />
@@ -452,7 +452,7 @@ export default function RentalContractPage() {
                   <span />
                 </div>
               </div>
-              <div className={styles.fieldRowSplit}>
+              <div className={`${styles.fieldRowSplit} ${styles.refundRow}`}>
                 <div className={styles.fieldGroup}>
                   <span className={styles.fieldLabel}>口座種別</span>
                   <span className={styles.accountTypeValue}>普通</span>
@@ -462,7 +462,7 @@ export default function RentalContractPage() {
                   <span />
                 </div>
               </div>
-              <div className={styles.fieldRow}>
+              <div className={`${styles.fieldRow} ${styles.refundRow}`}>
                 <span className={styles.fieldLabel}>口座名義</span>
                 <span />
               </div>
