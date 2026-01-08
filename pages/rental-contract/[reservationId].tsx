@@ -261,7 +261,7 @@ export default function RentalContractPage() {
           <div className={styles.infoRow}>
             <div className={styles.infoLeft}>
               <span className={styles.infoLabel}>生年月日</span>
-              <span className={styles.infoValue}>
+              <span className={`${styles.infoValue} ${styles.infoValueInline}`}>
                 {birthDate ? formatJapaneseDate(birthDate) : PLACEHOLDER}
               </span>
               <span className={styles.infoAge}>（{age ? `${age}歳` : "＊＊歳"}）</span>
@@ -300,7 +300,9 @@ export default function RentalContractPage() {
               <span>{displayValue(registration?.work_place)}</span>
             </div>
             <div className={styles.fieldGroup}>
-              <span className={styles.fieldLabel}>左記以外の連絡先（氏名）</span>
+              <span className={styles.fieldLabel}>
+                <span className={styles.fieldLabelSmall}>左記以外の連絡先</span>：氏名
+              </span>
               <span>{displayValue(registration?.other_name)}</span>
             </div>
           </div>
@@ -310,7 +312,7 @@ export default function RentalContractPage() {
               <span>{displayValue(registration?.work_address)}</span>
             </div>
             <div className={styles.fieldGroup}>
-              <span className={styles.fieldLabel}>（その他の）住所</span>
+              <span className={styles.fieldLabel}>住所</span>
               <span>{displayValue(registration?.other_address)}</span>
             </div>
           </div>
@@ -320,137 +322,127 @@ export default function RentalContractPage() {
               <span>{displayValue(formatPhoneNumber(registration?.work_tel))}</span>
             </div>
             <div className={styles.fieldGroup}>
-              <span className={styles.fieldLabel}>（その他の）電話番号</span>
+              <span className={styles.fieldLabel}>電話番号</span>
               <span>{displayValue(formatPhoneNumber(registration?.other_tel))}</span>
             </div>
           </div>
         </section>
 
         <section className={styles.section}>
-          <div className={styles.sectionTitle}>利用日時</div>
-          <div className={styles.fieldRow}>
-            <span className={styles.fieldLabel}>出発日時（受領日）</span>
-            <span>{formatJapaneseDateTime(reservation.pickupAt)}</span>
-          </div>
-          <div className={styles.fieldRow}>
-            <span className={styles.fieldLabel}>返却期限日</span>
-            <span>{formatJapaneseDateTime(reservation.returnAt)}</span>
-          </div>
-          <div className={styles.fieldRow}>
-            <span className={styles.fieldLabel}>帰着日時</span>
-            <span>
-              {reservation.rentalCompletedAt
-                ? formatJapaneseDateTime(reservation.rentalCompletedAt)
-                : PLACEHOLDER}
-            </span>
-          </div>
-        </section>
-
-        <section className={styles.section}>
-          <div className={styles.sectionTitle}>車両情報</div>
-          <div className={styles.fieldRow}>
-            <span className={styles.fieldLabel}>車両名</span>
-            <span>{displayValue(reservation.vehicleModel)}</span>
-          </div>
-          <div className={styles.fieldRow}>
-            <span className={styles.fieldLabel}>車体番号</span>
-            <span>{displayValue(reservation.vehicleCode)}</span>
-          </div>
-          <div className={styles.fieldRow}>
-            <span className={styles.fieldLabel}>登録番号</span>
-            <span>{displayValue(reservation.vehiclePlate)}</span>
-          </div>
-        </section>
-
-        <section className={styles.section}>
-          <div className={styles.sectionTitle}>延長・車両変更・遅滞・免責 等（選択欄）</div>
-          <p className={styles.muted}>※ 延長・車両変更・返却遅滞・免責適用・その他の発生時にチェックしてください。</p>
-          <table className={styles.table}>
-            <thead>
-              <tr>
-                <th>回数</th>
-                <th>変更・対応内容</th>
-                <th>変更日・対応日</th>
-                <th>内容詳細</th>
-                <th>追加／調整金額</th>
-              </tr>
-            </thead>
-            <tbody>
-              {["1回目", "2回目", "3回目"].map((label) => (
-                <tr key={label}>
-                  <td>{label}</td>
-                  <td>
-                    <div>
-                      <span className={styles.checkbox} />延長
-                      <span className={styles.checkbox} />車両変更
-                      <span className={styles.checkbox} />遅滞
-                      <span className={styles.checkbox} />免責
-                      <span className={styles.checkbox} />その他（内容：＿＿＿＿＿＿＿＿＿）
+          <div className={styles.contractGrid}>
+            <div className={styles.contractColumn}>
+              <div className={styles.fieldRow}>
+                <span className={styles.fieldLabel}>出発日時（受領日）</span>
+                <span>{formatJapaneseDateTime(reservation.pickupAt)}</span>
+              </div>
+              <div className={styles.fieldRow}>
+                <span className={styles.fieldLabel}>返却期限日</span>
+                <span>{formatJapaneseDateTime(reservation.returnAt)}</span>
+              </div>
+              <div className={styles.fieldRow}>
+                <span className={styles.fieldLabel}>帰着日時</span>
+                <span>
+                  {reservation.rentalCompletedAt
+                    ? formatJapaneseDateTime(reservation.rentalCompletedAt)
+                    : PLACEHOLDER}
+                </span>
+              </div>
+              <div className={styles.subsectionTitle}>車両情報</div>
+              <div className={styles.fieldRow}>
+                <span className={styles.fieldLabel}>車両名</span>
+                <span>{displayValue(reservation.vehicleModel)}</span>
+              </div>
+              <div className={styles.fieldRow}>
+                <span className={styles.fieldLabel}>車体番号</span>
+                <span>{displayValue(reservation.vehicleCode)}</span>
+              </div>
+              <div className={styles.fieldRow}>
+                <span className={styles.fieldLabel}>登録番号</span>
+                <span>{displayValue(reservation.vehiclePlate)}</span>
+              </div>
+              <div className={styles.fieldRow}>
+                <span className={styles.fieldLabel}>基本料金</span>
+                <span>{formatYen(reservation.paymentAmount)}</span>
+              </div>
+              <div className={styles.fieldRow}>
+                <span className={styles.fieldLabel}>車両補償</span>
+                <span>{displayValue(reservation.options?.vehicleCoverage, "＊＊＊")}</span>
+              </div>
+              <div className={styles.fieldRow}>
+                <span className={styles.fieldLabel}>盗難補償</span>
+                <span>{displayValue(reservation.options?.theftCoverage, "＊＊＊")}</span>
+              </div>
+              <div className={styles.fieldRow}>
+                <span className={styles.fieldLabel}>ヘルメット</span>
+                <span>{formatAccessoryCount(helmetCount)}</span>
+              </div>
+              <div className={styles.fieldRow}>
+                <span className={styles.fieldLabel}>グローブ</span>
+                <span>{formatAccessoryCount(gloveCount)}</span>
+              </div>
+              <div className={styles.fieldRow}>
+                <span className={styles.fieldLabel}>車両指定</span>
+                <span>{displayValue(reservation.vehicleCode, PLACEHOLDER_SHORT)}</span>
+              </div>
+              <div className={styles.fieldRow}>
+                <span className={styles.fieldLabel}>その他</span>
+                <span>{displayValue(reservation.refundNote, PLACEHOLDER_SHORT)}</span>
+              </div>
+              <div className={styles.fieldRow}>
+                <span className={styles.fieldLabel}>合計金額</span>
+                <span>{formatYen(reservation.paymentAmount)}</span>
+              </div>
+              <div className={styles.fieldRow}>
+                <span className={styles.fieldLabel}>支払い方法</span>
+                <span>クレジット</span>
+              </div>
+            </div>
+            <div className={styles.contractColumn}>
+              <div className={styles.subsectionTitle}>延長・車両変更・遅滞・免責 等（選択欄）</div>
+              <p className={styles.muted}>
+                ※ 延長・車両変更・返却遅滞・免責適用・その他の発生時にチェックしてください。
+              </p>
+              <div className={styles.selectionList}>
+                {["1回目", "2回目"].map((label) => (
+                  <div key={label} className={styles.selectionBlock}>
+                    <div className={styles.selectionHeader}>{label}</div>
+                    <div className={styles.selectionChecks}>
+                      <div>
+                        <span className={styles.checkbox} />
+                        延長
+                      </div>
+                      <div>
+                        <span className={styles.checkbox} />
+                        車両変更
+                      </div>
+                      <div>
+                        <span className={styles.checkbox} />
+                        遅滞
+                      </div>
+                      <div>
+                        <span className={styles.checkbox} />
+                        免責
+                      </div>
+                      <div>
+                        <span className={styles.checkbox} />
+                        その他（内容：＿＿＿＿＿＿＿＿＿）
+                      </div>
                     </div>
-                  </td>
-                  <td>西暦＿＿＿年＿＿月＿＿日</td>
-                  <td>＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿</td>
-                  <td>＿＿＿＿円</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </section>
-
-        <section className={styles.section}>
-          <div className={styles.sectionTitle}>料金・補償・オプション</div>
-          <div className={styles.gridTwo}>
-            <div className={styles.fieldRow}>
-              <span className={styles.fieldLabel}>基本料金</span>
-              <span>{formatYen(reservation.paymentAmount)}</span>
-            </div>
-            <div className={styles.fieldRow}>
-              <span className={styles.fieldLabel}>車両補償</span>
-              <span>{displayValue(reservation.options?.vehicleCoverage, "＊＊＊")}</span>
-            </div>
-            <div className={styles.fieldRow}>
-              <span className={styles.fieldLabel}>盗難補償</span>
-              <span>{displayValue(reservation.options?.theftCoverage, "＊＊＊")}</span>
-            </div>
-            <div className={styles.fieldRow}>
-              <span className={styles.fieldLabel}>ヘルメット</span>
-              <span>{formatAccessoryCount(helmetCount)}</span>
-            </div>
-            <div className={styles.fieldRow}>
-              <span className={styles.fieldLabel}>グローブ</span>
-              <span>{formatAccessoryCount(gloveCount)}</span>
-            </div>
-            <div className={styles.fieldRow}>
-              <span className={styles.fieldLabel}>車両指定</span>
-              <span>{displayValue(reservation.vehicleCode, PLACEHOLDER_SHORT)}</span>
-            </div>
-            <div className={styles.fieldRow}>
-              <span className={styles.fieldLabel}>その他</span>
-              <span>{displayValue(reservation.refundNote, PLACEHOLDER_SHORT)}</span>
+                    <div className={styles.selectionMeta}>変更日・対応日：西暦＿＿＿年＿＿月＿＿日</div>
+                    <div className={styles.selectionMeta}>内容詳細：＿＿＿＿＿＿＿＿＿＿＿＿＿＿</div>
+                    <div className={styles.selectionMeta}>追加／調整金額：＿＿＿＿円</div>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </section>
 
         <section className={styles.section}>
-          <div className={styles.sectionTitle}>支払い情報</div>
-          <div className={styles.fieldRow}>
-            <span className={styles.fieldLabel}>合計金額</span>
-            <span>{formatYen(reservation.paymentAmount)}</span>
-          </div>
-          <div className={styles.fieldRow}>
-            <span className={styles.fieldLabel}>支払方法</span>
-            <span>クレジット</span>
-          </div>
-        </section>
-
-        <section className={styles.section}>
-          <div className={styles.sectionTitle}>メモ・返金関連</div>
-          <div className={styles.splitRow}>
-            <div>
+          <div className={styles.memoGrid}>
+            <div className={styles.memoColumn}>
               <div className={styles.fieldLabel}>MEMO</div>
               <div className={styles.memoBox}>{displayValue(reservation.notes, "")}</div>
-            </div>
-            <div>
               <div className={styles.fieldLabel}>返金振込先</div>
               <div className={styles.fieldRow}>
                 <span className={styles.fieldLabel}>銀行名</span>
@@ -473,19 +465,18 @@ export default function RentalContractPage() {
                 <span>{PLACEHOLDER_SHORT}</span>
               </div>
             </div>
-          </div>
-        </section>
-
-        <section className={styles.section}>
-          <div className={styles.sectionTitle}>貸渡事業者情報</div>
-          <div className={styles.footerInfo}>
-            <div>屋号：激安レンタルバイク ヤスカリ</div>
-            <div>法人名：株式会社ケイジェット</div>
-            <div>所在地：東京都足立区小台2-9-7-1階</div>
-            <div>電話番号：03-5856-8200</div>
-            <div>営業時間：10:00〜19:00</div>
-            <div>定休日：月曜日</div>
-            <div>ロードサービス専用ダイヤル：0120-024-024</div>
+            <div className={styles.memoColumn}>
+              <div className={styles.subsectionTitle}>貸渡事業者情報</div>
+              <div className={styles.footerInfo}>
+                <div>屋号：激安レンタルバイク ヤスカリ</div>
+                <div>法人名：株式会社ケイジェット</div>
+                <div>所在地：東京都足立区小台2-9-7-1階</div>
+                <div>電話番号：03-5856-8200</div>
+                <div>営業時間：10:00〜19:00</div>
+                <div>定休日：月曜日</div>
+                <div>ロードサービス専用ダイヤル：0120-024-024</div>
+              </div>
+            </div>
           </div>
         </section>
       </div>
