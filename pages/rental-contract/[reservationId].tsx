@@ -151,11 +151,14 @@ export default function RentalContractPage() {
   }, [reservationId, router.isReady]);
 
   useEffect(() => {
+    if (!router.isReady || !reservationId) return;
     const controller = new AbortController();
 
     const loadRegistration = async () => {
       try {
-        const response = await fetch("/api/register/user", { signal: controller.signal });
+        const response = await fetch(`/api/register/reservation/${reservationId}`, {
+          signal: controller.signal,
+        });
         if (!response.ok) return;
         const data = (await response.json()) as RegistrationResponse;
         setRegistration(data.registration ?? null);
@@ -168,7 +171,7 @@ export default function RentalContractPage() {
 
     void loadRegistration();
     return () => controller.abort();
-  }, []);
+  }, [reservationId, router.isReady]);
 
   const name = useMemo(() => {
     if (registration?.name1 || registration?.name2) {
@@ -452,7 +455,7 @@ export default function RentalContractPage() {
               <div className={styles.fieldRowSplit}>
                 <div className={styles.fieldGroup}>
                   <span className={styles.fieldLabel}>口座種別</span>
-                  <span>普通</span>
+                  <span className={styles.accountTypeValue}>普通</span>
                 </div>
                 <div className={styles.fieldGroup}>
                   <span className={styles.fieldLabel}>口座番号</span>
