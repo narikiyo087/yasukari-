@@ -230,12 +230,9 @@ const hasAllRequiredRegistrationFields = (registration?: RegistrationData): bool
 };
 
 const mapRegistrationStatus = (
-  user: CognitoUserInfo | undefined,
+  _user: CognitoUserInfo | undefined,
   registration: RegistrationData | undefined
 ): MemberRegistrationStatus => {
-  if (!user && !registration) return "メールのみ";
-  if (!user && registration) return "仮登録済";
-  if (user && !registration) return "管理者追加済";
   return hasAllRequiredRegistrationFields(registration) ? "本登録済" : "仮登録済";
 };
 
