@@ -11,6 +11,7 @@ const MAIL_FROM = process.env.MAIL_FROM ?? '格安レンタルバイクならヤ
 
 export type MailPayload = {
   to: string;
+  cc?: string | string[];
   subject: string;
   text: string;
   html?: string;
@@ -120,6 +121,7 @@ async function sendMailOnce(payload: MailPayload): Promise<SentMessageInfo> {
   return transporter.sendMail({
     from: MAIL_FROM,
     to: payload.to,
+    cc: payload.cc,
     subject: payload.subject,
     text: payload.text,
     html: payload.html,

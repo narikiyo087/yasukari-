@@ -140,6 +140,7 @@ export async function sendReservationCompletionEmail(reservation: Reservation): 
   try {
     await enqueueEmail({
       to: reservation.memberEmail,
+      cc: "info@yasukari.com",
       subject,
       text,
       html,
