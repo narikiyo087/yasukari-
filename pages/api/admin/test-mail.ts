@@ -80,6 +80,10 @@ const buildSampleReservation = (email: string): Reservation => {
       vehicleCoverage: "通常補償",
       theftCoverage: "盗難補償",
     },
+    accessories: {
+      halfCap: 1,
+      glove: 2,
+    },
     notes: "テスト送信用のサンプルデータです。",
     refundNote: "",
   };
