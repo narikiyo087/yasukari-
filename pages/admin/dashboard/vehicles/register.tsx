@@ -24,6 +24,7 @@ type VehicleFormState = {
   policyBranchNumber2: string;
   inspectionExpiryDate: string;
   licensePlateNumber: string;
+  parkingNumber: string;
   previousLicensePlateNumber: string;
   liabilityInsuranceExpiryDate: string;
   videoUrl: string;
@@ -42,6 +43,7 @@ const emptyForm: VehicleFormState = {
   policyBranchNumber2: "",
   inspectionExpiryDate: "",
   licensePlateNumber: "",
+  parkingNumber: "",
   previousLicensePlateNumber: "",
   liabilityInsuranceExpiryDate: "",
   videoUrl: "",
@@ -136,6 +138,7 @@ export default function VehicleRegisterPage() {
       "policyBranchNumber2",
       "inspectionExpiryDate",
       "licensePlateNumber",
+      "parkingNumber",
       "previousLicensePlateNumber",
       "liabilityInsuranceExpiryDate",
       "videoUrl",
@@ -344,6 +347,16 @@ export default function VehicleRegisterPage() {
                     value={form.licensePlateNumber}
                     onChange={(event) =>
                       setForm((prev) => ({ ...prev, licensePlateNumber: event.target.value }))
+                    }
+                  />
+                </div>
+                <div className={formStyles.field}>
+                  <label htmlFor="parkingNumber">駐車No</label>
+                  <input
+                    id="parkingNumber"
+                    value={form.parkingNumber}
+                    onChange={(event) =>
+                      setForm((prev) => ({ ...prev, parkingNumber: event.target.value }))
                     }
                   />
                 </div>

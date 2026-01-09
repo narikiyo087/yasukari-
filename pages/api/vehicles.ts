@@ -21,6 +21,7 @@ type Vehicle = {
   policyBranchNumber2?: string;
   inspectionExpiryDate?: string;
   licensePlateNumber?: string;
+  parkingNumber?: string;
   previousLicensePlateNumber?: string;
   liabilityInsuranceExpiryDate?: string;
   videoUrl?: string;
@@ -160,6 +161,7 @@ async function handlePost(
     policyBranchNumber2,
     inspectionExpiryDate,
     licensePlateNumber,
+    parkingNumber,
     previousLicensePlateNumber,
     liabilityInsuranceExpiryDate,
     videoUrl,
@@ -255,6 +257,10 @@ async function handlePost(
         typeof licensePlateNumber === "string" && licensePlateNumber.trim()
           ? licensePlateNumber.trim()
           : undefined,
+      parkingNumber:
+        typeof parkingNumber === "string" && parkingNumber.trim()
+          ? parkingNumber.trim()
+          : undefined,
       previousLicensePlateNumber:
         typeof previousLicensePlateNumber === "string" && previousLicensePlateNumber.trim()
           ? previousLicensePlateNumber.trim()
@@ -302,6 +308,7 @@ async function handlePut(
     policyBranchNumber2,
     inspectionExpiryDate,
     licensePlateNumber,
+    parkingNumber,
     previousLicensePlateNumber,
     liabilityInsuranceExpiryDate,
     videoUrl,
@@ -390,6 +397,9 @@ async function handlePut(
         : {}),
       ...(typeof licensePlateNumber === "string" && licensePlateNumber.trim()
         ? { licensePlateNumber: licensePlateNumber.trim() }
+        : {}),
+      ...(typeof parkingNumber === "string" && parkingNumber.trim()
+        ? { parkingNumber: parkingNumber.trim() }
         : {}),
       ...(typeof previousLicensePlateNumber === "string" && previousLicensePlateNumber.trim()
         ? { previousLicensePlateNumber: previousLicensePlateNumber.trim() }

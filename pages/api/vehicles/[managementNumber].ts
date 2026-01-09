@@ -15,6 +15,7 @@ type Vehicle = {
   policyBranchNumber2?: string;
   inspectionExpiryDate?: string;
   licensePlateNumber?: string;
+  parkingNumber?: string;
   previousLicensePlateNumber?: string;
   liabilityInsuranceExpiryDate?: string;
   videoUrl?: string;

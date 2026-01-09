@@ -34,6 +34,7 @@ type VehicleCsvFieldKey =
   | "policyBranchNumber2"
   | "inspectionExpiryDate"
   | "licensePlateNumber"
+  | "parkingNumber"
   | "previousLicensePlateNumber"
   | "liabilityInsuranceExpiryDate"
   | "videoUrl"
@@ -60,6 +61,7 @@ const CSV_FIELDS: Array<{
   { key: "inspectionExpiryDate", label: "車検有効期限" },
   { key: "liabilityInsuranceExpiryDate", label: "自賠責保険有効期限" },
   { key: "licensePlateNumber", label: "ナンバープレート番号" },
+  { key: "parkingNumber", label: "駐車No" },
   { key: "previousLicensePlateNumber", label: "旧ナンバープレート番号" },
   { key: "videoUrl", label: "動画URL" },
   { key: "notes", label: "備考" },
@@ -79,6 +81,7 @@ type VehicleFormState = {
   policyBranchNumber2: string;
   inspectionExpiryDate: string;
   licensePlateNumber: string;
+  parkingNumber: string;
   previousLicensePlateNumber: string;
   liabilityInsuranceExpiryDate: string;
   videoUrl: string;
@@ -241,6 +244,7 @@ export default function VehicleListPage() {
       policyBranchNumber2: selectedVehicle.policyBranchNumber2 ?? "",
       inspectionExpiryDate: selectedVehicle.inspectionExpiryDate ?? "",
       licensePlateNumber: selectedVehicle.licensePlateNumber ?? "",
+      parkingNumber: selectedVehicle.parkingNumber ?? "",
       previousLicensePlateNumber: selectedVehicle.previousLicensePlateNumber ?? "",
       liabilityInsuranceExpiryDate:
         selectedVehicle.liabilityInsuranceExpiryDate ?? "",
@@ -394,6 +398,7 @@ export default function VehicleListPage() {
       "policyBranchNumber2",
       "inspectionExpiryDate",
       "licensePlateNumber",
+      "parkingNumber",
       "previousLicensePlateNumber",
       "liabilityInsuranceExpiryDate",
       "videoUrl",
@@ -664,6 +669,8 @@ export default function VehicleListPage() {
           return "ON";
         case "tags":
           return "サンプルタグ1,サンプルタグ2";
+        case "parkingNumber":
+          return "P-01";
         case "createdAt":
         case "updatedAt":
           return "自動入力";
@@ -784,6 +791,8 @@ export default function VehicleListPage() {
             row[headerIndexMap.inspectionExpiryDate]?.trim() || undefined,
           licensePlateNumber:
             row[headerIndexMap.licensePlateNumber]?.trim() || undefined,
+          parkingNumber:
+            row[headerIndexMap.parkingNumber]?.trim() || undefined,
           previousLicensePlateNumber:
             row[headerIndexMap.previousLicensePlateNumber]?.trim() || undefined,
           liabilityInsuranceExpiryDate:
@@ -1562,6 +1571,27 @@ export default function VehicleListPage() {
                     </dd>
                   </div>
                   <div className={styles.detailItem}>
+                    <dt>駐車No</dt>
+                    <dd>
+                      {isDetailEditing ? (
+                        <div className={formStyles.field}>
+                          <input
+                            value={detailForm?.parkingNumber ?? ""}
+                            onChange={(event) =>
+                              setDetailForm((prev) =>
+                                prev ? { ...prev, parkingNumber: event.target.value } : prev
+                              )
+                            }
+                          />
+                        </div>
+                      ) : selectedVehicle.parkingNumber ? (
+                        selectedVehicle.parkingNumber
+                      ) : (
+                        "-"
+                      )}
+                    </dd>
+                  </div>
+                  <div className={styles.detailItem}>
                     <dt>前ナンバー</dt>
                     <dd>
                       {isDetailEditing ? (
@@ -1687,6 +1717,7 @@ export default function VehicleListPage() {
                           policyBranchNumber2: selectedVehicle.policyBranchNumber2 ?? "",
                           inspectionExpiryDate: selectedVehicle.inspectionExpiryDate ?? "",
                           licensePlateNumber: selectedVehicle.licensePlateNumber ?? "",
+                          parkingNumber: selectedVehicle.parkingNumber ?? "",
                           previousLicensePlateNumber:
                             selectedVehicle.previousLicensePlateNumber ?? "",
                           liabilityInsuranceExpiryDate:
