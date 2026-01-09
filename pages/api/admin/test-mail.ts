@@ -77,8 +77,8 @@ const buildSampleReservation = (email: string): Reservation => {
     couponCode: "TEST2024",
     couponDiscount: "500",
     options: {
-      vehicleCoverage: "通常補償",
-      theftCoverage: "盗難補償",
+      vehicleCoverage: "加入",
+      theftCoverage: "加入",
     },
     accessories: {
       halfCap: 1,

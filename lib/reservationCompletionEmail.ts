@@ -41,11 +41,11 @@ const buildOptionLines = (reservation: Reservation): string[] => {
 
   const vehicleCoverage = reservation.options?.vehicleCoverage?.trim();
   if (vehicleCoverage && vehicleCoverage !== "-") {
-    lines.push(`1点 ${vehicleCoverage}`);
+    lines.push(`車両補償 ${vehicleCoverage}`);
   }
   const theftCoverage = reservation.options?.theftCoverage?.trim();
   if (theftCoverage && theftCoverage !== "-") {
-    lines.push(`1点 ${theftCoverage}`);
+    lines.push(`盗難補償 ${theftCoverage}`);
   }
 
   Object.entries(reservation.accessories ?? {}).forEach(([key, count]) => {
