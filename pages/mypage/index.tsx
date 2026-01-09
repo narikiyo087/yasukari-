@@ -982,7 +982,7 @@ export default function MyPage() {
                                     className="h-20 w-20 rounded border border-gray-200 object-contain transition group-hover:scale-105"
                                   />
                                 </button>
-                                <div className="text-xs text-gray-600">鍵ボックスのリーダーにかざして解錠してください。</div>
+                                <div className="text-xs text-gray-600">ここを、QRをタップして、鍵ボックスのリーダーにかざして解錠してください。</div>
                               </div>
                             ) : null}
                           </div>
