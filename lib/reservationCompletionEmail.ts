@@ -39,11 +39,13 @@ const ACCESSORY_LABELS: Record<string, string> = {
 const buildOptionLines = (reservation: Reservation): string[] => {
   const lines: string[] = [];
 
-  if (reservation.options?.vehicleCoverage) {
-    lines.push(`1点 ${reservation.options.vehicleCoverage}`);
+  const vehicleCoverage = reservation.options?.vehicleCoverage?.trim();
+  if (vehicleCoverage && vehicleCoverage !== "-") {
+    lines.push(`1点 ${vehicleCoverage}`);
   }
-  if (reservation.options?.theftCoverage) {
-    lines.push(`1点 ${reservation.options.theftCoverage}`);
+  const theftCoverage = reservation.options?.theftCoverage?.trim();
+  if (theftCoverage && theftCoverage !== "-") {
+    lines.push(`1点 ${theftCoverage}`);
   }
 
   Object.entries(reservation.accessories ?? {}).forEach(([key, count]) => {
