@@ -23,6 +23,7 @@ export type Reservation = {
   vehicleModel: string;
   vehicleCode: string;
   vehiclePlate: string;
+  parkingNumber?: string;
   vehicleThumbnailUrl?: string;
   videoUrl?: string;
   vehicleChangedAt?: string;
@@ -74,6 +75,8 @@ type ReservationRecord = {
   vehicleCode?: string;
   vehicle_plate?: string;
   vehiclePlate?: string;
+  parking_number?: string;
+  parkingNumber?: string;
   vehicle_thumbnail_url?: string;
   vehicleThumbnailUrl?: string;
   video_url?: string;
@@ -151,6 +154,7 @@ type ReservationRecord = {
 type VehicleRecord = {
   managementNumber: string;
   licensePlateNumber?: string;
+  parkingNumber?: string;
 };
 
 const RESERVATIONS_TABLE = process.env.RESERVATIONS_TABLE ?? "yoyakuKanri";
@@ -213,7 +217,9 @@ const chunkArray = <T,>(items: T[], size: number): T[][] => {
   return chunks;
 };
 
-const fetchVehiclePlateMap = async (vehicleCodes: string[]): Promise<Map<string, string>> => {
+const fetchVehicleInfoMap = async (
+  vehicleCodes: string[]
+): Promise<Map<string, { licensePlateNumber?: string; parkingNumber?: string }>> => {
   const uniqueCodes = Array.from(
     new Set(vehicleCodes.filter((code) => typeof code === "string" && code.trim()))
   ) as string[];
@@ -223,7 +229,7 @@ const fetchVehiclePlateMap = async (vehicleCodes: string[]): Promise<Map<string,
   }
 
   const client = getDocumentClient();
-  const plateMap = new Map<string, string>();
+  const infoMap = new Map<string, { licensePlateNumber?: string; parkingNumber?: string }>();
   const batches = chunkArray(uniqueCodes, 100);
 
   await Promise.all(
@@ -233,7 +239,7 @@ const fetchVehiclePlateMap = async (vehicleCodes: string[]): Promise<Map<string,
           RequestItems: {
             [VEHICLES_TABLE]: {
               Keys: batch.map((managementNumber) => ({ managementNumber })),
-              ProjectionExpression: "managementNumber, licensePlateNumber",
+              ProjectionExpression: "managementNumber, licensePlateNumber, parkingNumber",
             },
           },
         })
@@ -245,45 +251,58 @@ const fetchVehiclePlateMap = async (vehicleCodes: string[]): Promise<Map<string,
       }
 
       items.forEach((item) => {
-        if (item.managementNumber && item.licensePlateNumber) {
-          plateMap.set(item.managementNumber, item.licensePlateNumber);
+        if (!item.managementNumber) {
+          return;
+        }
+        const entry = {
+          ...(item.licensePlateNumber ? { licensePlateNumber: item.licensePlateNumber } : {}),
+          ...(item.parkingNumber ? { parkingNumber: item.parkingNumber } : {}),
+        };
+        if (Object.keys(entry).length > 0) {
+          infoMap.set(item.managementNumber, entry);
         }
       });
     })
   );
 
-  return plateMap;
+  return infoMap;
 };
 
-const attachVehiclePlates = async (
+const attachVehicleInfo = async (
   reservations: Reservation[]
 ): Promise<Reservation[]> => {
   try {
-    const plateMap = await fetchVehiclePlateMap(
+    const infoMap = await fetchVehicleInfoMap(
       reservations.map((reservation) => reservation.vehicleCode)
     );
 
-    if (plateMap.size === 0) {
+    if (infoMap.size === 0) {
       return reservations;
     }
 
     return reservations.map((reservation) => {
-      const plate = plateMap.get(reservation.vehicleCode);
-      if (!plate) {
+      const info = infoMap.get(reservation.vehicleCode);
+      if (!info) {
         return reservation;
       }
 
-      if (reservation.vehiclePlate === plate) {
-        return reservation;
+      const nextReservation = { ...reservation };
+      let isUpdated = false;
+
+      if (info.licensePlateNumber && reservation.vehiclePlate !== info.licensePlateNumber) {
+        nextReservation.vehiclePlate = info.licensePlateNumber;
+        isUpdated = true;
       }
 
-      return {
-        ...reservation,
-        vehiclePlate: plate,
-      };
+      if (info.parkingNumber && reservation.parkingNumber !== info.parkingNumber) {
+        nextReservation.parkingNumber = info.parkingNumber;
+        isUpdated = true;
+      }
+
+      return isUpdated ? nextReservation : reservation;
     });
   } catch (error) {
-    console.error("Failed to resolve reservation license plates", error);
+    console.error("Failed to resolve reservation vehicle info", error);
     return reservations;
   }
 };
@@ -349,6 +368,7 @@ const normalizeReservation = (record: ReservationRecord): Reservation => {
     vehicleModel: stringFrom(record, ["vehicle_model", "vehicleModel"], "-"),
     vehicleCode: stringFrom(record, ["vehicle_code", "vehicleCode"], "-"),
     vehiclePlate: stringFrom(record, ["vehicle_plate", "vehiclePlate"], "-"),
+    parkingNumber: stringFrom(record, ["parking_number", "parkingNumber"], ""),
     vehicleThumbnailUrl: stringFrom(
       record,
       ["vehicle_thumbnail_url", "vehicleThumbnailUrl", "thumbnail_url"],
@@ -411,7 +431,7 @@ export async function fetchAllReservations(): Promise<Reservation[]> {
   const reservations = items
     .map(normalizeReservation)
     .sort((a, b) => (a.pickupAt || "") > (b.pickupAt || "") ? -1 : 1);
-  return attachVehiclePlates(reservations);
+  return attachVehicleInfo(reservations);
 }
 
 export async function fetchReservationsByMember(memberId: string): Promise<Reservation[]> {
@@ -421,7 +441,7 @@ export async function fetchReservationsByMember(memberId: string): Promise<Reser
     .filter((reservation) => reservation.memberId === memberId)
     .sort((a, b) => (a.pickupAt || "") > (b.pickupAt || "") ? -1 : 1);
 
-  const withPlates = await attachVehiclePlates(reservations);
+  const withPlates = await attachVehicleInfo(reservations);
 
   try {
     const models = await getBikeModels();
@@ -465,7 +485,7 @@ export async function fetchReservationById(reservationId: string): Promise<Reser
   }
 
   const reservation = normalizeReservation(record);
-  const [withPlate] = await attachVehiclePlates([reservation]);
+  const [withPlate] = await attachVehicleInfo([reservation]);
   return withPlate ?? reservation;
 }
 

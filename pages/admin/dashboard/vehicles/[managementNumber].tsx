@@ -19,6 +19,7 @@ type VehicleFormState = {
   policyBranchNumber2: string;
   inspectionExpiryDate: string;
   licensePlateNumber: string;
+  parkingNumber: string;
   previousLicensePlateNumber: string;
   liabilityInsuranceExpiryDate: string;
   videoUrl: string;
@@ -121,6 +122,7 @@ export default function VehicleDetailPage() {
       policyBranchNumber2: vehicle.policyBranchNumber2 ?? "",
       inspectionExpiryDate: vehicle.inspectionExpiryDate ?? "",
       licensePlateNumber: vehicle.licensePlateNumber ?? "",
+      parkingNumber: vehicle.parkingNumber ?? "",
       previousLicensePlateNumber: vehicle.previousLicensePlateNumber ?? "",
       liabilityInsuranceExpiryDate: vehicle.liabilityInsuranceExpiryDate ?? "",
       videoUrl: vehicle.videoUrl ?? "",
@@ -191,6 +193,7 @@ export default function VehicleDetailPage() {
       "policyBranchNumber2",
       "inspectionExpiryDate",
       "licensePlateNumber",
+      "parkingNumber",
       "previousLicensePlateNumber",
       "liabilityInsuranceExpiryDate",
       "videoUrl",
@@ -497,6 +500,27 @@ export default function VehicleDetailPage() {
                 </dd>
               </div>
               <div className={styles.detailItem}>
+                <dt>駐車No</dt>
+                <dd>
+                  {isDetailEditing ? (
+                    <div className={formStyles.field}>
+                      <input
+                        value={detailForm?.parkingNumber ?? ""}
+                        onChange={(event) =>
+                          setDetailForm((prev) =>
+                            prev ? { ...prev, parkingNumber: event.target.value } : prev
+                          )
+                        }
+                      />
+                    </div>
+                  ) : vehicle.parkingNumber ? (
+                    vehicle.parkingNumber
+                  ) : (
+                    "-"
+                  )}
+                </dd>
+              </div>
+              <div className={styles.detailItem}>
                 <dt>旧ナンバープレート番号</dt>
                 <dd>
                   {isDetailEditing ? (
@@ -611,6 +635,7 @@ export default function VehicleDetailPage() {
                       policyBranchNumber2: vehicle.policyBranchNumber2 ?? "",
                       inspectionExpiryDate: vehicle.inspectionExpiryDate ?? "",
                       licensePlateNumber: vehicle.licensePlateNumber ?? "",
+                      parkingNumber: vehicle.parkingNumber ?? "",
                       previousLicensePlateNumber: vehicle.previousLicensePlateNumber ?? "",
                       liabilityInsuranceExpiryDate: vehicle.liabilityInsuranceExpiryDate ?? "",
                       videoUrl: vehicle.videoUrl ?? "",

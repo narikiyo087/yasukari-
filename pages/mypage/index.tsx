@@ -942,6 +942,12 @@ export default function MyPage() {
                             </dd>
                           </div>
                           <div className="rounded-lg bg-gray-50 px-3 py-2">
+                            <dt className="text-xs text-gray-500">駐車No</dt>
+                            <dd className="font-semibold text-gray-900">
+                              {reservation.parkingNumber || '未設定'}
+                            </dd>
+                          </div>
+                          <div className="rounded-lg bg-gray-50 px-3 py-2">
                             <dt className="text-xs text-gray-500">決済金額</dt>
                             <dd className="font-semibold text-gray-900">{reservation.paymentAmount} 円</dd>
                           </div>
