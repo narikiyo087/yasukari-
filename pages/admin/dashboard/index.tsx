@@ -268,9 +268,13 @@ export default function DashboardTopPage() {
         if (membersResponse.ok) {
           const data = (await membersResponse.json()) as { members?: Member[] };
           const members = data.members ?? [];
+          const isProvisional = (member: Member) =>
+            member.registrationStatus === "仮登録済" ||
+            member.registrationStatus === "管理者追加済";
+          const isVerified = (member: Member) => member.registrationStatus === "本登録済";
           setMemberCounts({
-            provisional: members.filter((member) => member.status === "未認証").length,
-            verified: members.filter((member) => member.status === "認証済").length,
+            provisional: members.filter(isProvisional).length,
+            verified: members.filter(isVerified).length,
             isLoading: false,
             error: false,
           });
@@ -345,6 +349,31 @@ export default function DashboardTopPage() {
     return `${counts.primary.toLocaleString()} / ${counts.secondary.toLocaleString()}`;
   };
 
+  const formatMemberPercentage = (counts: {
+    provisional: number;
+    verified: number;
+    isLoading: boolean;
+    error: boolean;
+  }) => {
+    if (counts.isLoading) {
+      return "割合計測中...";
+    }
+
+    if (counts.error) {
+      return "割合の取得に失敗しました";
+    }
+
+    const total = counts.provisional + counts.verified;
+    if (total === 0) {
+      return "仮登録 0.0% / 本登録 0.0%";
+    }
+
+    const provisionalRate = (counts.provisional / total) * 100;
+    const verifiedRate = (counts.verified / total) * 100;
+
+    return `仮登録 ${provisionalRate.toFixed(1)}% / 本登録 ${verifiedRate.toFixed(1)}%`;
+  };
+
   const stats = useMemo(
     () => [
       {
@@ -356,7 +385,7 @@ export default function DashboardTopPage() {
           isLoading: memberCounts.isLoading,
           error: memberCounts.error,
         }),
-        note: "未認証 / 認証済",
+        note: formatMemberPercentage(memberCounts),
         href: `${ANALYTICS_ROOT}/members`,
       },
       {
