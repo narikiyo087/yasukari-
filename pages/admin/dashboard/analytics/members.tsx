@@ -35,9 +35,13 @@ export default function MemberAnalyticsPage() {
         const data = (await response.json()) as { members?: Member[] };
         const members = data.members ?? [];
         if (isMounted) {
+          const isProvisional = (member: Member) =>
+            member.registrationStatus === "仮登録済" ||
+            member.registrationStatus === "管理者追加済";
+          const isVerified = (member: Member) => member.registrationStatus === "本登録済";
           setMemberCounts({
-            provisional: members.filter((member) => member.status === "未認証").length,
-            verified: members.filter((member) => member.status === "認証済").length,
+            provisional: members.filter(isProvisional).length,
+            verified: members.filter(isVerified).length,
             withdrawn: members.filter((member) => member.status === "退会済み").length,
             isLoading: false,
             error: false,
@@ -103,7 +107,7 @@ export default function MemberAnalyticsPage() {
               <p className={styles.dashboardSectionKicker}>Member analytics</p>
               <h2 className={styles.dashboardSectionTitle}>会員登録ステータス</h2>
               <p className={styles.dashboardSectionNote}>
-                仮登録（未認証）と本登録（認証済）の人数を集計しています。退会済み会員も参考値として表示します。
+                仮登録済・管理者追加済と本登録済の人数を集計しています。退会済み会員も参考値として表示します。
               </p>
             </div>
           </div>
@@ -121,11 +125,11 @@ export default function MemberAnalyticsPage() {
               </header>
               <div className={styles.statGrid}>
                 <div className={styles.statCard}>
-                  <p className={styles.statLabel}>仮登録（未認証）</p>
+                  <p className={styles.statLabel}>仮登録（仮登録済・管理者追加済）</p>
                   <p className={styles.statValue}>{displayValues.provisional}</p>
                 </div>
                 <div className={styles.statCard}>
-                  <p className={styles.statLabel}>本登録（認証済）</p>
+                  <p className={styles.statLabel}>本登録（本登録済）</p>
                   <p className={styles.statValue}>{displayValues.verified}</p>
                 </div>
                 <div className={styles.statCard}>
