@@ -111,6 +111,7 @@ export default function VehicleListPage() {
       | "className"
       | "modelName"
       | "storeId"
+      | "createdAt"
       | "inspectionExpiryDate"
       | "liabilityInsuranceExpiryDate"
       | "publishStatus";
@@ -218,6 +219,28 @@ export default function VehicleListPage() {
     return classNameMap[model.classId] ?? "-";
   };
 
+  const formatDateTime = (value?: string | null) => {
+    if (!value) {
+      return "-";
+    }
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) {
+      return value;
+    }
+    return date.toLocaleString("ja-JP");
+  };
+
+  const getTimestamp = (value?: string | null) => {
+    if (!value) {
+      return 0;
+    }
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) {
+      return 0;
+    }
+    return date.getTime();
+  };
+
   const selectedVehicle = useMemo(
     () =>
       selectedVehicleId == null
@@ -296,6 +319,8 @@ export default function VehicleListPage() {
             return modelNameMap[vehicle.modelId] ?? "";
           case "storeId":
             return getStoreLabel(vehicle.storeId);
+          case "createdAt":
+            return getTimestamp(vehicle.createdAt);
           case "inspectionExpiryDate":
             return vehicle.inspectionExpiryDate ?? "";
           case "liabilityInsuranceExpiryDate":
@@ -355,6 +380,7 @@ export default function VehicleListPage() {
       | "className"
       | "modelName"
       | "storeId"
+      | "createdAt"
       | "inspectionExpiryDate"
       | "liabilityInsuranceExpiryDate"
       | "publishStatus"
@@ -947,6 +973,7 @@ export default function VehicleListPage() {
                     <option value="className">バイククラスで並び替え</option>
                     <option value="modelName">車種名で並び替え</option>
                     <option value="storeId">店舗で並び替え</option>
+                    <option value="createdAt">登録日で並び替え</option>
                     <option value="inspectionExpiryDate">車検満了日で並び替え</option>
                     <option value="liabilityInsuranceExpiryDate">
                       自賠責満了日で並び替え
@@ -1169,6 +1196,40 @@ export default function VehicleListPage() {
                     </th>
                     <th
                       aria-sort={
+                        sortState.key === "createdAt"
+                          ? sortState.direction === "asc"
+                            ? "ascending"
+                            : "descending"
+                          : "none"
+                      }
+                    >
+                      <button
+                        type="button"
+                        className={tableStyles.sortableHeaderButton}
+                        onClick={() => handleSort("createdAt")}
+                      >
+                        <span>登録日</span>
+                        <span
+                          aria-hidden
+                          className={`${tableStyles.sortIcon} ${
+                            sortState.key === "createdAt"
+                              ? sortState.direction === "asc"
+                                ? tableStyles.sortIconAsc
+                                : tableStyles.sortIconDesc
+                              : ""
+                          }`}
+                        />
+                        <span className={tableStyles.visuallyHidden}>
+                          {sortState.key === "createdAt"
+                            ? sortState.direction === "asc"
+                              ? "昇順に並び替え"
+                              : "降順に並び替え"
+                            : "クリックして並び替え"}
+                        </span>
+                      </button>
+                    </th>
+                    <th
+                      aria-sort={
                         sortState.key === "inspectionExpiryDate"
                           ? sortState.direction === "asc"
                             ? "ascending"
@@ -1274,7 +1335,7 @@ export default function VehicleListPage() {
                 <tbody>
                   {filteredVehicles.length === 0 ? (
                     <tr>
-                      <td colSpan={7}>登録済みの車両はまだありません。</td>
+                      <td colSpan={8}>登録済みの車両はまだありません。</td>
                     </tr>
                   ) : (
                     pagedVehicles.map((vehicle) => (
@@ -1315,7 +1376,8 @@ export default function VehicleListPage() {
                         </td>
                         <td>{getClassNameByModelId(vehicle.modelId)}</td>
                         <td>{modelNameMap[vehicle.modelId] ?? "-"}</td>
-                    <td>{getStoreLabel(vehicle.storeId)}</td>
+                        <td>{getStoreLabel(vehicle.storeId)}</td>
+                        <td>{formatDateTime(vehicle.createdAt)}</td>
                         <td>{vehicle.inspectionExpiryDate ?? "-"}</td>
                         <td>{vehicle.liabilityInsuranceExpiryDate ?? "-"}</td>
                         <td>
