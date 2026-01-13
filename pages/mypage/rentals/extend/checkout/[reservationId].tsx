@@ -45,6 +45,8 @@ export default function RentalExtensionCheckoutPage() {
   const [statusMessage, setStatusMessage] = useState('');
   const [payjpError, setPayjpError] = useState('');
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
+  const [showConfirmation, setShowConfirmation] = useState(false);
+  const [pendingToken, setPendingToken] = useState<string | null>(null);
   const payjpFormRef = useRef<HTMLFormElement | null>(null);
   const payjpSlotRef = useRef<HTMLDivElement | null>(null);
   const processedTokenRef = useRef<string | null>(null);
@@ -337,13 +339,28 @@ export default function RentalExtensionCheckoutPage() {
       }
 
       setStatusMessage('');
+      if (showConfirmation) {
+        return;
+      }
       if (tokenInput) {
         tokenInput.value = '';
       }
-      void handlePaymentWithToken(token);
+      setPendingToken(token);
+      setShowConfirmation(true);
     },
-    [handlePaymentWithToken]
+    [handlePaymentWithToken, showConfirmation]
   );
+
+  const handleConfirmPayment = useCallback(() => {
+    if (!pendingToken) {
+      setShowConfirmation(false);
+      return;
+    }
+    const token = pendingToken;
+    setPendingToken(null);
+    setShowConfirmation(false);
+    void handlePaymentWithToken(token);
+  }, [handlePaymentWithToken, pendingToken]);
 
   const handlePayjpLoaded = useCallback(() => {
     setPayjpError('');
@@ -532,6 +549,25 @@ export default function RentalExtensionCheckoutPage() {
           )}
         </section>
       </main>
+      {showConfirmation ? (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
+          <div className="w-full max-w-lg rounded-2xl bg-white p-6 shadow-xl" role="dialog" aria-modal="true">
+            <h2 className="text-lg font-semibold text-gray-900">ご確認ください</h2>
+            <p className="mt-4 text-sm text-gray-900">
+              続けて長期レンタルしたい場合は長期価格との差額分を返金いたしますので、追加決済後にお問い合わせよりご連絡ください。
+            </p>
+            <div className="mt-6 flex justify-end">
+              <button
+                type="button"
+                className="inline-flex items-center justify-center rounded-full bg-red-600 px-6 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-red-700"
+                onClick={handleConfirmPayment}
+              >
+                OK
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
     </>
   );
 }
