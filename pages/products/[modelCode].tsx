@@ -437,7 +437,7 @@ export default function ProductDetailPage({
                       )}
                       <div className="flex flex-col gap-2">
                         <Link
-                          href="/pricing"
+                          href="#price-guide"
                           className="inline-flex w-full items-center justify-center rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow hover:bg-blue-700 transition"
                         >
                           料金プランを見る
@@ -500,7 +500,7 @@ export default function ProductDetailPage({
             </div>
           </section>
 
-          <section className="space-y-6">
+          <section className="space-y-6" id="price-guide">
             <div className="space-y-3">
               <div className="flex items-center justify-between">
                 <h2 className="text-xl font-semibold text-gray-900">料金の目安</h2>
