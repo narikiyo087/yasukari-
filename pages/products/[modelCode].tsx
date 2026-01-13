@@ -70,10 +70,10 @@ export default function ProductDetailPage({
   const router = useRouter();
   const priceMultiplier = useInternationalPricingMultiplier("ja");
 
-  const adjustedPrice24h = useMemo(
-    () => formatAdjustedYenPrice(bike.price24h, priceMultiplier),
-    [bike.price24h, priceMultiplier]
-  );
+  const adjustedPrice24h = useMemo(() => {
+    const price24h = priceGuide["24h"];
+    return price24h ? formatAdjustedYenPrice(price24h, priceMultiplier) : undefined;
+  }, [priceGuide, priceMultiplier]);
 
   const adjustedPriceGuide = useMemo(() => {
     const next: Partial<Record<DurationKey, string>> = {};
@@ -113,7 +113,7 @@ export default function ProductDetailPage({
 
   const hasStock = vehicleOptions.length > 0;
   const hasFilteredStock = filteredVehicleOptions.length > 0;
-  const showPrice = Boolean(bike.price24h);
+  const showPrice = Boolean(adjustedPrice24h && adjustedPrice24h !== "-");
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -303,9 +303,7 @@ export default function ProductDetailPage({
                   <div className="space-y-4">
                     {showPrice ? (
                       <div className="rounded-xl border border-gray-100 bg-gradient-to-br from-red-50 to-white p-4 shadow-sm">
-                        <p className="text-3xl font-bold text-gray-900">
-                          {adjustedPrice24h ?? bike.price24h}
-                        </p>
+                        <p className="text-3xl font-bold text-gray-900">{adjustedPrice24h}</p>
                       </div>
                     ) : null}
                     <div className="rounded-xl border border-gray-100 bg-white p-4 shadow-sm flex flex-col gap-3">

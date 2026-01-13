@@ -56,26 +56,6 @@ const formatPrice = (price: number | undefined) =>
     ? `${price.toLocaleString()} JPY`
     : "-";
 
-const normalizePrice = (value: unknown): number | undefined => {
-  if (typeof value === "number" && Number.isFinite(value)) {
-    return value;
-  }
-
-  if (typeof value === "string") {
-    const sanitized = value.replace(/,/g, "").trim();
-    if (!sanitized) {
-      return undefined;
-    }
-
-    const numericValue = Number(sanitized);
-    if (Number.isFinite(numericValue)) {
-      return numericValue;
-    }
-  }
-
-  return undefined;
-};
-
 const applyPriceMultiplier = (price: number) =>
   applyInternationalMultiplier(price, INTERNATIONAL_PRICE_MULTIPLIER);
 
@@ -669,31 +649,16 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({ params }) 
   ]);
 
   const className = bikeClass?.className;
-  const classPriceMap = bikeClass?.base_prices ?? {};
   const rentalPriceMap = rentalPrices.reduce<Record<number, number>>((acc, record) => {
     acc[record.days] = record.price;
     return acc;
   }, {});
-  const base24hPrice =
-    rentalPriceMap[durationDays["24h"]] ??
-    normalizePrice(classPriceMap["24h"]) ??
-    normalizePrice(bike.price24h);
 
   const priceGuide = (Object.entries(durationDays) as [DurationKey, number][])
     .map(([key, days]) => {
       const rentalPrice = rentalPriceMap[days];
       if (typeof rentalPrice === "number") {
         return [key, formatPrice(applyPriceMultiplier(rentalPrice))] as [DurationKey, string];
-      }
-      const classPrice = normalizePrice(classPriceMap[key]);
-      if (classPrice != null) {
-        return [key, formatPrice(applyPriceMultiplier(classPrice))] as [DurationKey, string];
-      }
-      if (key === "2d" && typeof base24hPrice === "number") {
-        return [key, formatPrice(applyPriceMultiplier(base24hPrice * durationDays["2d"]))] as [
-          DurationKey,
-          string
-        ];
       }
       return [key, "-"] as [DurationKey, string];
     })
