@@ -11,7 +11,7 @@ import {
   getVehiclesByModel,
   BikeVehicle,
 } from "../../lib/bikes";
-import { readVehicleRentalPrices } from "../../lib/server/vehicleRentalPrices";
+import { readVehicleRentalPricesFromStore } from "../../lib/server/vehicleRentalPrices";
 import RecentlyViewed from "../../components/RecentlyViewed";
 import type { Reservation } from "../../lib/reservations";
 import { formatAdjustedYenPrice } from "../../lib/pricing";
@@ -675,7 +675,9 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({ params }) 
   const [bikeClass, vehicles, rentalPrices] = await Promise.all([
     Promise.resolve(classes.find((cls) => cls.classId === bike.classId)),
     bike.modelId != null ? getVehiclesByModel(bike.modelId) : Promise.resolve([]),
-    bike.modelId != null ? readVehicleRentalPrices(bike.modelId) : Promise.resolve([]),
+    bike.modelId != null
+      ? readVehicleRentalPricesFromStore(bike.modelId)
+      : Promise.resolve([]),
   ]);
 
   const classNameLabel = bikeClass?.className;
