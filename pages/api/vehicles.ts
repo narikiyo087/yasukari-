@@ -1,11 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import {
-  BatchWriteCommand,
-  GetCommand,
-  PutCommand,
-  ScanCommand,
-} from "@aws-sdk/lib-dynamodb";
-import { getDocumentClient } from "../../lib/dynamodb";
+import { BatchWriteCommand, GetCommand, PutCommand } from "@aws-sdk/lib-dynamodb";
+import { getDocumentClient, scanAllItems } from "../../lib/dynamodb";
 
 type Vehicle = {
   managementNumber: string;
@@ -120,9 +115,7 @@ const normalizeRentalAvailability = (
 
 async function handleGet(response: NextApiResponse<Vehicle[] | { message: string }>) {
   try {
-    const client = getDocumentClient();
-    const result = await client.send(new ScanCommand({ TableName: VEHICLES_TABLE }));
-    const items = (result.Items ?? []) as Vehicle[];
+    const items = await scanAllItems<Vehicle>({ TableName: VEHICLES_TABLE });
     const normalizedItems = items.map((item) => {
       const normalizedAvailability = normalizeRentalAvailability(item.rentalAvailability);
       if (normalizedAvailability !== undefined) {
