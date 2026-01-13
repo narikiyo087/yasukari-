@@ -1400,6 +1400,19 @@
   border-color: #fca5a5;
 }
 
+.iconButtonDisabled {
+  background: #cbd5e1;
+  color: #334155;
+  border-color: #94a3b8;
+  cursor: not-allowed;
+}
+
+.iconButtonDisabled:hover,
+.iconButtonDisabled:focus-visible {
+  background: #cbd5e1;
+  border-color: #94a3b8;
+}
+
 .icon {
   font-size: 1.1rem;
   line-height: 1;
