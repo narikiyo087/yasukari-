@@ -933,7 +933,7 @@ export default function ReservationDetailPage() {
                 />
                 <div className={styles.detailActions}>
                   <button
-                    className={`${styles.iconButton} ${styles.iconButtonDanger}`}
+                    className={`${styles.iconButton} ${styles.iconButtonDanger} ${styles.iconButtonDisabled}`}
                     type="button"
                     onClick={handleCancelReservation}
                     disabled
