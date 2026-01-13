@@ -88,6 +88,8 @@ type VehicleFormState = {
   notes: string;
 };
 
+const PAGE_SIZE = 30;
+
 export default function VehicleListPage() {
   const router = useRouter();
   const [bikeClasses, setBikeClasses] = useState<BikeClass[]>([]);
@@ -102,6 +104,7 @@ export default function VehicleListPage() {
   );
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<"ALL" | "ON" | "OFF">("ALL");
+  const [currentPage, setCurrentPage] = useState(1);
   const [sortState, setSortState] = useState<{
     key:
       | "managementNumber"
@@ -325,6 +328,26 @@ export default function VehicleListPage() {
     statusFilter,
     vehicles,
   ]);
+
+  const totalPages = Math.max(1, Math.ceil(filteredVehicles.length / PAGE_SIZE));
+  const clampedPage = Math.min(currentPage, totalPages);
+  const pagedVehicles = useMemo(() => {
+    const startIndex = (clampedPage - 1) * PAGE_SIZE;
+    return filteredVehicles.slice(startIndex, startIndex + PAGE_SIZE);
+  }, [clampedPage, filteredVehicles]);
+
+  const displayStart = filteredVehicles.length === 0 ? 0 : (clampedPage - 1) * PAGE_SIZE + 1;
+  const displayEnd = Math.min(clampedPage * PAGE_SIZE, filteredVehicles.length);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm, sortState.direction, sortState.key, statusFilter, vehicles.length]);
+
+  useEffect(() => {
+    if (currentPage > totalPages) {
+      setCurrentPage(totalPages);
+    }
+  }, [currentPage, totalPages]);
 
   const handleSort = (
     key:
@@ -905,6 +928,14 @@ export default function VehicleListPage() {
                 </select>
               </div>
               <div className={styles.tableToolbarGroup}>
+                <span className={styles.tableSelectionCount}>
+                  表示中: {displayStart}-{displayEnd} / {filteredVehicles.length}件
+                </span>
+                <span className={styles.tableSelectionCount}>
+                  登録済み: {vehicles.length}件
+                </span>
+              </div>
+              <div className={styles.tableToolbarGroup}>
                 <label>
                   <span className={tableStyles.visuallyHidden}>並び替え項目</span>
                   <select
@@ -1246,7 +1277,7 @@ export default function VehicleListPage() {
                       <td colSpan={7}>登録済みの車両はまだありません。</td>
                     </tr>
                   ) : (
-                    filteredVehicles.map((vehicle) => (
+                    pagedVehicles.map((vehicle) => (
                       <tr
                         key={vehicle.managementNumber}
                         tabIndex={0}
@@ -1303,6 +1334,31 @@ export default function VehicleListPage() {
                   )}
                 </tbody>
               </table>
+            </div>
+            <div className={styles.tableToolbar}>
+              <div className={styles.tableToolbarGroup}>
+                <span className={styles.tableSelectionCount}>
+                  ページ {clampedPage} / {totalPages}
+                </span>
+              </div>
+              <div className={styles.tableToolbarGroup}>
+                <button
+                  type="button"
+                  className={styles.tableToolbarButton}
+                  onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
+                  disabled={clampedPage <= 1}
+                >
+                  前へ
+                </button>
+                <button
+                  type="button"
+                  className={styles.tableToolbarButton}
+                  onClick={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))}
+                  disabled={clampedPage >= totalPages}
+                >
+                  次へ
+                </button>
+              </div>
             </div>
           </div>
           {selectedVehicle && (

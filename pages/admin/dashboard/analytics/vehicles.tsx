@@ -19,9 +19,15 @@ type VehicleRankingState = {
 
 const formatCount = (value: number) => value.toLocaleString();
 
+const isValidReservationForRanking = (reservation: Reservation) => {
+  const model = reservation.vehicleModel?.trim();
+  const code = reservation.vehicleCode?.trim();
+  return Boolean(model && code && reservation.status !== "キャンセル");
+};
+
 const buildVehicleLabel = (reservation: Reservation) => {
-  const model = reservation.vehicleModel || "-";
-  const code = reservation.vehicleCode || "-";
+  const model = reservation.vehicleModel?.trim() || "-";
+  const code = reservation.vehicleCode?.trim() || "-";
   return `${model} (${code})`;
 };
 
@@ -71,12 +77,17 @@ export default function VehicleAnalyticsPage() {
 
     const tally = rankingState.reservations.reduce<Record<string, RankedVehicle>>(
       (acc, reservation) => {
-        const key = `${reservation.vehicleModel}-${reservation.vehicleCode}`;
+        if (!isValidReservationForRanking(reservation)) {
+          return acc;
+        }
+        const normalizedModel = reservation.vehicleModel.trim();
+        const normalizedCode = reservation.vehicleCode.trim();
+        const key = `${normalizedModel}-${normalizedCode}`;
         if (!acc[key]) {
           acc[key] = {
             label: buildVehicleLabel(reservation),
-            model: reservation.vehicleModel,
-            code: reservation.vehicleCode,
+            model: normalizedModel,
+            code: normalizedCode,
             count: 0,
           };
         }
