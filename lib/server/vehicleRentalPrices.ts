@@ -1,5 +1,7 @@
 import { promises as fs } from "fs";
 import path from "path";
+import { QueryCommand } from "@aws-sdk/lib-dynamodb";
+import { getDocumentClient } from "../dynamodb";
 
 export type VehicleRentalPriceRecord = {
   vehicle_type_id: number;
@@ -10,6 +12,17 @@ export type VehicleRentalPriceRecord = {
 };
 
 const DATA_FILE_PATH = path.join(process.cwd(), "data", "vehicle-rental-prices.json");
+const TABLE_NAME =
+  process.env.VEHICLE_RENTAL_PRICES_TABLE ||
+  process.env.VEHICLE_RENTAL_PRICE_TABLE ||
+  "VEHICLE_RENTAL_PRICES_TABLE";
+
+const shouldUseLocalStorage =
+  process.env.USE_LOCAL_VEHICLE_RENTAL_PRICE_STORAGE === "true" ||
+  (!process.env.AWS_ACCESS_KEY_ID &&
+    !process.env.AWS_PROFILE &&
+    !process.env.AWS_REGION &&
+    !process.env.AWS_DEFAULT_REGION);
 
 async function ensureDataFile(): Promise<void> {
   try {
@@ -72,6 +85,40 @@ export async function readVehicleRentalPrices(
       .sort((a, b) => a.days - b.days);
   } catch (error) {
     console.error("Failed to parse vehicle rental prices data", error);
+    return [];
+  }
+}
+
+export async function readVehicleRentalPricesFromStore(
+  vehicleTypeId?: number
+): Promise<VehicleRentalPriceRecord[]> {
+  if (typeof vehicleTypeId !== "number") {
+    return [];
+  }
+
+  if (shouldUseLocalStorage) {
+    return readVehicleRentalPrices(vehicleTypeId);
+  }
+
+  try {
+    const client = getDocumentClient();
+    const result = await client.send(
+      new QueryCommand({
+        TableName: TABLE_NAME,
+        KeyConditionExpression: "#vehicle_type_id = :vehicle_type_id",
+        ExpressionAttributeNames: { "#vehicle_type_id": "vehicle_type_id" },
+        ExpressionAttributeValues: { ":vehicle_type_id": vehicleTypeId },
+      })
+    );
+
+    return ((result.Items ?? []) as VehicleRentalPriceRecord[]).sort(
+      (a, b) => a.days - b.days
+    );
+  } catch (error) {
+    console.error("Failed to fetch vehicle rental prices", {
+      table: TABLE_NAME,
+      error,
+    });
     return [];
   }
 }
