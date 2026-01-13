@@ -195,7 +195,10 @@ export default async function handler(
         return res.status(404).json({ error: "予約が見つかりませんでした" });
       }
 
-      const body = req.body as Partial<Reservation> & { vehicleModel?: string };
+      const body = req.body as Partial<Reservation> & {
+        vehicleModel?: string;
+        skipRefund?: boolean;
+      };
       const updates: Partial<Reservation> = {};
       const pickupAtUpdated =
         typeof body.pickupAt === "string" && body.pickupAt !== existingReservation.pickupAt;
@@ -285,7 +288,7 @@ export default async function handler(
       const isCancelling =
         updates.status === "キャンセル" && existingReservation.status !== "キャンセル";
 
-      if (isCancelling) {
+      if (isCancelling && !body.skipRefund) {
         if (!existingReservation.paymentId) {
           return res.status(400).json({ error: "決済番号が登録されていないため返金できません。" });
         }

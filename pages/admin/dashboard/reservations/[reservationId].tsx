@@ -45,6 +45,7 @@ export default function ReservationDetailPage() {
   const [vehicleChangeError, setVehicleChangeError] = useState<string>("");
   const [isUpdatingVehicle, setIsUpdatingVehicle] = useState<boolean>(false);
   const [isCancelling, setIsCancelling] = useState<boolean>(false);
+  const [isCancellingWithoutRefund, setIsCancellingWithoutRefund] = useState<boolean>(false);
   const [refundNote, setRefundNote] = useState<string>("");
   const [cancelError, setCancelError] = useState<string>("");
   const [highSeasonDates, setHighSeasonDates] = useState<Set<string>>(new Set());
@@ -497,6 +498,64 @@ export default function ReservationDetailPage() {
     }
   };
 
+  const handleCancelReservationWithoutRefund = async () => {
+    if (!reservation || typeof reservationId !== "string") return;
+    if (reservation.status === "予約完了") return;
+
+    const userNotificationMessage =
+      reservation.status === "キャンセル"
+        ? ""
+        : "予約がキャンセルされました。返金は行われません。";
+
+    const confirmationLines = [
+      "予約を返金なしでキャンセルします。",
+      `決済番号 (pay.jp): ${reservation.paymentId || "未登録"}`,
+      `決済金額: ${formatPaymentAmount(reservation.paymentAmount)}`,
+      "",
+      userNotificationMessage
+        ? `ユーザー側ポップアップ想定: ${userNotificationMessage}`
+        : "ユーザー向けの案内メッセージも併せて表示されます。",
+    ];
+
+    if (!window.confirm(confirmationLines.join("\n"))) {
+      return;
+    }
+
+    setIsCancellingWithoutRefund(true);
+    setCancelError("");
+
+    try {
+      const response = await fetch(`/api/reservations/${reservationId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          status: "キャンセル",
+          refundNote: refundNote || "返金なしでキャンセル",
+          skipRefund: true,
+        }),
+      });
+
+      const data = (await response.json()) as { reservation?: Reservation; error?: string };
+      if (!response.ok) {
+        throw new Error(data.error || `キャンセル処理に失敗しました (${response.status})`);
+      }
+      if (data.reservation) {
+        setReservation(data.reservation);
+        if (userNotificationMessage) {
+          window.alert(userNotificationMessage);
+        }
+      }
+    } catch (cancelErrorResponse) {
+      const message =
+        cancelErrorResponse instanceof Error
+          ? cancelErrorResponse.message
+          : "キャンセル処理でエラーが発生しました";
+      setCancelError(message);
+    } finally {
+      setIsCancellingWithoutRefund(false);
+    }
+  };
+
   return (
     <>
       <Head>
@@ -851,8 +910,11 @@ export default function ReservationDetailPage() {
                 <div className={`${styles.inlineNotice} ${styles.noticeNeutral}`}>
                   返金設定は後から行えるようにするため、現時点では返金メモのみを残します。
                   ステータスをキャンセルに変更すると、ユーザー側で最新状態が確認できます。
-                  キャンセル時は決済番号 (pay.jp) と決済金額を参照して自動で返金処理を実行します。
+                  返金ありのキャンセルは決済番号 (pay.jp) と決済金額を参照して自動で返金処理を実行します。
                   {paymentDateInfo.label}
+                </div>
+                <div className={`${styles.inlineNotice} ${styles.noticeDanger}`}>
+                  返金なしでキャンセルすると Pay.jp への返金処理は行われません。必要な場合は手動返金の対応をしてください。
                 </div>
                 <div className={`${styles.inlineNotice} ${styles.noticeSuccess}`}>
                   ユーザー表示: 予約がキャンセルされました。決済いただいた金額（
@@ -874,13 +936,21 @@ export default function ReservationDetailPage() {
                     className={`${styles.iconButton} ${styles.iconButtonDanger}`}
                     type="button"
                     onClick={handleCancelReservation}
+                    disabled
+                  >
+                    {isCancelling ? "キャンセル処理中..." : "返金ありキャンセル (無効)"}
+                  </button>
+                  <button
+                    className={`${styles.iconButton} ${styles.iconButtonDanger}`}
+                    type="button"
+                    onClick={handleCancelReservationWithoutRefund}
                     disabled={
-                      isCancelling ||
+                      isCancellingWithoutRefund ||
                       reservation.status === "キャンセル" ||
                       reservation.status === "予約完了"
                     }
                   >
-                    {isCancelling ? "キャンセル処理中..." : "予約をキャンセル"}
+                    {isCancellingWithoutRefund ? "キャンセル処理中..." : "返金なしでキャンセル"}
                   </button>
                   {reservation.status === "キャンセル" && (
                     <span className={`${tableStyles.badge} ${tableStyles.badgeOff}`}>
