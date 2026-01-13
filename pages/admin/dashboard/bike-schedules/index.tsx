@@ -10,7 +10,7 @@ import { Vehicle, BikeModel } from "../../../../lib/dashboard/types";
 import { getStoreLabel, STORE_OPTIONS } from "../../../../lib/dashboard/storeOptions";
 
 type ExpiryFilterOption = "all" | "expired" | "warning" | "valid";
-type SortKey = "id" | "model" | "store" | "liability" | "inspection";
+type SortKey = "id" | "model" | "store" | "createdAt" | "liability" | "inspection";
 type SortDirection = "asc" | "desc";
 
 export default function BikeScheduleManagementPage() {
@@ -55,6 +55,17 @@ export default function BikeScheduleManagementPage() {
     }
 
     return null;
+  };
+
+  const formatDateTime = (value?: string | null) => {
+    if (!value) {
+      return "-";
+    }
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) {
+      return value;
+    }
+    return date.toLocaleString("ja-JP");
   };
 
   const filteredVehicles = useMemo(() => {
@@ -118,6 +129,12 @@ export default function BikeScheduleManagementPage() {
             getStoreLabel(b.storeId),
             "ja"
           );
+          break;
+        }
+        case "createdAt": {
+          const createdAtA = getDateValue(a.createdAt) ?? 0;
+          const createdAtB = getDateValue(b.createdAt) ?? 0;
+          compareValue = createdAtA - createdAtB;
           break;
         }
         case "liability": {
@@ -286,6 +303,7 @@ export default function BikeScheduleManagementPage() {
                       <option value="id">ID</option>
                       <option value="model">車両名</option>
                       <option value="store">店舗</option>
+                      <option value="createdAt">登録日時</option>
                       <option value="liability">自賠責満了日</option>
                       <option value="inspection">車検満了日</option>
                     </select>
@@ -311,6 +329,7 @@ export default function BikeScheduleManagementPage() {
                     <th>ID</th>
                     <th>車両名</th>
                     <th>店舗</th>
+                    <th>登録日時</th>
                     <th>自賠責満了日</th>
                     <th>車検満了日</th>
                     <th className={tableStyles.centerCell}>レンタル可自動設定</th>
@@ -345,6 +364,7 @@ export default function BikeScheduleManagementPage() {
                         <td>{vehicle.managementNumber}</td>
                         <td>{modelName}</td>
                         <td>{getStoreLabel(vehicle.storeId)}</td>
+                        <td>{formatDateTime(vehicle.createdAt)}</td>
                         <td
                           className={
                             liabilityStatus === "expired"
