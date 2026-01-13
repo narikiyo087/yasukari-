@@ -339,7 +339,7 @@ export default async function handler(
             previousKeys.forEach((key) => {
               const entry = next[key];
               if (entry?.status === "RENTED" || entry?.status === "RENTAL_COMPLETED") {
-                delete next[key];
+                next[key] = { status: "AVAILABLE" };
               }
             });
             return next;
@@ -375,7 +375,7 @@ export default async function handler(
               if (!nextSet.has(key)) {
                 const entry = next[key];
                 if (entry?.status === "RENTED" || entry?.status === "RENTAL_COMPLETED") {
-                  delete next[key];
+                  next[key] = { status: "AVAILABLE" };
                 }
               }
             });
@@ -406,7 +406,7 @@ export default async function handler(
             completionKeys.forEach((key) => {
               const entry = next[key];
               if (entry?.status === "RENTED" || entry?.status === "RENTAL_COMPLETED") {
-                delete next[key];
+                next[key] = { status: "AVAILABLE" };
               }
             });
 
