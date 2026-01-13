@@ -70,10 +70,6 @@ export default function ProductDetailPage({
   const router = useRouter();
   const priceMultiplier = useInternationalPricingMultiplier("ja");
 
-  const adjustedPrice24h = useMemo(() => {
-    const price24h = priceGuide["24h"];
-    return price24h ? formatAdjustedYenPrice(price24h, priceMultiplier) : undefined;
-  }, [priceGuide, priceMultiplier]);
 
   const adjustedPriceGuide = useMemo(() => {
     const next: Partial<Record<DurationKey, string>> = {};
@@ -113,7 +109,6 @@ export default function ProductDetailPage({
 
   const hasStock = vehicleOptions.length > 0;
   const hasFilteredStock = filteredVehicleOptions.length > 0;
-  const showPrice = Boolean(adjustedPrice24h && adjustedPrice24h !== "-");
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -301,11 +296,6 @@ export default function ProductDetailPage({
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 items-start">
                   <div className="space-y-4">
-                    {showPrice ? (
-                      <div className="rounded-xl border border-gray-100 bg-gradient-to-br from-red-50 to-white p-4 shadow-sm">
-                        <p className="text-3xl font-bold text-gray-900">{adjustedPrice24h}</p>
-                      </div>
-                    ) : null}
                     <div className="rounded-xl border border-gray-100 bg-white p-4 shadow-sm flex flex-col gap-3">
                       <div className="flex items-center justify-between">
                         <p className="text-sm font-semibold text-gray-900">在庫の選択</p>
