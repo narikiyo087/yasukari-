@@ -1,4 +1,4 @@
-export const INTERNATIONAL_PRICE_MULTIPLIER = 1.5;
+export const INTERNATIONAL_PRICE_MULTIPLIER = 2;
 
 export const isInternationalLocale = (locale?: string): boolean => {
   if (!locale) return false;
