@@ -23,7 +23,7 @@ export default function CompanyPageEn() {
           </tr>
           <tr>
             <th className="text-left w-40 p-2 border">Phone</th>
-            <td className="p-2 border">03-5856-8075</td>
+            <td className="p-2 border">03-5856-8200</td>
           </tr>
           <tr>
             <th className="text-left w-40 p-2 border">Email</th>

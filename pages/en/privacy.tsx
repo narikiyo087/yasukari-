@@ -49,7 +49,7 @@ export default function PrivacyPolicyEn() {
             <br />
             Email: info[at]yasukari.com
             <br />
-            Phone: 03-5856-8075
+            Phone: 03-5856-8200
           </p>
           <h2 className="font-semibold">Organization</h2>
           <p>

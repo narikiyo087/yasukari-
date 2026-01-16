@@ -10,7 +10,7 @@ export default function ContactPageEn() {
       <h1 className="text-xl font-bold mb-4 text-center">Contact Us</h1>
       <p className="mb-4">Feel free to reach us using the contact details below.</p>
       <ul className="space-y-2">
-        <li>Phone: 03-5856-8075</li>
+        <li>Phone: 03-5856-8200</li>
         <li>Email: info@yasukari.com</li>
         <li>Address: 1F, 2-9-7 Odai, Adachi-ku, Tokyo</li>
       </ul>

@@ -15,7 +15,7 @@ export default function SupportPolicyEn() {
         <div className="space-y-2">
           <h2 className="font-semibold">Contact methods</h2>
           <ul className="list-disc list-inside space-y-1">
-            <li>Phone: 03-5856-8075 (for current rentals only)</li>
+            <li>Phone: 03-5856-8200 (for current rentals only)</li>
             <li>Email: info@yasukari.com</li>
             <li>Online inquiries: <Link href="/en/contact" className="text-red-600 underline">Contact page</Link></li>
           </ul>
