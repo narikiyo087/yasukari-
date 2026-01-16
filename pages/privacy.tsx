@@ -45,7 +45,7 @@ export default function PrivacyPolicy() {
             個人情報の取扱いに関するお問い合わせは下記までご連絡ください。
             <br />株式会社ケイジェット 金森 真佐樹
             <br />メール: info[at]yasukari.com
-            <br />電話: 03-5856-8075
+            <br />電話: 03-5856-8200
           </p>
           <h2 className="font-semibold">組織・体制</h2>
           <p>弊社は、金森 真佐樹を個人情報管理責任者として適切に管理します。</p>

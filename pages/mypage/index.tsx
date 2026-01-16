@@ -758,7 +758,7 @@ export default function MyPage() {
                   弊社営業時間内であれば一度店へお電話いただき、営業時間外でしたらそのままロードサービスをご手配ください。
                 </p>
                 <p className="mt-2 font-semibold">ロードサービス連絡先：0120-024-024</p>
-                <p className="mt-2 font-semibold">ヤスカリ電話番号：03-5856-8075</p>
+                <p className="mt-2 font-semibold">ヤスカリ電話番号：03-5856-8200</p>
                 <Link
                   href="/help"
                   className="mt-3 inline-flex items-center justify-center rounded-full border border-rose-200 bg-white px-4 py-2 text-xs font-semibold text-rose-700 shadow-sm transition hover:bg-rose-100"

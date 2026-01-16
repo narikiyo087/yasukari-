@@ -755,7 +755,7 @@ export default function MyPageEn() {
                   directly outside business hours.
                 </p>
                 <p className="mt-2 font-semibold">Roadside assistance: 0120-024-024</p>
-                <p className="mt-2 font-semibold">Yasukari phone: 03-5856-8075</p>
+                <p className="mt-2 font-semibold">Yasukari phone: 03-5856-8200</p>
                 <Link
                   href="/en/help"
                   className="mt-3 inline-flex items-center justify-center rounded-full border border-rose-200 bg-white px-4 py-2 text-xs font-semibold text-rose-700 shadow-sm transition hover:bg-rose-100"

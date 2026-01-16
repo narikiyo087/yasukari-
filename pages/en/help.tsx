@@ -77,7 +77,7 @@ export default function HelpPageEn({ categories }: Props) {
         <ul className="divide-y divide-slate-200 rounded-xl bg-rose-50/60 ring-1 ring-rose-100">
           <li className="grid grid-cols-1 gap-1 px-4 py-3 text-sm font-medium text-slate-800 sm:grid-cols-[120px,1fr] sm:items-center sm:px-5 sm:py-4">
             <span className="text-rose-700">Phone</span>
-            <span className="font-semibold text-slate-900">03-5856-8075</span>
+            <span className="font-semibold text-slate-900">03-5856-8200</span>
           </li>
           <li className="grid grid-cols-1 gap-1 px-4 py-3 text-sm font-medium text-slate-800 sm:grid-cols-[120px,1fr] sm:items-center sm:px-5 sm:py-4">
             <span className="text-rose-700">Email</span>
