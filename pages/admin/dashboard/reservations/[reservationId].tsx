@@ -56,6 +56,9 @@ export default function ReservationDetailPage() {
   const [scheduleMessage, setScheduleMessage] = useState<string>("");
   const [scheduleError, setScheduleError] = useState<string>("");
   const [isUpdatingSchedule, setIsUpdatingSchedule] = useState<boolean>(false);
+  const [isApprovingReturn, setIsApprovingReturn] = useState<boolean>(false);
+  const [returnApprovalMessage, setReturnApprovalMessage] = useState<string>("");
+  const [returnApprovalError, setReturnApprovalError] = useState<string>("");
   const isReservationCompleted = reservation?.status === "予約完了";
 
   const paymentDateInfo = (() => {
@@ -556,6 +559,51 @@ export default function ReservationDetailPage() {
     }
   };
 
+  const handleAdminReturnApproval = async () => {
+    if (!reservation || typeof reservationId !== "string") return;
+
+    const confirmMessage =
+      "レンタル中の車両が返却設定されます\n返却を確認の上、承認を押してください。";
+    if (!window.confirm(confirmMessage)) {
+      return;
+    }
+
+    setReturnApprovalMessage("");
+    setReturnApprovalError("");
+    setIsApprovingReturn(true);
+
+    try {
+      const response = await fetch("/api/admin/return-approval", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ reservationId }),
+      });
+
+      const data = (await response.json()) as {
+        reservation?: Reservation;
+        message?: string;
+      };
+      if (!response.ok) {
+        throw new Error(data.message || "返却承認に失敗しました。");
+      }
+
+      if (data.reservation) {
+        setReservation(data.reservation);
+      }
+
+      setReturnApprovalMessage("管理者承認による返却を登録しました。");
+      window.alert("OK");
+    } catch (approvalError) {
+      const message =
+        approvalError instanceof Error
+          ? approvalError.message
+          : "返却承認でエラーが発生しました。";
+      setReturnApprovalError(message);
+    } finally {
+      setIsApprovingReturn(false);
+    }
+  };
+
   return (
     <>
       <Head>
@@ -791,7 +839,65 @@ export default function ReservationDetailPage() {
                       )}
                     </dd>
                   </div>
+                  <div className={styles.detailItem}>
+                    <dt>管理者承認の返却写真</dt>
+                    <dd>
+                      {reservation.adminReturnReportUrl ? (
+                        <a
+                          className={styles.link}
+                          href={reservation.adminReturnReportUrl}
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          返却写真を確認する
+                        </a>
+                      ) : (
+                        "未登録"
+                      )}
+                    </dd>
+                  </div>
+                  <div className={styles.detailItem}>
+                    <dt>管理者承認日時</dt>
+                    <dd>
+                      {reservation.adminReturnApprovedAt
+                        ? formatDatetime(reservation.adminReturnApprovedAt)
+                        : "未登録"}
+                    </dd>
+                  </div>
                 </dl>
+              </div>
+
+              <div className={styles.detailPanel}>
+                <div className={styles.detailHeader}>
+                  <h3 className={styles.detailTitle}>管理者承認による返却</h3>
+                </div>
+                <p className={styles.mutedText}>
+                  管理画面から返却を確定すると、返却完了画像 (ダミー) を S3 に保存し予約を完了に更新します。
+                </p>
+                <div className={styles.detailActions}>
+                  <button
+                    className={`${styles.iconButton} ${styles.iconButtonDanger}`}
+                    type="button"
+                    onClick={handleAdminReturnApproval}
+                    disabled={
+                      isApprovingReturn ||
+                      reservation.status === "キャンセル" ||
+                      reservation.status === "予約完了"
+                    }
+                  >
+                    {isApprovingReturn ? "返却承認中..." : "管理者承認により返却"}
+                  </button>
+                </div>
+                {returnApprovalError && (
+                  <p className={`${styles.inlineNotice} ${styles.noticeDanger}`}>
+                    {returnApprovalError}
+                  </p>
+                )}
+                {returnApprovalMessage && (
+                  <p className={`${styles.inlineNotice} ${styles.noticeSuccess}`}>
+                    {returnApprovalMessage}
+                  </p>
+                )}
               </div>
 
               <div className={styles.detailPanel}>
