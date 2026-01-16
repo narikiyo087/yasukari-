@@ -51,6 +51,8 @@ export type Reservation = {
   notes: string;
   returnRating?: number;
   returnSurvey?: string;
+  adminReturnReportUrl?: string;
+  adminReturnApprovedAt?: string;
   refundNote?: string;
   keyboxPinCode?: string;
   keyboxPinId?: string;
@@ -148,6 +150,10 @@ type ReservationRecord = {
   returnRating?: number | string;
   return_survey?: string;
   returnSurvey?: string;
+  admin_return_report_url?: string;
+  adminReturnReportUrl?: string;
+  admin_return_approved_at?: string | number;
+  adminReturnApprovedAt?: string | number;
   [key: string]: unknown;
 };
 
@@ -412,6 +418,15 @@ const normalizeReservation = (record: ReservationRecord): Reservation => {
     notes: stringFrom(record, ["notes"], ""),
     returnRating: numberFrom(record, ["return_rating", "returnRating"]) ?? undefined,
     returnSurvey: stringFrom(record, ["return_survey", "returnSurvey"], ""),
+    adminReturnReportUrl: stringFrom(
+      record,
+      ["admin_return_report_url", "adminReturnReportUrl"],
+      ""
+    ),
+    adminReturnApprovedAt: datetimeFrom(
+      record,
+      ["admin_return_approved_at", "adminReturnApprovedAt"]
+    ),
     refundNote: stringFrom(record, ["refund_note", "refundNote"], ""),
     keyboxPinCode: stringFrom(record, ["keybox_pin_code", "keyboxPinCode"], ""),
     keyboxPinId: stringFrom(record, ["keybox_pin_id", "keyboxPinId"], ""),
@@ -581,6 +596,9 @@ const reservationToRecord = (reservation: Reservation): ReservationRecord => {
     notes: reservation.notes ?? "",
     return_rating: reservation.returnRating ?? undefined,
     return_survey: reservation.returnSurvey ?? "",
+    admin_return_report_url: reservation.adminReturnReportUrl ?? "",
+    admin_return_approved_at:
+      toIsoStringIfPossible(reservation.adminReturnApprovedAt) ?? reservation.adminReturnApprovedAt,
     refund_note: reservation.refundNote ?? "",
     keybox_pin_code: reservation.keyboxPinCode ?? "",
     keybox_pin_id: reservation.keyboxPinId ?? "",
