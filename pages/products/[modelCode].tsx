@@ -308,6 +308,9 @@ export default function ProductDetailPage({
                         <p className="mt-1 text-xs text-gray-500">
                           まず、店舗を選んでから在庫を選択してください。
                         </p>
+                        <p className="mt-1 text-xs text-gray-500">
+                          三ノ輪店はセルフ店（セルフサービス）です。
+                        </p>
                         <div className="mt-3 flex flex-wrap gap-2">
                           {storeOptions.length === 0 ? (
                             <span className="text-xs text-gray-500">
