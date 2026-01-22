@@ -99,7 +99,7 @@ export default function TagPage({ tag, tagPosts, calendarPosts, posts, initialDa
   return (
     <div className="max-w-6xl mx-auto p-4 flex flex-row flex-wrap gap-6">
       <Head>
-        <title>#{tag} の記事 - yasukari</title>
+        <title>#{tag} の記事 - ヤスカリ</title>
       </Head>
       <div className="w-[70%]">
         <h1 className="text-xl font-bold mb-4">タグ: #{tag}</h1>

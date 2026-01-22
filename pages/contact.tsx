@@ -5,7 +5,7 @@ export default function ContactPage() {
   return (
     <div className="max-w-2xl mx-auto p-6 text-sm leading-relaxed">
       <Head>
-        <title>お問い合わせ - yasukari</title>
+        <title>お問い合わせ - ヤスカリ</title>
       </Head>
       <h1 className="text-xl font-bold mb-4 text-center">お問い合わせ</h1>
       <p className="mb-4">下記の連絡先までお気軽にご連絡ください。</p>

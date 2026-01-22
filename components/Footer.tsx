@@ -9,7 +9,7 @@ export default function Footer() {
         <div className="grid grid-cols-1 gap-8 sm:grid-cols-3">
           {/* ブランド紹介と問い合わせ */}
           <div>
-            <h4 className="font-bold mb-2">yasukari</h4>
+            <h4 className="font-bold mb-2">ヤスカリ</h4>
             <p className="mb-3">
               バイクのレンタル・サブスク専門サイトです。原付から大型・EVバイクまで豊富なラインナップをご用意。
             </p>
@@ -109,11 +109,11 @@ export default function Footer() {
         <div className="border-t border-gray-300 mt-8 pt-6 text-center">
           <img
             src="https://yasukari.com/static/images/logo/250x50.png"
-            alt="yasukari ロゴ"
+            alt="ヤスカリ ロゴ"
             width={120}
             className="mx-auto mb-2"
           />
-          <p className="text-gray-400">© 2025 yasukari Inc.</p>
+          <p className="text-gray-400">© 2025 ヤスカリ Inc.</p>
         </div>
       </div>
     </footer>

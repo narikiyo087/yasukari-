@@ -4,7 +4,7 @@ export default function Tokusyouhou() {
   return (
     <div className="max-w-3xl mx-auto p-6">
       <Head>
-        <title>特定商取引法に基づく表記 - yasukari</title>
+        <title>特定商取引法に基づく表記 - ヤスカリ</title>
       </Head>
       <h1 className="text-xl font-bold mb-4 text-center">特定商取引法に基づく表示</h1>
       <table className="w-full border border-collapse text-sm">

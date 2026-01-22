@@ -48,7 +48,7 @@ export default function HowToUse() {
     <section className="section-surface section-padding">
       <SectionHeading
         eyebrow="How to use"
-        title="yasukariの利用方法"
+        title="ヤスカリの利用方法"
         description="初めてでも迷わずにステップを完了できるよう、予約から返却までの流れをシンプルにまとめました。"
       />
       <div className="mt-8">

@@ -2,7 +2,7 @@
   {
     "file": "404.tsx",
     "route": "/404",
-    "title": "ページが見つかりません - yasukari",
+    "title": "ページが見つかりません - ヤスカリ",
     "description": null,
     "hasBreadcrumb": false,
     "hasForm": false
@@ -10,7 +10,7 @@
   {
     "file": "beginner.tsx",
     "route": "/beginner",
-    "title": "はじめてガイド - yasukari",
+    "title": "はじめてガイド - ヤスカリ",
     "description": null,
     "hasBreadcrumb": false,
     "hasForm": false
@@ -26,7 +26,7 @@
   {
     "file": "blog_for_custmor/index.tsx",
     "route": "/blog_for_custmor",
-    "title": "新着ブログ・お知らせ - yasukari",
+    "title": "新着ブログ・お知らせ - ヤスカリ",
     "description": null,
     "hasBreadcrumb": false,
     "hasForm": false
@@ -42,7 +42,7 @@
   {
     "file": "chat.tsx",
     "route": "/chat",
-    "title": "チャットサポート | yasukari",
+    "title": "チャットサポート | ヤスカリ",
     "description": null,
     "hasBreadcrumb": false,
     "hasForm": false
@@ -50,7 +50,7 @@
   {
     "file": "company.tsx",
     "route": "/company",
-    "title": "運営会社情報 - yasukari",
+    "title": "運営会社情報 - ヤスカリ",
     "description": null,
     "hasBreadcrumb": false,
     "hasForm": false
@@ -58,7 +58,7 @@
   {
     "file": "contact.tsx",
     "route": "/contact",
-    "title": "お問い合わせ - yasukari",
+    "title": "お問い合わせ - ヤスカリ",
     "description": null,
     "hasBreadcrumb": false,
     "hasForm": false
@@ -66,7 +66,7 @@
   {
     "file": "customer_blog/index.tsx",
     "route": "/customer_blog",
-    "title": "店舗ブログ - yasukari",
+    "title": "店舗ブログ - ヤスカリ",
     "description": null,
     "hasBreadcrumb": false,
     "hasForm": false
@@ -74,7 +74,7 @@
   {
     "file": "en/index.tsx",
     "route": "/en",
-    "title": "yasukari - Motorcycle Rentals",
+    "title": "ヤスカリ - Motorcycle Rentals",
     "description": null,
     "hasBreadcrumb": false,
     "hasForm": false
@@ -82,7 +82,7 @@
   {
     "file": "external.tsx",
     "route": "/external",
-    "title": "情報の外部送信について - yasukari",
+    "title": "情報の外部送信について - ヤスカリ",
     "description": null,
     "hasBreadcrumb": false,
     "hasForm": false
@@ -90,7 +90,7 @@
   {
     "file": "guide.tsx",
     "route": "/guide",
-    "title": "ご利用案内 - yasukari",
+    "title": "ご利用案内 - ヤスカリ",
     "description": null,
     "hasBreadcrumb": false,
     "hasForm": false
@@ -98,7 +98,7 @@
   {
     "file": "help.tsx",
     "route": "/help",
-    "title": "ヘルプ - yasukari",
+    "title": "ヘルプ - ヤスカリ",
     "description": null,
     "hasBreadcrumb": false,
     "hasForm": false
@@ -106,7 +106,7 @@
   {
     "file": "index.tsx",
     "route": "/",
-    "title": "yasukari - バイクレンタルサイト",
+    "title": "ヤスカリ - バイクレンタルサイト",
     "description": null,
     "hasBreadcrumb": false,
     "hasForm": false
@@ -114,7 +114,7 @@
   {
     "file": "insurance.tsx",
     "route": "/insurance",
-    "title": "車両保険の内容について - yasukari",
+    "title": "車両保険の内容について - ヤスカリ",
     "description": null,
     "hasBreadcrumb": false,
     "hasForm": false
@@ -162,7 +162,7 @@
   {
     "file": "news/index.tsx",
     "route": "/news",
-    "title": "新着情報 - yasukari",
+    "title": "新着情報 - ヤスカリ",
     "description": null,
     "hasBreadcrumb": false,
     "hasForm": false
@@ -170,7 +170,7 @@
   {
     "file": "news/site-renewal.tsx",
     "route": "/news/site-renewal",
-    "title": "サイトリニューアルのお知らせ - yasukari",
+    "title": "サイトリニューアルのお知らせ - ヤスカリ",
     "description": null,
     "hasBreadcrumb": false,
     "hasForm": false
@@ -178,7 +178,7 @@
   {
     "file": "pricing.tsx",
     "route": "/pricing",
-    "title": "車種・料金 - yasukari",
+    "title": "車種・料金 - ヤスカリ",
     "description": null,
     "hasBreadcrumb": false,
     "hasForm": false
@@ -186,7 +186,7 @@
   {
     "file": "privacy.tsx",
     "route": "/privacy",
-    "title": "プライバシーポリシー - yasukari",
+    "title": "プライバシーポリシー - ヤスカリ",
     "description": null,
     "hasBreadcrumb": false,
     "hasForm": false
@@ -202,7 +202,7 @@
   {
     "file": "products/index.tsx",
     "route": "/products",
-    "title": "全ての車種一覧 - yasukari",
+    "title": "全ての車種一覧 - ヤスカリ",
     "description": null,
     "hasBreadcrumb": false,
     "hasForm": false
@@ -226,7 +226,7 @@
   {
     "file": "rental_bike/index.tsx",
     "route": "/rental_bike",
-    "title": "新着ブログ・お知らせ - yasukari",
+    "title": "新着ブログ・お知らせ - ヤスカリ",
     "description": null,
     "hasBreadcrumb": false,
     "hasForm": false
@@ -258,7 +258,7 @@
   {
     "file": "stores.tsx",
     "route": "/stores",
-    "title": "店舗一覧 - yasukari",
+    "title": "店舗一覧 - ヤスカリ",
     "description": null,
     "hasBreadcrumb": false,
     "hasForm": false
@@ -266,7 +266,7 @@
   {
     "file": "t/genre/cc126-250.tsx",
     "route": "/t/genre/cc126-250",
-    "title": "126〜250cc - yasukari",
+    "title": "126〜250cc - ヤスカリ",
     "description": null,
     "hasBreadcrumb": false,
     "hasForm": false
@@ -274,7 +274,7 @@
   {
     "file": "t/genre/cc251-400.tsx",
     "route": "/t/genre/cc251-400",
-    "title": "251〜400cc - yasukari",
+    "title": "251〜400cc - ヤスカリ",
     "description": null,
     "hasBreadcrumb": false,
     "hasForm": false
@@ -282,7 +282,7 @@
   {
     "file": "t/genre/cc400-plus.tsx",
     "route": "/t/genre/cc400-plus",
-    "title": "400cc超 - yasukari",
+    "title": "400cc超 - ヤスカリ",
     "description": null,
     "hasBreadcrumb": false,
     "hasForm": false
@@ -290,7 +290,7 @@
   {
     "file": "t/genre/gyrocanopy-minicar.tsx",
     "route": "/t/genre/gyrocanopy-minicar",
-    "title": "ジャイロキャノビーミニカー - yasukari",
+    "title": "ジャイロキャノビーミニカー - ヤスカリ",
     "description": null,
     "hasBreadcrumb": false,
     "hasForm": false
@@ -298,7 +298,7 @@
   {
     "file": "t/genre/gyrocanopy-moped.tsx",
     "route": "/t/genre/gyrocanopy-moped",
-    "title": "ジャイロキャノビー原付 - yasukari",
+    "title": "ジャイロキャノビー原付 - ヤスカリ",
     "description": null,
     "hasBreadcrumb": false,
     "hasForm": false
@@ -306,7 +306,7 @@
   {
     "file": "t/genre/moped-manual.tsx",
     "route": "/t/genre/moped-manual",
-    "title": "原付ミッション - yasukari",
+    "title": "原付ミッション - ヤスカリ",
     "description": null,
     "hasBreadcrumb": false,
     "hasForm": false
@@ -314,7 +314,7 @@
   {
     "file": "t/genre/scooter-125cc.tsx",
     "route": "/t/genre/scooter-125cc",
-    "title": "原付二種スクーター - yasukari",
+    "title": "原付二種スクーター - ヤスカリ",
     "description": null,
     "hasBreadcrumb": false,
     "hasForm": false
@@ -322,7 +322,7 @@
   {
     "file": "t/genre/scooter-50cc.tsx",
     "route": "/t/genre/scooter-50cc",
-    "title": "原付スクーター - yasukari",
+    "title": "原付スクーター - ヤスカリ",
     "description": null,
     "hasBreadcrumb": false,
     "hasForm": false
@@ -338,7 +338,7 @@
   {
     "file": "tokusyouhou.tsx",
     "route": "/tokusyouhou",
-    "title": "特定商取引法に基づく表記 - yasukari",
+    "title": "特定商取引法に基づく表記 - ヤスカリ",
     "description": null,
     "hasBreadcrumb": false,
     "hasForm": false

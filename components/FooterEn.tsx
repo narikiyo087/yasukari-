@@ -14,7 +14,7 @@ export default function FooterEn() {
         <div className="grid grid-cols-1 gap-8 sm:grid-cols-3">
           {/* Brand intro & contact */}
           <div>
-            <h4 className="font-bold mb-2">yasukari</h4>
+            <h4 className="font-bold mb-2">ヤスカリ</h4>
             <p className="mb-3">
               We specialize in motorcycle rentals and subscriptions. From mopeds to large and EV bikes, we offer a wide lineup.
               Rentals are available from one day, with monthly plans and corporate services.
@@ -134,11 +134,11 @@ export default function FooterEn() {
         <div className="border-t border-gray-300 mt-8 pt-6 text-center">
           <img
             src="https://yasukari.com/static/images/logo/250x50.png"
-            alt="yasukari logo"
+            alt="ヤスカリ logo"
             width={120}
             className="mx-auto mb-2"
           />
-          <p className="text-gray-400">© 2025 yasukari Inc.</p>
+          <p className="text-gray-400">© 2025 ヤスカリ Inc.</p>
         </div>
       </div>
     </footer>

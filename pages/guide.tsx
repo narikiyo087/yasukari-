@@ -29,7 +29,7 @@ export default function GuidePage() {
   return (
     <div className="max-w-[1440px] mx-auto p-6 space-y-8 text-sm leading-relaxed">
       <Head>
-        <title>ご利用案内 - yasukari</title>
+        <title>ご利用案内 - ヤスカリ</title>
       </Head>
 
       <img

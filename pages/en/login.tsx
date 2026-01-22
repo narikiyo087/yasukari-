@@ -110,7 +110,7 @@ export default function LoginPageEn() {
   return (
     <>
       <Head>
-        <title>Login | YASUKARI</title>
+        <title>Login | ヤスカリ</title>
       </Head>
       <div className="min-h-screen bg-white text-gray-900">
         <main className="mx-auto w-full max-w-5xl px-4 py-8 md:px-8 md:py-12">
@@ -144,7 +144,7 @@ export default function LoginPageEn() {
                 )}
               </ul>
               <div className="mt-6 rounded-xl bg-red-50 p-4 text-sm text-red-700">
-                <p className="font-semibold">New to YASUKARI?</p>
+                <p className="font-semibold">New to ヤスカリ?</p>
                 <p className="mt-1 leading-relaxed">
                   You can start with a quick pre-registration using your email. If you are new, please proceed to the
                   <button

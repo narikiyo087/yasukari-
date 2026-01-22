@@ -41,7 +41,7 @@ export default function HowToUseEn() {
     <section className="section-surface section-padding">
       <SectionHeading
         eyebrow="How to use"
-        title="How to use yasukari"
+        title="How to use ヤスカリ"
         description="Follow these four steps and enjoy a seamless rental experience from reservation to return."
       />
       <div className="flex flex-col items-stretch justify-center gap-6 md:flex-row md:items-start md:gap-4">

@@ -180,7 +180,7 @@ const availabilityIcon = (entry?: RentalAvailabilityDay) => (isAvailable(entry) 
   return (
     <>
       <Head>
-        <title>{resolvedModelName} availability - yasukari</title>
+        <title>{resolvedModelName} availability - ヤスカリ</title>
       </Head>
       <main className="min-h-screen bg-gray-50 pb-16">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">

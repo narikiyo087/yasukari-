@@ -5,7 +5,7 @@ export default function Custom404() {
   return (
     <main className="flex items-center justify-center min-h-[70vh] bg-gray-50 py-16 px-6">
       <Head>
-        <title>ページが見つかりません - yasukari</title>
+        <title>ページが見つかりません - ヤスカリ</title>
       </Head>
       <section className="max-w-xl w-full bg-white shadow-lg rounded-xl p-10 text-center space-y-6">
         <div className="space-y-2">

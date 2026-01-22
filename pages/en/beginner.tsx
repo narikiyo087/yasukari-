@@ -6,7 +6,7 @@ export default function BeginnerGuidePageEn() {
   return (
     <div className="max-w-[1440px] mx-auto p-6 space-y-6 text-sm leading-relaxed">
       <Head>
-        <title>Beginner&apos;s Guide - yasukari</title>
+        <title>Beginner&apos;s Guide - ヤスカリ</title>
       </Head>
 
       <img

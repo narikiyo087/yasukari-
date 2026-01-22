@@ -98,7 +98,7 @@ export default function BlogPost({ html, meta, posts, initialDate }: Props) {
   return (
     <div className="max-w-6xl mx-auto p-4 flex flex-row flex-wrap gap-6">
       <Head>
-        <title>{meta.title ? `${meta.title} - yasukari` : 'ブログ'}</title>
+        <title>{meta.title ? `${meta.title} - ヤスカリ` : 'ブログ'}</title>
         {meta.eyecatch && (
           <meta property="og:image" content={meta.eyecatch} />
         )}

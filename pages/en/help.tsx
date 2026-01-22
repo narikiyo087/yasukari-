@@ -21,7 +21,7 @@ export default function HelpPageEn({ categories }: Props) {
   return (
     <div className="space-y-12">
       <Head>
-        <title>Help - yasukari</title>
+        <title>Help - ヤスカリ</title>
       </Head>
 
       <section className="grid gap-6 rounded-2xl border border-slate-200 bg-white/80 p-6 shadow-sm md:grid-cols-[1.05fr,1fr] md:p-8">

@@ -4,7 +4,7 @@ export default function MopedManualPage() {
   return (
     <div className="p-6 text-center text-sm">
       <Head>
-        <title>原付ミッション - yasukari</title>
+        <title>原付ミッション - ヤスカリ</title>
       </Head>
       <h1 className="text-xl font-bold mb-4">原付ミッション</h1>
       <p className="mb-6">

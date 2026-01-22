@@ -4,7 +4,7 @@ export default function CompanyPage() {
   return (
     <div className="max-w-3xl mx-auto p-6 text-sm leading-relaxed">
       <Head>
-        <title>運営会社情報 - yasukari</title>
+        <title>運営会社情報 - ヤスカリ</title>
       </Head>
       <h1 className="text-xl font-bold mb-4 text-center">運営会社情報</h1>
       <table className="w-full border border-collapse mb-6">
@@ -35,7 +35,7 @@ export default function CompanyPage() {
           </tr>
         </tbody>
       </table>
-      <p className="text-center text-gray-500">Copyright © 2025 yasukari Inc.</p>
+      <p className="text-center text-gray-500">Copyright © 2025 ヤスカリ Inc.</p>
     </div>
   );
 }

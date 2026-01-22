@@ -64,7 +64,7 @@ export default function BlogIndex({
   return (
     <div className="max-w-6xl mx-auto p-4 flex flex-row flex-wrap gap-6">
       <Head>
-        <title>新着ブログ・お知らせ - yasukari</title>
+        <title>新着ブログ・お知らせ - ヤスカリ</title>
       </Head>
       <div className="w-[70%]">
         <h1 className="text-xl font-bold mb-4">新着ブログ・お知らせ</h1>

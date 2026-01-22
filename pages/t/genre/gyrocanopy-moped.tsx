@@ -4,7 +4,7 @@ export default function GyroCanopyMopedPage() {
   return (
     <div className="p-6 text-center text-sm">
       <Head>
-        <title>ジャイロキャノビー原付 - yasukari</title>
+        <title>ジャイロキャノビー原付 - ヤスカリ</title>
       </Head>
       <h1 className="text-xl font-bold mb-4">ジャイロキャノビー原付</h1>
       <p className="mb-6">

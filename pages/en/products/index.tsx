@@ -30,7 +30,7 @@ export default function AllProductsPageEn({ bikes, classes }: Props) {
   return (
     <>
       <Head>
-        <title>All Bikes - yasukari</title>
+        <title>All Bikes - ヤスカリ</title>
       </Head>
       <main className="p-6">
         <div className="max-w-6xl mx-auto space-y-6">
@@ -38,7 +38,7 @@ export default function AllProductsPageEn({ bikes, classes }: Props) {
             <p className="text-xs font-semibold uppercase tracking-wide text-red-500">lineup</p>
             <h1 className="text-2xl font-bold">All Bikes</h1>
             <p className="text-sm text-gray-600">
-              Browse the full lineup of bikes available on yasukari.
+              Browse the full lineup of bikes available on ヤスカリ.
             </p>
           </div>
 

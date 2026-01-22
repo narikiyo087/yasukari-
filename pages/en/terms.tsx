@@ -29,7 +29,7 @@ export default function TermsPageEn() {
   return (
     <div className="p-6 max-w-3xl mx-auto">
       <Head>
-        <title>Terms of Use - yasukari</title>
+        <title>Terms of Use - ヤスカリ</title>
       </Head>
       <h1 className="text-2xl font-bold mb-4">Terms of Use &amp; Notes</h1>
       <ol className="list-decimal pl-5 space-y-4 text-sm leading-relaxed">
