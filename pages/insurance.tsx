@@ -44,7 +44,7 @@ export default function InsurancePage() {
   return (
     <div className="max-w-3xl mx-auto p-6 text-sm leading-relaxed space-y-6">
       <Head>
-        <title>車両保険の内容について - yasukari</title>
+        <title>車両保険の内容について - ヤスカリ</title>
       </Head>
       <h1 className="text-xl font-bold mb-4 text-center">車両保険の内容について</h1>
 

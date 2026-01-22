@@ -9,7 +9,7 @@ export default function ChatPage() {
   return (
     <>
       <Head>
-        <title>チャットサポート | yasukari</title>
+        <title>チャットサポート | ヤスカリ</title>
       </Head>
       <main className="min-h-screen bg-gray-50 py-8 flex flex-col items-center">
         {isOpen ? (

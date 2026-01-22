@@ -5,7 +5,7 @@ export default function PaymentInfoCompletePage() {
   return (
     <>
       <Head>
-        <title>Payment Info Confirmed | yasukari</title>
+        <title>Payment Info Confirmed | ヤスカリ</title>
       </Head>
       <main className="min-h-screen bg-gray-50 pb-16">
         <div className="mx-auto max-w-3xl space-y-6 px-4 py-10 sm:px-6 lg:px-8">

@@ -30,7 +30,7 @@ export default function AllProductsPage({ bikes, classes }: Props) {
   return (
     <>
       <Head>
-        <title>全ての車種一覧 - yasukari</title>
+        <title>全ての車種一覧 - ヤスカリ</title>
       </Head>
       <main className="p-6">
         <div className="max-w-6xl mx-auto space-y-6">

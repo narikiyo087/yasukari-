@@ -4,7 +4,7 @@ export default function CC400PlusPage() {
   return (
     <div className="p-6 text-center text-sm">
       <Head>
-        <title>400cc超 - yasukari</title>
+        <title>400cc超 - ヤスカリ</title>
       </Head>
       <h1 className="text-xl font-bold mb-4">400cc超</h1>
       <p className="mb-6">

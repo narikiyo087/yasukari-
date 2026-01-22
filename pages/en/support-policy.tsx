@@ -5,7 +5,7 @@ export default function SupportPolicyEn() {
   return (
     <div className="max-w-3xl mx-auto p-6 text-sm leading-relaxed">
       <Head>
-        <title>Contact &amp; Support Policy - yasukari</title>
+        <title>Contact &amp; Support Policy - ヤスカリ</title>
       </Head>
       <h1 className="text-xl font-bold mb-4 text-center">Contact &amp; Support Policy</h1>
       <section className="space-y-4">

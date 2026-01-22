@@ -4,7 +4,7 @@ export default function CC251to400Page() {
   return (
     <div className="p-6 text-center text-sm">
       <Head>
-        <title>251〜400cc - yasukari</title>
+        <title>251〜400cc - ヤスカリ</title>
       </Head>
       <h1 className="text-xl font-bold mb-4">251〜400cc</h1>
       <p className="mb-6">

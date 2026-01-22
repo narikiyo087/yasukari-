@@ -4,7 +4,7 @@ export default function CompanyPageEn() {
   return (
     <div className="max-w-3xl mx-auto p-6 text-sm leading-relaxed">
       <Head>
-        <title>Company Information - yasukari</title>
+        <title>Company Information - ヤスカリ</title>
       </Head>
       <h1 className="text-xl font-bold mb-4 text-center">Company Information</h1>
       <table className="w-full border border-collapse mb-6">
@@ -35,7 +35,7 @@ export default function CompanyPageEn() {
           </tr>
         </tbody>
       </table>
-      <p className="text-center text-gray-500">Copyright © 2025 yasukari Inc.</p>
+      <p className="text-center text-gray-500">Copyright © 2025 ヤスカリ Inc.</p>
     </div>
   )
 }

@@ -21,7 +21,7 @@ export default function ChatDesignPage() {
   return (
     <>
       <Head>
-        <title>チャットUIデザイン | yasukari</title>
+        <title>チャットUIデザイン | ヤスカリ</title>
       </Head>
       <main className="min-h-screen bg-white px-6 py-10 space-y-12">
         <header className="space-y-2">

@@ -230,7 +230,7 @@ export default function ReserveModelPage({
   return (
     <>
       <Head>
-        <title>Reserve {resolvedModelName} - yasukari</title>
+        <title>Reserve {resolvedModelName} - ヤスカリ</title>
       </Head>
       <main className="min-h-screen bg-gray-50 pb-16">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">

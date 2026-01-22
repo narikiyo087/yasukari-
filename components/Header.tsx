@@ -131,7 +131,7 @@ export default function Header() {
           <Link href="/" className="flex items-center">
             <img
               src="https://yasukari.com/static/images/logo/250x50.png"
-              alt="yasukari logo"
+              alt="ヤスカリ ロゴ"
               className="h-8 w-auto"
             />
           </Link>

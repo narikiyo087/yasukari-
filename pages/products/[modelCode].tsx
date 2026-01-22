@@ -219,7 +219,7 @@ export default function ProductDetailPage({
   return (
     <>
       <Head>
-        <title>{bike.modelName} - yasukari</title>
+        <title>{bike.modelName} - ヤスカリ</title>
       </Head>
       <main className="min-h-screen bg-gradient-to-b from-gray-50 to-white pb-12">
         <div className="w-full py-8 space-y-10">
@@ -539,7 +539,7 @@ export default function ProductDetailPage({
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
           <div className="relative w-full max-w-lg overflow-hidden rounded-2xl bg-white shadow-2xl">
             <div className="bg-red-500 px-6 py-4 text-white">
-              <p className="text-sm font-semibold uppercase tracking-wide">yasukari Member</p>
+              <p className="text-sm font-semibold uppercase tracking-wide">ヤスカリ Member</p>
               <h2 className="mt-1 text-xl font-bold">会員登録で予約がスムーズに</h2>
             </div>
             <div className="space-y-4 px-6 py-5 text-gray-700">

@@ -210,7 +210,7 @@ export default function ProductDetailPageEn({
   return (
     <>
       <Head>
-        <title>{bike.modelName} - yasukari</title>
+        <title>{bike.modelName} - ヤスカリ</title>
       </Head>
       <main className="min-h-screen bg-gradient-to-b from-gray-50 to-white pb-12">
         <div className="w-full py-8 space-y-10">
@@ -256,7 +256,7 @@ export default function ProductDetailPageEn({
                   </div>
                   <p className="text-gray-700 leading-relaxed">
                     {bike.description ||
-                      "A popular pick on yasukari. Check the specs and pricing details below."}
+                      "A popular pick on ヤスカリ. Check the specs and pricing details below."}
                   </p>
                 </div>
 
@@ -520,7 +520,7 @@ export default function ProductDetailPageEn({
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
           <div className="relative w-full max-w-lg overflow-hidden rounded-2xl bg-white shadow-2xl">
             <div className="bg-red-500 px-6 py-4 text-white">
-              <p className="text-sm font-semibold uppercase tracking-wide">yasukari Member</p>
+              <p className="text-sm font-semibold uppercase tracking-wide">ヤスカリ Member</p>
               <h2 className="mt-1 text-xl font-bold">Finish signup to reserve</h2>
             </div>
             <div className="space-y-4 px-6 py-5 text-gray-700">
@@ -528,7 +528,7 @@ export default function ProductDetailPageEn({
                 If you are not logged in, please create an account and complete the full registration to make a reservation.
               </p>
               <div className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700">
-                Members enjoy better long-term rates, exclusive coupons, and more value every time you ride with yasukari.
+                Members enjoy better long-term rates, exclusive coupons, and more value every time you ride with ヤスカリ.
               </div>
               <ul className="grid gap-2 text-sm text-gray-600">
                 {[

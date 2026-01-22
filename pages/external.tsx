@@ -4,7 +4,7 @@ export default function ExternalDisclosure() {
   return (
     <>
       <Head>
-        <title>情報の外部送信について - yasukari</title>
+        <title>情報の外部送信について - ヤスカリ</title>
       </Head>
       <main className="max-w-3xl mx-auto p-6 text-sm leading-relaxed">
         <h1 className="text-xl font-bold mb-4 text-center">情報の外部送信について</h1>

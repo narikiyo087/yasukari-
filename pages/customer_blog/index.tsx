@@ -47,7 +47,7 @@ export default function CustomerBlogPage({ posts }: { posts: PostMeta[] }) {
   return (
     <div className="max-w-3xl mx-auto p-6 text-sm leading-relaxed">
       <Head>
-        <title>店舗ブログ - yasukari</title>
+        <title>店舗ブログ - ヤスカリ</title>
       </Head>
       <h1 className="text-xl font-bold mb-4 text-center">店舗ブログ</h1>
       <div className="space-y-4">

@@ -335,7 +335,7 @@ export default function RentalDetailPage() {
   return (
     <>
       <Head>
-        <title>レンタル詳細 - yasukari</title>
+        <title>レンタル詳細 - ヤスカリ</title>
       </Head>
       <main className="mx-auto flex min-h-screen w-full max-w-5xl flex-col gap-8 px-4 py-12">
         <header className="space-y-2 text-sm text-gray-600">

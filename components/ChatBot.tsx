@@ -283,7 +283,7 @@ export default function ChatBot({
 
   function handleDownloadHistory() {
     if (messages.length === 0) return;
-    const header = "【yasukari チャット履歴】";
+    const header = "【ヤスカリ チャット履歴】";
     const lines = messages.map(
       (m) => `[${m.time}] ${m.from === "bot" ? "スタッフ" : "あなた"}: ${m.text}`
     );

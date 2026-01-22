@@ -62,7 +62,7 @@ export default function BeginnerGuidePage() {
   return (
     <div className="bg-slate-50 text-slate-800">
       <Head>
-        <title>はじめてガイド - yasukari</title>
+        <title>はじめてガイド - ヤスカリ</title>
       </Head>
 
       <section className="overflow-hidden">

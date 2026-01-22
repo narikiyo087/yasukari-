@@ -44,12 +44,12 @@ export default function InsurancePageEn() {
   return (
     <div className="max-w-3xl mx-auto p-6 text-sm leading-relaxed space-y-6">
       <Head>
-        <title>Insurance Coverage - yasukari</title>
+        <title>Insurance Coverage - ヤスカリ</title>
       </Head>
       <h1 className="text-xl font-bold mb-4 text-center">Insurance Coverage Details</h1>
 
       <section className="space-y-4">
-        <p>The basic rental fee for yasukari bikes includes the following voluntary insurance.</p>
+        <p>The basic rental fee for ヤスカリ bikes includes the following voluntary insurance.</p>
         <ul className="list-disc list-inside space-y-1">
           {baseInsurances.map((item) => (
             <li key={item.label}>{item.label}: {item.description}</li>

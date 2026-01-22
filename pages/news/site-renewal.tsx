@@ -5,10 +5,10 @@ export default function SiteRenewalPage() {
   return (
     <div className="max-w-2xl mx-auto p-6 text-sm leading-relaxed">
       <Head>
-        <title>サイトリニューアルのお知らせ - yasukari</title>
+        <title>サイトリニューアルのお知らせ - ヤスカリ</title>
       </Head>
       <h1 className="text-xl font-bold mb-4 text-center">サイトリニューアルのお知らせ</h1>
-      <p className="mb-4">いつもご利用いただきありがとうございます。yasukari公式サイトは8月1日にデザインを刷新し、より快適に情報をお届けできるよう生まれ変わりました。今後は新機能の追加やコンテンツ拡充を順次行い、本サイトを中心に情報発信してまいります。</p>
+      <p className="mb-4">いつもご利用いただきありがとうございます。ヤスカリ公式サイトは8月1日にデザインを刷新し、より快適に情報をお届けできるよう生まれ変わりました。今後は新機能の追加やコンテンツ拡充を順次行い、本サイトを中心に情報発信してまいります。</p>
       <p className="mb-4">
         旧サイトはこちら →{' '}
         <a href="https://yasukari.com/" className="text-red-600 underline">

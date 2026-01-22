@@ -36,7 +36,7 @@ export default function NewsPage() {
   return (
     <div className="max-w-3xl mx-auto p-6 text-sm leading-relaxed">
       <Head>
-        <title>新着情報 - yasukari</title>
+        <title>新着情報 - ヤスカリ</title>
       </Head>
       <h1 className="text-xl font-bold mb-4 text-center">新着情報</h1>
       <div className="space-y-4">

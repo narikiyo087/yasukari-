@@ -4,7 +4,7 @@ export default function PrivacyPolicyEn() {
   return (
     <>
       <Head>
-        <title>Privacy Policy - yasukari</title>
+        <title>Privacy Policy - ヤスカリ</title>
       </Head>
       <main className="max-w-3xl mx-auto p-6 text-sm leading-relaxed">
         <h1 className="text-xl font-bold mb-4 text-center">Privacy Policy</h1>

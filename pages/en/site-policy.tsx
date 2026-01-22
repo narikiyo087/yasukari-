@@ -4,7 +4,7 @@ export default function SitePolicyEn() {
   return (
     <div className="max-w-3xl mx-auto p-6 text-sm leading-relaxed">
       <Head>
-        <title>Site Policy - yasukari</title>
+        <title>Site Policy - ヤスカリ</title>
       </Head>
       <h1 className="text-xl font-bold mb-4 text-center">Site Policy</h1>
       <section className="space-y-4">

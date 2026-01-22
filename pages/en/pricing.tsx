@@ -115,7 +115,7 @@ export default function PricingPageEn() {
   return (
     <div className="max-w-3xl mx-auto p-6">
       <Head>
-        <title>Models & Pricing - yasukari</title>
+        <title>Models & Pricing - ヤスカリ</title>
       </Head>
       <h1 className="text-2xl font-bold mb-4 text-center">Vehicle Types & Rates</h1>
       <p className="mb-6 text-sm text-gray-700">

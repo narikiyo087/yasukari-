@@ -5,7 +5,7 @@ export default function PaymentInfoCompletePage() {
   return (
     <>
       <Head>
-        <title>決済情報の確認完了 | yasukari</title>
+        <title>決済情報の確認完了 | ヤスカリ</title>
       </Head>
       <main className="min-h-screen bg-gray-50 pb-16">
         <div className="mx-auto max-w-3xl space-y-6 px-4 py-10 sm:px-6 lg:px-8">

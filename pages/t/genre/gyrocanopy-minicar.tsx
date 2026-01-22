@@ -4,7 +4,7 @@ export default function GyroCanopyMinicarPage() {
   return (
     <div className="p-6 text-center text-sm">
       <Head>
-        <title>ジャイロキャノビーミニカー - yasukari</title>
+        <title>ジャイロキャノビーミニカー - ヤスカリ</title>
       </Head>
       <h1 className="text-xl font-bold mb-4">ジャイロキャノビーミニカー</h1>
       <p className="mb-6">

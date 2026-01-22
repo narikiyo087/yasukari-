@@ -89,7 +89,7 @@ export default function HomeEn({ blogSlides, blogTags, bikeModelsAll, bikeClasse
   return (
     <>
       <Head>
-        <title>yasukari - Motorcycle Rentals</title>
+        <title>ヤスカリ - Motorcycle Rentals</title>
       </Head>
 
       <HeroSlider slides={heroSlides} />
@@ -155,7 +155,7 @@ export default function HomeEn({ blogSlides, blogTags, bikeModelsAll, bikeClasse
 
       <section className="section-surface section-padding">
         <SectionHeading
-          eyebrow="Why yasukari"
+          eyebrow="Why ヤスカリ"
           title="Three reasons riders choose us"
           description="Enjoy a seamless digital experience, meticulously maintained bikes, and supportive staff ready to help before, during, and after your trip."
         />

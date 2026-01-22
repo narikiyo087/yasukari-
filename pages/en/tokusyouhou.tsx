@@ -4,7 +4,7 @@ export default function TokusyouhouEn() {
   return (
     <div className="max-w-3xl mx-auto p-6">
       <Head>
-        <title>Act on Specified Commercial Transactions - yasukari</title>
+        <title>Act on Specified Commercial Transactions - ヤスカリ</title>
       </Head>
       <h1 className="text-xl font-bold mb-4 text-center">Act on Specified Commercial Transactions</h1>
       <table className="w-full border border-collapse text-sm">

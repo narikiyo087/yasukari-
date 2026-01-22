@@ -5,7 +5,7 @@ export default function StoresPage() {
   return (
     <div className="max-w-3xl mx-auto p-6 text-sm leading-relaxed">
       <Head>
-        <title>店舗一覧 - yasukari</title>
+        <title>店舗一覧 - ヤスカリ</title>
       </Head>
       <h1 className="text-xl font-bold mb-4 text-center">店舗一覧</h1>
 

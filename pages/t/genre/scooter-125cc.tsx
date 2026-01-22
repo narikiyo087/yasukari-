@@ -4,7 +4,7 @@ export default function Scooter125ccPage() {
   return (
     <div className="p-6 text-center text-sm">
       <Head>
-        <title>原付二種スクーター - yasukari</title>
+        <title>原付二種スクーター - ヤスカリ</title>
       </Head>
       <h1 className="text-xl font-bold mb-4">原付二種スクーター</h1>
       <p className="mb-6">

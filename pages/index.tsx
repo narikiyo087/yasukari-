@@ -83,7 +83,7 @@ export default function HomePage({ blogSlides, blogTags, bikeModelsAll, bikeClas
   return (
     <>
       <Head>
-        <title>yasukari - バイクレンタルサイト</title>
+        <title>ヤスカリ - バイクレンタルサイト</title>
       </Head>
 
       <HeroSlider slides={heroSlides} />
@@ -147,7 +147,7 @@ export default function HomePage({ blogSlides, blogTags, bikeModelsAll, bikeClas
 
       <section className="section-surface section-padding">
         <SectionHeading
-          eyebrow="Why yasukari"
+          eyebrow="Why ヤスカリ"
           title="選ばれる3つの理由"
           description="スムーズな予約体験、整備士による徹底管理、そしてライダー目線のサポート。最新のオンライン体験で、旅の準備時間をぐっと短縮します。"
         />
