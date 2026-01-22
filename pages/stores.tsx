@@ -1,5 +1,4 @@
 import Head from 'next/head';
-import Link from 'next/link';
 
 export default function StoresPage() {
   return (
@@ -98,14 +97,6 @@ export default function StoresPage() {
             referrerPolicy="no-referrer-when-downgrade"
           ></iframe>
         </div>
-        <p className="text-center mt-4">
-          <Link
-            href="/blog_for_custmor/2025-09-01-minowa-procedures"
-            className="inline-block bg-blue-500 text-white px-4 py-2 rounded"
-          >
-            お貸出し・返却手順はこちら
-          </Link>
-        </p>
       </section>
 
       <p className="mt-6 text-center text-gray-500">Copyright レンタルバイク『ヤスカリ』.</p>
