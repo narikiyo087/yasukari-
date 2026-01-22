@@ -130,7 +130,7 @@ export default function Header() {
           {/* ロゴ */}
           <Link href="/" className="flex items-center">
             <img
-              src="https://yasukari.com/static/images/logo/250x50.png"
+              src="https://yasukari-file.s3.ap-northeast-1.amazonaws.com/PhotoUploads/1769056104573-d731196a-700f-4cc2-948b-68cfdb40d14a-yasukari-logo.jpg"
               alt="ヤスカリ ロゴ"
               className="h-8 w-auto"
             />
