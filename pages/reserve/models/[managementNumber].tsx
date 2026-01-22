@@ -377,9 +377,9 @@ export default function ReserveModelPage({
               </div>
               {storeNotice ? (
                 <div className="rounded-lg bg-gray-50 p-3 text-xs text-gray-700 leading-relaxed">
-                  三ノ輪店は無人店の為、詳しい操作の説明ができません。
+                  三ノ輪店はセルフ店（セルフサービス）です。スタッフによる詳しい操作説明は行っておりません。
                   <br />
-                  バイクの操作に不安のある方、日本語での説明に不安がある方は、
+                  バイクの操作に不安がある方やセルフでのレンタルが難しそうな場合は、
                   <Link href="/stores#adachi" className="ml-1 font-semibold text-red-600 hover:underline">
                     足立小台本店の利用をお願いします。
                   </Link>

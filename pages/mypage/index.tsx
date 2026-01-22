@@ -853,8 +853,14 @@ export default function MyPage() {
                   href="/blog_for_custmor/2025-09-01-minowa-procedures"
                   className="text-sky-700 underline underline-offset-2 transition hover:text-sky-800"
                 >
-                  無人店舗でのレンタルについて
+                  セルフ店でのレンタルについて
                 </Link>
+                <p className="mt-2 text-xs text-gray-600">
+                  セルフでのレンタルが難しそうな場合は、
+                  <Link href="/stores#adachi" className="ml-1 font-semibold text-red-600 hover:underline">
+                    足立小台本店の利用をお願いします。
+                  </Link>
+                </p>
               </div>
             </>
           ) : null}
@@ -962,7 +968,7 @@ export default function MyPage() {
                           <div className="mt-3 rounded-lg border border-sky-200 bg-sky-50 p-3">
                             <div className="flex flex-wrap items-start justify-between gap-3">
                               <div>
-                                <p className="text-sm font-semibold text-sky-900">無人店舗の解錠情報</p>
+                                <p className="text-sm font-semibold text-sky-900">セルフ店の解錠情報</p>
                               </div>
                             <span className="inline-flex items-center rounded-full bg-white px-3 py-1 text-xs font-semibold text-sky-800 ring-1 ring-sky-200">
                               PIN発行済み

@@ -96,7 +96,7 @@ export default function HomePage({ blogSlides, blogTags, bikeModelsAll, bikeClas
         <SectionHeading
           eyebrow="Stores"
           title="お近くの店舗を選ぶ"
-          description="都内2店舗で営業中。アクセスの良い立地と広々としたピットで、受け取りから返却まで快適にご利用いただけます。"
+          description="都内2店舗で営業中。アクセスの良い立地と広々としたピットで、受け取りから返却まで快適にご利用いただけます。三ノ輪店はセルフ店（セルフサービス）です。"
         />
         <div className="mt-8">
           <Swiper
