@@ -2,7 +2,7 @@ import { Html, Head, Main, NextScript } from 'next/document'
 
 export default function Document() {
   return (
-    <Html>
+    <Html lang="ja">
       <Head>
         {/* External styles and icons */}
         <link rel="icon" type="image/svg+xml" href="/favicon.svg" />

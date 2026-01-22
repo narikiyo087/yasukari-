@@ -1,6 +1,6 @@
 import type { GetServerSideProps } from "next";
 
-const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://yasukaribike.com";
+const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://yasukari.com";
 
 const jaPaths = [
   "/",
@@ -21,17 +21,35 @@ const jaPaths = [
 
 const enPaths = jaPaths.map((path) => (path === "/" ? "/en" : `/en${path}`));
 
-const buildUrlEntry = (path: string) => {
+type AlternateLink = {
+  href: string;
+  hreflang: string;
+};
+
+const buildUrlEntry = (path: string, alternates: AlternateLink[]) => {
   const fullUrl = `${baseUrl}${path}`;
   const lastmod = new Date().toISOString();
+  const alternateLinks = alternates
+    .map((alternate) => `\n    <xhtml:link rel="alternate" hreflang="${alternate.hreflang}" href="${alternate.href}" />`)
+    .join("");
 
-  return `\n  <url>\n    <loc>${fullUrl}</loc>\n    <lastmod>${lastmod}</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>${path === "/" || path === "/en" ? "1.0" : "0.8"}</priority>\n  </url>`;
+  return `\n  <url>\n    <loc>${fullUrl}</loc>${alternateLinks}\n    <lastmod>${lastmod}</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>${path === "/" || path === "/en" ? "1.0" : "0.8"}</priority>\n  </url>`;
 };
 
 export const getServerSideProps: GetServerSideProps = async ({ res }) => {
-  const urlEntries = [...jaPaths, ...enPaths].map(buildUrlEntry).join("");
+  const urlEntries = jaPaths
+    .flatMap((jaPath, index) => {
+      const enPath = enPaths[index];
+      const alternates = [
+        { href: `${baseUrl}${jaPath}`, hreflang: "ja" },
+        { href: `${baseUrl}${enPath}`, hreflang: "en" },
+      ];
 
-  const sitemap = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${urlEntries}\n</urlset>`;
+      return [buildUrlEntry(jaPath, alternates), buildUrlEntry(enPath, alternates)];
+    })
+    .join("");
+
+  const sitemap = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">${urlEntries}\n</urlset>`;
 
   res.setHeader("Content-Type", "text/xml");
   res.write(sitemap);
