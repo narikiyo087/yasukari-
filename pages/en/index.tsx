@@ -89,7 +89,31 @@ export default function HomeEn({ blogSlides, blogTags, bikeModelsAll, bikeClasse
   return (
     <>
       <Head>
-        <title>ヤスカリ - Motorcycle Rentals</title>
+        <title>Yasukari | Affordable Motorcycle & Moped Rentals in Tokyo</title>
+        <meta
+          name="description"
+          content="Yasukari offers affordable motorcycle and moped rentals in Tokyo. Book online 24/7, pick up in Adachi or Minowa, and ride with confidence. ヤスカリ レンタルバイク 格安 東京 原付."
+        />
+        <meta
+          name="keywords"
+          content="Yasukari, motorcycle rental Tokyo, moped rental Tokyo, scooter rental Tokyo, affordable rental bike, rental bike Tokyo, Yasukari rental, ヤスカリ, レンタルバイク, 格安, 東京, 原付"
+        />
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content="Yasukari | Affordable Motorcycle & Moped Rentals in Tokyo" />
+        <meta
+          property="og:description"
+          content="Affordable motorcycle and moped rentals in Tokyo with 24/7 online booking. Pick up in Adachi or Minowa and ride today."
+        />
+        <meta property="og:url" content="https://yasukari.com/en" />
+        <meta property="og:image" content="https://yasukari.com/static/images/home/slide.jpg" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Yasukari | Affordable Motorcycle & Moped Rentals in Tokyo" />
+        <meta
+          name="twitter:description"
+          content="Affordable motorcycle and moped rentals in Tokyo with 24/7 online booking."
+        />
+        <meta name="twitter:image" content="https://yasukari.com/static/images/home/slide.jpg" />
+        <link rel="canonical" href="https://yasukari.com/en" />
       </Head>
 
       <HeroSlider slides={heroSlides} />
