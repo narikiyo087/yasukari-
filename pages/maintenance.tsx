@@ -5,7 +5,7 @@ export default function MaintenancePage() {
   return (
     <>
       <Head>
-        <title>現在サイト工事中です | YASUKARI</title>
+        <title>現在サイト工事中です | ヤスカリ</title>
       </Head>
       <main className={styles.main}>
         <section className={styles.card}>
