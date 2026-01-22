@@ -1,4 +1,5 @@
 import type { AppProps } from 'next/app';
+import Head from 'next/head';
 
 import '../styles/global.css';
 import '../styles/desktop.css';
@@ -20,13 +21,50 @@ export default function MyApp({ Component, pageProps }: AppProps) {
   const pathWithoutQuery = router.asPath.split('?')[0];
   const isRentalContractPage = pathWithoutQuery.startsWith('/rental-contract/');
   const isChatbotVisible = !isRentalContractPage;
+  const normalizedPath = router.pathname.replace(/^\/en(?=\/|$)/, '') || '/';
+  const noIndexPrefixes = [
+    '/admin',
+    '/auth',
+    '/chat',
+    '/chat-design',
+    '/login',
+    '/maintenance',
+    '/monitor',
+    '/mypage',
+    '/notifications',
+    '/payment-info',
+    '/register',
+    '/reserve',
+    '/rental-contract',
+    '/rental-status',
+    '/signup',
+    '/test',
+    '/wait',
+  ];
+  const shouldNoIndex = noIndexPrefixes.some(
+    (prefix) => normalizedPath === prefix || normalizedPath.startsWith(`${prefix}/`)
+  );
 
   if (isAdminRoute) {
-    return <Component {...pageProps} />;
+    return (
+      <>
+        {shouldNoIndex && (
+          <Head>
+            <meta name="robots" content="noindex, nofollow" />
+          </Head>
+        )}
+        <Component {...pageProps} />
+      </>
+    );
   }
 
   return (
     <>
+      {shouldNoIndex && (
+        <Head>
+          <meta name="robots" content="noindex, nofollow" />
+        </Head>
+      )}
       {!isRentalContractPage && (isEn ? <HeaderEn /> : <Header />)}
       <Layout>
         <Component {...pageProps} />
