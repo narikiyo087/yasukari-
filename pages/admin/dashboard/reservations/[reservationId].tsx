@@ -48,6 +48,8 @@ export default function ReservationDetailPage() {
   const [isCancellingWithoutRefund, setIsCancellingWithoutRefund] = useState<boolean>(false);
   const [refundNote, setRefundNote] = useState<string>("");
   const [cancelError, setCancelError] = useState<string>("");
+  const [isRefundConfirmOpen, setIsRefundConfirmOpen] = useState<boolean>(false);
+  const [refundConfirmInput, setRefundConfirmInput] = useState<string>("");
   const [highSeasonDates, setHighSeasonDates] = useState<Set<string>>(new Set());
   const [highSeasonLoading, setHighSeasonLoading] = useState<boolean>(false);
   const [highSeasonError, setHighSeasonError] = useState<string>("");
@@ -80,6 +82,28 @@ export default function ReservationDetailPage() {
       isEligible,
     };
   })();
+
+  const refundConfirmationLines = useMemo(() => {
+    if (!reservation) return [];
+
+    const userNotificationMessage =
+      reservation.status === "キャンセル"
+        ? ""
+        : `予約がキャンセルされました。決済いただいた金額（${formatPaymentAmount(
+            reservation.paymentAmount
+          )}）は自動で返金されます。`;
+
+    return [
+      "予約をキャンセルし、下記の内容で返金処理を行います。",
+      `決済番号 (pay.jp): ${reservation.paymentId || "未登録"}`,
+      `決済金額: ${formatPaymentAmount(reservation.paymentAmount)}`,
+      paymentDateInfo.label,
+      "",
+      userNotificationMessage
+        ? `ユーザー側ポップアップ想定: ${userNotificationMessage}`
+        : "ユーザー向けの案内メッセージも併せて表示されます。",
+    ];
+  }, [paymentDateInfo.label, reservation]);
 
   useEffect(() => {
     if (!router.isReady || typeof reservationId !== "string") return;
@@ -455,21 +479,6 @@ export default function ReservationDetailPage() {
             reservation.paymentAmount
           )}）は自動で返金されます。`;
 
-    const confirmationLines = [
-      "予約をキャンセルし、下記の内容で返金処理を行います。",
-      `決済番号 (pay.jp): ${reservation.paymentId || "未登録"}`,
-      `決済金額: ${formatPaymentAmount(reservation.paymentAmount)}`,
-      paymentDateInfo.label,
-      "",
-      userNotificationMessage
-        ? `ユーザー側ポップアップ想定: ${userNotificationMessage}`
-        : "ユーザー向けの案内メッセージも併せて表示されます。",
-    ];
-
-    if (!window.confirm(confirmationLines.join("\n"))) {
-      return;
-    }
-
     setIsCancelling(true);
     setCancelError("");
 
@@ -499,6 +508,21 @@ export default function ReservationDetailPage() {
     } finally {
       setIsCancelling(false);
     }
+  };
+
+  const handleOpenRefundCancel = () => {
+    if (!reservation || typeof reservationId !== "string") return;
+    if (reservation.status === "予約完了") return;
+
+    setRefundConfirmInput("");
+    setIsRefundConfirmOpen(true);
+  };
+
+  const handleConfirmRefundCancel = async () => {
+    if (refundConfirmInput !== "返金") return;
+
+    setIsRefundConfirmOpen(false);
+    await handleCancelReservation();
   };
 
   const handleCancelReservationWithoutRefund = async () => {
@@ -1039,12 +1063,20 @@ export default function ReservationDetailPage() {
                 />
                 <div className={styles.detailActions}>
                   <button
-                    className={`${styles.iconButton} ${styles.iconButtonDanger} ${styles.iconButtonDisabled}`}
+                    className={`${styles.iconButton} ${styles.iconButtonDanger} ${
+                      isCancelling || reservation.status === "キャンセル"
+                        ? styles.iconButtonDisabled
+                        : ""
+                    }`}
                     type="button"
-                    onClick={handleCancelReservation}
-                    disabled
+                    onClick={handleOpenRefundCancel}
+                    disabled={
+                      isCancelling ||
+                      reservation.status === "キャンセル" ||
+                      reservation.status === "予約完了"
+                    }
                   >
-                    {isCancelling ? "キャンセル処理中..." : "返金ありキャンセル (無効)"}
+                    {isCancelling ? "キャンセル処理中..." : "返金ありキャンセル"}
                   </button>
                   <button
                     className={`${styles.iconButton} ${styles.iconButtonDanger}`}
@@ -1066,6 +1098,51 @@ export default function ReservationDetailPage() {
                 </div>
                 {cancelError && (
                   <p className={`${styles.inlineNotice} ${styles.noticeDanger}`}>{cancelError}</p>
+                )}
+                {isRefundConfirmOpen && (
+                  <div className={styles.modalBackdrop}>
+                    <div className={styles.modalCard}>
+                      <h4 className={styles.modalTitle}>返金キャンセルの確認</h4>
+                      <p className={styles.modalBody}>
+                        本当に返金してもよろしいでしょうか？実行する場合は「返金」と入力してください。
+                      </p>
+                      <ul className={styles.modalList}>
+                        {refundConfirmationLines.map((line, index) => (
+                          <li key={`${line}-${index}`}>{line || " "}</li>
+                        ))}
+                      </ul>
+                      <label className={styles.modalLabel} htmlFor="refund-confirm-input">
+                        確認入力
+                      </label>
+                      <input
+                        id="refund-confirm-input"
+                        className={styles.modalInput}
+                        type="text"
+                        value={refundConfirmInput}
+                        onChange={(event) => setRefundConfirmInput(event.target.value)}
+                        placeholder="返金"
+                      />
+                      <div className={styles.modalActions}>
+                        <button
+                          className={`${styles.iconButton} ${styles.iconButtonSub}`}
+                          type="button"
+                          onClick={() => setIsRefundConfirmOpen(false)}
+                        >
+                          閉じる
+                        </button>
+                        <button
+                          className={`${styles.iconButton} ${styles.iconButtonDanger} ${
+                            refundConfirmInput === "返金" ? "" : styles.iconButtonDisabled
+                          }`}
+                          type="button"
+                          onClick={handleConfirmRefundCancel}
+                          disabled={refundConfirmInput !== "返金"}
+                        >
+                          返金してキャンセル
+                        </button>
+                      </div>
+                    </div>
+                  </div>
                 )}
               </div>
             </div>
