@@ -260,11 +260,7 @@ export default function BikeScheduleDetailPage() {
     if (selectedVehicle) {
       const normalized = normalizeAvailabilityMap(selectedVehicle.rentalAvailability);
       setAvailabilityMap(normalized);
-      setMaintenanceStartDate(
-        selectedVehicle.liabilityInsuranceExpiryDate ??
-          selectedVehicle.inspectionExpiryDate ??
-          formatDateKey(new Date())
-      );
+      setMaintenanceStartDate(formatDateKey(new Date()));
     } else {
       setAvailabilityMap({});
       setMaintenanceStartDate(formatDateKey(new Date()));
