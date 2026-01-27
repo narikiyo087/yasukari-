@@ -83,6 +83,15 @@ export default function ReservationDetailPage() {
     };
   })();
 
+  const formatPhoneNumber = (phone: string, countryCode?: string) =>
+    formatDisplayPhoneNumberWithCountryCode(phone, countryCode) || "-";
+
+  const formatPaymentAmount = (amount?: string) => {
+    if (!amount?.trim().length) return "決済金額未登録";
+    const normalized = amount.trim().replace(/円$/, "");
+    return `${normalized}円`;
+  };
+
   const refundConfirmationLines = useMemo(() => {
     if (!reservation) return [];
 
@@ -334,15 +343,6 @@ export default function ReservationDetailPage() {
         : null;
     })
     .filter((option): option is { key: string; label: string; count: number } => option !== null);
-
-  const formatPhoneNumber = (phone: string, countryCode?: string) =>
-    formatDisplayPhoneNumberWithCountryCode(phone, countryCode) || "-";
-
-  const formatPaymentAmount = (amount?: string) => {
-    if (!amount?.trim().length) return "決済金額未登録";
-    const normalized = amount.trim().replace(/円$/, "");
-    return `${normalized}円`;
-  };
 
   useEffect(() => {
     if (!reservation) return;
