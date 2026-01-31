@@ -5,6 +5,7 @@ import { FormEvent, useEffect, useMemo, useState } from "react";
 
 import DashboardLayout from "../../../../components/dashboard/DashboardLayout";
 import { formatDisplayPhoneNumberWithCountryCode } from "../../../../lib/phoneNumber";
+import { RentalAvailabilityMap } from "../../../../lib/dashboard/types";
 import { Reservation } from "../../../../lib/reservations";
 import styles from "../../../../styles/Dashboard.module.css";
 import tableStyles from "../../../../styles/AdminTable.module.css";
@@ -58,6 +59,10 @@ export default function ReservationDetailPage() {
   const [scheduleMessage, setScheduleMessage] = useState<string>("");
   const [scheduleError, setScheduleError] = useState<string>("");
   const [isUpdatingSchedule, setIsUpdatingSchedule] = useState<boolean>(false);
+  const [extensionDays, setExtensionDays] = useState<string>("1");
+  const [extensionMessage, setExtensionMessage] = useState<string>("");
+  const [extensionError, setExtensionError] = useState<string>("");
+  const [isUpdatingExtension, setIsUpdatingExtension] = useState<boolean>(false);
   const [isApprovingReturn, setIsApprovingReturn] = useState<boolean>(false);
   const [returnApprovalMessage, setReturnApprovalMessage] = useState<string>("");
   const [returnApprovalError, setReturnApprovalError] = useState<string>("");
@@ -294,6 +299,24 @@ export default function ReservationDetailPage() {
     return `${year}-${month}-${day}`;
   };
 
+  const buildExtendedReturnAt = (daysToAdd: number): Date | null => {
+    if (!reservation) return null;
+    const pickup = new Date(reservation.pickupAt);
+    const currentReturn = new Date(reservation.returnAt);
+    if (Number.isNaN(pickup.getTime()) || Number.isNaN(currentReturn.getTime())) return null;
+
+    const nextReturn = new Date(currentReturn);
+    nextReturn.setDate(nextReturn.getDate() + daysToAdd);
+    nextReturn.setHours(
+      pickup.getHours(),
+      pickup.getMinutes(),
+      pickup.getSeconds(),
+      pickup.getMilliseconds()
+    );
+
+    return nextReturn;
+  };
+
   const rentalDays = (() => {
     if (!reservation?.pickupAt || !reservation?.returnAt) return 0;
     const pickupDateTime = new Date(reservation.pickupAt);
@@ -369,6 +392,130 @@ export default function ReservationDetailPage() {
 
     const nextReturn = new Date(pickupDate.getTime() + rentalDurationMs);
     setReturnInput(formatDatetimeLocal(nextReturn.toISOString()));
+  };
+
+  const extensionPreview = useMemo(() => {
+    const days = Number(extensionDays);
+    if (!reservation || !Number.isFinite(days) || days <= 0) return "";
+    const nextReturn = buildExtendedReturnAt(days);
+    if (!nextReturn) return "";
+    return formatDatetimeLocal(nextReturn.toISOString());
+  }, [extensionDays, reservation]);
+
+  const isExtensionRangeAvailable = async (nextReturn: Date): Promise<boolean> => {
+    if (!reservation) return false;
+
+    const response = await fetch(`/api/vehicles/${reservation.vehicleCode}`);
+    if (!response.ok) {
+      throw new Error("車両の空き状況の取得に失敗しました");
+    }
+
+    const data = (await response.json()) as { rentalAvailability?: RentalAvailabilityMap };
+    const availability = data.rentalAvailability;
+    if (!availability) return false;
+
+    const currentReturn = new Date(reservation.returnAt);
+    if (Number.isNaN(currentReturn.getTime())) return false;
+
+    const startDate = new Date(
+      currentReturn.getFullYear(),
+      currentReturn.getMonth(),
+      currentReturn.getDate()
+    );
+    startDate.setDate(startDate.getDate() + 1);
+
+    const endDate = new Date(nextReturn.getFullYear(), nextReturn.getMonth(), nextReturn.getDate());
+
+    if (startDate > endDate) return true;
+
+    for (const cursor = new Date(startDate); cursor <= endDate; cursor.setDate(cursor.getDate() + 1)) {
+      const key = formatDateKey(cursor);
+      if (availability[key]?.status !== "AVAILABLE") {
+        return false;
+      }
+    }
+
+    return true;
+  };
+
+  const handleExtensionUpdate = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (!reservation || typeof reservationId !== "string") return;
+
+    const days = Number(extensionDays);
+    if (!Number.isFinite(days) || days <= 0) {
+      setExtensionError("延長日数は1以上で入力してください。");
+      return;
+    }
+
+    const nextReturn = buildExtendedReturnAt(days);
+    if (!nextReturn) {
+      setExtensionError("返却日時の計算に失敗しました。");
+      return;
+    }
+
+    const currentReturn = new Date(reservation.returnAt);
+    if (Number.isNaN(currentReturn.getTime())) {
+      setExtensionError("現在の返却日時が不正です。");
+      return;
+    }
+
+    const currentReturnDate = new Date(
+      currentReturn.getFullYear(),
+      currentReturn.getMonth(),
+      currentReturn.getDate()
+    );
+    const nextReturnDate = new Date(
+      nextReturn.getFullYear(),
+      nextReturn.getMonth(),
+      nextReturn.getDate()
+    );
+    if (nextReturnDate <= currentReturnDate) {
+      setExtensionError("延長後の返却日が現在の返却日以前になっています。");
+      return;
+    }
+
+    setExtensionMessage("");
+    setExtensionError("");
+    setIsUpdatingExtension(true);
+
+    try {
+      const isAvailable = await isExtensionRangeAvailable(nextReturn);
+      if (!isAvailable) {
+        setExtensionError("指定した日まで同じ車両の空きがありません。");
+        return;
+      }
+
+      if (!window.confirm("更新する際には、別途ユーザーの決済が必要になります。")) {
+        return;
+      }
+
+      const response = await fetch(`/api/reservations/${reservationId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          returnAt: nextReturn.toISOString(),
+        }),
+      });
+
+      const data = (await response.json()) as { reservation?: Reservation; error?: string };
+      if (!response.ok) {
+        throw new Error(data.error || "返却日時の延長に失敗しました");
+      }
+
+      if (data.reservation) {
+        setReservation(data.reservation);
+        setExtensionMessage("返却日時を延長しました。");
+      }
+    } catch (updateError) {
+      const message =
+        updateError instanceof Error
+          ? updateError.message
+          : "返却日時の延長中にエラーが発生しました";
+      setExtensionError(message);
+    } finally {
+      setIsUpdatingExtension(false);
+    }
   };
 
   const handleScheduleUpdate = async (event: FormEvent<HTMLFormElement>) => {
@@ -778,6 +925,58 @@ export default function ReservationDetailPage() {
                   )}
                   {scheduleMessage && (
                     <p className={`${styles.inlineNotice} ${styles.noticeSuccess}`}>{scheduleMessage}</p>
+                  )}
+                </form>
+              </div>
+
+              <div className={styles.detailPanel}>
+                <div className={styles.detailHeader}>
+                  <h3 className={styles.detailTitle}>レンタル延長設定</h3>
+                </div>
+                <form onSubmit={handleExtensionUpdate}>
+                  <label className={styles.inputLabel} htmlFor="extension-days">
+                    返却日時の追加日数
+                  </label>
+                  <input
+                    id="extension-days"
+                    className={styles.input}
+                    type="number"
+                    min={1}
+                    step={1}
+                    value={extensionDays}
+                    onChange={(event) => setExtensionDays(event.target.value)}
+                    required
+                  />
+                  <label className={styles.inputLabel} htmlFor="extension-return">
+                    延長後の返却日時 (日付のみ更新・時間は貸出日時に合わせる)
+                  </label>
+                  <input
+                    id="extension-return"
+                    className={styles.input}
+                    type="datetime-local"
+                    value={extensionPreview}
+                    readOnly
+                  />
+                  <p className={styles.mutedText}>
+                    返却日時の「日付」だけを更新します。延長対象日ごとに同じ車両が空いているか確認します。
+                  </p>
+                  <div className={`${styles.inlineNotice} ${styles.noticeNeutral}`}>
+                    更新する際には、別途ユーザーの決済が必要になります。
+                  </div>
+                  <div className={styles.detailActions}>
+                    <button
+                      className={`${styles.iconButton} ${styles.iconButtonAccent}`}
+                      type="submit"
+                      disabled={isUpdatingExtension || isReservationCompleted}
+                    >
+                      {isUpdatingExtension ? "更新中..." : "返却日時を延長"}
+                    </button>
+                  </div>
+                  {extensionError && (
+                    <p className={`${styles.inlineNotice} ${styles.noticeDanger}`}>{extensionError}</p>
+                  )}
+                  {extensionMessage && (
+                    <p className={`${styles.inlineNotice} ${styles.noticeSuccess}`}>{extensionMessage}</p>
                   )}
                 </form>
               </div>
