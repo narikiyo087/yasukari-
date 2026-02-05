@@ -5,7 +5,6 @@ import { useEffect, useMemo, useState } from "react";
 import DashboardLayout from "../../../../components/dashboard/DashboardLayout";
 import type { Member } from "../../../../lib/members";
 import type { Reservation } from "../../../../lib/reservations";
-import { formatDisplayPhoneNumber } from "../../../../lib/phoneNumber";
 import styles from "../../../../styles/Dashboard.module.css";
 import memberStyles from "../../../../styles/AdminMember.module.css";
 import tableStyles from "../../../../styles/AdminTable.module.css";
@@ -24,8 +23,21 @@ const statusBadgeClassName = (status: Member["status"]): string => {
 
 const formatPhoneValue = (value?: string) => {
   if (!value || value === "-") return "-";
-  const formatted = formatDisplayPhoneNumber(value);
-  return formatted || value;
+  const trimmed = value.trim();
+  if (!trimmed) return "-";
+  if (trimmed.startsWith("0")) return trimmed;
+
+  const normalized = trimmed.replace(/\s+/g, "");
+
+  if (normalized.startsWith("+81")) {
+    return `0${normalized.slice(3)}`;
+  }
+
+  if (normalized.startsWith("81")) {
+    return `0${normalized.slice(2)}`;
+  }
+
+  return trimmed;
 };
 
 export default function MemberDetailPage() {
