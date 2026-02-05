@@ -61,50 +61,54 @@ export default function InsurancePage() {
 
       <section>
         <h2 className="font-semibold mb-2">車両補償料金</h2>
-        <table className="w-full border border-collapse text-center">
-          <thead>
-            <tr>
-              <th className="border p-2">クラス</th>
-              <th className="border p-2">1日</th>
-              <th className="border p-2">1週間</th>
-              <th className="border p-2">2週間</th>
-              <th className="border p-2">1ヶ月</th>
-            </tr>
-          </thead>
-          <tbody>
-            {vehicleCoverage.map((row, idx) => (
-              <tr key={idx}>
-                {row.map((cell, i) => (
-                  <td key={i} className="border p-2">{cell}</td>
-                ))}
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[560px] border border-collapse text-center">
+            <thead>
+              <tr>
+                <th className="border p-2">クラス</th>
+                <th className="border p-2">1日</th>
+                <th className="border p-2">1週間</th>
+                <th className="border p-2">2週間</th>
+                <th className="border p-2">1ヶ月</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {vehicleCoverage.map((row, idx) => (
+                <tr key={idx}>
+                  {row.map((cell, i) => (
+                    <td key={i} className="border p-2">{cell}</td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
         <p className="mt-2">営業補償は車両補償加入の有無に関わらず発生します。基準は車両補償の免責内容と同じです。自走可能な場合は免責2万円、自走不可能またはレッカー使用時は免責5万円となります。</p>
       </section>
 
       <section>
         <h2 className="font-semibold mb-2">盗難補償オプション</h2>
         <p>加入すると、バイクが盗難にあった場合にオートバイの時価額の50%を補償します。未加入の場合は時価額100%をご負担いただきます。</p>
-        <table className="w-full border border-collapse text-center mt-2">
-          <thead>
-            <tr>
-              <th className="border p-2">クラス</th>
-              <th className="border p-2">料金</th>
-              <th className="border p-2">遅延の場合</th>
-            </tr>
-          </thead>
-          <tbody>
-            {theftCoverage.map((row, idx) => (
-              <tr key={idx}>
-                {row.map((cell, i) => (
-                  <td key={i} className="border p-2">{cell || '-'}</td>
-                ))}
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[520px] border border-collapse text-center mt-2">
+            <thead>
+              <tr>
+                <th className="border p-2">クラス</th>
+                <th className="border p-2">料金</th>
+                <th className="border p-2">遅延の場合</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {theftCoverage.map((row, idx) => (
+                <tr key={idx}>
+                  {row.map((cell, i) => (
+                    <td key={i} className="border p-2">{cell || '-'}</td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
         <p className="mt-1">ロードサービスは180kmまで対応します。</p>
       </section>
 
@@ -119,4 +123,3 @@ export default function InsurancePage() {
     </div>
   );
 }
-
