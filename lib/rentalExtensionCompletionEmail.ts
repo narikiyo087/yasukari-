@@ -1,3 +1,4 @@
+import { EMAIL_FOOTER_HTML, EMAIL_FOOTER_TEXT_LINES } from "./emailFooter";
 import type { Reservation } from "./reservations";
 import { addMailHistory } from "./mailHistory";
 import { enqueueEmail } from "./mailQueue";
@@ -65,10 +66,7 @@ const buildTextBody = ({
     "※お問い合わせは、本メールにご返信ください。",
     "大変恐れ入りますが、お電話でのお問い合わせはお受けしておりません。",
     "",
-    "ヤスカリ https://yasukaribike.com",
-    "足立小台本店 レンタル受付時間: 10:00 〜 19:00 （月曜定休）",
-    "三ノ輪店 レンタル受付時間: 24時間営業",
-    "事故受付専用:ロードサービス専用ダイヤル 0120-024-024",
+    ...EMAIL_FOOTER_TEXT_LINES,
   ]
     .filter(Boolean)
     .join("\n");
@@ -116,12 +114,7 @@ const buildHtmlBody = ({
       ※お問い合わせは、本メールにご返信ください。<br />
       大変恐れ入りますが、お電話でのお問い合わせはお受けしておりません。
     </p>
-    <p>
-      ヤスカリ https://yasukaribike.com<br />
-      足立小台本店 レンタル受付時間: 10:00 〜 19:00 （月曜定休）<br />
-      三ノ輪店 レンタル受付時間: 24時間営業<br />
-      事故受付専用:ロードサービス専用ダイヤル 0120-024-024
-    </p>
+    <p>${EMAIL_FOOTER_HTML}</p>
   </body>
 </html>`;
 };
