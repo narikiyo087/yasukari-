@@ -470,6 +470,22 @@ a:hover {
   transition: transform 0.25s ease;
 }
 
+@media (max-width: 640px) {
+  .faq-question {
+    align-items: flex-start;
+  }
+
+  .faq-question__eyebrow {
+    flex-shrink: 0;
+    margin-top: 0.1rem;
+  }
+
+  .faq-question__icon {
+    flex-shrink: 0;
+    margin-top: 0.35rem;
+  }
+}
+
 .faq-answer {
   margin: 0;
   max-height: 0;
