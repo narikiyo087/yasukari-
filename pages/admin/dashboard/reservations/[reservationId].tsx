@@ -4,7 +4,6 @@ import { useRouter } from "next/router";
 import { FormEvent, useEffect, useMemo, useState } from "react";
 
 import DashboardLayout from "../../../../components/dashboard/DashboardLayout";
-import { formatDisplayPhoneNumberWithCountryCode } from "../../../../lib/phoneNumber";
 import { RentalAvailabilityMap } from "../../../../lib/dashboard/types";
 import { Reservation } from "../../../../lib/reservations";
 import styles from "../../../../styles/Dashboard.module.css";
@@ -88,8 +87,7 @@ export default function ReservationDetailPage() {
     };
   })();
 
-  const formatPhoneNumber = (phone: string, countryCode?: string) =>
-    formatDisplayPhoneNumberWithCountryCode(phone, countryCode) || "-";
+  const formatPhoneNumber = (phone?: string) => phone?.trim() || "-";
 
   const formatPaymentAmount = (amount?: string) => {
     if (!amount?.trim().length) return "決済金額未登録";
@@ -1210,7 +1208,7 @@ export default function ReservationDetailPage() {
                   <div className={styles.detailItem}>
                     <dt>電話番号</dt>
                     <dd>
-                      {formatPhoneNumber(reservation.memberPhone, reservation.memberCountryCode)}
+                      {formatPhoneNumber(reservation.memberPhone)}
                     </dd>
                   </div>
                 </dl>
