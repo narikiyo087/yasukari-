@@ -39,6 +39,17 @@ type VerificationPreviewSample = {
   code: string;
 };
 
+type FormStatus = 'idle' | 'loading' | 'success' | 'error';
+
+type LicenseUploadState = {
+  fileName: string;
+  imageUrl: string;
+  uploadedAt: string;
+  status: FormStatus;
+  message: string;
+  inputKey: number;
+};
+
 const verificationPreviewSample = verificationPreview as VerificationPreviewSample;
 
 const PREVIEW_EMAIL = verificationPreviewSample.email;
@@ -70,6 +81,25 @@ const testAutofillData: Partial<RegisterFormData> = {
   enquete_magazine: '1',
   enquete_chance: '2',
 };
+
+const initialLicenseUploads: LicenseUploadState[] = [
+  {
+    fileName: '',
+    imageUrl: '',
+    uploadedAt: '',
+    status: 'idle',
+    message: '',
+    inputKey: 0,
+  },
+  {
+    fileName: '',
+    imageUrl: '',
+    uploadedAt: '',
+    status: 'idle',
+    message: '',
+    inputKey: 0,
+  },
+];
 
 const purposeOptions = [
   { value: '1', label: '旅行・レジャー' },
@@ -170,11 +200,7 @@ const RegisterTestPage: NextPage = () => {
   );
 
   const [formData, setFormData] = useState<RegisterFormData>(defaultFormData);
-  const [licenseFileName, setLicenseFileName] = useState('');
-  const [licenseImageUrl, setLicenseImageUrl] = useState('');
-  const [licenseUploadedAt, setLicenseUploadedAt] = useState('');
-  const [licenseUploadStatus, setLicenseUploadStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
-  const [licenseUploadMessage, setLicenseUploadMessage] = useState('');
+  const [licenseUploads, setLicenseUploads] = useState<LicenseUploadState[]>(initialLicenseUploads);
   const [submitMessage, setSubmitMessage] = useState('');
   const [submitStatus, setSubmitStatus] = useState<'success' | 'error' | ''>('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -210,11 +236,7 @@ const RegisterTestPage: NextPage = () => {
 
   useEffect(() => {
     setFormData(defaultFormData);
-    setLicenseFileName('');
-    setLicenseImageUrl('');
-    setLicenseUploadedAt('');
-    setLicenseUploadStatus('idle');
-    setLicenseUploadMessage('');
+    setLicenseUploads(initialLicenseUploads);
     setSubmitStatus('');
     setSubmitMessage('');
     autofillRef.current = false;
@@ -231,7 +253,14 @@ const RegisterTestPage: NextPage = () => {
       ...prev,
       ...testAutofillData,
     }));
-    setLicenseFileName(TEST_LICENSE_FILE_NAME);
+    setLicenseUploads((prev) => {
+      const next = [...prev];
+      next[0] = {
+        ...next[0],
+        fileName: TEST_LICENSE_FILE_NAME,
+      };
+      return next;
+    });
     autofillRef.current = true;
   }, [displayEmail]);
 
@@ -252,40 +281,74 @@ const RegisterTestPage: NextPage = () => {
     }));
   }, []);
 
-  const handleFileChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (!file) {
-      setLicenseFileName('');
-      setLicenseImageUrl('');
-      setLicenseUploadedAt('');
-      setLicenseUploadStatus('idle');
-      setLicenseUploadMessage('');
-      return;
-    }
+  const updateLicenseUpload = useCallback(
+    (index: number, updates: Partial<LicenseUploadState>) => {
+      setLicenseUploads((prev) =>
+        prev.map((slot, slotIndex) =>
+          slotIndex === index ? { ...slot, ...updates } : slot,
+        ),
+      );
+    },
+    [],
+  );
 
-    setLicenseFileName(file.name);
-    setLicenseUploadStatus('loading');
-    setLicenseUploadMessage('アップロード中...');
-
-    uploadLicenseImage(file)
-      .then((result) => {
-        setLicenseFileName(result.fileName);
-        setLicenseImageUrl(result.url);
-        setLicenseUploadedAt(result.uploadedAt);
-        setLicenseUploadStatus('success');
-        setLicenseUploadMessage('アップロードが完了しました。');
-      })
-      .catch((error) => {
-        const message =
-          error instanceof Error
-            ? error.message
-            : '免許証画像のアップロードに失敗しました。';
-        setLicenseImageUrl('');
-        setLicenseUploadedAt('');
-        setLicenseUploadStatus('error');
-        setLicenseUploadMessage(message);
-      });
+  const clearLicenseUpload = useCallback((index: number) => {
+    setLicenseUploads((prev) =>
+      prev.map((slot, slotIndex) =>
+        slotIndex === index
+          ? {
+              ...slot,
+              fileName: '',
+              imageUrl: '',
+              uploadedAt: '',
+              status: 'idle',
+              message: '',
+              inputKey: slot.inputKey + 1,
+            }
+          : slot,
+      ),
+    );
   }, []);
+
+  const handleFileChange = useCallback(
+    (index: number) => (event: ChangeEvent<HTMLInputElement>) => {
+      const file = event.target.files?.[0];
+      if (!file) {
+        clearLicenseUpload(index);
+        return;
+      }
+
+      updateLicenseUpload(index, {
+        fileName: file.name,
+        status: 'loading',
+        message: 'アップロード中...',
+      });
+
+      uploadLicenseImage(file)
+        .then((result) => {
+          updateLicenseUpload(index, {
+            fileName: result.fileName,
+            imageUrl: result.url,
+            uploadedAt: result.uploadedAt,
+            status: 'success',
+            message: 'アップロードが完了しました。',
+          });
+        })
+        .catch((error) => {
+          const message =
+            error instanceof Error
+              ? error.message
+              : '免許証画像のアップロードに失敗しました。';
+          updateLicenseUpload(index, {
+            imageUrl: '',
+            uploadedAt: '',
+            status: 'error',
+            message,
+          });
+        });
+    },
+    [clearLicenseUpload, updateLicenseUpload],
+  );
 
   const userIdFromQuery = useMemo(
     () => decodeParam(router.query.user_id) || decodeParam(router.query.sub),
@@ -312,15 +375,27 @@ const RegisterTestPage: NextPage = () => {
         return;
       }
 
-      if (licenseUploadStatus === 'loading') {
+      const hasLicenseUpload = licenseUploads.some(
+        (upload) => upload.imageUrl && upload.fileName,
+      );
+      const isUploadLoading = licenseUploads.some((upload) => upload.status === 'loading');
+      const hasUploadError = licenseUploads.some((upload) => upload.status === 'error');
+
+      if (isUploadLoading) {
         setSubmitStatus('error');
         setSubmitMessage('免許証画像のアップロードが完了するまでお待ちください。');
         return;
       }
 
-      if (licenseUploadStatus === 'error') {
+      if (hasUploadError) {
         setSubmitStatus('error');
         setSubmitMessage('免許証画像のアップロードに失敗しています。再度アップロードしてください。');
+        return;
+      }
+
+      if (!hasLicenseUpload) {
+        setSubmitStatus('error');
+        setSubmitMessage('免許証画像ファイルをアップロードしてください。');
         return;
       }
 
@@ -335,9 +410,12 @@ const RegisterTestPage: NextPage = () => {
           body: JSON.stringify({
             user_id: resolvedUserId,
             email: displayEmail,
-            license_file_name: licenseFileName,
-            license_image_url: licenseImageUrl,
-            license_uploaded_at: licenseUploadedAt,
+            license_file_name: licenseUploads[0]?.fileName ?? '',
+            license_image_url: licenseUploads[0]?.imageUrl ?? '',
+            license_uploaded_at: licenseUploads[0]?.uploadedAt ?? '',
+            license_file_name_2: licenseUploads[1]?.fileName ?? '',
+            license_image_url_2: licenseUploads[1]?.imageUrl ?? '',
+            license_uploaded_at_2: licenseUploads[1]?.uploadedAt ?? '',
             ...formData,
           }),
         });
@@ -360,7 +438,7 @@ const RegisterTestPage: NextPage = () => {
         }, 400);
       }
     },
-    [displayEmail, formData, licenseFileName, licenseImageUrl, licenseUploadedAt, licenseUploadStatus, resolvedUserId],
+    [displayEmail, formData, licenseUploads, resolvedUserId],
   );
 
   return (
@@ -673,44 +751,65 @@ const RegisterTestPage: NextPage = () => {
                     />
                   </div>
                   <div>
-                    <span className="block text-sm font-medium text-gray-700">免許画像アップロード</span>
-                    <label
-                      htmlFor="license_file"
-                      className="mt-3 flex w-full cursor-pointer flex-col items-center justify-center rounded-2xl border border-dashed border-gray-300 bg-gray-50 p-6 text-center transition hover:border-red-400 hover:bg-red-50"
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 16 16"
-                        width="64"
-                        height="64"
-                        fill="currentColor"
-                        className="text-gray-400"
-                      >
-                        <path d="M6.002 5.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0"></path>
-                        <path d="M1.5 2A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2zm13 1a.5.5 0 0 1 .5.5v6l-3.775-1.947a.5.5 0 0 0-.577.093l-3.71 3.71-2.66-1.772a.5.5 0 0 0-.63.062L1.002 12v.54L1 12.5v-9a.5.5 0 0 1 .5-.5z"></path>
-                      </svg>
-                      <span className="mt-3 text-sm text-gray-600">免許画像をアップロードしてください</span>
-                      <span className="mt-1 text-xs text-gray-400">ファイルサイズは10MB以下</span>
-                      {licenseFileName && <span className="mt-2 text-xs text-gray-500">選択済み: {licenseFileName}</span>}
-                    </label>
-                    <input
-                      id="license_file"
-                      name="license_file"
-                      type="file"
-                      accept="image/*"
-                      className="sr-only"
-                      onChange={handleFileChange}
-                    />
+                    <span className="block text-sm font-medium text-gray-700">免許画像アップロード（最大2枚）</span>
+                    <div className="mt-3 space-y-4">
+                      {licenseUploads.map((upload, index) => (
+                        <div key={`license-upload-${index}-${upload.inputKey}`}>
+                          <label
+                            htmlFor={`license_file_${index}`}
+                            className="flex w-full cursor-pointer flex-col items-center justify-center rounded-2xl border border-dashed border-gray-300 bg-gray-50 p-6 text-center transition hover:border-red-400 hover:bg-red-50"
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              viewBox="0 0 16 16"
+                              width="64"
+                              height="64"
+                              fill="currentColor"
+                              className="text-gray-400"
+                            >
+                              <path d="M6.002 5.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0"></path>
+                              <path d="M1.5 2A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2zm13 1a.5.5 0 0 1 .5.5v6l-3.775-1.947a.5.5 0 0 0-.577.093l-3.71 3.71-2.66-1.772a.5.5 0 0 0-.63.062L1.002 12v.54L1 12.5v-9a.5.5 0 0 1 .5-.5z"></path>
+                            </svg>
+                            <span className="mt-3 text-sm text-gray-600">
+                              免許画像 {index + 1}枚目{index === 1 ? '（任意）' : ''}
+                            </span>
+                            <span className="mt-1 text-xs text-gray-400">ファイルサイズは10MB以下</span>
+                            {upload.fileName && (
+                              <span className="mt-2 text-xs text-gray-500">選択済み: {upload.fileName}</span>
+                            )}
+                          </label>
+                          <input
+                            key={upload.inputKey}
+                            id={`license_file_${index}`}
+                            name={`license_file_${index}`}
+                            type="file"
+                            accept="image/*"
+                            className="sr-only"
+                            onChange={handleFileChange(index)}
+                            required={index === 0 && !upload.imageUrl}
+                          />
+                          {upload.status === 'loading' ? (
+                            <p className="mt-2 text-xs text-gray-500">アップロード中...</p>
+                          ) : null}
+                          {upload.status === 'success' ? (
+                            <p className="mt-2 text-xs text-green-600">{upload.message}</p>
+                          ) : null}
+                          {upload.status === 'error' ? (
+                            <p className="mt-2 text-xs text-red-600">{upload.message}</p>
+                          ) : null}
+                          {(upload.fileName || upload.imageUrl) && (
+                            <button
+                              type="button"
+                              onClick={() => clearLicenseUpload(index)}
+                              className="mt-2 text-xs font-semibold text-red-600 hover:underline"
+                            >
+                              クリア
+                            </button>
+                          )}
+                        </div>
+                      ))}
+                    </div>
                     <p className="mt-2 text-xs text-gray-500">テストアカウントではファイル選択を省略しても問題ありません。</p>
-                    {licenseUploadStatus === 'loading' ? (
-                      <p className="mt-2 text-xs text-gray-500">アップロード中...</p>
-                    ) : null}
-                    {licenseUploadStatus === 'success' ? (
-                      <p className="mt-2 text-xs text-green-600">{licenseUploadMessage}</p>
-                    ) : null}
-                    {licenseUploadStatus === 'error' ? (
-                      <p className="mt-2 text-xs text-red-600">{licenseUploadMessage}</p>
-                    ) : null}
                   </div>
                 </div>
               </div>
