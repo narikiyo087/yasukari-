@@ -14,6 +14,7 @@ type LicenseUpload = {
   uploadedAt: string;
   imageUrl: string;
   fileName: string;
+  imageCount: number;
 };
 
 export default function LicenseUploadListPage() {
@@ -96,6 +97,9 @@ export default function LicenseUploadListPage() {
                     />
                     <div className={styles.photoMeta}>
                       <span className={styles.photoName}>{upload.userName}</span>
+                      <span className={styles.photoSubtext}>
+                        登録枚数: {upload.imageCount}枚
+                      </span>
                       <span className={styles.photoSubtext}>
                         ファイル名: {upload.fileName}
                       </span>

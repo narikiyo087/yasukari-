@@ -8,6 +8,15 @@ import { uploadLicenseImage } from '../../../lib/licenseUpload';
 
 type FormStatus = 'idle' | 'loading' | 'success' | 'error';
 
+type LicenseUploadState = {
+  fileName: string;
+  imageUrl: string;
+  uploadedAt: string;
+  status: FormStatus;
+  message: string;
+  inputKey: number;
+};
+
 type RegisterFormData = {
   name1: string;
   name2: string;
@@ -139,6 +148,25 @@ const initialFormData: RegisterFormData = {
   enquete_chance: '1',
 };
 
+const initialLicenseUploads: LicenseUploadState[] = [
+  {
+    fileName: '',
+    imageUrl: '',
+    uploadedAt: '',
+    status: 'idle',
+    message: '',
+    inputKey: 0,
+  },
+  {
+    fileName: '',
+    imageUrl: '',
+    uploadedAt: '',
+    status: 'idle',
+    message: '',
+    inputKey: 0,
+  },
+];
+
 const RegistrationPage: NextPage = () => {
   const router = useRouter();
   const [sessionUser, setSessionUser] = useState<SessionUser | null>(null);
@@ -148,11 +176,7 @@ const RegistrationPage: NextPage = () => {
   const [selectedPhoneOption, setSelectedPhoneOption] = useState('');
 
   const [formData, setFormData] = useState<RegisterFormData>(initialFormData);
-  const [licenseFileName, setLicenseFileName] = useState('');
-  const [licenseImageUrl, setLicenseImageUrl] = useState('');
-  const [licenseUploadedAt, setLicenseUploadedAt] = useState('');
-  const [licenseUploadStatus, setLicenseUploadStatus] = useState<FormStatus>('idle');
-  const [licenseUploadMessage, setLicenseUploadMessage] = useState('');
+  const [licenseUploads, setLicenseUploads] = useState<LicenseUploadState[]>(initialLicenseUploads);
   const [submitStatus, setSubmitStatus] = useState<FormStatus>('idle');
   const [submitMessage, setSubmitMessage] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -178,7 +202,7 @@ const RegistrationPage: NextPage = () => {
       } catch (error) {
         if (!controller.signal.aborted) {
           console.error(error);
-      setUserError('We could not confirm your login status. Please try again later.');
+          setUserError('We could not confirm your login status. Please try again later.');
         }
       } finally {
         if (!controller.signal.aborted) {
@@ -260,40 +284,72 @@ const RegistrationPage: NextPage = () => {
     [],
   );
 
-  const handleFileChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (!file) {
-      setLicenseFileName('');
-      setLicenseImageUrl('');
-      setLicenseUploadedAt('');
-      setLicenseUploadStatus('idle');
-      setLicenseUploadMessage('');
-      return;
-    }
+  const updateLicenseUpload = useCallback(
+    (index: number, updates: Partial<LicenseUploadState>) => {
+      setLicenseUploads((prev) =>
+        prev.map((slot, slotIndex) =>
+          slotIndex === index ? { ...slot, ...updates } : slot,
+        ),
+      );
+    },
+    [],
+  );
 
-    setLicenseFileName(file.name);
-    setLicenseUploadStatus('loading');
-    setLicenseUploadMessage('Uploading...');
-
-    uploadLicenseImage(file)
-      .then((result) => {
-        setLicenseFileName(result.fileName);
-        setLicenseImageUrl(result.url);
-        setLicenseUploadedAt(result.uploadedAt);
-        setLicenseUploadStatus('success');
-        setLicenseUploadMessage('Upload completed.');
-      })
-      .catch((error) => {
-        const message =
-          error instanceof Error
-            ? error.message
-            : 'Failed to upload the license image.';
-        setLicenseImageUrl('');
-        setLicenseUploadedAt('');
-        setLicenseUploadStatus('error');
-        setLicenseUploadMessage(message);
-      });
+  const clearLicenseUpload = useCallback((index: number) => {
+    setLicenseUploads((prev) =>
+      prev.map((slot, slotIndex) =>
+        slotIndex === index
+          ? {
+              ...slot,
+              fileName: '',
+              imageUrl: '',
+              uploadedAt: '',
+              status: 'idle',
+              message: '',
+              inputKey: slot.inputKey + 1,
+            }
+          : slot,
+      ),
+    );
   }, []);
+
+  const handleFileChange = useCallback(
+    (index: number) => (event: ChangeEvent<HTMLInputElement>) => {
+      const file = event.target.files?.[0];
+      if (!file) {
+        clearLicenseUpload(index);
+        return;
+      }
+
+      updateLicenseUpload(index, {
+        fileName: file.name,
+        status: 'loading',
+        message: 'Uploading...',
+      });
+
+      uploadLicenseImage(file)
+        .then((result) => {
+          updateLicenseUpload(index, {
+            fileName: result.fileName,
+            imageUrl: result.url,
+            uploadedAt: result.uploadedAt,
+            status: 'success',
+            message: 'Upload completed.',
+          });
+        })
+        .catch((error) => {
+          const message =
+            error instanceof Error ? error.message : 'Failed to upload the license image.';
+          updateLicenseUpload(index, {
+            imageUrl: '',
+            uploadedAt: '',
+            status: 'error',
+            message,
+          });
+        });
+    },
+    [clearLicenseUpload, updateLicenseUpload],
+  );
 
   const handleSubmit = useCallback(
     async (event: FormEvent<HTMLFormElement>) => {
@@ -310,15 +366,27 @@ const RegistrationPage: NextPage = () => {
         return;
       }
 
-      if (licenseUploadStatus === 'loading') {
+      const hasLicenseUpload = licenseUploads.some(
+        (upload) => upload.imageUrl && upload.fileName,
+      );
+      const isUploadLoading = licenseUploads.some((upload) => upload.status === 'loading');
+      const hasUploadError = licenseUploads.some((upload) => upload.status === 'error');
+
+      if (isUploadLoading) {
         setSubmitStatus('error');
         setSubmitMessage('Please wait for the license image upload to finish.');
         return;
       }
 
-      if (licenseUploadStatus === 'error') {
+      if (hasUploadError) {
         setSubmitStatus('error');
         setSubmitMessage('The license image upload failed. Please upload again.');
+        return;
+      }
+
+      if (!hasLicenseUpload) {
+        setSubmitStatus('error');
+        setSubmitMessage('Please upload your license image file.');
         return;
       }
 
@@ -333,9 +401,12 @@ const RegistrationPage: NextPage = () => {
           body: JSON.stringify({
             user_id: sessionUser.id,
             email: sessionUser.email,
-            license_file_name: licenseFileName,
-            license_image_url: licenseImageUrl,
-            license_uploaded_at: licenseUploadedAt,
+            license_file_name: licenseUploads[0]?.fileName ?? '',
+            license_image_url: licenseUploads[0]?.imageUrl ?? '',
+            license_uploaded_at: licenseUploads[0]?.uploadedAt ?? '',
+            license_file_name_2: licenseUploads[1]?.fileName ?? '',
+            license_image_url_2: licenseUploads[1]?.imageUrl ?? '',
+            license_uploaded_at_2: licenseUploads[1]?.uploadedAt ?? '',
             ...formData,
           }),
         });
@@ -361,7 +432,7 @@ const RegistrationPage: NextPage = () => {
         }, 400);
       }
     },
-    [formData, licenseFileName, licenseImageUrl, licenseUploadedAt, licenseUploadStatus, router, sessionUser],
+    [formData, licenseUploads, router, sessionUser],
   );
 
   return (
@@ -642,28 +713,55 @@ const RegistrationPage: NextPage = () => {
                     placeholder="123456789012"
                   />
                 </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700" htmlFor="license_file_name">
-                    License image filename
-                  </label>
-                  <input
-                    id="license_file_name"
-                    name="license_file_name"
-                    type="file"
-                    accept="image/*"
-                    onChange={handleFileChange}
-                    className="mt-1 block w-full text-sm text-gray-700 file:mr-4 file:rounded-full file:border file:border-red-600 file:bg-white file:px-4 file:py-2 file:text-sm file:font-semibold file:text-red-600 hover:file:bg-red-50"
-                  />
-                  {licenseFileName ? <p className="mt-1 text-xs text-gray-500">Selected: {licenseFileName}</p> : null}
-                  {licenseUploadStatus === 'loading' ? (
-                    <p className="mt-1 text-xs text-gray-500">Uploading...</p>
-                  ) : null}
-                  {licenseUploadStatus === 'success' ? (
-                    <p className="mt-1 text-xs text-green-600">{licenseUploadMessage}</p>
-                  ) : null}
-                  {licenseUploadStatus === 'error' ? (
-                    <p className="mt-1 text-xs text-red-600">{licenseUploadMessage}</p>
-                  ) : null}
+                <div className="space-y-3">
+                  <span className="block text-sm font-medium text-gray-700">
+                    Upload license images (up to 2 files)
+                  </span>
+                  {licenseUploads.map((upload, index) => (
+                    <div
+                      key={`license-upload-${index}-${upload.inputKey}`}
+                      className="rounded-lg border border-gray-200 bg-white p-3"
+                    >
+                      <label
+                        className="block text-xs font-medium text-gray-700"
+                        htmlFor={`license_file_${index}`}
+                      >
+                        License image {index + 1}
+                        {index === 1 ? ' (optional)' : ''}
+                      </label>
+                      <input
+                        key={upload.inputKey}
+                        id={`license_file_${index}`}
+                        name={`license_file_${index}`}
+                        type="file"
+                        accept="image/*"
+                        onChange={handleFileChange(index)}
+                        required={index === 0 && !upload.imageUrl}
+                        className="mt-1 block w-full text-sm text-gray-700 file:mr-4 file:rounded-full file:border file:border-red-600 file:bg-white file:px-4 file:py-2 file:text-sm file:font-semibold file:text-red-600 hover:file:bg-red-50"
+                      />
+                      {upload.fileName ? (
+                        <p className="mt-1 text-xs text-gray-500">Selected: {upload.fileName}</p>
+                      ) : null}
+                      {upload.status === 'loading' ? (
+                        <p className="mt-1 text-xs text-gray-500">Uploading...</p>
+                      ) : null}
+                      {upload.status === 'success' ? (
+                        <p className="mt-1 text-xs text-green-600">{upload.message}</p>
+                      ) : null}
+                      {upload.status === 'error' ? (
+                        <p className="mt-1 text-xs text-red-600">{upload.message}</p>
+                      ) : null}
+                      {(upload.fileName || upload.imageUrl) && (
+                        <button
+                          type="button"
+                          onClick={() => clearLicenseUpload(index)}
+                          className="mt-2 text-xs font-semibold text-red-600 hover:underline"
+                        >
+                          Clear
+                        </button>
+                      )}
+                    </div>
+                  ))}
                 </div>
               </div>
 

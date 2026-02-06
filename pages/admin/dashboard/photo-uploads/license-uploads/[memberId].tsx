@@ -16,6 +16,12 @@ type LicenseUpload = {
   uploadedAt: string;
   imageUrl: string;
   fileName: string;
+  imageCount: number;
+  images: {
+    imageUrl: string;
+    fileName: string;
+    uploadedAt: string;
+  }[];
 };
 
 export default function LicenseUploadDetailPage() {
@@ -94,18 +100,27 @@ export default function LicenseUploadDetailPage() {
             </section>
           ) : upload ? (
             <section className={styles.detailLayout}>
-              <div className={styles.detailImageCard}>
-                <img
-                  src={upload.imageUrl}
-                  alt={`${upload.userName}の免許証画像`}
-                  className={styles.detailImage}
-                />
-                <div className={styles.detailMetaRow}>
-                  <span className={styles.detailMetaLabel}>確認ポイント</span>
-                  <p className={styles.detailNote}>
-                    免許証番号・氏名・有効期限が判別できるか確認してください。
-                  </p>
-                </div>
+              <div className={styles.uploadGrid}>
+                {upload.images.map((image, index) => (
+                  <div key={image.imageUrl} className={styles.detailImageCard}>
+                    <img
+                      src={image.imageUrl}
+                      alt={`${upload.userName}の免許証画像${index + 1}`}
+                      className={styles.detailImage}
+                    />
+                    <div className={styles.detailMetaRow}>
+                      <span className={styles.detailMetaLabel}>画像 {index + 1}</span>
+                      <span className={styles.detailMetaValue}>{image.fileName}</span>
+                      <span className={styles.detailMetaValue}>{image.uploadedAt}</span>
+                    </div>
+                    <div className={styles.detailMetaRow}>
+                      <span className={styles.detailMetaLabel}>確認ポイント</span>
+                      <p className={styles.detailNote}>
+                        免許証番号・氏名・有効期限が判別できるか確認してください。
+                      </p>
+                    </div>
+                  </div>
+                ))}
               </div>
               <aside className={styles.detailMetaCard}>
                 <div className={styles.detailMetaRow}>
@@ -129,6 +144,12 @@ export default function LicenseUploadDetailPage() {
                 <div className={styles.detailMetaRow}>
                   <span className={styles.detailMetaLabel}>ファイル名</span>
                   <span className={styles.detailMetaValue}>{upload.fileName}</span>
+                </div>
+                <div className={styles.detailMetaRow}>
+                  <span className={styles.detailMetaLabel}>登録枚数</span>
+                  <span className={styles.detailMetaValue}>
+                    {upload.imageCount}枚
+                  </span>
                 </div>
                 <div className={styles.detailMetaRow}>
                   <span className={styles.detailMetaLabel}>送信日時</span>
