@@ -92,14 +92,14 @@ export default function HomePage({ blogSlides, blogTags, bikeModelsAll, bikeClas
           name="keywords"
           content="ヤスカリ, レンタルバイク, 格安, 東京, 原付, バイクレンタル, 二輪レンタル, 足立区, 三ノ輪"
         />
-        <link rel="canonical" href="https://yasukari.com/" />
+        <link rel="canonical" href="https://yasukaribike.com/" />
         <meta property="og:type" content="website" />
         <meta property="og:title" content="ヤスカリ | 東京の格安レンタルバイク・原付ならヤスカリ" />
         <meta
           property="og:description"
           content="東京で格安のレンタルバイク・原付をお探しならヤスカリ。足立小台本店・三ノ輪店の2店舗で、整備済みバイクをスムーズに予約できます。"
         />
-        <meta property="og:url" content="https://yasukari.com/" />
+        <meta property="og:url" content="https://yasukaribike.com/" />
         <meta property="og:image" content="https://yasukari.com/static/images/home/slide.jpg" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="ヤスカリ | 東京の格安レンタルバイク・原付ならヤスカリ" />

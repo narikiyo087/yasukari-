@@ -104,7 +104,7 @@ export default function HomeEn({ blogSlides, blogTags, bikeModelsAll, bikeClasse
           property="og:description"
           content="Affordable motorcycle and moped rentals in Tokyo with 24/7 online booking. Pick up in Adachi or Minowa and ride today."
         />
-        <meta property="og:url" content="https://yasukari.com/en" />
+        <meta property="og:url" content="https://yasukaribike.com/en" />
         <meta property="og:image" content="https://yasukari.com/static/images/home/slide.jpg" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="Yasukari | Affordable Motorcycle & Moped Rentals in Tokyo" />
@@ -113,7 +113,7 @@ export default function HomeEn({ blogSlides, blogTags, bikeModelsAll, bikeClasse
           content="Affordable motorcycle and moped rentals in Tokyo with 24/7 online booking."
         />
         <meta name="twitter:image" content="https://yasukari.com/static/images/home/slide.jpg" />
-        <link rel="canonical" href="https://yasukari.com/en" />
+        <link rel="canonical" href="https://yasukaribike.com/en" />
       </Head>
 
       <HeroSlider slides={heroSlides} />
