@@ -142,7 +142,7 @@ const buildHtmlBody = (reservation: Reservation): string => {
 
     <p>
       バイクの扱いに関しましてご不安があるお客様は、<br />
-      <strong><span style="text-decoration: underline;">三ノ輪店（無人）ではスタッフのサポートがありませんので、</span></strong><br />
+      <strong><span style="text-decoration: underline;">三ノ輪店（無人）ではスタッフのサポートがありません</span>ので、</strong><br />
       足立店（有人）でのご予約を推奨しております。
     </p>
 
