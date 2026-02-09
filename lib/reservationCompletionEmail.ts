@@ -126,7 +126,8 @@ const buildHtmlBody = (reservation: Reservation): string => {
 
     <p>
       ＝＝＝＝＝＝＝＝＝＝＝<br />
-      <strong>※マイページでご確認ください※</strong><br /><br />
+      <strong>※必ずマイページを事前にご確認ください※</strong><br />
+      <strong><span style="color: #d0021b;">ご確認いただけない場合、当日に車両のお貸出ができない場合がございますので、ご注意ください。</span></strong><br /><br />
       ① バイクの乗車マニュアル（操作方法・注意点）<br />
       ② ご予約内容の詳細（開錠コード・返却ボタン）<br /><br />
       ▼予約詳細ページはこちらから<br />
@@ -136,6 +137,7 @@ const buildHtmlBody = (reservation: Reservation): string => {
 
     <p>
       また、三ノ輪店でご予約された方に関しまして、<br />
+      <strong><span style="color: #d0021b; text-decoration: underline;">三ノ輪店（無人）ではスタッフのサポートがありませんので、</span></strong><br />
       三ノ輪店は完全セルフ対応の店舗となっております。
     </p>
 
