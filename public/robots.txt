@@ -1,3 +1,7 @@
 User-agent: *
 Allow: /
+Disallow: /admin/
+Disallow: /mypage/
+Disallow: /en/mypage/
+Disallow: /auth/
 Sitemap: https://yasukaribike.com/sitemap.xml
