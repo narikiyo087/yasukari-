@@ -82,6 +82,17 @@ const buildDateKeysInRange = (start: string, end: string): string[] => {
   return keys;
 };
 
+const isVehicleAvailableForDateKeys = (
+  availability: RentalAvailabilityMap,
+  dateKeys: string[]
+): boolean => {
+  if (dateKeys.length === 0) {
+    return false;
+  }
+
+  return dateKeys.every((key) => availability[key]?.status === "AVAILABLE");
+};
+
 const buildAdminChangeNote = (renterName: string) => {
   const parts = [renterName.trim() || "名前未登録", "管理者により変更"];
   return Array.from(new Set(parts)).join(" / ");
@@ -224,6 +235,34 @@ export default async function handler(
       if ((body.vehicleCode || body.vehiclePlate) && vehicleSelectionChanged) {
         if (body.vehicleModel && body.vehicleModel !== existingReservation.vehicleModel) {
           return res.status(400).json({ error: "同一車種の車両のみ選択できます" });
+        }
+
+        if (requestedVehicleCode !== existingReservation.vehicleCode) {
+          const client = getDocumentClient();
+          const vehicleResult = await client.send(
+            new GetCommand({
+              TableName: VEHICLES_TABLE,
+              Key: { managementNumber: requestedVehicleCode },
+            })
+          );
+
+          if (!vehicleResult.Item) {
+            return res.status(404).json({ error: "指定された車両が見つかりません。" });
+          }
+
+          const nextVehicle = vehicleResult.Item as VehicleRecord;
+          const nextAvailability = normalizeRentalAvailability(nextVehicle.rentalAvailability);
+          const requiredDateKeys = buildDateKeysInRange(
+            existingReservation.pickupAt,
+            existingReservation.returnAt
+          );
+
+          if (!isVehicleAvailableForDateKeys(nextAvailability, requiredDateKeys)) {
+            return res.status(400).json({
+              error:
+                "変更先の車両は予約期間中にレンタル不可の日があります。1日でもレンタル可でない日は変更できません。",
+            });
+          }
         }
 
         updates.vehicleChangedAt = body.vehicleChangedAt ?? new Date().toISOString();

@@ -39,7 +39,9 @@ export default function ReservationDetailPage() {
   const [reservation, setReservation] = useState<Reservation | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const [vehicleOptions, setVehicleOptions] = useState<{ code: string; plate: string }[]>([]);
+  const [vehicleOptions, setVehicleOptions] = useState<
+    { code: string; plate: string; isCurrent: boolean }[]
+  >([]);
   const [selectedVehicleCode, setSelectedVehicleCode] = useState<string>("");
   const [vehicleChangeMessage, setVehicleChangeMessage] = useState<string>("");
   const [vehicleChangeError, setVehicleChangeError] = useState<string>("");
@@ -165,23 +167,55 @@ export default function ReservationDetailPage() {
     const controller = new AbortController();
     const loadVehicleOptions = async () => {
       try {
-        const response = await fetch("/api/reservations", { signal: controller.signal });
-        if (!response.ok) throw new Error(`Failed to fetch vehicles: ${response.status}`);
+        const [currentVehicleResponse, vehiclesResponse] = await Promise.all([
+          fetch(`/api/vehicles/${reservation.vehicleCode}`, { signal: controller.signal }),
+          fetch("/api/vehicles", { signal: controller.signal }),
+        ]);
 
-        const data = (await response.json()) as { reservations?: Reservation[] };
-        const sameModel = (data.reservations ?? []).filter(
-          (item) => item.vehicleModel === reservation.vehicleModel
-        );
+        if (!currentVehicleResponse.ok) {
+          throw new Error(`Failed to fetch current vehicle: ${currentVehicleResponse.status}`);
+        }
 
-        const uniqueOptions = sameModel.reduce<{ code: string; plate: string }[]>((acc, curr) => {
-          if (!acc.some((option) => option.code === curr.vehicleCode)) {
-            acc.push({ code: curr.vehicleCode, plate: curr.vehiclePlate });
+        if (!vehiclesResponse.ok) {
+          throw new Error(`Failed to fetch vehicles: ${vehiclesResponse.status}`);
+        }
+
+        const currentVehicle = (await currentVehicleResponse.json()) as {
+          modelId?: number;
+        };
+        const vehicles = (await vehiclesResponse.json()) as {
+          managementNumber: string;
+          modelId?: number;
+          licensePlateNumber?: string;
+        }[];
+
+        const sameModelVehicles = vehicles
+          .filter((item) => item.modelId === currentVehicle.modelId)
+          .sort((a, b) => a.managementNumber.localeCompare(b.managementNumber));
+
+        const uniqueOptions = sameModelVehicles.reduce<
+          { code: string; plate: string; isCurrent: boolean }[]
+        >((acc, curr) => {
+          if (!acc.some((option) => option.code === curr.managementNumber)) {
+            acc.push({
+              code: curr.managementNumber,
+              plate: curr.licensePlateNumber?.trim() || "ナンバー未設定",
+              isCurrent: curr.managementNumber === reservation.vehicleCode,
+            });
           }
           return acc;
         }, []);
 
+        if (!uniqueOptions.some((option) => option.code === reservation.vehicleCode)) {
+          uniqueOptions.unshift({
+            code: reservation.vehicleCode,
+            plate: reservation.vehiclePlate,
+            isCurrent: true,
+          });
+        }
+
         setVehicleOptions(uniqueOptions);
-        setSelectedVehicleCode((prev) => prev || reservation.vehicleCode);
+        setSelectedVehicleCode(reservation.vehicleCode);
       } catch (vehicleError) {
         if (!controller.signal.aborted) {
           console.error(vehicleError);
@@ -1134,6 +1168,12 @@ export default function ReservationDetailPage() {
                     <dt>ナンバープレート</dt>
                     <dd>
                       <div className={styles.monospace}>{reservation.vehiclePlate}</div>
+                      <div className={styles.selectionSummary}>
+                        <span>
+                          現在選択中: <strong>{selectedVehicleCode || reservation.vehicleCode}</strong>
+                        </span>
+                        <span>候補台数: {vehicleOptions.length}台</span>
+                      </div>
                       <form className={styles.changeRow} onSubmit={handleVehicleChange}>
                         <label className={styles.srOnly} htmlFor="vehicle-select">
                           同じ車種から車両を選ぶ
@@ -1151,6 +1191,7 @@ export default function ReservationDetailPage() {
                             vehicleOptions.map((option) => (
                               <option key={option.code} value={option.code}>
                                 {option.code} / {option.plate}
+                                {option.isCurrent ? "（現在の車両）" : ""}
                               </option>
                             ))
                           )}
@@ -1165,7 +1206,10 @@ export default function ReservationDetailPage() {
                           {isUpdatingVehicle ? "変更中..." : "車両を変更"}
                         </button>
                       </form>
-                      <p className={styles.mutedText}>同じ車種の車両一覧から選択できます。</p>
+                      <p className={styles.mutedText}>
+                        同じ車種の車両候補をすべて表示しています。変更時には予約期間中の空き状況を確認し、
+                        1日でもレンタル不可がある場合は更新できません。
+                      </p>
                       {vehicleChangeError && (
                         <p className={`${styles.inlineNotice} ${styles.noticeDanger}`}>
                           {vehicleChangeError}
