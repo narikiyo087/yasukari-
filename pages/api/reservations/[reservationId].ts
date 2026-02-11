@@ -213,7 +213,15 @@ export default async function handler(
         updates.vehiclePlate = body.vehiclePlate;
       }
 
-      if (body.vehicleCode || body.vehiclePlate) {
+      const requestedVehicleCode =
+        typeof body.vehicleCode === "string" ? body.vehicleCode : existingReservation.vehicleCode;
+      const requestedVehiclePlate =
+        typeof body.vehiclePlate === "string" ? body.vehiclePlate : existingReservation.vehiclePlate;
+      const vehicleSelectionChanged =
+        requestedVehicleCode !== existingReservation.vehicleCode ||
+        requestedVehiclePlate !== existingReservation.vehiclePlate;
+
+      if ((body.vehicleCode || body.vehiclePlate) && vehicleSelectionChanged) {
         if (body.vehicleModel && body.vehicleModel !== existingReservation.vehicleModel) {
           return res.status(400).json({ error: "同一車種の車両のみ選択できます" });
         }
