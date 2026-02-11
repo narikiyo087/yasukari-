@@ -23,7 +23,7 @@ export default function MyApp({ Component, pageProps }: AppProps) {
   const isRentalContractPage = pathWithoutQuery.startsWith('/rental-contract/');
   const isChatbotVisible = !isRentalContractPage;
   const normalizedPath = router.pathname.replace(/^\/en(?=\/|$)/, '') || '/';
-  const noIndexPrefixes = ['/admin', '/mypage'];
+  const noIndexPrefixes = ['/admin', '/mypage', '/auth'];
   const shouldNoIndex = noIndexPrefixes.some(
     (prefix) => normalizedPath === prefix || normalizedPath.startsWith(`${prefix}/`)
   );
