@@ -49,6 +49,7 @@ export default function MyPage() {
   const [showReturnModal, setShowReturnModal] = useState(false);
   const [showReturnExpiredModal, setShowReturnExpiredModal] = useState(false);
   const [showUnlockQrModal, setShowUnlockQrModal] = useState(false);
+  const [showTroubleGuide, setShowTroubleGuide] = useState(true);
   const [returnFile, setReturnFile] = useState<File | null>(null);
   const [returnError, setReturnError] = useState('');
   const [returnUploading, setReturnUploading] = useState(false);
@@ -783,7 +784,11 @@ export default function MyPage() {
           </nav>
           <h1 className="text-2xl font-semibold text-gray-900">マイページ</h1>
           <p className="text-sm text-gray-500">ログイン中のプロフィール情報を確認できます。</p>
-          <div className="mt-3 rounded-lg border border-rose-300 bg-gradient-to-r from-rose-50 via-rose-100 to-rose-50 p-4 text-xs text-rose-900 shadow-sm ring-1 ring-rose-200/70">
+          <div
+            className={`mt-3 rounded-lg border border-rose-300 bg-gradient-to-r from-rose-50 via-rose-100 to-rose-50 p-4 text-xs text-rose-900 shadow-sm ring-1 ring-rose-200/70 ${
+              showTroubleGuide ? 'block' : 'hidden md:block'
+            }`}
+          >
             <div className="flex items-start gap-3">
               <span
                 aria-hidden
@@ -791,8 +796,18 @@ export default function MyPage() {
               >
                 ⚠️
               </span>
-              <div>
-                <p className="text-sm font-semibold text-rose-900">万が一の故障時のご案内</p>
+              <div className="flex-1">
+                <div className="flex items-start justify-between gap-3">
+                  <p className="text-sm font-semibold text-rose-900">万が一の故障時のご案内</p>
+                  <button
+                    type="button"
+                    onClick={() => setShowTroubleGuide(false)}
+                    className="inline-flex h-7 w-7 items-center justify-center rounded-full border border-rose-200 bg-white text-sm font-semibold text-rose-700 shadow-sm transition hover:bg-rose-100 md:hidden"
+                    aria-label="故障時案内を閉じる"
+                  >
+                    ×
+                  </button>
+                </div>
                 <p className="mt-2">
                   万が一、ご利用中のバイクが故障した場合は貸し出し店舗より 180キロ圏内でしたら無料で24時間ロードサービスが使えます。
                   弊社営業時間内であれば一度店へお電話いただき、営業時間外でしたらそのままロードサービスをご手配ください。
