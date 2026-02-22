@@ -329,6 +329,14 @@ export default function BikeScheduleDetailPage() {
     return reservationStatus === "RENTED" || reservationStatus === "RENTAL_COMPLETED";
   };
 
+  const isInsuranceOrInspectionMaintenance = (entry?: RentalAvailabilityDay) => {
+    if (!entry || entry.status !== "MAINTENANCE") {
+      return false;
+    }
+
+    return entry.note === "自賠責満了期間" || entry.note === "車検満了期間";
+  };
+
   const confirmOverrideRentalStatus = () =>
     window.confirm("レンタル中というステータスになっていますが、変更しますか？");
 
@@ -462,37 +470,44 @@ export default function BikeScheduleDetailPage() {
       return;
     }
 
+    const shouldBulkSet = window.confirm(
+      "現在のステータスがレンタル中・自賠責・車検以外は、全てレンタル可になりますがよろしいですか？"
+    );
+
+    if (!shouldBulkSet) {
+      return;
+    }
+
     const year = displayMonth.getFullYear();
     const month = displayMonth.getMonth();
     const daysInMonth = new Date(year, month + 1, 0).getDate();
 
     const updatedAvailability: RentalAvailabilityMap = { ...availabilityMap };
-    const rentalDatesInMonth: string[] = [];
+    const nextRentalOverrideDates = new Set(rentalOverrideDates);
 
     for (let day = 1; day <= daysInMonth; day += 1) {
       const dateKey = formatDateKey(new Date(year, month, day));
-      if (isReservationLockedDate(dateKey) && !rentalOverrideDates.has(dateKey)) {
-        rentalDatesInMonth.push(dateKey);
-      } else {
-        updatedAvailability[dateKey] = { status: "AVAILABLE" };
+      const manualEntry = availabilityMap[dateKey];
+      const reservedEntry = reservationAvailabilityMap[dateKey];
+      const currentEntry = manualEntry ?? reservedEntry;
+      const isRentalLocked = isReservationLockedDate(dateKey);
+      const keepMaintenanceStatus = isInsuranceOrInspectionMaintenance(currentEntry);
+
+      if (isRentalLocked || keepMaintenanceStatus) {
+        if (manualEntry) {
+          updatedAvailability[dateKey] = manualEntry;
+        } else {
+          delete updatedAvailability[dateKey];
+        }
+        continue;
       }
-    }
 
-    const shouldOverrideRentalStatus =
-      rentalDatesInMonth.length === 0 || confirmOverrideRentalStatus();
-
-    if (shouldOverrideRentalStatus) {
-      rentalDatesInMonth.forEach((dateKey) => {
-        updatedAvailability[dateKey] = { status: "AVAILABLE" };
-      });
-      setRentalOverrideDates((prev) => {
-        const next = new Set(prev);
-        rentalDatesInMonth.forEach((dateKey) => next.add(dateKey));
-        return next;
-      });
+      updatedAvailability[dateKey] = { status: "AVAILABLE" };
+      nextRentalOverrideDates.delete(dateKey);
     }
 
     setAvailabilityMap(updatedAvailability);
+    setRentalOverrideDates(nextRentalOverrideDates);
     setActiveDate(null);
     setActiveNote("");
     setActiveStatus("AVAILABLE");
