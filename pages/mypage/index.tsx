@@ -63,6 +63,7 @@ export default function MyPage() {
   const [rentalTermsUpdatedAt, setRentalTermsUpdatedAt] = useState<string | null>(null);
   const [mobileSectionsOpen, setMobileSectionsOpen] = useState({
     reservations: true,
+    howToUse: true,
     profile: false,
     registration: false,
     rentalTerms: true,
@@ -71,6 +72,28 @@ export default function MyPage() {
   });
   const router = useRouter();
   const sectionActionClass = 'inline-flex items-center justify-center rounded-full px-4 py-2 text-sm font-semibold';
+  const howToUseSteps = [
+    {
+      title: '1. 店舗を選ぶ',
+      description:
+        '足立小台本店（足立区の格安バイク屋）と三ノ輪店（東京都台東区の国道4号線沿いのレンタルバイク店）のどちらから借りるか選択します。三ノ輪店はセルフ店（セルフサービス）です。',
+    },
+    {
+      title: '2. ご予約',
+      description:
+        '車両ページでスケジュールを確認しクレジットカードで予約。変更やキャンセルはお問い合わせから連絡してください。',
+    },
+    {
+      title: '3. ご来店',
+      description:
+        '10:00〜18:30の間に免許証とヘルメットを持参し、リバイクルK-JETスタッフにお声かけください。',
+    },
+    {
+      title: '4. ご利用・返却',
+      description:
+        '契約者本人のみが乗車・返却可能です。返却は10:00〜18:30の間にガソリン満タンでお願いします。',
+    },
+  ];
 
   const resetAccidentModal = () => {
     setAccidentFile(null);
@@ -1088,6 +1111,49 @@ export default function MyPage() {
                 ) : null}
               </div>
             </div>
+            </section>
+
+            <section className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+              <div className="flex flex-wrap items-start justify-between gap-4">
+                <button
+                  type="button"
+                  aria-expanded={mobileSectionsOpen.howToUse}
+                  onClick={() => toggleMobileSection('howToUse')}
+                  className="group flex flex-1 items-center justify-between gap-3 text-left md:pointer-events-none md:cursor-default"
+                >
+                  <div>
+                    <h2 className="text-lg font-semibold text-gray-900">ヤスカリの利用方法</h2>
+                    <p className="mt-1 text-sm text-gray-600">ホームページに掲載している利用方法を確認できます。</p>
+                  </div>
+                  <span
+                    aria-hidden
+                    className={`ml-3 inline-flex h-9 w-9 items-center justify-center rounded-full border border-gray-200 bg-gray-50 text-xs font-semibold text-gray-600 transition-transform md:hidden ${
+                      mobileSectionsOpen.howToUse ? 'rotate-180' : ''
+                    }`}
+                  >
+                    ▼
+                  </span>
+                </button>
+              </div>
+
+              <div className={`${mobileSectionsOpen.howToUse ? 'mt-4 block' : 'hidden'} md:mt-4 md:block`}>
+                <ul className="grid gap-3 md:grid-cols-2">
+                  {howToUseSteps.map((step) => (
+                    <li key={step.title} className="rounded-xl border border-gray-200 bg-gray-50 p-4">
+                      <p className="text-sm font-semibold text-gray-900">{step.title}</p>
+                      <p className="mt-2 text-sm leading-relaxed text-gray-700">{step.description}</p>
+                    </li>
+                  ))}
+                </ul>
+                <div className="mt-4 space-y-2 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
+                  <p>
+                    ※三ノ輪店は無人セルフ店舗のため、店員のサポートがありませんので不明点は事前にご確認ください
+                  </p>
+                  <p>
+                    ※返却写真の登録が完了しないと次回予約ができません。「返却」ボタンからバイクの写真を登録してください
+                  </p>
+                </div>
+              </div>
             </section>
 
             <section className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
