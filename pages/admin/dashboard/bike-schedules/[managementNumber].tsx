@@ -470,14 +470,6 @@ export default function BikeScheduleDetailPage() {
       return;
     }
 
-    const shouldBulkSet = window.confirm(
-      "現在のステータスがレンタル中・自賠責・車検以外は、全てレンタル可になりますがよろしいですか？"
-    );
-
-    if (!shouldBulkSet) {
-      return;
-    }
-
     const year = displayMonth.getFullYear();
     const month = displayMonth.getMonth();
     const daysInMonth = new Date(year, month + 1, 0).getDate();
