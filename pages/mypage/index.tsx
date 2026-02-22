@@ -651,6 +651,10 @@ export default function MyPage() {
       setReturnError('写真をアップロードしてください。');
       return;
     }
+    if (!activeReturnReservation) {
+      setReturnError('返却対象の予約が見つかりませんでした。');
+      return;
+    }
 
     setReturnError('');
     setReturnUploading(true);
@@ -671,6 +675,28 @@ export default function MyPage() {
         const message = (await response.json())?.message ?? '送信に失敗しました。';
         throw new Error(message);
       }
+
+      const completionResponse = await fetch(`/api/reservations/${activeReturnReservation.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          status: '予約完了',
+          reservationCompletedFlag: true,
+        }),
+      });
+
+      if (!completionResponse.ok) {
+        const message = (await completionResponse.json())?.error ?? '予約完了の更新に失敗しました。';
+        throw new Error(message);
+      }
+
+      setReservations((prev) =>
+        prev.map((reservation) =>
+          reservation.id === activeReturnReservation.id
+            ? { ...reservation, status: '予約完了', reservationCompletedFlag: true }
+            : reservation
+        )
+      );
 
       setReturnStep('survey');
     } catch (error) {
@@ -695,8 +721,6 @@ export default function MyPage() {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          status: '予約完了',
-          reservationCompletedFlag: true,
           returnRating,
           returnSurvey,
         }),
@@ -707,13 +731,6 @@ export default function MyPage() {
         throw new Error(message);
       }
 
-      setReservations((prev) =>
-        prev.map((reservation) =>
-          reservation.id === activeReturnReservation.id
-            ? { ...reservation, status: '予約完了', reservationCompletedFlag: true }
-            : reservation
-        )
-      );
       setReturnStep('done');
     } catch (error) {
       console.error('Failed to submit return survey', error);
