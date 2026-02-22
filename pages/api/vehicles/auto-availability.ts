@@ -55,6 +55,12 @@ const normalizeDate = (value: string | undefined): Date | null => {
 
 const formatDateKey = (date: Date) => date.toISOString().slice(0, 10);
 
+const isInsuranceOrInspectionMaintenance = (
+  day: RentalAvailabilityDay | undefined
+) =>
+  day?.status === "MAINTENANCE" &&
+  (day.note === "自賠責満了期間" || day.note === "車検満了期間");
+
 export default async function handler(
   request: NextApiRequest,
   response: NextApiResponse<Vehicle | { message: string }>
@@ -88,10 +94,6 @@ export default async function handler(
 
     const vehicle = vehicleResult.Item as Vehicle;
 
-    if (vehicle.autoAvailabilityInitialized) {
-      response.status(400).json({ message: "レンタル可能日の自動設定は既に完了しています。" });
-      return;
-    }
 
     const liabilityDate = normalizeDate(vehicle.liabilityInsuranceExpiryDate);
     const inspectionDate = normalizeDate(vehicle.inspectionExpiryDate);
@@ -128,7 +130,15 @@ export default async function handler(
       cursor <= endDate;
       cursor.setDate(cursor.getDate() + 1)
     ) {
-      updatedAvailability[formatDateKey(cursor)] = { status: "AVAILABLE" };
+      const dateKey = formatDateKey(cursor);
+      const currentDay = updatedAvailability[dateKey];
+      const isRented = currentDay?.status === "RENTED";
+
+      if (isRented || isInsuranceOrInspectionMaintenance(currentDay)) {
+        continue;
+      }
+
+      updatedAvailability[dateKey] = { status: "AVAILABLE" };
     }
 
     const timestamp = new Date().toISOString();

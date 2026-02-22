@@ -163,6 +163,16 @@ export default function BikeScheduleManagementPage() {
   }, [bikeModels, expiryFilter, keywordFilter, sortDirection, sortKey, storeFilter, vehicles]);
 
   const handleAutoAvailability = async (vehicle: Vehicle) => {
+    if (vehicle.autoAvailabilityInitialized) {
+      const shouldContinue = window.confirm(
+        "現在のステータスが、レンタル中・自賠責・車検以外は、全てレンタル可になりますがよろしいですか？"
+      );
+
+      if (!shouldContinue) {
+        return;
+      }
+    }
+
     setProcessingId(vehicle.managementNumber);
     setActionMessage(null);
     setActionError(null);
@@ -185,7 +195,11 @@ export default function BikeScheduleManagementPage() {
           item.managementNumber === updatedVehicle.managementNumber ? updatedVehicle : item
         )
       );
-      setActionMessage(`${vehicle.managementNumber}のレンタル可能日を自動設定しました。`);
+      setActionMessage(
+        vehicle.autoAvailabilityInitialized
+          ? `${vehicle.managementNumber}のレンタル可能日を再設定しました。`
+          : `${vehicle.managementNumber}のレンタル可能日を自動設定しました。`
+      );
     } catch (error) {
       console.error("Failed to auto set rental availability", error);
       setActionError(
@@ -398,15 +412,14 @@ export default function BikeScheduleManagementPage() {
                             onKeyDown={(event) => event.stopPropagation()}
                             disabled={
                               processingId === vehicle.managementNumber ||
-                              vehicle.autoAvailabilityInitialized ||
                               (!vehicle.liabilityInsuranceExpiryDate &&
                                 !vehicle.inspectionExpiryDate)
                             }
                           >
-                            {vehicle.autoAvailabilityInitialized
-                              ? "設定済み"
-                              : processingId === vehicle.managementNumber
+                            {processingId === vehicle.managementNumber
                                 ? "設定中..."
+                                : vehicle.autoAvailabilityInitialized
+                                  ? "設定済み（再設定）"
                                 : "レンタル可自動設定"}
                           </button>
                         </td>
