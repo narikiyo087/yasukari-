@@ -190,6 +190,7 @@ const normalizeAvailabilityMap = (value: unknown): RentalAvailabilityMap => {
 export default function BikeScheduleDetailPage() {
   const router = useRouter();
   const managementNumber = router.query.managementNumber as string | undefined;
+  const leaveConfirmMessage = "内容が保存されておりませんが、戻っても良いですか？";
 
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
   const [bikeModels, setBikeModels] = useState<BikeModel[]>([]);
@@ -212,6 +213,7 @@ export default function BikeScheduleDetailPage() {
   );
   const [maintenanceMonths, setMaintenanceMonths] = useState(1);
   const [rentalOverrideDates, setRentalOverrideDates] = useState<Set<string>>(() => new Set());
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
 
   const calendarWrapperRef = useRef<HTMLDivElement | null>(null);
   const statusEditorRef = useRef<HTMLDivElement | null>(null);
@@ -273,7 +275,39 @@ export default function BikeScheduleDetailPage() {
     setSaveSuccess(null);
     setSaveError(null);
     setRentalOverrideDates(new Set());
+    setHasUnsavedChanges(false);
   }, [selectedVehicle]);
+
+  useEffect(() => {
+    if (!hasUnsavedChanges) {
+      return;
+    }
+
+    const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+      event.preventDefault();
+      event.returnValue = leaveConfirmMessage;
+    };
+
+    const handleRouteChangeStart = (url: string) => {
+      if (url === router.asPath || window.confirm(leaveConfirmMessage)) {
+        return;
+      }
+
+      const routeChangeError = new Error("Route change aborted by user.");
+      router.events.emit("routeChangeError", routeChangeError, url, { shallow: false });
+      throw routeChangeError;
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    router.events.on("routeChangeStart", handleRouteChangeStart);
+    router.beforePopState(() => window.confirm(leaveConfirmMessage));
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+      router.events.off("routeChangeStart", handleRouteChangeStart);
+      router.beforePopState(() => true);
+    };
+  }, [hasUnsavedChanges, leaveConfirmMessage, router]);
 
   useEffect(() => {
     if (!selectedVehicle) {
@@ -437,6 +471,7 @@ export default function BikeScheduleDetailPage() {
     setFormError(null);
     setSaveSuccess(null);
     setStatusEditor(null);
+    setHasUnsavedChanges(true);
   };
 
   const handleResetDate = () => {
@@ -462,6 +497,7 @@ export default function BikeScheduleDetailPage() {
     setSaveSuccess(null);
     setFormError(null);
     setStatusEditor(null);
+    setHasUnsavedChanges(true);
   };
 
   const handleBulkSetMonthAvailable = () => {
@@ -506,6 +542,7 @@ export default function BikeScheduleDetailPage() {
     setSaveSuccess(null);
     setFormError(null);
     setStatusEditor(null);
+    setHasUnsavedChanges(true);
   };
 
   const handleBulkUnsetMonth = () => {
@@ -550,6 +587,7 @@ export default function BikeScheduleDetailPage() {
     setSaveSuccess(null);
     setFormError(null);
     setStatusEditor(null);
+    setHasUnsavedChanges(true);
   };
 
   const handleSave = async () => {
@@ -600,6 +638,7 @@ export default function BikeScheduleDetailPage() {
           vehicle.managementNumber === updated.managementNumber ? updated : vehicle
         )
       );
+      setHasUnsavedChanges(false);
     } catch (error) {
       console.error("Failed to save rental availability", error);
       setSaveError(
@@ -632,6 +671,7 @@ export default function BikeScheduleDetailPage() {
     setSaveSuccess(null);
     setStatusEditor(null);
     setActiveDate(null);
+    setHasUnsavedChanges(true);
   };
 
   return (
