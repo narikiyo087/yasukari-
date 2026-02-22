@@ -75,21 +75,29 @@ export default function MyPage() {
   const sectionActionClass = 'inline-flex items-center justify-center rounded-full px-4 py-2 text-sm font-semibold';
   const howToUseSteps = [
     {
+      image: '/image/howto01_touka.png',
+      imageAlt: '店舗選択イラスト',
       title: '1. 店舗を選ぶ',
       description:
         '足立小台本店（足立区の格安バイク屋）と三ノ輪店（東京都台東区の国道4号線沿いのレンタルバイク店）のどちらから借りるか選択します。三ノ輪店はセルフ店（セルフサービス）です。',
     },
     {
+      image: '/image/howto02.png',
+      imageAlt: '予約イラスト',
       title: '2. ご予約',
       description:
         '車両ページでスケジュールを確認しクレジットカードで予約。変更やキャンセルはお問い合わせから連絡してください。',
     },
     {
+      image: '/image/howto03.png',
+      imageAlt: '来店イラスト',
       title: '3. ご来店',
       description:
         '10:00〜18:30の間に免許証とヘルメットを持参し、リバイクルK-JETスタッフにお声かけください。',
     },
     {
+      image: '/image/howto04.png',
+      imageAlt: '返却イラスト',
       title: '4. ご利用・返却',
       description:
         '契約者本人のみが乗車・返却可能です。返却は10:00〜18:30の間にガソリン満タンでお願いします。',
@@ -802,7 +810,7 @@ export default function MyPage() {
                   <button
                     type="button"
                     onClick={() => setShowTroubleGuide(false)}
-                    className="inline-flex h-7 w-7 items-center justify-center rounded-full border border-rose-200 bg-white text-sm font-semibold text-rose-700 shadow-sm transition hover:bg-rose-100 md:hidden"
+                    className="inline-flex h-7 w-7 items-center justify-center rounded-full border border-red-300 bg-white text-sm font-semibold text-red-600 shadow-sm transition hover:bg-red-100 md:hidden"
                     aria-label="故障時案内を閉じる"
                   >
                     ×
@@ -1155,8 +1163,17 @@ export default function MyPage() {
                 <ul className="grid gap-3 md:grid-cols-2">
                   {howToUseSteps.map((step) => (
                     <li key={step.title} className="rounded-xl border border-gray-200 bg-gray-50 p-4">
-                      <p className="text-sm font-semibold text-gray-900">{step.title}</p>
-                      <p className="mt-2 text-sm leading-relaxed text-gray-700">{step.description}</p>
+                      <div className="mx-auto h-[100px] w-[100px] overflow-hidden rounded-lg bg-white md:h-36 md:w-36">
+                        <img
+                          src={step.image}
+                          alt={step.imageAlt}
+                          loading="lazy"
+                          decoding="async"
+                          className="h-full w-full object-contain"
+                        />
+                      </div>
+                      <p className="mt-3 text-xs font-semibold text-gray-900 md:text-sm">{step.title}</p>
+                      <p className="mt-2 text-xs leading-relaxed text-gray-700 md:text-sm">{step.description}</p>
                     </li>
                   ))}
                 </ul>
