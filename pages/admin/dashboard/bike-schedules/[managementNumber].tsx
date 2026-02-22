@@ -508,6 +508,50 @@ export default function BikeScheduleDetailPage() {
     setStatusEditor(null);
   };
 
+  const handleBulkUnsetMonth = () => {
+    if (!selectedVehicle) {
+      setFormError("車両情報の読み込みを確認してから操作してください。");
+      return;
+    }
+
+    const shouldContinue = window.confirm(
+      "今月の設定を未設定に戻します。レンタル中以外のステータス（メンテナンスを含む）がクリアされますが、実行してもよろしいですか？"
+    );
+
+    if (!shouldContinue) {
+      return;
+    }
+
+    const year = displayMonth.getFullYear();
+    const month = displayMonth.getMonth();
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+    const updatedAvailability: RentalAvailabilityMap = { ...availabilityMap };
+    const nextRentalOverrideDates = new Set(rentalOverrideDates);
+
+    for (let day = 1; day <= daysInMonth; day += 1) {
+      const dateKey = formatDateKey(new Date(year, month, day));
+      const reservationStatus = reservationAvailabilityMap[dateKey]?.status;
+      const isRented = reservationStatus === "RENTED";
+
+      if (isRented) {
+        continue;
+      }
+
+      delete updatedAvailability[dateKey];
+      nextRentalOverrideDates.delete(dateKey);
+    }
+
+    setAvailabilityMap(updatedAvailability);
+    setRentalOverrideDates(nextRentalOverrideDates);
+    setActiveDate(null);
+    setActiveNote("");
+    setActiveStatus("AVAILABLE");
+    setSaveSuccess(null);
+    setFormError(null);
+    setStatusEditor(null);
+  };
+
   const handleSave = async () => {
     if (!selectedVehicle) {
       setSaveError("スケジュールを保存する車両を確認できませんでした。");
@@ -680,14 +724,24 @@ export default function BikeScheduleDetailPage() {
                         <div className={styles.calendarUtilityText}>
                           表示中の1か月分をまとめて「レンタル可」に設定できます。設定後に保存ボタンを押してください。
                         </div>
-                        <button
-                          type="button"
-                          className={formStyles.primaryButton}
-                          onClick={handleBulkSetMonthAvailable}
-                        >
-                          <span aria-hidden>🗓️</span>
-                          <span>今月をレンタル可で一括設定</span>
-                        </button>
+                        <div className={styles.calendarMaintenanceControls}>
+                          <button
+                            type="button"
+                            className={formStyles.primaryButton}
+                            onClick={handleBulkSetMonthAvailable}
+                          >
+                            <span aria-hidden>🗓️</span>
+                            <span>今月をレンタル可で一括設定</span>
+                          </button>
+                          <button
+                            type="button"
+                            className={formStyles.secondaryButton}
+                            onClick={handleBulkUnsetMonth}
+                          >
+                            <span aria-hidden>🧹</span>
+                            <span>今月を未設定で一括設定</span>
+                          </button>
+                        </div>
                       </div>
                       <div className={styles.calendarUtilityRow}>
                         <div className={styles.calendarUtilityText}>
