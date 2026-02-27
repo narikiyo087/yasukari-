@@ -44,6 +44,10 @@ export default function MemberListPage() {
 
   const pageSize = 100;
 
+  const handleExportCsv = () => {
+    window.open("/api/admin/members/export", "_blank", "noopener,noreferrer");
+  };
+
   const openMemberDetail = (memberId: string) => {
     router.push(`/admin/dashboard/members/${memberId}`);
   };
@@ -200,6 +204,13 @@ export default function MemberListPage() {
               />
             </div>
             <div className={styles.tableToolbarGroup}>
+              <button
+                type="button"
+                className={styles.tableToolbarButton}
+                onClick={handleExportCsv}
+              >
+                全会員CSVをダウンロード
+              </button>
               <span className={styles.tableSelectionCount}>
                 該当: {filteredMembers.length}件
               </span>
