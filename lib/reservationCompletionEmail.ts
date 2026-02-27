@@ -65,6 +65,15 @@ const buildTextBody = (reservation: Reservation): string => {
   const optionLines = buildOptionLines(reservation);
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://yasukaribike.com";
   const myPageUrl = `${siteUrl.replace(/\/$/, "")}/mypage`;
+  const isMinowaStore = reservation.storeName === "三ノ輪店";
+  const minowaAccessLines = isMinowaStore
+    ? [
+        "",
+        "■三ノ輪店ご利用時の入庫情報",
+        `解除コード: ${reservation.keyboxPinCode || "-"}`,
+        `QR URL: ${reservation.keyboxQrImageUrl || "-"}`,
+      ]
+    : [];
 
   return [
     "いつも「ヤスカリ」をご利用いただきまして",
@@ -88,6 +97,7 @@ const buildTextBody = (reservation: Reservation): string => {
     ...optionLines,
     "■合計金額",
     `${reservation.paymentAmount}円`,
+    ...minowaAccessLines,
     "",
     "予約詳細ページはこちらから",
     myPageUrl,
@@ -113,6 +123,16 @@ const buildHtmlBody = (reservation: Reservation): string => {
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://yasukaribike.com";
   const myPageUrl = `${siteUrl.replace(/\/$/, "")}/mypage`;
   const optionItems = optionLines.map((line) => `<li>${line}</li>`).join("");
+  const isMinowaStore = reservation.storeName === "三ノ輪店";
+  const minowaAccessSection = isMinowaStore
+    ? `
+    <p>
+      <strong>■三ノ輪店ご利用時の入庫情報</strong><br />
+      解除コード: ${reservation.keyboxPinCode || "-"}<br />
+      QR URL: ${reservation.keyboxQrImageUrl || "-"}
+    </p>
+`
+    : "";
 
   return `<!DOCTYPE html>
 <html lang="ja">
@@ -168,6 +188,8 @@ const buildHtmlBody = (reservation: Reservation): string => {
       <strong>■合計金額</strong><br />
       ${reservation.paymentAmount}円
     </p>
+
+    ${minowaAccessSection}
 
     <p>
       <strong>※レンタル・返却時の注意点※</strong><br /><br />
