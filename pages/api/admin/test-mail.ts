@@ -5,7 +5,7 @@ import { deliverFullRegistrationEmail, deliverProvisionalRegistrationEmail } fro
 import { sendReservationCompletionEmail } from "../../../lib/reservationCompletionEmail";
 import type { Reservation } from "../../../lib/reservations";
 
-type TestMailType = "provisional" | "full" | "reservation";
+type TestMailType = "provisional" | "full" | "reservation_adachi" | "reservation_minowa";
 
 type TestMailResponse = {
   message: string;
@@ -30,8 +30,13 @@ const MAIL_DEFINITIONS: Record<
     subject: "【ヤスカリ】本登録が完了しました",
     category: "本登録",
   },
-  reservation: {
-    label: "予約受付完了",
+  reservation_adachi: {
+    label: "予約受付完了（足立小台店）",
+    subject: "【ヤスカリ】バイクレンタルのご予約完了",
+    category: "予約完了",
+  },
+  reservation_minowa: {
+    label: "予約受付完了（三ノ輪店）",
     subject: "【ヤスカリ】バイクレンタルのご予約完了",
     category: "予約完了",
   },
@@ -45,14 +50,14 @@ const isValidEmail = (email: string): boolean => {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 };
 
-const buildSampleReservation = (email: string): Reservation => {
+const buildSampleReservation = (email: string, storeName: "足立小台店" | "三ノ輪店"): Reservation => {
   const now = new Date();
   const pickupAt = new Date(now.getTime() + 24 * 60 * 60 * 1000).toISOString();
   const returnAt = new Date(now.getTime() + 48 * 60 * 60 * 1000).toISOString();
 
   return {
     id: "TEST-RESERVATION-001",
-    storeName: "渋谷店",
+    storeName,
     vehicleModel: "PCX 125",
     vehicleCode: "PCX125",
     vehiclePlate: "品川あ 12-34",
@@ -159,7 +164,16 @@ export default async function handler(
       return;
     }
 
-    const sampleReservation = buildSampleReservation(normalizedEmail);
+    const sampleReservation =
+      selectedType === "reservation_minowa"
+        ? buildSampleReservation(normalizedEmail, "三ノ輪店")
+        : buildSampleReservation(normalizedEmail, "足立小台店");
+
+    if (selectedType === "reservation_minowa") {
+      sampleReservation.keyboxPinCode = "1234";
+      sampleReservation.keyboxQrImageUrl = "https://example.com/keybox/test-qr";
+    }
+
     const result = await sendReservationCompletionEmail(sampleReservation);
     res.status(200).json({
       message: result.simulated

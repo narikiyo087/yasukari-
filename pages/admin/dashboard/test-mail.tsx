@@ -14,7 +14,8 @@ type TestMailResponse = {
 const MAIL_TYPE_OPTIONS = [
   { value: "provisional", label: "仮予約" },
   { value: "full", label: "本登録" },
-  { value: "reservation", label: "予約受付完了" },
+  { value: "reservation_adachi", label: "予約受付完了（足立小台店）" },
+  { value: "reservation_minowa", label: "予約受付完了（三ノ輪店）" },
 ];
 
 const statusText = (status?: TestMailStatus) => {
