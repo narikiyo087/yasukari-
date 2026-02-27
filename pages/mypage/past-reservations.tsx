@@ -181,6 +181,11 @@ export default function PastReservationsPage() {
                   <ul className="space-y-3">
                     {reservations.map((reservation) => {
                       const manualVideoUrl = reservation.videoUrl?.trim();
+                      const isMinowaStore = reservation.storeName?.includes('三ノ輪');
+                      const hasKeyboxInfo =
+                        Boolean(reservation.keyboxPinCode) ||
+                        Boolean(reservation.keyboxQrCode) ||
+                        Boolean(reservation.keyboxQrImageUrl);
 
                       return (
                         <li
@@ -254,6 +259,38 @@ export default function PastReservationsPage() {
                                   : '未設定'}
                               </dd>
                             </div>
+                            {isMinowaStore ? (
+                              <div className="rounded-lg bg-gray-50 px-3 py-2 sm:col-span-2">
+                                <dt className="text-xs text-gray-500">三ノ輪店：発行済みPIN/QR履歴</dt>
+                                {hasKeyboxInfo ? (
+                                  <dd className="mt-2 space-y-2 text-gray-900">
+                                    <p className="font-semibold">
+                                      PINコード: {reservation.keyboxPinCode || '未発行'}
+                                    </p>
+                                    <p className="break-all text-xs text-gray-700">
+                                      QRコード: {reservation.keyboxQrCode || '未発行'}
+                                    </p>
+                                    {reservation.keyboxQrImageUrl ? (
+                                      <a
+                                        href={reservation.keyboxQrImageUrl}
+                                        target="_blank"
+                                        rel="noreferrer"
+                                        className="inline-flex items-center gap-2 text-xs font-semibold text-blue-700 hover:underline"
+                                      >
+                                        <img
+                                          src={reservation.keyboxQrImageUrl}
+                                          alt="過去の解錠用QRコード"
+                                          className="h-20 w-20 rounded border border-gray-200 bg-white p-1"
+                                        />
+                                        QR画像を拡大表示
+                                      </a>
+                                    ) : null}
+                                  </dd>
+                                ) : (
+                                  <dd className="mt-1 text-xs text-gray-600">発行履歴はありません。</dd>
+                                )}
+                              </div>
+                            ) : null}
                           </dl>
                           <div className="mt-4 flex flex-wrap gap-2">
                             {manualVideoUrl ? (
