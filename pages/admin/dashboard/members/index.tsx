@@ -27,6 +27,20 @@ export default function MemberListPage() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const [sortState, setSortState] = useState<{
+    key:
+      | "email"
+      | "name"
+      | "nameKana"
+      | "role"
+      | "isInternational"
+      | "registrationStatus"
+      | "updatedAt";
+    direction: "asc" | "desc";
+  }>({
+    key: "updatedAt",
+    direction: "desc",
+  });
 
   const pageSize = 100;
 
@@ -79,7 +93,7 @@ export default function MemberListPage() {
 
   useEffect(() => {
     setCurrentPage(1);
-  }, [searchTerm]);
+  }, [searchTerm, sortState.direction, sortState.key]);
 
   const filteredMembers = useMemo(() => {
     const normalizedTerm = searchTerm.trim().toLowerCase();
@@ -100,13 +114,57 @@ export default function MemberListPage() {
     });
   }, [members, searchTerm]);
 
-  const totalPages = Math.max(1, Math.ceil(filteredMembers.length / pageSize));
+  const sortedMembers = useMemo(() => {
+    const directionMultiplier = sortState.direction === "asc" ? 1 : -1;
+    return [...filteredMembers].sort((a, b) => {
+      switch (sortState.key) {
+        case "isInternational": {
+          const aValue = a.isInternational ? 1 : 0;
+          const bValue = b.isInternational ? 1 : 0;
+          return (aValue - bValue) * directionMultiplier;
+        }
+        case "updatedAt": {
+          const aTime = new Date(a.updatedAt).getTime();
+          const bTime = new Date(b.updatedAt).getTime();
+          if (Number.isNaN(aTime) || Number.isNaN(bTime)) {
+            return a.updatedAt.localeCompare(b.updatedAt, "ja") * directionMultiplier;
+          }
+          return (aTime - bTime) * directionMultiplier;
+        }
+        case "email":
+        case "name":
+        case "nameKana":
+        case "role":
+        case "registrationStatus":
+          return a[sortState.key].localeCompare(b[sortState.key], "ja") * directionMultiplier;
+        default:
+          return 0;
+      }
+    });
+  }, [filteredMembers, sortState.direction, sortState.key]);
+
+  const toggleSort = (key: typeof sortState.key) => {
+    setSortState((current) => {
+      if (current.key === key) {
+        return {
+          key,
+          direction: current.direction === "asc" ? "desc" : "asc",
+        };
+      }
+      return {
+        key,
+        direction: "asc",
+      };
+    });
+  };
+
+  const totalPages = Math.max(1, Math.ceil(sortedMembers.length / pageSize));
   useEffect(() => {
     setCurrentPage((page) => Math.min(page, totalPages));
   }, [totalPages]);
   const safeCurrentPage = Math.min(currentPage, totalPages);
   const startIndex = (safeCurrentPage - 1) * pageSize;
-  const pagedMembers = filteredMembers.slice(startIndex, startIndex + pageSize);
+  const pagedMembers = sortedMembers.slice(startIndex, startIndex + pageSize);
 
   return (
     <>
@@ -152,13 +210,202 @@ export default function MemberListPage() {
             <table className={`${tableStyles.table} ${tableStyles.dataTable}`}>
               <thead>
                 <tr>
-                  <th scope="col">メールアドレス</th>
-                  <th scope="col">会員名</th>
-                  <th scope="col">カナ氏名</th>
-                  <th scope="col">権限</th>
-                  <th scope="col">海外ユーザー</th>
-                  <th scope="col">状態</th>
-                  <th scope="col">最終更新</th>
+                  <th
+                    scope="col"
+                    aria-sort={
+                      sortState.key === "email"
+                        ? sortState.direction === "asc"
+                          ? "ascending"
+                          : "descending"
+                        : "none"
+                    }
+                  >
+                    <button
+                      type="button"
+                      className={tableStyles.sortableHeaderButton}
+                      onClick={() => toggleSort("email")}
+                    >
+                      メールアドレス
+                      <span
+                        className={`${tableStyles.sortIcon} ${
+                          sortState.key === "email"
+                            ? sortState.direction === "asc"
+                              ? tableStyles.sortIconAsc
+                              : tableStyles.sortIconDesc
+                            : ""
+                        }`}
+                        aria-hidden="true"
+                      />
+                    </button>
+                  </th>
+                  <th
+                    scope="col"
+                    aria-sort={
+                      sortState.key === "name"
+                        ? sortState.direction === "asc"
+                          ? "ascending"
+                          : "descending"
+                        : "none"
+                    }
+                  >
+                    <button
+                      type="button"
+                      className={tableStyles.sortableHeaderButton}
+                      onClick={() => toggleSort("name")}
+                    >
+                      会員名
+                      <span
+                        className={`${tableStyles.sortIcon} ${
+                          sortState.key === "name"
+                            ? sortState.direction === "asc"
+                              ? tableStyles.sortIconAsc
+                              : tableStyles.sortIconDesc
+                            : ""
+                        }`}
+                        aria-hidden="true"
+                      />
+                    </button>
+                  </th>
+                  <th
+                    scope="col"
+                    aria-sort={
+                      sortState.key === "nameKana"
+                        ? sortState.direction === "asc"
+                          ? "ascending"
+                          : "descending"
+                        : "none"
+                    }
+                  >
+                    <button
+                      type="button"
+                      className={tableStyles.sortableHeaderButton}
+                      onClick={() => toggleSort("nameKana")}
+                    >
+                      カナ氏名
+                      <span
+                        className={`${tableStyles.sortIcon} ${
+                          sortState.key === "nameKana"
+                            ? sortState.direction === "asc"
+                              ? tableStyles.sortIconAsc
+                              : tableStyles.sortIconDesc
+                            : ""
+                        }`}
+                        aria-hidden="true"
+                      />
+                    </button>
+                  </th>
+                  <th
+                    scope="col"
+                    aria-sort={
+                      sortState.key === "role"
+                        ? sortState.direction === "asc"
+                          ? "ascending"
+                          : "descending"
+                        : "none"
+                    }
+                  >
+                    <button
+                      type="button"
+                      className={tableStyles.sortableHeaderButton}
+                      onClick={() => toggleSort("role")}
+                    >
+                      権限
+                      <span
+                        className={`${tableStyles.sortIcon} ${
+                          sortState.key === "role"
+                            ? sortState.direction === "asc"
+                              ? tableStyles.sortIconAsc
+                              : tableStyles.sortIconDesc
+                            : ""
+                        }`}
+                        aria-hidden="true"
+                      />
+                    </button>
+                  </th>
+                  <th
+                    scope="col"
+                    aria-sort={
+                      sortState.key === "isInternational"
+                        ? sortState.direction === "asc"
+                          ? "ascending"
+                          : "descending"
+                        : "none"
+                    }
+                  >
+                    <button
+                      type="button"
+                      className={tableStyles.sortableHeaderButton}
+                      onClick={() => toggleSort("isInternational")}
+                    >
+                      海外ユーザー
+                      <span
+                        className={`${tableStyles.sortIcon} ${
+                          sortState.key === "isInternational"
+                            ? sortState.direction === "asc"
+                              ? tableStyles.sortIconAsc
+                              : tableStyles.sortIconDesc
+                            : ""
+                        }`}
+                        aria-hidden="true"
+                      />
+                    </button>
+                  </th>
+                  <th
+                    scope="col"
+                    aria-sort={
+                      sortState.key === "registrationStatus"
+                        ? sortState.direction === "asc"
+                          ? "ascending"
+                          : "descending"
+                        : "none"
+                    }
+                  >
+                    <button
+                      type="button"
+                      className={tableStyles.sortableHeaderButton}
+                      onClick={() => toggleSort("registrationStatus")}
+                    >
+                      状態
+                      <span
+                        className={`${tableStyles.sortIcon} ${
+                          sortState.key === "registrationStatus"
+                            ? sortState.direction === "asc"
+                              ? tableStyles.sortIconAsc
+                              : tableStyles.sortIconDesc
+                            : ""
+                        }`}
+                        aria-hidden="true"
+                      />
+                    </button>
+                  </th>
+                  <th
+                    scope="col"
+                    aria-sort={
+                      sortState.key === "updatedAt"
+                        ? sortState.direction === "asc"
+                          ? "ascending"
+                          : "descending"
+                        : "none"
+                    }
+                  >
+                    <button
+                      type="button"
+                      className={tableStyles.sortableHeaderButton}
+                      onClick={() => toggleSort("updatedAt")}
+                    >
+                      最終更新
+                      <span
+                        className={`${tableStyles.sortIcon} ${
+                          sortState.key === "updatedAt"
+                            ? sortState.direction === "asc"
+                              ? tableStyles.sortIconAsc
+                              : tableStyles.sortIconDesc
+                            : ""
+                        }`}
+                        aria-hidden="true"
+                      />
+                    </button>
+                  </th>
                 </tr>
               </thead>
               <tbody>
