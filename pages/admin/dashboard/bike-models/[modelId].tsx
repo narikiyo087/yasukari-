@@ -1,6 +1,5 @@
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { Buffer } from "buffer";
 import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import DashboardLayout from "../../../../components/dashboard/DashboardLayout";
 import formStyles from "../../../../styles/AdminForm.module.css";
@@ -11,6 +10,94 @@ import {
   getRequiredLicenseLabel,
 } from "../../../../lib/dashboard/licenseOptions";
 import { toNumber } from "../../../../lib/dashboard/utils";
+
+const BIKE_MAIN_IMAGE_MAX_DIMENSION = 1000;
+const BIKE_MAIN_IMAGE_JPEG_QUALITY = 0.78;
+
+const readBlobAsBase64 = (blob: Blob) =>
+  new Promise<string>((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const result = reader.result;
+      if (typeof result !== "string") {
+        reject(new Error("Invalid file data"));
+        return;
+      }
+      const [, base64] = result.split(",");
+      resolve(base64 ?? "");
+    };
+    reader.onerror = () => reject(reader.error ?? new Error("Failed to read file"));
+    reader.readAsDataURL(blob);
+  });
+
+const optimizeBikeMainImage = async (file: File) => {
+  const fallback = async () => ({
+    base64: await readBlobAsBase64(file),
+    fileName: file.name || "image",
+    contentType: file.type || "application/octet-stream",
+  });
+
+  if (typeof window === "undefined" || !file.type.startsWith("image/")) {
+    return fallback();
+  }
+
+  try {
+    const image = await new Promise<HTMLImageElement>((resolve, reject) => {
+      const element = new Image();
+      element.onload = () => {
+        URL.revokeObjectURL(element.src);
+        resolve(element);
+      };
+      element.onerror = () => {
+        URL.revokeObjectURL(element.src);
+        reject(new Error("画像の読み込みに失敗しました。"));
+      };
+      element.src = URL.createObjectURL(file);
+    });
+
+    const ratio = Math.min(
+      BIKE_MAIN_IMAGE_MAX_DIMENSION / image.naturalWidth,
+      BIKE_MAIN_IMAGE_MAX_DIMENSION / image.naturalHeight,
+      1
+    );
+    const width = Math.round(image.naturalWidth * ratio);
+    const height = Math.round(image.naturalHeight * ratio);
+
+    const canvas = document.createElement("canvas");
+    canvas.width = width;
+    canvas.height = height;
+    const context = canvas.getContext("2d");
+    if (!context) {
+      return fallback();
+    }
+
+    context.drawImage(image, 0, 0, width, height);
+    const blob = await new Promise<Blob>((resolve, reject) => {
+      canvas.toBlob(
+        (result) => {
+          if (!result) {
+            reject(new Error("画像の変換に失敗しました。"));
+            return;
+          }
+          resolve(result);
+        },
+        "image/jpeg",
+        BIKE_MAIN_IMAGE_JPEG_QUALITY
+      );
+    });
+
+    const dotIndex = file.name.lastIndexOf(".");
+    const baseName = dotIndex >= 0 ? file.name.slice(0, dotIndex) : file.name;
+    return {
+      base64: await readBlobAsBase64(blob),
+      fileName: `${baseName || "image"}.jpg`,
+      contentType: "image/jpeg",
+    };
+  } catch (error) {
+    console.error("Failed to optimize bike main image", error);
+    return fallback();
+  }
+};
 
 export default function BikeModelDetailPage() {
   const router = useRouter();
@@ -124,16 +211,15 @@ export default function BikeModelDetailPage() {
   );
 
   const uploadMainImage = async (file: File) => {
-    const arrayBuffer = await file.arrayBuffer();
-    const base64Data = Buffer.from(arrayBuffer).toString("base64");
+    const { base64, fileName, contentType } = await optimizeBikeMainImage(file);
 
     const response = await fetch("/api/bike-models/upload", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        fileName: file.name,
-        contentType: file.type || "application/octet-stream",
-        data: base64Data,
+        fileName,
+        contentType,
+        data: base64,
       }),
     });
 
