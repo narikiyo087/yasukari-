@@ -122,6 +122,7 @@ export default function ReservationListPage() {
 
       const matchesTerm = normalizedTerm
         ? [
+            reservation.id,
             reservation.storeName,
             reservation.status,
             reservation.vehicleModel,
@@ -224,7 +225,7 @@ export default function ReservationListPage() {
                   <input
                     type="search"
                     className={styles.tableSearchInput}
-                    placeholder="店舗・予約状態・車種・管理番号・会員情報で検索"
+                    placeholder="予約番号・店舗・予約状態・車種・管理番号・会員情報で検索"
                     value={searchTerm}
                     onChange={(event) => setSearchTerm(event.target.value)}
                     aria-label="予約一覧を検索"
@@ -258,6 +259,7 @@ export default function ReservationListPage() {
               <table className={`${tableStyles.table} ${tableStyles.dataTable}`}>
                 <thead>
                   <tr>
+                    <th scope="col">予約番号</th>
                     <th
                       scope="col"
                       aria-sort={
@@ -613,7 +615,7 @@ export default function ReservationListPage() {
                 <tbody>
                   {filteredReservations.length === 0 ? (
                     <tr>
-                      <td colSpan={10}>該当する予約が見つかりませんでした。</td>
+                      <td colSpan={11}>該当する予約が見つかりませんでした。</td>
                     </tr>
                   ) : (
                     filteredReservations.map((reservation) => (
@@ -627,6 +629,7 @@ export default function ReservationListPage() {
                         tabIndex={0}
                         aria-label={`${reservation.id} の詳細を開く`}
                       >
+                        <td className={tableStyles.monospace}>{reservation.id}</td>
                         <td>{reservation.storeName}</td>
                         <td>
                           <span className={statusClassName(reservation.status)}>
