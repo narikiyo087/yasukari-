@@ -15,7 +15,7 @@ import {
   BikeModel,
 } from "../../../../lib/dashboard/types";
 import { getStoreLabel } from "../../../../lib/dashboard/storeOptions";
-import { buildMaintenanceAvailability, formatDateKey } from "../../../../lib/dashboard/utils";
+import { formatDateKey } from "../../../../lib/dashboard/utils";
 import type { Reservation } from "../../../../lib/reservations";
 
 const STATUS_LABELS: Record<RentalAvailabilityStatus, string> = {
@@ -211,7 +211,15 @@ export default function BikeScheduleDetailPage() {
   const [maintenanceStartDate, setMaintenanceStartDate] = useState(() =>
     formatDateKey(new Date())
   );
-  const [maintenanceMonths, setMaintenanceMonths] = useState(1);
+  const [maintenanceEndDate, setMaintenanceEndDate] = useState(() =>
+    formatDateKey(new Date())
+  );
+  const [bulkRentalStartDate, setBulkRentalStartDate] = useState(() =>
+    formatDateKey(new Date())
+  );
+  const [bulkRentalEndDate, setBulkRentalEndDate] = useState(() =>
+    formatDateKey(new Date())
+  );
   const [rentalOverrideDates, setRentalOverrideDates] = useState<Set<string>>(() => new Set());
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
 
@@ -263,9 +271,15 @@ export default function BikeScheduleDetailPage() {
       const normalized = normalizeAvailabilityMap(selectedVehicle.rentalAvailability);
       setAvailabilityMap(normalized);
       setMaintenanceStartDate(formatDateKey(new Date()));
+      setMaintenanceEndDate(formatDateKey(new Date()));
+      setBulkRentalStartDate(formatDateKey(new Date()));
+      setBulkRentalEndDate(formatDateKey(new Date()));
     } else {
       setAvailabilityMap({});
       setMaintenanceStartDate(formatDateKey(new Date()));
+      setMaintenanceEndDate(formatDateKey(new Date()));
+      setBulkRentalStartDate(formatDateKey(new Date()));
+      setBulkRentalEndDate(formatDateKey(new Date()));
     }
     setReservationAvailabilityMap({});
     setActiveDate(null);
@@ -651,22 +665,39 @@ export default function BikeScheduleDetailPage() {
 
   const handleApplyMaintenanceRange = (
     startDate: string,
+    endDate: string,
     label: string,
-    months = maintenanceMonths
+    status: RentalAvailabilityStatus = "MAINTENANCE"
   ) => {
-    if (!startDate) {
-      setFormError(`${label}の開始日を設定してください。`);
+    if (!startDate || !endDate) {
+      setFormError(`${label}の開始日と終了日を設定してください。`);
       return;
     }
 
-    const maintenanceMap = buildMaintenanceAvailability(startDate, months, label);
+    const start = new Date(startDate);
+    const end = new Date(endDate);
 
-    if (Object.keys(maintenanceMap).length === 0) {
+    if (Number.isNaN(start.getTime()) || Number.isNaN(end.getTime())) {
       setFormError(`${label}の日付が正しくありません。`);
       return;
     }
 
-    setAvailabilityMap((prev) => ({ ...prev, ...maintenanceMap }));
+    if (start > end) {
+      setFormError(`${label}は開始日が終了日を超えないように設定してください。`);
+      return;
+    }
+
+    const rangeMap: RentalAvailabilityMap = {};
+    const cursor = new Date(start);
+    while (cursor <= end) {
+      rangeMap[formatDateKey(cursor)] = {
+        status,
+        ...(label ? { note: label } : {}),
+      };
+      cursor.setDate(cursor.getDate() + 1);
+    }
+
+    setAvailabilityMap((prev) => ({ ...prev, ...rangeMap }));
     setFormError(null);
     setSaveSuccess(null);
     setStatusEditor(null);
@@ -785,7 +816,47 @@ export default function BikeScheduleDetailPage() {
                       </div>
                       <div className={styles.calendarUtilityRow}>
                         <div className={styles.calendarUtilityText}>
-                          メンテナンス期間を一括で設定できます。月数は共通で利用されます（最小1か月）。
+                          開始日〜終了日でレンタル中ステータスを一括設定できます。
+                        </div>
+                        <div className={styles.calendarMaintenanceControls}>
+                          <label className={styles.inlineInputLabel}>
+                            開始日
+                            <input
+                              type="date"
+                              value={bulkRentalStartDate}
+                              className={formStyles.formInput}
+                              onChange={(event) => setBulkRentalStartDate(event.target.value)}
+                            />
+                          </label>
+                          <label className={styles.inlineInputLabel}>
+                            終了日
+                            <input
+                              type="date"
+                              value={bulkRentalEndDate}
+                              className={formStyles.formInput}
+                              onChange={(event) => setBulkRentalEndDate(event.target.value)}
+                            />
+                          </label>
+                          <button
+                            type="button"
+                            className={formStyles.secondaryButton}
+                            onClick={() =>
+                              handleApplyMaintenanceRange(
+                                bulkRentalStartDate,
+                                bulkRentalEndDate,
+                                "レンタル中",
+                                "RENTED"
+                              )
+                            }
+                          >
+                            <span aria-hidden>📦</span>
+                            <span>レンタル中を一括設定</span>
+                          </button>
+                        </div>
+                      </div>
+                      <div className={styles.calendarUtilityRow}>
+                        <div className={styles.calendarUtilityText}>
+                          メンテナンス期間を一括で設定できます（開始日〜終了日）。
                         </div>
                         <div className={styles.calendarMaintenanceControls}>
                           <label className={styles.inlineInputLabel}>
@@ -798,21 +869,24 @@ export default function BikeScheduleDetailPage() {
                             />
                           </label>
                           <label className={styles.inlineInputLabel}>
-                            期間（月）
+                            終了日
                             <input
-                              type="number"
-                              min={1}
-                              value={maintenanceMonths}
+                              type="date"
+                              value={maintenanceEndDate}
                               className={formStyles.formInput}
-                              onChange={(event) =>
-                                setMaintenanceMonths(Math.max(1, Number(event.target.value) || 1))
-                              }
+                              onChange={(event) => setMaintenanceEndDate(event.target.value)}
                             />
                           </label>
                           <button
                             type="button"
                             className={formStyles.secondaryButton}
-                            onClick={() => handleApplyMaintenanceRange(maintenanceStartDate, "メンテナンス期間")}
+                            onClick={() =>
+                              handleApplyMaintenanceRange(
+                                maintenanceStartDate,
+                                maintenanceEndDate,
+                                "メンテナンス期間"
+                              )
+                            }
                           >
                             <span aria-hidden>🛠️</span>
                             <span>メンテナンス期間設定</span>
@@ -824,6 +898,7 @@ export default function BikeScheduleDetailPage() {
                             onClick={() =>
                               handleApplyMaintenanceRange(
                                 selectedVehicle?.liabilityInsuranceExpiryDate ?? "",
+                                maintenanceEndDate,
                                 "自賠責満了期間"
                               )
                             }
@@ -838,6 +913,7 @@ export default function BikeScheduleDetailPage() {
                             onClick={() =>
                               handleApplyMaintenanceRange(
                                 selectedVehicle?.inspectionExpiryDate ?? "",
+                                maintenanceEndDate,
                                 "車検満了期間"
                               )
                             }
