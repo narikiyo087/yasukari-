@@ -430,24 +430,58 @@ export default function ReserveFlowStep2() {
     setProtectionSelection((prev) => ({ ...prev, [key]: !prev[key] }));
   };
 
-  const isCouponActive = (coupon: CouponRule, now: Date) => {
-    const start = new Date(`${coupon.start_date}T00:00:00`);
-    const end = new Date(`${coupon.end_date}T23:59:59`);
-    if (Number.isNaN(start.getTime()) || Number.isNaN(end.getTime())) return false;
-    return now >= start && now <= end;
+  const getCouponEligibleRentalDays = (
+    coupon: CouponRule,
+    rentalStartDate: string,
+    rentalEndDate: string
+  ) => {
+    const couponStart = new Date(`${coupon.start_date}T00:00:00`);
+    const couponEnd = new Date(`${coupon.end_date}T23:59:59`);
+    const rentalStart = new Date(`${rentalStartDate}T00:00:00`);
+    const rentalEnd = new Date(`${rentalEndDate}T23:59:59`);
+
+    if (
+      Number.isNaN(couponStart.getTime()) ||
+      Number.isNaN(couponEnd.getTime()) ||
+      Number.isNaN(rentalStart.getTime()) ||
+      Number.isNaN(rentalEnd.getTime())
+    ) {
+      return 0;
+    }
+
+    if (rentalStart > rentalEnd || couponStart > couponEnd) {
+      return 0;
+    }
+
+    const overlapStart = rentalStart > couponStart ? rentalStart : couponStart;
+    const overlapEnd = rentalEnd < couponEnd ? rentalEnd : couponEnd;
+    if (overlapStart > overlapEnd) {
+      return 0;
+    }
+
+    const diffMs = overlapEnd.getTime() - overlapStart.getTime();
+    return Math.max(1, Math.ceil((diffMs + 1) / (1000 * 60 * 60 * 24)));
   };
 
   const calculateCouponDiscount = (
     coupon: CouponRule,
     baseAmount: number,
-    multiplier: number
+    multiplier: number,
+    validDays: number,
+    totalDays: number
   ) => {
+    const dayRatio = totalDays > 0 ? Math.min(1, validDays / totalDays) : 0;
+    if (dayRatio <= 0) {
+      return 0;
+    }
+
     if (typeof coupon.discount_amount === "number") {
       const adjustedDiscount = applyInternationalMultiplier(
         coupon.discount_amount,
         multiplier
       );
-      return Math.min(adjustedDiscount, baseAmount);
+      const proratedDiscount = Math.round(adjustedDiscount * dayRatio);
+      return Math.min(proratedDiscount, baseAmount);
     }
     if (typeof coupon.discount_percentage === "number") {
       return Math.min(Math.round((baseAmount * coupon.discount_percentage) / 100), baseAmount);
@@ -478,19 +512,23 @@ export default function ReserveFlowStep2() {
         return;
       }
 
-      const now = new Date();
-      if (!isCouponActive(matched, now)) {
-        setCouponError("This coupon is not currently valid.");
+      const eligibleRentalDays = getCouponEligibleRentalDays(matched, pickupDate, returnDate);
+      if (eligibleRentalDays <= 0) {
+        setCouponError("This coupon is not available for your rental dates.");
         setCouponDiscount(0);
         return;
       }
 
-      const baseAmount =
-        adjustedRentalFee +
-        selectedAccessoryFee +
-        selectedProtectionFee +
-        adjustedHighSeasonFee;
-      const discount = calculateCouponDiscount(matched, baseAmount, priceMultiplier);
+      const eligibleRentalAmount = Math.round(
+        adjustedRentalFee * (eligibleRentalDays / Math.max(rentalDays, 1))
+      );
+      const discount = calculateCouponDiscount(
+        matched,
+        eligibleRentalAmount,
+        priceMultiplier,
+        eligibleRentalDays,
+        rentalDays
+      );
       if (discount <= 0) {
         setCouponError("Could not calculate the coupon discount.");
         setCouponDiscount(0);
@@ -499,7 +537,11 @@ export default function ReserveFlowStep2() {
 
       setCouponDiscount(discount);
       setCouponError(null);
-      setCouponMessage("Coupon applied.");
+      if (eligibleRentalDays < rentalDays) {
+        setCouponMessage(`Coupon applied. Valid for ${eligibleRentalDays} day(s) only.`);
+      } else {
+        setCouponMessage("Coupon applied.");
+      }
     } catch (error) {
       console.error("Failed to apply coupon", error);
       setCouponError("Failed to apply the coupon. Please try again later.");
