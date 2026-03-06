@@ -56,6 +56,19 @@
   color: rgba(30, 41, 59, 0.92);
 }
 
+.selectionLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 500;
+}
+
+.selectionLabel input[type="checkbox"],
+.selectionLabel input[type="radio"] {
+  width: auto;
+  margin: 0;
+}
+
 .field :is(input, select, textarea) {
   font: inherit;
   padding: 0.65rem 0.75rem;

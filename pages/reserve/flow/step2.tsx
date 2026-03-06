@@ -111,6 +111,7 @@ export default function ReserveFlowStep2() {
   const [rentalFee, setRentalFee] = useState(defaultFees.rental);
   const [rentalFeeError, setRentalFeeError] = useState<string | null>(null);
   const [vehicleModelId, setVehicleModelId] = useState<number | null>(null);
+  const [vehicleClassId, setVehicleClassId] = useState<number | null>(null);
   const [insurancePrices, setInsurancePrices] = useState<
     BikeClass["insurance_prices"] | null
   >(null);
@@ -430,11 +431,42 @@ export default function ReserveFlowStep2() {
     setProtectionSelection((prev) => ({ ...prev, [key]: !prev[key] }));
   };
 
-  const isCouponActive = (coupon: CouponRule, now: Date) => {
-    const start = new Date(`${coupon.start_date}T00:00:00`);
-    const end = new Date(`${coupon.end_date}T23:59:59`);
-    if (Number.isNaN(start.getTime()) || Number.isNaN(end.getTime())) return false;
-    return now >= start && now <= end;
+  const isCouponActiveForRentalPeriod = (
+    coupon: CouponRule,
+    rentalStartDate: string,
+    rentalEndDate: string
+  ) => {
+    const couponStart = new Date(`${coupon.start_date}T00:00:00`);
+    const couponEnd = new Date(`${coupon.end_date}T23:59:59`);
+    const rentalStart = new Date(`${rentalStartDate}T00:00:00`);
+    const rentalEnd = new Date(`${rentalEndDate}T23:59:59`);
+
+    if (
+      Number.isNaN(couponStart.getTime()) ||
+      Number.isNaN(couponEnd.getTime()) ||
+      Number.isNaN(rentalStart.getTime()) ||
+      Number.isNaN(rentalEnd.getTime())
+    ) {
+      return false;
+    }
+
+    return rentalStart >= couponStart && rentalEnd <= couponEnd;
+  };
+
+
+  const isCouponEligibleForBikeClass = (
+    coupon: CouponRule,
+    bikeClassId: number | null
+  ) => {
+    if (!Array.isArray(coupon.target_bike_class_ids) || coupon.target_bike_class_ids.length === 0) {
+      return true;
+    }
+
+    if (bikeClassId == null) {
+      return false;
+    }
+
+    return coupon.target_bike_class_ids.includes(bikeClassId);
   };
 
   const calculateCouponDiscount = (
@@ -478,9 +510,14 @@ export default function ReserveFlowStep2() {
         return;
       }
 
-      const now = new Date();
-      if (!isCouponActive(matched, now)) {
-        setCouponError("クーポンの適用期間外です。");
+      if (!isCouponActiveForRentalPeriod(matched, pickupDate, returnDate)) {
+        setCouponError("このクーポンは貸出・返却日程では利用できません。");
+        setCouponDiscount(0);
+        return;
+      }
+
+      if (!isCouponEligibleForBikeClass(matched, vehicleClassId)) {
+        setCouponError("このクーポンは選択中のバイククラスでは利用できません。");
         setCouponDiscount(0);
         return;
       }
@@ -599,6 +636,7 @@ export default function ReserveFlowStep2() {
 
   useEffect(() => {
     if (!vehicleModelId) {
+      setVehicleClassId(null);
       setInsurancePrices(null);
       setTheftInsurance(null);
       setProtectionError(null);
@@ -633,6 +671,7 @@ export default function ReserveFlowStep2() {
           throw new Error("Bike class not found");
         }
 
+        setVehicleClassId(targetModel.classId);
         setInsurancePrices(targetClass.insurance_prices ?? null);
         setTheftInsurance(
           typeof targetClass.theft_insurance === "number"
@@ -643,6 +682,7 @@ export default function ReserveFlowStep2() {
       } catch (error) {
         if (controller.signal.aborted) return;
         console.error("Failed to load protection pricing", error);
+        setVehicleClassId(null);
         setInsurancePrices(null);
         setTheftInsurance(null);
         setProtectionError("補償オプションの料金を取得できませんでした。");
