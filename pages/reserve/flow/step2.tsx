@@ -431,7 +431,7 @@ export default function ReserveFlowStep2() {
     setProtectionSelection((prev) => ({ ...prev, [key]: !prev[key] }));
   };
 
-  const isCouponActiveForRentalPeriod = (
+  const getCouponEligibleRentalDays = (
     coupon: CouponRule,
     rentalStartDate: string,
     rentalEndDate: string
@@ -447,10 +447,21 @@ export default function ReserveFlowStep2() {
       Number.isNaN(rentalStart.getTime()) ||
       Number.isNaN(rentalEnd.getTime())
     ) {
-      return false;
+      return 0;
     }
 
-    return rentalStart >= couponStart && rentalEnd <= couponEnd;
+    if (rentalStart > rentalEnd || couponStart > couponEnd) {
+      return 0;
+    }
+
+    const overlapStart = rentalStart > couponStart ? rentalStart : couponStart;
+    const overlapEnd = rentalEnd < couponEnd ? rentalEnd : couponEnd;
+    if (overlapStart > overlapEnd) {
+      return 0;
+    }
+
+    const diffMs = overlapEnd.getTime() - overlapStart.getTime();
+    return Math.max(1, Math.ceil((diffMs + 1) / (1000 * 60 * 60 * 24)));
   };
 
 
@@ -472,14 +483,22 @@ export default function ReserveFlowStep2() {
   const calculateCouponDiscount = (
     coupon: CouponRule,
     baseAmount: number,
-    multiplier: number
+    multiplier: number,
+    validDays: number,
+    totalDays: number
   ) => {
+    const dayRatio = totalDays > 0 ? Math.min(1, validDays / totalDays) : 0;
+    if (dayRatio <= 0) {
+      return 0;
+    }
+
     if (typeof coupon.discount_amount === "number") {
       const adjustedDiscount = applyInternationalMultiplier(
         coupon.discount_amount,
         multiplier
       );
-      return Math.min(adjustedDiscount, baseAmount);
+      const proratedDiscount = Math.round(adjustedDiscount * dayRatio);
+      return Math.min(proratedDiscount, baseAmount);
     }
     if (typeof coupon.discount_percentage === "number") {
       return Math.min(Math.round((baseAmount * coupon.discount_percentage) / 100), baseAmount);
@@ -510,7 +529,8 @@ export default function ReserveFlowStep2() {
         return;
       }
 
-      if (!isCouponActiveForRentalPeriod(matched, pickupDate, returnDate)) {
+      const eligibleRentalDays = getCouponEligibleRentalDays(matched, pickupDate, returnDate);
+      if (eligibleRentalDays <= 0) {
         setCouponError("このクーポンは貸出・返却日程では利用できません。");
         setCouponDiscount(0);
         return;
@@ -522,12 +542,16 @@ export default function ReserveFlowStep2() {
         return;
       }
 
-      const baseAmount =
-        adjustedRentalFee +
-        selectedAccessoryFee +
-        selectedProtectionFee +
-        adjustedHighSeasonFee;
-      const discount = calculateCouponDiscount(matched, baseAmount, priceMultiplier);
+      const eligibleRentalAmount = Math.round(
+        adjustedRentalFee * (eligibleRentalDays / Math.max(rentalDays, 1))
+      );
+      const discount = calculateCouponDiscount(
+        matched,
+        eligibleRentalAmount,
+        priceMultiplier,
+        eligibleRentalDays,
+        rentalDays
+      );
       if (discount <= 0) {
         setCouponError("クーポンの割引額を計算できませんでした。");
         setCouponDiscount(0);
@@ -536,7 +560,11 @@ export default function ReserveFlowStep2() {
 
       setCouponDiscount(discount);
       setCouponError(null);
-      setCouponMessage("クーポンを適用しました。");
+      if (eligibleRentalDays < rentalDays) {
+        setCouponMessage(`クーポンを適用しました。${eligibleRentalDays}日間のみ有効です。`);
+      } else {
+        setCouponMessage("クーポンを適用しました。");
+      }
     } catch (error) {
       console.error("Failed to apply coupon", error);
       setCouponError("クーポンの適用に失敗しました。時間をおいて再度お試しください。");
