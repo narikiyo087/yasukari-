@@ -3,19 +3,19 @@ import { FormEvent, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 
 import DashboardLayout from "../../../../components/dashboard/DashboardLayout";
-import { CouponRule } from "../../../../lib/dashboard/types";
+import { BikeClass, CouponRule } from "../../../../lib/dashboard/types";
 import formStyles from "../../../../styles/AdminForm.module.css";
 import styles from "../../../../styles/Dashboard.module.css";
 
 type DiscountType = "amount" | "percentage";
 
 type ParsedIds = {
-  bikeClassIds: string;
+  bikeClassIds: number[];
   userClassIds: string;
 };
 
 const parseTargetIdsToText = (coupon?: CouponRule): ParsedIds => ({
-  bikeClassIds: coupon?.target_bike_class_ids?.join(",") ?? "",
+  bikeClassIds: coupon?.target_bike_class_ids ?? [],
   userClassIds: coupon?.target_user_class_ids?.join(",") ?? "",
 });
 
@@ -63,8 +63,10 @@ export default function CouponRuleRegisterPage() {
   const [discountType, setDiscountType] = useState<DiscountType>("amount");
   const [discountAmount, setDiscountAmount] = useState("");
   const [discountPercentage, setDiscountPercentage] = useState("");
-  const [targetBikeClassIds, setTargetBikeClassIds] = useState("");
+  const [targetBikeClassIds, setTargetBikeClassIds] = useState<number[]>([]);
   const [targetUserClassIds, setTargetUserClassIds] = useState("");
+  const [bikeClasses, setBikeClasses] = useState<BikeClass[]>([]);
+  const [bikeClassError, setBikeClassError] = useState<string | null>(null);
   const [currentCouponCode, setCurrentCouponCode] = useState<string | null>(
     null
   );
@@ -80,7 +82,7 @@ export default function CouponRuleRegisterPage() {
     setDiscountType("amount");
     setDiscountAmount("");
     setDiscountPercentage("");
-    setTargetBikeClassIds("");
+    setTargetBikeClassIds([]);
     setTargetUserClassIds("");
     setCurrentCouponCode(null);
   };
@@ -107,6 +109,36 @@ export default function CouponRuleRegisterPage() {
     setTargetBikeClassIds(targets.bikeClassIds);
     setTargetUserClassIds(targets.userClassIds);
   };
+
+  useEffect(() => {
+    const controller = new AbortController();
+
+    const loadBikeClasses = async () => {
+      try {
+        const response = await fetch("/api/bike-classes", {
+          signal: controller.signal,
+        });
+        if (!response.ok) {
+          throw new Error("Failed to fetch bike classes");
+        }
+
+        const items = (await response.json()) as BikeClass[];
+        setBikeClasses(items);
+        setBikeClassError(null);
+      } catch (loadError) {
+        if (controller.signal.aborted) {
+          return;
+        }
+        console.error("Failed to load bike classes", loadError);
+        setBikeClasses([]);
+        setBikeClassError("バイククラスの取得に失敗しました。");
+      }
+    };
+
+    void loadBikeClasses();
+
+    return () => controller.abort();
+  }, []);
 
   useEffect(() => {
     if (!router.isReady) {
@@ -209,7 +241,8 @@ export default function CouponRuleRegisterPage() {
       end_date: endDate,
       discount_amount: payloadDiscountAmount,
       discount_percentage: payloadDiscountPercentage,
-      target_bike_class_ids: parseTextToIds(targetBikeClassIds),
+      target_bike_class_ids:
+        targetBikeClassIds.length > 0 ? targetBikeClassIds : undefined,
       target_user_class_ids: parseTextToIds(targetUserClassIds),
     };
 
@@ -268,6 +301,14 @@ export default function CouponRuleRegisterPage() {
     setDiscountType(value);
     setDiscountAmount(value === "amount" ? discountAmount : "");
     setDiscountPercentage(value === "percentage" ? discountPercentage : "");
+  };
+
+  const handleToggleBikeClass = (classId: number) => {
+    setTargetBikeClassIds((previous) =>
+      previous.includes(classId)
+        ? previous.filter((item) => item !== classId)
+        : [...previous, classId]
+    );
   };
 
   return (
@@ -403,18 +444,28 @@ export default function CouponRuleRegisterPage() {
 
               <div className={formStyles.grid}>
                 <div className={formStyles.field}>
-                  <label htmlFor="target-bike-class-ids">対象バイククラスID</label>
-                  <input
-                    id="target-bike-class-ids"
-                    type="text"
-                    value={targetBikeClassIds}
-                    onChange={(event) => setTargetBikeClassIds(event.target.value)}
-                    placeholder="例：1,2"
-                    disabled={isLoading}
-                  />
+                  <label>対象バイククラスID</label>
                   <p className={formStyles.hint}>
-                    カンマ区切りで入力してください。
+                    チェックボタンで選択してください。複数可能です。
                   </p>
+                  {bikeClassError && <p className={formStyles.error}>{bikeClassError}</p>}
+                  <div className={formStyles.field}>
+                    {bikeClasses.length === 0 && !bikeClassError ? (
+                      <p className={formStyles.hint}>選択可能なクラスがありません。</p>
+                    ) : (
+                      bikeClasses.map((bikeClass) => (
+                        <label key={bikeClass.classId} className={formStyles.selectionLabel}>
+                          <input
+                            type="checkbox"
+                            checked={targetBikeClassIds.includes(bikeClass.classId)}
+                            onChange={() => handleToggleBikeClass(bikeClass.classId)}
+                            disabled={isLoading}
+                          />
+                          {bikeClass.className}（ID: {bikeClass.classId}）
+                        </label>
+                      ))
+                    )}
+                  </div>
                 </div>
                 <div className={formStyles.field}>
                   <label htmlFor="target-user-class-ids">
