@@ -24,6 +24,8 @@ const formatPrice = (value?: number | null) => {
   return `${value.toLocaleString('ja-JP')}円`;
 };
 
+const MAX_EXTENSION_DAYS = 31;
+
 export default function RentalExtensionPage() {
   const router = useRouter();
   const reservationId = typeof router.query.reservationId === 'string' ? router.query.reservationId : '';
@@ -45,7 +47,7 @@ export default function RentalExtensionPage() {
     if (typeof raw !== 'string') return;
     const parsed = Number(raw);
     if (!Number.isNaN(parsed) && parsed > 0) {
-      setExtensionDays(Math.min(parsed, 30));
+      setExtensionDays(Math.min(parsed, MAX_EXTENSION_DAYS));
     }
   }, [router.isReady, router.query.extensionDays]);
 
@@ -196,14 +198,14 @@ export default function RentalExtensionPage() {
   const handleExtensionDaysChange = (value: string) => {
     const parsed = Number(value);
     if (Number.isNaN(parsed) || parsed <= 0) return;
-    setExtensionDays(Math.min(parsed, 30));
+    setExtensionDays(Math.min(parsed, MAX_EXTENSION_DAYS));
   };
 
   const adjustExtensionDays = (delta: number) => {
     setExtensionDays((current) => {
       const next = current + delta;
       if (Number.isNaN(next)) return 1;
-      return Math.min(Math.max(next, 1), 30);
+      return Math.min(Math.max(next, 1), MAX_EXTENSION_DAYS);
     });
   };
 
@@ -307,7 +309,7 @@ export default function RentalExtensionPage() {
                       type="number"
                       inputMode="numeric"
                       min={1}
-                      max={30}
+                      max={MAX_EXTENSION_DAYS}
                       value={extensionDays}
                       onChange={(event) => handleExtensionDaysChange(event.target.value)}
                       className="w-[120px] rounded-xl border border-gray-300 bg-gray-50/70 px-4 py-3 text-right text-base font-semibold text-gray-900 shadow-inner transition focus:border-red-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-red-100"
@@ -317,7 +319,7 @@ export default function RentalExtensionPage() {
                       aria-label="延長日数を1日増やす"
                       onClick={() => adjustExtensionDays(1)}
                       className="inline-flex h-11 w-11 items-center justify-center rounded-xl border border-gray-300 bg-white text-lg font-semibold text-gray-700 shadow-sm transition hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-red-100 disabled:cursor-not-allowed disabled:border-gray-200 disabled:text-gray-300"
-                      disabled={extensionDays >= 30}
+                      disabled={extensionDays >= MAX_EXTENSION_DAYS}
                     >
                       ＋
                     </button>
