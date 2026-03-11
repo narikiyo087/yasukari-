@@ -26,7 +26,7 @@ const formatPrice = (value?: number | null) => {
   return `${value.toLocaleString('ja-JP')}円`;
 };
 
-const clampExtensionDays = (value: number) => Math.min(Math.max(value, 1), 30);
+const clampExtensionDays = (value: number) => Math.min(Math.max(value, 1), 31);
 
 export default function RentalExtensionCheckoutPage() {
   const router = useRouter();
