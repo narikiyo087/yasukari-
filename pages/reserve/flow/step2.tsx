@@ -464,6 +464,18 @@ export default function ReserveFlowStep2() {
     return Math.max(1, Math.ceil((diffMs + 1) / (1000 * 60 * 60 * 24)));
   };
 
+  const getInclusiveCalendarDays = (startDate: string, endDate: string) => {
+    const start = new Date(`${startDate}T00:00:00`);
+    const end = new Date(`${endDate}T23:59:59`);
+
+    if (Number.isNaN(start.getTime()) || Number.isNaN(end.getTime()) || start > end) {
+      return 0;
+    }
+
+    const diffMs = end.getTime() - start.getTime();
+    return Math.max(1, Math.ceil((diffMs + 1) / (1000 * 60 * 60 * 24)));
+  };
+
 
   const isCouponEligibleForBikeClass = (
     coupon: CouponRule,
@@ -530,8 +542,15 @@ export default function ReserveFlowStep2() {
       }
 
       const eligibleRentalDays = getCouponEligibleRentalDays(matched, pickupDate, returnDate);
+      const totalRentalCalendarDays = getInclusiveCalendarDays(pickupDate, returnDate);
       if (eligibleRentalDays <= 0) {
         setCouponError("このクーポンは貸出・返却日程では利用できません。");
+        setCouponDiscount(0);
+        return;
+      }
+
+      if (totalRentalCalendarDays <= 0) {
+        setCouponError("貸出・返却日程が不正です。");
         setCouponDiscount(0);
         return;
       }
@@ -543,14 +562,14 @@ export default function ReserveFlowStep2() {
       }
 
       const eligibleRentalAmount = Math.round(
-        adjustedRentalFee * (eligibleRentalDays / Math.max(rentalDays, 1))
+        adjustedRentalFee * (eligibleRentalDays / totalRentalCalendarDays)
       );
       const discount = calculateCouponDiscount(
         matched,
         eligibleRentalAmount,
         priceMultiplier,
         eligibleRentalDays,
-        rentalDays
+        totalRentalCalendarDays
       );
       if (discount <= 0) {
         setCouponError("クーポンの割引額を計算できませんでした。");
