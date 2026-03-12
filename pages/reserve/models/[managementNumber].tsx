@@ -96,7 +96,7 @@ export default function ReserveModelPage({
     return base;
   }, []);
 
-  const maxAdvanceDays = 93;
+  const maxAdvanceDays = 31;
   const maxDate = useMemo(() => {
     const base = new Date();
     base.setDate(base.getDate() + maxAdvanceDays);
