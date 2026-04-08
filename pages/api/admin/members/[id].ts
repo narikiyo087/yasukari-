@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 
-import { fetchMemberDetail, updateMemberNotes } from "../../../../lib/adminMembers";
+import { fetchMemberDetail, updateMemberManagement } from "../../../../lib/adminMembers";
 
 type MemberDetailResponse = Awaited<ReturnType<typeof fetchMemberDetail>>;
 
@@ -33,9 +33,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     try {
       const body = parseRequestBody(req);
       const notesValue = typeof body.notes === "string" ? body.notes.trim() : "";
+      const isBlacklistedValue = body.isBlacklisted === true;
 
-      await updateMemberNotes(memberId, notesValue);
-      return res.status(200).json({ notes: notesValue });
+      await updateMemberManagement(memberId, {
+        notes: notesValue,
+        isBlacklisted: isBlacklistedValue,
+      });
+      return res.status(200).json({
+        notes: notesValue,
+        isBlacklisted: isBlacklistedValue,
+      });
     } catch (error) {
       console.error("Failed to update member notes", error);
       const message =

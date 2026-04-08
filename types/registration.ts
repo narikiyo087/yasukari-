@@ -36,6 +36,7 @@ export type RegistrationData = {
   return_report_uploaded_at?: string;
   rental_terms_agreed_at?: string;
   notes?: string;
+  is_blacklisted?: boolean;
 };
 
 export const REQUIRED_REGISTRATION_FIELDS: (keyof RegistrationData)[] = [
