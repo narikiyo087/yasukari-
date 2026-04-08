@@ -64,6 +64,7 @@ export default function ProductDetailPage({
   const [selectedStoreId, setSelectedStoreId] = useState<string>("");
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [showRentalLimitModal, setShowRentalLimitModal] = useState(false);
+  const [showBlacklistedModal, setShowBlacklistedModal] = useState(false);
   const [showStoreRequiredModal, setShowStoreRequiredModal] = useState(false);
   const [rentalCheckError, setRentalCheckError] = useState("");
   const [checkingRental, setCheckingRental] = useState(false);
@@ -185,6 +186,25 @@ export default function ProductDetailPage({
     setRentalCheckError("");
 
     try {
+      const registrationResponse = await fetch("/api/register/user", {
+        credentials: "include",
+      });
+
+      if (registrationResponse.status === 401) {
+        setShowAuthModal(true);
+        return;
+      }
+
+      if (registrationResponse.ok) {
+        const registrationData = (await registrationResponse.json()) as {
+          registration?: { is_blacklisted?: boolean } | null;
+        };
+        if (registrationData.registration?.is_blacklisted === true) {
+          setShowBlacklistedModal(true);
+          return;
+        }
+      }
+
       const response = await fetch("/api/reservations/me", {
         credentials: "include",
       });
@@ -618,6 +638,38 @@ export default function ProductDetailPage({
                   type="button"
                   className="inline-flex w-full items-center justify-center rounded-lg border border-gray-200 px-4 py-2 text-sm font-semibold text-gray-600 hover:border-gray-300"
                   onClick={() => setShowRentalLimitModal(false)}
+                >
+                  閉じる
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : null}
+      {showBlacklistedModal ? (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
+          <div className="relative w-full max-w-lg overflow-hidden rounded-2xl bg-white shadow-2xl">
+            <div className="border-b border-amber-100 bg-amber-50 px-6 py-4 text-gray-900">
+              <p className="text-sm font-semibold uppercase tracking-wide text-gray-900">Rental Notice</p>
+              <h2 className="mt-1 text-xl font-bold text-amber-700">現在マイページのアクセスは制限されています</h2>
+            </div>
+            <div className="space-y-4 px-6 py-5 text-gray-700">
+              <p className="text-sm leading-relaxed">
+                ご利用状況の確認により、現在このアカウントのマイページ表示を制限しています。
+                ご不明点は店舗またはサポートまでお問い合わせください。
+              </p>
+              <div className="flex flex-col gap-2 pt-2">
+                <button
+                  type="button"
+                  className="inline-flex w-full items-center justify-center rounded-lg bg-red-600 px-4 py-3 text-sm font-semibold text-white shadow transition hover:bg-red-700"
+                  onClick={() => router.push("/contact")}
+                >
+                  お問い合わせ
+                </button>
+                <button
+                  type="button"
+                  className="inline-flex w-full items-center justify-center rounded-lg border border-gray-200 px-4 py-2 text-sm font-semibold text-gray-600 hover:border-gray-300"
+                  onClick={() => setShowBlacklistedModal(false)}
                 >
                   閉じる
                 </button>
