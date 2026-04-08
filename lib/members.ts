@@ -33,4 +33,5 @@ export type Member = {
   otherContactPhone: string;
   registeredAt: string;
   notes: string;
+  isBlacklisted: boolean;
 };

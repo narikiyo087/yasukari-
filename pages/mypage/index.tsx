@@ -391,6 +391,7 @@ export default function MyPage() {
     if (!registration) return false;
     return REQUIRED_REGISTRATION_FIELDS.every((field) => Boolean(registration[field]));
   }, [registration]);
+  const isMyPageRestricted = registration?.is_blacklisted === true;
 
   useEffect(() => {
     if (loadingRegistration || !registration || isRegistrationComplete) return;
@@ -845,6 +846,26 @@ export default function MyPage() {
               </section>
             ) : null}
 
+            {isMyPageRestricted ? (
+              <section className="rounded-2xl border border-amber-300 bg-amber-50 p-6 shadow-sm">
+                <h2 className="text-lg font-semibold text-amber-900">現在マイページのアクセスは制限されています</h2>
+                <p className="mt-3 text-sm text-amber-900">
+                  ご利用状況の確認により、現在このアカウントのマイページ表示を制限しています。
+                  ご不明点は店舗またはサポートまでお問い合わせください。
+                </p>
+                <div className="mt-4">
+                  <button
+                    type="button"
+                    onClick={handleLogout}
+                    className={`${sectionActionClass} bg-red-600 text-white transition hover:bg-red-700`}
+                    disabled={!user || loggingOut}
+                  >
+                    {loggingOut ? '処理中…' : 'ログアウトする'}
+                  </button>
+                </div>
+              </section>
+            ) : (
+              <>
             <section className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
               <div className="flex flex-wrap items-start justify-between gap-4">
                 <button
@@ -1455,6 +1476,8 @@ export default function MyPage() {
                 </button>
               </div>
             </section>
+              </>
+            )}
           </>
         )}
 
