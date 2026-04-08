@@ -56,9 +56,11 @@ export default function MemberDetailPage() {
   const [noteSuccess, setNoteSuccess] = useState<string | null>(null);
 
   const [noteEdit, setNoteEdit] = useState(member?.notes ?? "");
+  const [isBlacklistedEdit, setIsBlacklistedEdit] = useState(member?.isBlacklisted ?? false);
 
   useEffect(() => {
     setNoteEdit(member?.notes ?? "");
+    setIsBlacklistedEdit(member?.isBlacklisted ?? false);
   }, [member]);
 
   useEffect(() => {
@@ -120,7 +122,7 @@ export default function MemberDetailPage() {
       const response = await fetch(`/api/admin/members/${memberId}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ notes: noteEdit }),
+        body: JSON.stringify({ notes: noteEdit, isBlacklisted: isBlacklistedEdit }),
       });
 
       if (!response.ok) {
@@ -128,9 +130,17 @@ export default function MemberDetailPage() {
         throw new Error(data?.message ?? "備考の保存に失敗しました。");
       }
 
-      const data = (await response.json()) as { notes: string };
-      setMember((prev) => (prev ? { ...prev, notes: data.notes } : prev));
-      setNoteSuccess("備考を保存しました。");
+      const data = (await response.json()) as { notes: string; isBlacklisted: boolean };
+      setMember((prev) =>
+        prev
+          ? {
+              ...prev,
+              notes: data.notes,
+              isBlacklisted: data.isBlacklisted,
+            }
+          : prev
+      );
+      setNoteSuccess("備考とブラックリスト設定を保存しました。");
     } catch (error) {
       console.error("Failed to save notes", error);
       const message = error instanceof Error ? error.message : "備考の保存に失敗しました。";
@@ -291,6 +301,15 @@ export default function MemberDetailPage() {
 
             <div className={memberStyles.noteArea}>
               <div className={memberStyles.sectionTitle}>備考</div>
+              <label className={memberStyles.sectionHelper}>
+                <input
+                  type="checkbox"
+                  checked={isBlacklistedEdit}
+                  onChange={(event) => setIsBlacklistedEdit(event.target.checked)}
+                  style={{ marginRight: 8 }}
+                />
+                ブラックリストとしてマイページ表示を制限する
+              </label>
               <textarea
                 className={memberStyles.noteTextarea}
                 value={noteEdit}
@@ -303,9 +322,13 @@ export default function MemberDetailPage() {
                   type="button"
                   className={memberStyles.saveButton}
                   onClick={handleSaveNote}
-                  disabled={isSavingNote || noteEdit === (member.notes ?? "")}
+                  disabled={
+                    isSavingNote ||
+                    (noteEdit === (member.notes ?? "") &&
+                      isBlacklistedEdit === (member.isBlacklisted ?? false))
+                  }
                 >
-                  {isSavingNote ? "保存中..." : "備考を保存"}
+                  {isSavingNote ? "保存中..." : "備考・ブラックリスト設定を保存"}
                 </button>
                 {(noteError || noteSuccess) && (
                   <p
@@ -318,7 +341,7 @@ export default function MemberDetailPage() {
                 )}
               </div>
               <p className={memberStyles.sectionHelper}>
-                備考を編集して保存できます。
+                ブラックリストをONにした会員はマイページが制限表示になります。未設定またはOFFなら通常表示です。
               </p>
             </div>
 

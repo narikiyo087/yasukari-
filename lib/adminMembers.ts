@@ -289,6 +289,7 @@ const mapMember = (
     otherContactPhone: registration?.other_tel ?? "-",
     registeredAt: formatDateTime(createdAt),
     notes: registration?.notes ?? "",
+    isBlacklisted: registration?.is_blacklisted === true,
   };
 };
 
@@ -462,7 +463,10 @@ export const fetchMemberDetail = async (memberId: string): Promise<MemberDetail>
   };
 };
 
-export const updateMemberNotes = async (memberId: string, notes: string): Promise<void> => {
+export const updateMemberManagement = async (
+  memberId: string,
+  options: { notes: string; isBlacklisted: boolean }
+): Promise<void> => {
   const registration = await fetchRegistrationById(memberId);
   if (!registration) {
     throw new Error("登録情報が見つかりませんでした。");
@@ -473,12 +477,14 @@ export const updateMemberNotes = async (memberId: string, notes: string): Promis
     new UpdateCommand({
       TableName: USER_TABLE,
       Key: { user_id: memberId },
-      UpdateExpression: "SET #notes = :notes",
+      UpdateExpression: "SET #notes = :notes, #isBlacklisted = :isBlacklisted",
       ExpressionAttributeNames: {
         "#notes": "notes",
+        "#isBlacklisted": "is_blacklisted",
       },
       ExpressionAttributeValues: {
-        ":notes": notes,
+        ":notes": options.notes,
+        ":isBlacklisted": options.isBlacklisted,
       },
     })
   );
