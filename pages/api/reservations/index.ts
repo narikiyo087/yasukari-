@@ -66,6 +66,8 @@ type VehicleRecord = {
 };
 
 const VEHICLES_TABLE = process.env.VEHICLES_TABLE ?? "Vehicles";
+const MAX_ADVANCE_MONTHS = 3;
+const MAX_RENTAL_DAYS = 31;
 
 const normalizeAccessorySelection = (
   value: unknown
@@ -227,6 +229,32 @@ const isReservationRangeAvailable = (
   return true;
 };
 
+const isWithinReservationWindow = (pickupAt: string, returnAt: string): boolean => {
+  const pickupDate = new Date(pickupAt);
+  const returnDate = new Date(returnAt);
+  if (Number.isNaN(pickupDate.getTime()) || Number.isNaN(returnDate.getTime())) {
+    return false;
+  }
+  if (returnDate <= pickupDate) {
+    return false;
+  }
+
+  const latestPickup = new Date();
+  latestPickup.setMonth(latestPickup.getMonth() + MAX_ADVANCE_MONTHS);
+  latestPickup.setHours(23, 59, 59, 999);
+  if (pickupDate > latestPickup) {
+    return false;
+  }
+
+  const maxReturnDate = new Date(pickupDate);
+  maxReturnDate.setDate(maxReturnDate.getDate() + MAX_RENTAL_DAYS);
+  if (returnDate > maxReturnDate) {
+    return false;
+  }
+
+  return true;
+};
+
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<ReservationListResponse | { error: string }>
@@ -264,6 +292,12 @@ export default async function handler(
       const missingField = requiredFields.find((field) => !body[field]);
       if (missingField) {
         return res.status(400).json({ error: `${missingField} is required` });
+      }
+
+      if (!isWithinReservationWindow(body.pickupAt!, body.returnAt!)) {
+        return res.status(400).json({
+          error: "貸出期間は最大1か月、予約開始日は3か月先まで指定できます。",
+        });
       }
 
       const existingReservation = await fetchReservationById(body.paymentId!);

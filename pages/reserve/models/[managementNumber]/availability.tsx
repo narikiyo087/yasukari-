@@ -14,6 +14,8 @@ const STATUS_COLORS: Record<"AVAILABLE" | "UNAVAILABLE", string> = {
   AVAILABLE: "bg-emerald-500",
   UNAVAILABLE: "bg-rose-500",
 };
+const MAX_ADVANCE_MONTHS = 3;
+const MAX_RENTAL_DAYS = 31;
 
 type CalendarCell = {
   date: Date;
@@ -34,7 +36,7 @@ const getBookingWindow = () => {
   minDate.setHours(0, 0, 0, 0);
 
   const maxDate = new Date();
-  maxDate.setDate(maxDate.getDate() + 31);
+  maxDate.setMonth(maxDate.getMonth() + MAX_ADVANCE_MONTHS);
   maxDate.setHours(0, 0, 0, 0);
 
   return { minDate, maxDate };
@@ -187,17 +189,23 @@ const { minDate: bookingWindowMinDate, maxDate: bookingWindowMaxDate } = useMemo
   []
 );
 const isWithinBookingWindow = (date: Date) => date >= bookingWindowMinDate && date <= bookingWindowMaxDate;
+const canMovePrevMonth =
+  new Date(displayMonth.getFullYear(), displayMonth.getMonth(), 1) >
+  new Date(bookingWindowMinDate.getFullYear(), bookingWindowMinDate.getMonth(), 1);
+const canMoveNextMonth =
+  new Date(displayMonth.getFullYear(), displayMonth.getMonth(), 1) <
+  new Date(bookingWindowMaxDate.getFullYear(), bookingWindowMaxDate.getMonth(), 1);
 const availabilityLabel = (entry?: RentalAvailabilityDay, date?: Date) => {
   if (date && !isWithinBookingWindow(date)) {
-    return "予約受付期間外";
+    return "予約受付期間外（出発日は3か月先まで）";
   }
   return isAvailable(entry) ? "レンタル可" : "レンタル不可";
 };
 const availabilityIcon = (entry?: RentalAvailabilityDay, date?: Date) => {
   if (date && !isWithinBookingWindow(date)) {
-    return "❌";
+    return "ー";
   }
-  return isAvailable(entry) ? "⚪︎" : "❌";
+  return isAvailable(entry) ? "〇" : "×";
 };
 
   const resolvedModelName = model?.modelName ?? "車種";
@@ -257,12 +265,16 @@ const availabilityIcon = (entry?: RentalAvailabilityDay, date?: Date) => {
                   <p className="text-sm text-gray-600 mt-1">
                     日付をクリックすると、その日のステータスを表示します。
                   </p>
+                  <p className="text-xs text-gray-500 mt-1">
+                    出発日は3か月先まで指定可能・貸出期間は最大1か月（{MAX_RENTAL_DAYS}日）です。
+                  </p>
                 </div>
                 <div className="flex items-center gap-2">
                   <button
                     type="button"
                     className="inline-flex items-center rounded-lg border border-gray-200 px-3 py-2 text-sm font-semibold text-gray-700 hover:border-gray-300 transition"
                     onClick={() => setCalendarMonthOffset((prev) => prev - 1)}
+                    disabled={!canMovePrevMonth}
                   >
                     前の月
                   </button>
@@ -273,6 +285,7 @@ const availabilityIcon = (entry?: RentalAvailabilityDay, date?: Date) => {
                     type="button"
                     className="inline-flex items-center rounded-lg border border-gray-200 px-3 py-2 text-sm font-semibold text-gray-700 hover:border-gray-300 transition"
                     onClick={() => setCalendarMonthOffset((prev) => prev + 1)}
+                    disabled={!canMoveNextMonth}
                   >
                     次の月
                   </button>
@@ -370,6 +383,18 @@ const availabilityIcon = (entry?: RentalAvailabilityDay, date?: Date) => {
                   <h2 className="text-lg font-bold text-gray-900">ステータス表示</h2>
                 </div>
                 <ul className="space-y-2 text-sm text-gray-700">
+                  <li className="flex items-center justify-between gap-3">
+                    <span className="font-semibold text-gray-900">〇</span>
+                    <span className="text-gray-700">レンタル可</span>
+                  </li>
+                  <li className="flex items-center justify-between gap-3">
+                    <span className="font-semibold text-gray-900">×</span>
+                    <span className="text-gray-700">レンタル不可</span>
+                  </li>
+                  <li className="flex items-center justify-between gap-3">
+                    <span className="font-semibold text-gray-900">ー</span>
+                    <span className="text-gray-700">予約受付期間外</span>
+                  </li>
                   <li className="flex items-center gap-3">
                     <span className={`h-3 w-3 rounded-full ${STATUS_COLORS.AVAILABLE}`} aria-hidden />
                     <span className="font-semibold text-gray-900">レンタル可</span>

@@ -96,13 +96,14 @@ export default function ReserveModelPage({
     return base;
   }, []);
 
-  const maxAdvanceDays = 31;
+  const maxAdvanceMonths = 3;
+  const maxRentalDays = 31;
   const maxDate = useMemo(() => {
     const base = new Date();
-    base.setDate(base.getDate() + maxAdvanceDays);
+    base.setMonth(base.getMonth() + maxAdvanceMonths);
     base.setHours(0, 0, 0, 0);
     return base;
-  }, [maxAdvanceDays]);
+  }, [maxAdvanceMonths]);
 
   const minDateString = useMemo(() => formatInputDate(minDate), [minDate]);
 
@@ -319,7 +320,7 @@ export default function ReserveModelPage({
                       activeSelection={activeSelection}
                       minDate={minDate}
                       maxDate={maxDate}
-                      maxRentalDays={maxAdvanceDays}
+                      maxRentalDays={maxRentalDays}
                       pickupDate={pickupDate}
                       returnDate={returnDateValue}
                       availabilityMap={availabilityMap}
@@ -359,6 +360,9 @@ export default function ReserveModelPage({
                   </div>
                   <p className="mt-2 text-xs text-gray-600">
                     Select a pickup date. Reservations are available up to 3 months ahead.
+                  </p>
+                  <p className="mt-1 text-xs text-gray-600">
+                    Rental duration is limited to one month (31 days).
                   </p>
                   <p className="mt-3 text-xs text-gray-600">
                     {activeSelection === "pickup"
