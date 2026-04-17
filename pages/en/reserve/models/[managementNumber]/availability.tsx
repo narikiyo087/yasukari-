@@ -28,6 +28,18 @@ const formatDateInput = (date: Date) => {
   return `${year}-${month}-${day}`;
 };
 
+const getBookingWindow = () => {
+  const minDate = new Date();
+  minDate.setDate(minDate.getDate() + 1);
+  minDate.setHours(0, 0, 0, 0);
+
+  const maxDate = new Date();
+  maxDate.setDate(maxDate.getDate() + 31);
+  maxDate.setHours(0, 0, 0, 0);
+
+  return { minDate, maxDate };
+};
+
 const buildCalendarGrid = (month: Date): CalendarCell[][] => {
   const firstDay = new Date(month.getFullYear(), month.getMonth(), 1);
   const startDate = new Date(firstDay);
@@ -170,9 +182,23 @@ const calendarWeeks = useMemo(() => buildCalendarGrid(displayMonth), [displayMon
 
 const selectedEntry = selectedDate ? availabilityMap[selectedDate] : undefined;
 const isAvailable = (entry?: RentalAvailabilityDay) => entry?.status === "AVAILABLE";
-const availabilityLabel = (entry?: RentalAvailabilityDay) =>
-  isAvailable(entry) ? "Available" : "Unavailable";
-const availabilityIcon = (entry?: RentalAvailabilityDay) => (isAvailable(entry) ? "⚪︎" : "❌");
+const { minDate: bookingWindowMinDate, maxDate: bookingWindowMaxDate } = useMemo(
+  () => getBookingWindow(),
+  []
+);
+const isWithinBookingWindow = (date: Date) => date >= bookingWindowMinDate && date <= bookingWindowMaxDate;
+const availabilityLabel = (entry?: RentalAvailabilityDay, date?: Date) => {
+  if (date && !isWithinBookingWindow(date)) {
+    return "Outside booking window";
+  }
+  return isAvailable(entry) ? "Available" : "Unavailable";
+};
+const availabilityIcon = (entry?: RentalAvailabilityDay, date?: Date) => {
+  if (date && !isWithinBookingWindow(date)) {
+    return "❌";
+  }
+  return isAvailable(entry) ? "⚪︎" : "❌";
+};
 
   const resolvedModelName = model?.modelName ?? "Model";
   const resolvedStoreLabel = vehicle?.storeId ? getStoreLabel(vehicle.storeId) : "Store";
@@ -278,12 +304,15 @@ const availabilityIcon = (entry?: RentalAvailabilityDay) => (isAvailable(entry) 
                         {week.map((cell, dayIndex) => {
                           const entry = availabilityMap[cell.key];
                           const isSelected = selectedDate === cell.key;
+                          const isOutsideBookingWindow = !isWithinBookingWindow(cell.date);
                           return (
                             <td
                               key={`${weekIndex}-${dayIndex}`}
                               className={`h-20 align-top p-2 text-left transition ${
                                 !cell.isCurrentMonth ? "bg-gray-50 text-gray-400" : "bg-white"
-                              } ${isSelected ? "ring-2 ring-red-500" : ""}`}
+                              } ${isOutsideBookingWindow ? "bg-gray-100 text-gray-400" : ""} ${
+                                isSelected ? "ring-2 ring-red-500" : ""
+                              }`}
                             >
                               <button
                                 type="button"
@@ -295,7 +324,7 @@ const availabilityIcon = (entry?: RentalAvailabilityDay) => (isAvailable(entry) 
                                     {cell.date.getDate()}
                                   </span>
                                   <span className="text-sm font-semibold text-gray-700">
-                                    {availabilityIcon(entry)}
+                                    {availabilityIcon(entry, cell.date)}
                                   </span>
                                 </div>
                               </button>
@@ -361,12 +390,19 @@ const availabilityIcon = (entry?: RentalAvailabilityDay) => (isAvailable(entry) 
                     <p className="inline-flex items-center gap-2 text-gray-900">
                       <span
                         className={`h-3 w-3 rounded-full ${
-                          isAvailable(selectedEntry) ? STATUS_COLORS.AVAILABLE : STATUS_COLORS.UNAVAILABLE
+                          selectedDate && !isWithinBookingWindow(new Date(selectedDate))
+                            ? STATUS_COLORS.UNAVAILABLE
+                            : isAvailable(selectedEntry)
+                            ? STATUS_COLORS.AVAILABLE
+                            : STATUS_COLORS.UNAVAILABLE
                         }`}
                         aria-hidden
                       />
                       <span className="font-semibold">
-                        {availabilityLabel(selectedEntry)}
+                        {availabilityLabel(
+                          selectedEntry,
+                          selectedDate ? new Date(selectedDate) : undefined
+                        )}
                       </span>
                     </p>
                   </div>
