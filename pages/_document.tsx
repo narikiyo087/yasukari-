@@ -20,7 +20,11 @@ export default function Document() {
           href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
         />
         <script src="https://applepay.cdn-apple.com/jsapi/v1/apple-pay-sdk.js" />
-        <script dangerouslySetInnerHTML={{ __html: "var RentioApp = { env: 'production' };" }} />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `window.YasukariApp = { env: '${process.env.NODE_ENV ?? 'production'}' };`,
+          }}
+        />
       </Head>
       <body>
         <Main />
