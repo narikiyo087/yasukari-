@@ -45,7 +45,7 @@ export default function ReserveFlowStep1() {
 
   const timeOptions = useMemo(() => {
     if (store.includes("三ノ輪")) {
-      return buildTimeOptions(10, 19);
+      return buildTimeOptions(0, 23);
     }
     if (store.includes("足立")) {
       return buildTimeOptions(10, 18);
@@ -55,7 +55,7 @@ export default function ReserveFlowStep1() {
 
   const storeNotice = useMemo(() => {
     if (store.includes("三ノ輪")) {
-      return "三ノ輪店の24時間営業は2月後半からを予定しております。";
+      return "三ノ輪店は24時間営業を開始しました。貸出時間は24時間（1時間刻み）で選択できます。";
     }
     return "";
   }, [store]);
