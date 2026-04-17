@@ -22,6 +22,8 @@ type UserAttributes = {
   name?: string;
 };
 
+const RETURN_PHOTO_UPLOAD_GRACE_MS = 60 * 60 * 1000;
+
 export default function MyPage() {
   const rentalContractBaseUrl = process.env.NEXT_PUBLIC_RENTAL_CONTRACT_URL;
   const unmannedRentalGuideUrl = '/blog_for_custmor/2025-09-10-minowa-unmanned';
@@ -586,13 +588,15 @@ export default function MyPage() {
       return true;
     }
     const now = Date.now();
-    return now >= pickupDate.getTime() && now <= returnDate.getTime();
+    const returnDeadlineWithGrace = returnDate.getTime() + RETURN_PHOTO_UPLOAD_GRACE_MS;
+    return now >= pickupDate.getTime() && now <= returnDeadlineWithGrace;
   }, [activeReturnReservation]);
   const isReturnOverdue = useMemo(() => {
     if (!activeReturnReservation?.returnAt) return false;
     const returnDate = new Date(activeReturnReservation.returnAt);
     if (Number.isNaN(returnDate.getTime())) return false;
-    return Date.now() > returnDate.getTime();
+    const returnDeadlineWithGrace = returnDate.getTime() + RETURN_PHOTO_UPLOAD_GRACE_MS;
+    return Date.now() > returnDeadlineWithGrace;
   }, [activeReturnReservation]);
   const extensionTargetReservationId = activeReturnReservation?.id ?? null;
   const reviewStore = useMemo(() => {
