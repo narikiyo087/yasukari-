@@ -14,6 +14,8 @@ const STATUS_COLORS: Record<"AVAILABLE" | "UNAVAILABLE", string> = {
   AVAILABLE: "bg-emerald-500",
   UNAVAILABLE: "bg-rose-500",
 };
+const MAX_ADVANCE_MONTHS = 3;
+const MAX_RENTAL_DAYS = 31;
 
 type CalendarCell = {
   date: Date;
@@ -34,7 +36,7 @@ const getBookingWindow = () => {
   minDate.setHours(0, 0, 0, 0);
 
   const maxDate = new Date();
-  maxDate.setDate(maxDate.getDate() + 31);
+  maxDate.setMonth(maxDate.getMonth() + MAX_ADVANCE_MONTHS);
   maxDate.setHours(0, 0, 0, 0);
 
   return { minDate, maxDate };
@@ -187,17 +189,23 @@ const { minDate: bookingWindowMinDate, maxDate: bookingWindowMaxDate } = useMemo
   []
 );
 const isWithinBookingWindow = (date: Date) => date >= bookingWindowMinDate && date <= bookingWindowMaxDate;
+const canMovePrevMonth =
+  new Date(displayMonth.getFullYear(), displayMonth.getMonth(), 1) >
+  new Date(bookingWindowMinDate.getFullYear(), bookingWindowMinDate.getMonth(), 1);
+const canMoveNextMonth =
+  new Date(displayMonth.getFullYear(), displayMonth.getMonth(), 1) <
+  new Date(bookingWindowMaxDate.getFullYear(), bookingWindowMaxDate.getMonth(), 1);
 const availabilityLabel = (entry?: RentalAvailabilityDay, date?: Date) => {
   if (date && !isWithinBookingWindow(date)) {
-    return "Outside booking window";
+    return "Outside booking window (pickup date must be within 3 months)";
   }
   return isAvailable(entry) ? "Available" : "Unavailable";
 };
 const availabilityIcon = (entry?: RentalAvailabilityDay, date?: Date) => {
   if (date && !isWithinBookingWindow(date)) {
-    return "❌";
+    return "—";
   }
-  return isAvailable(entry) ? "⚪︎" : "❌";
+  return isAvailable(entry) ? "〇" : "×";
 };
 
   const resolvedModelName = model?.modelName ?? "Model";
@@ -257,12 +265,16 @@ const availabilityIcon = (entry?: RentalAvailabilityDay, date?: Date) => {
                   <p className="text-sm text-gray-600 mt-1">
                     Select a date to review availability status.
                   </p>
+                  <p className="text-xs text-gray-500 mt-1">
+                    Pickup dates can be selected up to 3 months ahead, and rental duration is up to {MAX_RENTAL_DAYS} days.
+                  </p>
                 </div>
                 <div className="flex items-center gap-2">
                   <button
                     type="button"
                     className="inline-flex items-center rounded-lg border border-gray-200 px-3 py-2 text-sm font-semibold text-gray-700 hover:border-gray-300 transition"
                     onClick={() => setCalendarMonthOffset((prev) => prev - 1)}
+                    disabled={!canMovePrevMonth}
                   >
                     Previous
                   </button>
@@ -273,6 +285,7 @@ const availabilityIcon = (entry?: RentalAvailabilityDay, date?: Date) => {
                     type="button"
                     className="inline-flex items-center rounded-lg border border-gray-200 px-3 py-2 text-sm font-semibold text-gray-700 hover:border-gray-300 transition"
                     onClick={() => setCalendarMonthOffset((prev) => prev + 1)}
+                    disabled={!canMoveNextMonth}
                   >
                     Next
                   </button>
@@ -370,6 +383,18 @@ const availabilityIcon = (entry?: RentalAvailabilityDay, date?: Date) => {
                   <h2 className="text-lg font-bold text-gray-900">Legend</h2>
                 </div>
                 <ul className="space-y-2 text-sm text-gray-700">
+                  <li className="flex items-center justify-between gap-3">
+                    <span className="font-semibold text-gray-900">〇</span>
+                    <span className="text-gray-700">Available</span>
+                  </li>
+                  <li className="flex items-center justify-between gap-3">
+                    <span className="font-semibold text-gray-900">×</span>
+                    <span className="text-gray-700">Unavailable</span>
+                  </li>
+                  <li className="flex items-center justify-between gap-3">
+                    <span className="font-semibold text-gray-900">—</span>
+                    <span className="text-gray-700">Outside booking window</span>
+                  </li>
                   <li className="flex items-center gap-3">
                     <span className={`h-3 w-3 rounded-full ${STATUS_COLORS.AVAILABLE}`} aria-hidden />
                     <span className="font-semibold text-gray-900">Available</span>
