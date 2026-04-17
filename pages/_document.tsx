@@ -25,7 +25,11 @@ export default function Document() {
           href="https://unpkg.com/swiper@10/swiper-bundle.min.css"
         />
         <script src="https://applepay.cdn-apple.com/jsapi/v1/apple-pay-sdk.js" />
-        <script dangerouslySetInnerHTML={{ __html: "var RentioApp = { env: 'production' };" }} />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `window.YasukariApp = { env: '${process.env.NODE_ENV ?? 'production'}' };`,
+          }}
+        />
       </Head>
       <body>
         <Main />
