@@ -332,9 +332,7 @@ export default function ReserveModelPage({
 
                       if (activeSelection === "pickup") {
                         setPickup(formatted);
-                        if (returnDateValue && date > returnDateValue) {
-                          setReturnDate("");
-                        }
+                        setReturnDate("");
                         setActiveSelection("return");
                       } else {
                         setReturnDate(formatted);
@@ -345,7 +343,12 @@ export default function ReserveModelPage({
                     <button
                       type="button"
                     className={`rounded-full px-3 py-1 font-semibold shadow-sm transition focus:outline-none focus:ring-2 focus:ring-offset-2 ${activeSelection === "pickup" ? "bg-red-500 text-white focus:ring-red-500" : "bg-white text-gray-700 ring-1 ring-gray-200 hover:bg-gray-100 focus:ring-gray-300"}`}
-                    onClick={() => setActiveSelection("pickup")}
+                    onClick={() => {
+                      if (pickup) {
+                        setReturnDate("");
+                      }
+                      setActiveSelection("pickup");
+                    }}
                   >
                       Choose pickup date
                   </button>
