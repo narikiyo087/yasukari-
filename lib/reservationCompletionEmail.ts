@@ -93,6 +93,8 @@ const buildTextBody = (reservation: Reservation): string => {
     reservation.storeName,
     "■利用内容",
     `車両: ${reservation.vehicleModel} (${reservation.vehiclePlate || reservation.vehicleCode})`,
+    "■車両番号",
+    reservation.vehiclePlate || "-",
     "▽オプション",
     ...optionLines,
     "■合計金額",
@@ -177,6 +179,8 @@ const buildHtmlBody = (reservation: Reservation): string => {
       ${reservation.storeName}<br />
       <strong>■利用内容</strong><br />
       車両: ${reservation.vehicleModel} (${reservation.vehiclePlate || reservation.vehicleCode})<br />
+      <strong>■車両番号</strong><br />
+      ${reservation.vehiclePlate || "-"}<br />
       <strong>▽オプション</strong>
     </p>
 
