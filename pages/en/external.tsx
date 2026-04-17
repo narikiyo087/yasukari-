@@ -17,7 +17,6 @@ export default function ExternalDisclosureEn() {
           <ul className="list-disc list-inside space-y-1">
             <li>Google Fonts (font delivery)</li>
             <li>jsDelivr CDN (Tailwind CSS delivery)</li>
-            <li>unpkg CDN (Swiper stylesheet delivery)</li>
             <li>Unsplash (image delivery)</li>
             <li>Other access analytics tools</li>
           </ul>

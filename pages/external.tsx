@@ -18,7 +18,6 @@ export default function ExternalDisclosure() {
           <ul className="list-disc list-inside space-y-1">
             <li>Google Fonts（フォントの配信）</li>
             <li>jsDelivr CDN（Tailwind CSSの配信）</li>
-            <li>unpkg CDN（Swiper のスタイル配信）</li>
             <li>Unsplash（一部画像の配信）</li>
             <li>その他アクセス解析ツール</li>
           </ul>
