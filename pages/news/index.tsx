@@ -4,6 +4,13 @@ import Link from 'next/link'
 export default function NewsPage() {
   const posts = [
     {
+      title: '三ノ輪店｜24時間レンタルの流れと注意事項',
+      date: '2026-04-28',
+      excerpt:
+        '三ノ輪店（無人店舗）をご利用いただくお客様向けに、予約から返却までの手順と注意事項をまとめました。',
+      href: '/news/minowa-24hour-rental',
+    },
+    {
       title: 'サイトリニューアルのお知らせ',
       date: '2025-08-01',
       excerpt:
