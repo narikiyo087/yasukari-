@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 
-import { COGNITO_ID_TOKEN_COOKIE, verifyCognitoIdToken } from "../../../../lib/cognitoServer";
-import { getPayjpSecretKey, getPayjpSecretKeyError } from "../../../../lib/payjpServer";
+import { COGNITO_ID_TOKEN_COOKIE, verifyCognitoIdToken } from "../../../lib/cognitoServer";
+import { getPayjpSecretKey, getPayjpSecretKeyError } from "../../../lib/payjpServer";
 
 type RefundRequest = {
   chargeId?: string;
