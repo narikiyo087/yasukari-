@@ -227,7 +227,37 @@ export default function ReserveFlowStep3() {
     const pickupAt = new Date(`${pickupDate}T${pickupTime}:00`).toISOString();
     const returnAt = new Date(`${returnDate}T${returnTime}:00`).toISOString();
 
+    let paymentId: string | null = null;
+
     try {
+      const availabilityResponse = await fetch("/api/reservations?validateOnly=1", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({
+          storeName: store,
+          vehicleModel: modelName,
+          vehicleCode: managementNumber,
+          pickupAt,
+          returnAt,
+          options: {
+            vehicleCoverage: protectionSelection.vehicle ? "加入" : "未加入",
+            theftCoverage: protectionSelection.theft ? "加入" : "未加入",
+          },
+          accessories: Object.keys(accessorySelection).length > 0 ? accessorySelection : undefined,
+        }),
+      });
+
+      if (!availabilityResponse.ok) {
+        const availabilityErrorPayload = (await availabilityResponse.json().catch(() => null)) as
+          | { error?: string }
+          | null;
+        throw new Error(
+          availabilityErrorPayload?.error ??
+            "予約可能な時間ではないため、決済を開始できません。日程を変更してお試しください。"
+        );
+      }
+
       const chargeResponse = await fetch("/api/payments/payjp", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -253,7 +283,7 @@ export default function ReserveFlowStep3() {
       }
 
       const chargeData = (await chargeResponse.json()) as { chargeId: string; paidAt?: string };
-      const paymentId = chargeData.chargeId;
+      paymentId = chargeData.chargeId;
       const paymentDate = chargeData.paidAt ?? new Date().toISOString();
 
       const response = await fetch("/api/reservations", {
@@ -320,6 +350,39 @@ export default function ReserveFlowStep3() {
       }
     } catch (error) {
       console.error("Failed to process Pay.JP payment", error);
+      if (paymentId) {
+        try {
+          const refundResponse = await fetch("/api/payments/payjp/refund", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            credentials: "include",
+            body: JSON.stringify({ chargeId: paymentId }),
+          });
+
+          if (!refundResponse.ok) {
+            const refundErrorPayload = (await refundResponse.json().catch(() => null)) as
+              | { error?: string }
+              | null;
+            console.error("Failed to refund charge after reservation failure", refundErrorPayload?.error);
+            setStatusMessage(
+              "決済後の予約保存に失敗しました。カード会社側で返金処理を進めていますが、反映まで時間がかかる場合があります。"
+            );
+            return;
+          }
+
+          setStatusMessage(
+            "予約保存に失敗したため、課金は自動で返金処理しました。時間をおいて予約をやり直してください。"
+          );
+          return;
+        } catch (refundError) {
+          console.error("Failed to request refund after reservation failure", refundError);
+          setStatusMessage(
+            "決済後の予約保存に失敗しました。返金処理の確認が必要なため、サポートへお問い合わせください。"
+          );
+          return;
+        }
+      }
+
       setStatusMessage("決済に失敗しました。入力内容を確認のうえ、再度お試しください。");
     } finally {
       setIsSavingReservation(false);
