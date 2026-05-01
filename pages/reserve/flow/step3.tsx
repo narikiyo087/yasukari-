@@ -352,7 +352,7 @@ export default function ReserveFlowStep3() {
       console.error("Failed to process Pay.JP payment", error);
       if (paymentId) {
         try {
-          const refundResponse = await fetch("/api/payments/payjp/refund", {
+          const refundResponse = await fetch("/api/payments/payjp-refund", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             credentials: "include",
