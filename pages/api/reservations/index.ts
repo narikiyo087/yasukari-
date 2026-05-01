@@ -18,6 +18,10 @@ type ReservationListResponse = {
   reservations: Reservation[];
 };
 
+type ReservationValidationResponse = {
+  available: boolean;
+};
+
 type CreateReservationRequest = {
   storeName?: string;
   vehicleModel?: string;
@@ -257,7 +261,7 @@ const isWithinReservationWindow = (pickupAt: string, returnAt: string): boolean 
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<ReservationListResponse | { error: string }>
+  res: NextApiResponse<ReservationListResponse | ReservationValidationResponse | { error: string }>
 ) {
   if (req.method === "GET") {
     try {
@@ -279,15 +283,18 @@ export default async function handler(
       }
 
       const body = req.body as CreateReservationRequest;
+      const validateOnly = req.query.validateOnly === "1";
       const requiredFields: Array<keyof CreateReservationRequest> = [
         "storeName",
         "vehicleModel",
         "vehicleCode",
         "pickupAt",
         "returnAt",
-        "paymentAmount",
-        "paymentId",
       ];
+
+      if (!validateOnly) {
+        requiredFields.push("paymentAmount", "paymentId");
+      }
 
       const missingField = requiredFields.find((field) => !body[field]);
       if (missingField) {
@@ -300,9 +307,11 @@ export default async function handler(
         });
       }
 
-      const existingReservation = await fetchReservationById(body.paymentId!);
-      if (existingReservation) {
-        return res.status(200).json({ reservations: [existingReservation] });
+      if (!validateOnly) {
+        const existingReservation = await fetchReservationById(body.paymentId!);
+        if (existingReservation) {
+          return res.status(200).json({ reservations: [existingReservation] });
+        }
       }
 
       const client = getDocumentClient();
@@ -334,6 +343,10 @@ export default async function handler(
         return res.status(409).json({
           error: "レンタル中または貸出不可のため予約できません。レンタル可の期間のみ予約可能です。",
         });
+      }
+
+      if (validateOnly) {
+        return res.status(200).json({ available: true });
       }
 
       let reservation = await createReservation({
