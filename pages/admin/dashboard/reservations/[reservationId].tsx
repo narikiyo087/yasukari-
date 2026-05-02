@@ -1288,7 +1288,7 @@ export default function ReservationDetailPage() {
                   返金なしでキャンセルすると Pay.jp への返金処理は行われません。必要な場合は手動返金の対応をしてください。
                 </div>
                 <div className={`${styles.inlineNotice} ${styles.noticeSuccess}`}>
-                  ユーザー表示: 予約がキャンセルされました。決済いただいた金額（
+                  管理画面メモ（返金ありキャンセル時のユーザー表示例）: 予約がキャンセルされました。決済いただいた金額（
                   {formatPaymentAmount(reservation.paymentAmount)}）は自動で返金されます。
                 </div>
                 <label className={styles.inputLabel} htmlFor="refund-note">
