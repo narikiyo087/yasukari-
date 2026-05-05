@@ -24,6 +24,7 @@ export default function Header() {
 
   const isReservationPaymentFlow = /^(\/en)?\/reserve\/(models|flow)/.test(router.pathname);
   const languageSwitchDisabled = updatingLocale || isReservationPaymentFlow;
+  const showLanguageSwitch = /^\/(en\/)?mypage(\/|$)/.test(router.pathname);
 
   useEffect(() => {
     if (!menuOpen) return;
@@ -179,7 +180,8 @@ export default function Header() {
                   <NotificationBellIcon count={unreadCount} />
                 </span>
               </Link>
-              <div className="flex items-center rounded-full border border-red-500 bg-red-50/70 shadow-sm text-xs font-semibold text-gray-800">
+              {showLanguageSwitch && (
+                <div className="flex items-center rounded-full border border-red-500 bg-red-50/70 shadow-sm text-xs font-semibold text-gray-800">
                 <button
                   type="button"
                   className="px-3 py-1 rounded-full transition-colors hover:bg-red-100"
@@ -198,7 +200,8 @@ export default function Header() {
                 >
                   English
                 </button>
-              </div>
+                </div>
+              )}
             </nav>
           </div>
         </div>
@@ -250,27 +253,29 @@ export default function Header() {
                   <NavItem icon={<NotificationBellIcon count={unreadCount} />} label="通知" />
                 </Link>
               </li>
-              <li className="w-full pt-4">
-                <div className="grid w-full grid-cols-2 overflow-hidden rounded-full border border-red-500 bg-red-50/70 text-sm font-semibold text-gray-800 shadow-sm">
-                  <button
-                    type="button"
-                    className="px-4 py-2 transition-colors hover:bg-red-100"
-                    aria-current="page"
-                    onClick={() => handleLanguageClick('ja')}
-                    disabled={languageSwitchDisabled}
-                  >
-                    日本語
-                  </button>
-                  <button
-                    type="button"
-                    className="px-4 py-2 transition-colors hover:bg-red-100"
-                    onClick={() => handleLanguageClick('en')}
-                    disabled={languageSwitchDisabled}
-                  >
-                    English
-                  </button>
-                </div>
-              </li>
+              {showLanguageSwitch && (
+                <li className="w-full pt-4">
+                  <div className="grid w-full grid-cols-2 overflow-hidden rounded-full border border-red-500 bg-red-50/70 text-sm font-semibold text-gray-800 shadow-sm">
+                    <button
+                      type="button"
+                      className="px-4 py-2 transition-colors hover:bg-red-100"
+                      aria-current="page"
+                      onClick={() => handleLanguageClick('ja')}
+                      disabled={languageSwitchDisabled}
+                    >
+                      日本語
+                    </button>
+                    <button
+                      type="button"
+                      className="px-4 py-2 transition-colors hover:bg-red-100"
+                      onClick={() => handleLanguageClick('en')}
+                      disabled={languageSwitchDisabled}
+                    >
+                      English
+                    </button>
+                  </div>
+                </li>
+              )}
             </ul>
           </nav>
         )}
