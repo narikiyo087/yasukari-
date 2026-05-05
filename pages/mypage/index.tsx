@@ -967,9 +967,9 @@ export default function MyPage() {
                     {reservations.map((reservation) => {
                       const manualVideoUrl = reservation.videoUrl?.trim();
                       const accessLink = reservation.storeName?.includes('三ノ輪')
-                        ? 'https://yasukaribike.com/stores#minowa'
+                        ? 'https://yasukari.com/stores#minowa'
                         : reservation.storeName?.includes('足立小台')
-                          ? 'https://yasukaribike.com/stores#adachi'
+                          ? 'https://yasukari.com/stores#adachi'
                           : null;
 
                       return (
@@ -1726,7 +1726,7 @@ export default function MyPage() {
                     <a
                       href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(
                         reviewStore ? `${reviewStore.name}でレンタルしました！` : 'ヤスカリでレンタルしました！'
-                      )}&url=${encodeURIComponent(reviewStore?.url ?? 'https://yasukaribike.com')}`}
+                      )}&url=${encodeURIComponent(reviewStore?.url ?? 'https://yasukari.com')}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="inline-flex items-center justify-center rounded-full bg-red-600 px-4 py-2 text-xs font-semibold text-white shadow-sm transition hover:bg-red-700"
@@ -1735,7 +1735,7 @@ export default function MyPage() {
                     </a>
                     <a
                       href={`https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(
-                        reviewStore?.url ?? 'https://yasukaribike.com'
+                        reviewStore?.url ?? 'https://yasukari.com'
                       )}`}
                       target="_blank"
                       rel="noopener noreferrer"

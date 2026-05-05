@@ -161,7 +161,7 @@ export default function Header() {
                   <NavItem icon={<FaUser />} label="ログインエラー" />
                 </div>
               ) : (
-                <Link href="https://yasukaribike.com/login" className="hidden sm:inline-flex">
+                <Link href="https://yasukari.com/login" className="hidden sm:inline-flex">
                   <NavItem icon={<FaUser />} label="ログイン" />
                 </Link>
               )}
@@ -225,7 +225,7 @@ export default function Header() {
                     <NavItem icon={<FaUser />} label="ログインエラー" />
                   </div>
                 ) : (
-                  <Link href="https://yasukaribike.com/login" className="inline-flex">
+                  <Link href="https://yasukari.com/login" className="inline-flex">
                     <NavItem icon={<FaUser />} label="ログイン" />
                   </Link>
                 )}
