@@ -10,7 +10,7 @@ export default function BeginnerGuidePageEn() {
       </Head>
 
       <img
-        src="https://yasukari.com/static/images/guide/barner.jpg"
+        src="https://yasukari-file.s3.ap-northeast-1.amazonaws.com/PhotoUploads/goriyou-barner.jpg"
         alt="Beginner guide banner"
         className="w-full h-[300px] object-cover mb-6"
       />

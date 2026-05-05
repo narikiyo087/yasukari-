@@ -42,8 +42,8 @@ interface Props {
 
 export default function HomeEn({ blogSlides, blogTags, bikeModelsAll, bikeClasses, faqItems }: Props) {
   const heroSlides = [
-    { img: "https://yasukari.com/static/images/home/slide.jpg" },
-    { img: "https://yasukari.com/static/images/home/slide2.jpg" },
+    { img: "https://yasukari-file.s3.ap-northeast-1.amazonaws.com/PhotoUploads/slide.jpg" },
+    { img: "https://yasukari-file.s3.ap-northeast-1.amazonaws.com/PhotoUploads/slide2.jpg" },
   ];
 
   const faqs = faqItems;
@@ -105,14 +105,14 @@ export default function HomeEn({ blogSlides, blogTags, bikeModelsAll, bikeClasse
           content="Affordable motorcycle and moped rentals in Tokyo with 24/7 online booking. Pick up in Adachi or Minowa and ride today."
         />
         <meta property="og:url" content="https://yasukari.com/en" />
-        <meta property="og:image" content="https://yasukari.com/static/images/home/slide.jpg" />
+        <meta property="og:image" content="https://yasukari-file.s3.ap-northeast-1.amazonaws.com/PhotoUploads/slide.jpg" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="Yasukari | Affordable Motorcycle & Moped Rentals in Tokyo" />
         <meta
           name="twitter:description"
           content="Affordable motorcycle and moped rentals in Tokyo with 24/7 online booking."
         />
-        <meta name="twitter:image" content="https://yasukari.com/static/images/home/slide.jpg" />
+        <meta name="twitter:image" content="https://yasukari-file.s3.ap-northeast-1.amazonaws.com/PhotoUploads/slide.jpg" />
         <link rel="canonical" href="https://yasukari.com/en" />
       </Head>
 

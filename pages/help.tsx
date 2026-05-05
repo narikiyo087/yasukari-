@@ -27,7 +27,7 @@ export default function HelpPage({ categories }: Props) {
       <section className="grid gap-6 rounded-2xl border border-slate-200 bg-white/80 p-6 shadow-sm md:grid-cols-[1.05fr,1fr] md:p-8">
         <div className="overflow-hidden rounded-xl ring-1 ring-slate-100">
           <img
-            src="https://yasukari.com/static/images/faq/barner.jpg"
+            src="https://yasukari-file.s3.ap-northeast-1.amazonaws.com/PhotoUploads/faq-barner.jpg"
             alt="ヘルプバナー"
             className="h-full w-full object-cover"
           />

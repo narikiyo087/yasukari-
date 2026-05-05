@@ -36,8 +36,8 @@ interface Props {
 
 export default function HomePage({ blogSlides, blogTags, bikeModelsAll, bikeClasses, faqItems }: Props) {
   const heroSlides = [
-    { img: "https://yasukari.com/static/images/home/slide.jpg" },
-    { img: "https://yasukari.com/static/images/home/slide2.jpg" },
+    { img: "https://yasukari-file.s3.ap-northeast-1.amazonaws.com/PhotoUploads/slide.jpg" },
+    { img: "https://yasukari-file.s3.ap-northeast-1.amazonaws.com/PhotoUploads/slide2.jpg" },
   ];
 
   const faqs = faqItems;
@@ -100,14 +100,14 @@ export default function HomePage({ blogSlides, blogTags, bikeModelsAll, bikeClas
           content="東京で格安のレンタルバイク・原付をお探しならヤスカリ。足立小台本店・三ノ輪店の2店舗で、整備済みバイクをスムーズに予約できます。"
         />
         <meta property="og:url" content="https://yasukari.com/" />
-        <meta property="og:image" content="https://yasukari.com/static/images/home/slide.jpg" />
+        <meta property="og:image" content="https://yasukari-file.s3.ap-northeast-1.amazonaws.com/PhotoUploads/slide.jpg" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="ヤスカリ | 東京の格安レンタルバイク・原付ならヤスカリ" />
         <meta
           name="twitter:description"
           content="東京で格安のレンタルバイク・原付をお探しならヤスカリ。足立小台本店・三ノ輪店の2店舗で、整備済みバイクをスムーズに予約できます。"
         />
-        <meta name="twitter:image" content="https://yasukari.com/static/images/home/slide.jpg" />
+        <meta name="twitter:image" content="https://yasukari-file.s3.ap-northeast-1.amazonaws.com/PhotoUploads/slide.jpg" />
       </Head>
 
       <HeroSlider slides={heroSlides} />

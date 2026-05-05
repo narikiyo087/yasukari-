@@ -33,7 +33,7 @@ export default function GuidePage() {
       </Head>
 
       <img
-        src="https://yasukari.com/static/images/guide/barner.jpg"
+        src="https://yasukari-file.s3.ap-northeast-1.amazonaws.com/PhotoUploads/goriyou-barner.jpg"
         alt="ご利用案内バナー"
         className="w-1/2 h-auto mb-6"
       />
