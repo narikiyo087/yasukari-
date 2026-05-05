@@ -60,7 +60,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const protoHeader = Array.isArray(forwardedProto) ? forwardedProto[0] : forwardedProto;
     const hostHeader = Array.isArray(req.headers.host) ? req.headers.host[0] : req.headers.host;
 
-    const fallbackBaseUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'https://yasukaribike.com';
+    const fallbackBaseUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'https://yasukari.com';
     const protocol = protoHeader ?? (hostHeader?.includes('localhost') ? 'http' : 'https');
     const baseUrl = hostHeader ? `${protocol}://${hostHeader}` : fallbackBaseUrl;
     const verificationUrl = `${baseUrl}/register/auth?email=${encodeURIComponent(sanitizedEmail)}`;

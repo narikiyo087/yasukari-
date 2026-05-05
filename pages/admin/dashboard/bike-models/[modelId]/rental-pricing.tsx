@@ -545,7 +545,7 @@ export default function BikeModelRentalPricingPage() {
               <p className={formStyles.hint}>
                 1, 2, 4, 7, 14, 31日目の料金を入力すると、残りの日数は
                 <a
-                  href="https://yasukaribike.com/admin/dashboard/bike-classes/1/monthly-pricing"
+                  href="https://yasukari.com/admin/dashboard/bike-classes/1/monthly-pricing"
                   target="_blank"
                   rel="noreferrer"
                 >

@@ -63,7 +63,7 @@ const buildTextBody = (reservation: Reservation): string => {
   const pickup = reservation.pickupAt ? formatDateTime(reservation.pickupAt) : "-";
   const dropoff = reservation.returnAt ? formatDateTime(reservation.returnAt) : "-";
   const optionLines = buildOptionLines(reservation);
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://yasukaribike.com";
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://yasukari.com";
   const myPageUrl = `${siteUrl.replace(/\/$/, "")}/mypage`;
   const isMinowaStore = reservation.storeName === "三ノ輪店";
   const minowaAccessLines = isMinowaStore
@@ -122,7 +122,7 @@ const buildHtmlBody = (reservation: Reservation): string => {
   const pickup = reservation.pickupAt ? formatDateTime(reservation.pickupAt) : "-";
   const dropoff = reservation.returnAt ? formatDateTime(reservation.returnAt) : "-";
   const optionLines = buildOptionLines(reservation);
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://yasukaribike.com";
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://yasukari.com";
   const myPageUrl = `${siteUrl.replace(/\/$/, "")}/mypage`;
   const optionItems = optionLines.map((line) => `<li>${line}</li>`).join("");
   const isMinowaStore = reservation.storeName === "三ノ輪店";

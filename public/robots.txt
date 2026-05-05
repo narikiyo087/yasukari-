@@ -4,4 +4,4 @@ Disallow: /admin/
 Disallow: /mypage/
 Disallow: /en/mypage/
 Disallow: /auth/
-Sitemap: https://yasukaribike.com/sitemap.xml
+Sitemap: https://yasukari.com/sitemap.xml

@@ -1,7 +1,7 @@
 const hostedUiDomain = (process.env.NEXT_PUBLIC_COGNITO_DOMAIN ?? '').replace(/\/$/, '');
 const clientId = process.env.NEXT_PUBLIC_COGNITO_CLIENT_ID ?? 'vicsspgv2q7mtn6m6os2n893j';
 const redirectUri =
-  process.env.NEXT_PUBLIC_COGNITO_REDIRECT_URI ?? 'https://yasukaribike.com/auth/callback';
+  process.env.NEXT_PUBLIC_COGNITO_REDIRECT_URI ?? 'https://yasukari.com/auth/callback';
 const redirectUriObject = (() => {
   try {
     return new URL(redirectUri);
@@ -12,7 +12,7 @@ const redirectUriObject = (() => {
 })();
 const logoutRedirectUri =
   process.env.NEXT_PUBLIC_COGNITO_LOGOUT_REDIRECT_URI ??
-  (redirectUriObject ? `${redirectUriObject.origin}/auth/logout` : 'https://yasukaribike.com/auth/logout');
+  (redirectUriObject ? `${redirectUriObject.origin}/auth/logout` : 'https://yasukari.com/auth/logout');
 
 const scopeList = (() => {
   const configured = (process.env.NEXT_PUBLIC_COGNITO_SCOPES ?? '')

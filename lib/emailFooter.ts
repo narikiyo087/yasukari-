@@ -1,6 +1,6 @@
 export const EMAIL_FOOTER_TEXT_LINES = [
   "━…━…━…━…━…━…━…━…━…━…━…━…━…━…━…━",
-  "【ヤスカリ】https://yasukaribike.com",
+  "【ヤスカリ】https://yasukari.com",
   "",
   "・足立小台 本店",
   "レンタル受付時間：10:00 〜 19:00 （月曜・木曜定休）",

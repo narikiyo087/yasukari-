@@ -1,6 +1,6 @@
 import type { GetServerSideProps } from "next";
 
-const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://yasukaribike.com";
+const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://yasukari.com";
 
 const jaPaths = [
   "/",
