@@ -67,7 +67,7 @@ export default function BeginnerGuidePage() {
 
       <section className="overflow-hidden">
         <img
-          src="https://yasukari.com/static/images/guide/barner.jpg"
+          src="https://yasukari-file.s3.ap-northeast-1.amazonaws.com/PhotoUploads/goriyou-barner.jpg"
           alt="はじめてガイドバナー"
           className="h-[280px] w-full object-cover sm:h-[360px]"
         />
