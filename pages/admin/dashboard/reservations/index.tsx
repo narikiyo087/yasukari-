@@ -185,6 +185,33 @@ export default function ReservationListPage() {
     );
   };
 
+
+  const getDurationHours = (reservation: Reservation): number | null => {
+    const pickup = new Date(reservation.pickupAt);
+    const dropoff = new Date(reservation.returnAt);
+    if (Number.isNaN(pickup.getTime()) || Number.isNaN(dropoff.getTime())) {
+      return null;
+    }
+
+    const diffHours = (dropoff.getTime() - pickup.getTime()) / (1000 * 60 * 60);
+    if (!Number.isFinite(diffHours) || diffHours <= 0) {
+      return null;
+    }
+
+    return diffHours;
+  };
+
+  const getExtensionHours = (reservation: Reservation): number => {
+    const originalDuration = reservation.rentalDurationHours;
+    const currentDuration = getDurationHours(reservation);
+    if (typeof originalDuration !== "number" || !currentDuration) {
+      return 0;
+    }
+
+    const extendedHours = currentDuration - originalDuration;
+    return extendedHours > 0 ? extendedHours : 0;
+  };
+
   return (
     <>
       <Head>
@@ -260,6 +287,8 @@ export default function ReservationListPage() {
                 <thead>
                   <tr>
                     <th scope="col">予約番号</th>
+                    <th scope="col">延長</th>
+                    <th scope="col">延長時間</th>
                     <th
                       scope="col"
                       aria-sort={
@@ -615,7 +644,7 @@ export default function ReservationListPage() {
                 <tbody>
                   {filteredReservations.length === 0 ? (
                     <tr>
-                      <td colSpan={11}>該当する予約が見つかりませんでした。</td>
+                      <td colSpan={13}>該当する予約が見つかりませんでした。</td>
                     </tr>
                   ) : (
                     filteredReservations.map((reservation) => (
@@ -630,6 +659,14 @@ export default function ReservationListPage() {
                         aria-label={`${reservation.id} の詳細を開く`}
                       >
                         <td className={tableStyles.monospace}>{reservation.id}</td>
+                        <td>
+                          {getExtensionHours(reservation) > 0 ? (
+                            <span className={`${tableStyles.badge} ${tableStyles.badgeOn}`}>延長</span>
+                          ) : (
+                            <span className={`${tableStyles.badge} ${tableStyles.badgeNeutral}`}>-</span>
+                          )}
+                        </td>
+                        <td>{getExtensionHours(reservation) > 0 ? `+${getExtensionHours(reservation)}時間` : "-"}</td>
                         <td>{reservation.storeName}</td>
                         <td>
                           <span className={statusClassName(reservation.status)}>
