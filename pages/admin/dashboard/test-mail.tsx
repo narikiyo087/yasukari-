@@ -16,6 +16,7 @@ const MAIL_TYPE_OPTIONS = [
   { value: "full", label: "本登録" },
   { value: "reservation_adachi", label: "予約受付完了（足立小台店）" },
   { value: "reservation_minowa", label: "予約受付完了（三ノ輪店）" },
+  { value: "extension", label: "レンタル延長決済完了" },
 ];
 
 const statusText = (status?: TestMailStatus) => {
@@ -75,7 +76,7 @@ export default function TestMailPage() {
       </Head>
       <DashboardLayout
         title="テストメール"
-        description="仮予約・本登録・予約受付完了のメールをテスト送信できます。"
+        description="仮予約・本登録・予約受付完了・レンタル延長決済完了のメールをテスト送信できます。"
       >
         <form onSubmit={handleSubmit} className={formStyles.cardStack}>
           <div className={formStyles.card}>
