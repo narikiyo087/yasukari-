@@ -162,6 +162,7 @@ export async function sendRentalExtensionCompletionEmail(
 
   await enqueueEmail({
     to: reservation.memberEmail,
+    cc: "info@yasukari.com",
     subject,
     text,
     html,
