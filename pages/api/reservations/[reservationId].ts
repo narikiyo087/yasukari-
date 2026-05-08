@@ -13,6 +13,7 @@ import {
   updateReservation,
 } from "../../../lib/reservations";
 import { getPayjpSecretKey, getPayjpSecretKeyError } from "../../../lib/payjpServer";
+import { issueKeyboxPinForReservation } from "../../../lib/keybox";
 
 type VehicleRecord = {
   managementNumber: string;
@@ -372,6 +373,19 @@ export default async function handler(
 
       const scheduleChanged = pickupAtUpdated || returnAtUpdated;
 
+      let reservationWithKeybox = reservation;
+      if (returnAtUpdated && reservation.keyboxPinCode) {
+        const keyboxIssueResult = await issueKeyboxPinForReservation(reservation);
+        if (keyboxIssueResult.reservationUpdates) {
+          reservationWithKeybox = await updateReservation(
+            reservationId,
+            keyboxIssueResult.reservationUpdates
+          );
+        } else {
+          console.error(`Failed to refresh keybox pin for extended reservation ${reservationId}`);
+        }
+      }
+
       if (
         typeof updates.vehicleCode === "string" &&
         updates.vehicleCode !== existingReservation.vehicleCode
@@ -465,7 +479,7 @@ export default async function handler(
         }
       }
 
-      return res.status(200).json({ reservation });
+      return res.status(200).json({ reservation: reservationWithKeybox });
     } catch (error) {
       console.error(`Failed to update reservation ${reservationId}`, error);
       return res.status(500).json({ error: "予約データの更新に失敗しました。" });
