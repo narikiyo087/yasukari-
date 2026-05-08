@@ -150,7 +150,7 @@ export const getStaticPaths: GetStaticPaths = () => {
   const dir = path.join(process.cwd(), 'blog_for_custmor')
   const files = fs.readdirSync(dir).filter((f) => f.endsWith('.md'))
   const paths = files.map((file) => ({ params: { slug: file.replace(/\.md$/, '') } }))
-  return { paths, fallback: false }
+  return { paths, fallback: "blocking" }
 }
 
 export const getStaticProps: GetStaticProps = ({ params }) => {
@@ -186,5 +186,5 @@ export const getStaticProps: GetStaticProps = ({ params }) => {
     return { slug, title, excerpt }
   })
 
-  return { props: { html, meta, posts } }
+  return { props: { html, meta, posts }, revalidate: 60 }
 }

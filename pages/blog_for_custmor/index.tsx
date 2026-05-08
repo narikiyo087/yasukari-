@@ -51,7 +51,7 @@ export async function getStaticProps() {
     )
   )
 
-  return { props: { posts, tags } }
+  return { props: { posts, tags }, revalidate: 60 }
 }
 
 export default function BlogIndex({

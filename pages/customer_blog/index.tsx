@@ -40,7 +40,7 @@ export async function getStaticProps() {
 
   posts.sort((a, b) => b.date.localeCompare(a.date))
 
-  return { props: { posts } }
+  return { props: { posts }, revalidate: 60 }
 }
 
 export default function CustomerBlogPage({ posts }: { posts: PostMeta[] }) {
