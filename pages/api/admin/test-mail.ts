@@ -3,9 +3,10 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { addMailHistory } from "../../../lib/mailHistory";
 import { deliverFullRegistrationEmail, deliverProvisionalRegistrationEmail } from "../../../lib/registrationEmails";
 import { sendReservationCompletionEmail } from "../../../lib/reservationCompletionEmail";
+import { sendRentalExtensionCompletionEmail } from "../../../lib/rentalExtensionCompletionEmail";
 import type { Reservation } from "../../../lib/reservations";
 
-type TestMailType = "provisional" | "full" | "reservation_adachi" | "reservation_minowa";
+type TestMailType = "provisional" | "full" | "reservation_adachi" | "reservation_minowa" | "extension";
 
 type TestMailResponse = {
   message: string;
@@ -17,7 +18,7 @@ const MAIL_DEFINITIONS: Record<
   {
     label: string;
     subject: string;
-    category: "仮登録" | "本登録" | "予約完了";
+    category: "仮登録" | "本登録" | "予約完了" | "レンタル延長";
   }
 > = {
   provisional: {
@@ -39,6 +40,11 @@ const MAIL_DEFINITIONS: Record<
     label: "予約受付完了（三ノ輪店）",
     subject: "【ヤスカリ】バイクレンタルのご予約完了",
     category: "予約完了",
+  },
+  extension: {
+    label: "レンタル延長決済完了",
+    subject: "【ヤスカリ】レンタル延長の決済完了",
+    category: "レンタル延長",
   },
 };
 
@@ -172,6 +178,26 @@ export default async function handler(
     if (selectedType === "reservation_minowa") {
       sampleReservation.keyboxPinCode = "1234";
       sampleReservation.keyboxQrImageUrl = "https://example.com/keybox/test-qr";
+    }
+
+    if (selectedType === "extension") {
+      const previousReturnAt = sampleReservation.returnAt;
+      const newReturnAt = new Date(new Date(previousReturnAt).getTime() + 24 * 60 * 60 * 1000).toISOString();
+      const result = await sendRentalExtensionCompletionEmail({
+        reservation: sampleReservation,
+        previousReturnAt,
+        newReturnAt,
+        extensionDays: 1,
+        amount: 1200,
+        paymentId: "PAYMENT-EXT-TEST",
+      });
+      res.status(200).json({
+        message: result.simulated
+          ? "SMTP設定不足のため送信をスキップしました。"
+          : "レンタル延長決済完了のテストメールを送信しました。",
+        status: result.simulated ? "skipped" : "sent",
+      });
+      return;
     }
 
     const result = await sendReservationCompletionEmail(sampleReservation);
