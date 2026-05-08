@@ -34,6 +34,7 @@ export type Reservation = {
   paymentAmount: string;
   paymentId: string;
   paymentDate: string;
+  extensionPaidFlag?: boolean;
   rentalDurationHours: number | null;
   rentalCompletedAt: string;
   reservationCompletedFlag: boolean;
@@ -98,6 +99,8 @@ type ReservationRecord = {
   paymentId?: string;
   payment_date?: string | number;
   paymentDate?: string | number;
+  extension_paid_flag?: boolean;
+  extensionPaidFlag?: boolean;
   rental_duration_hours?: number;
   rentalDurationHours?: number;
   rental_completed_at?: string | number;
@@ -393,6 +396,11 @@ const normalizeReservation = (record: ReservationRecord): Reservation => {
     paymentAmount: stringFrom(record, ["payment_amount", "paymentAmount"], "-"),
     paymentId: stringFrom(record, ["payment_id", "paymentId"], "-"),
     paymentDate: datetimeFrom(record, ["payment_date", "paymentDate"]),
+    extensionPaidFlag: booleanFrom(
+      record,
+      ["extension_paid_flag", "extensionPaidFlag"],
+      false
+    ),
     rentalDurationHours: numberFrom(record, ["rental_duration_hours", "rentalDurationHours"]),
     rentalCompletedAt: datetimeFrom(record, ["rental_completed_at", "rentalCompletedAt", "completedAt"]),
     reservationCompletedFlag: booleanFrom(
@@ -581,6 +589,7 @@ const reservationToRecord = (reservation: Reservation): ReservationRecord => {
     payment_amount: reservation.paymentAmount,
     payment_id: reservation.paymentId,
     payment_date: toIsoStringIfPossible(reservation.paymentDate) ?? reservation.paymentDate,
+    extension_paid_flag: reservation.extensionPaidFlag ?? false,
     rental_duration_hours: reservation.rentalDurationHours ?? undefined,
     rental_completed_at: toIsoStringIfPossible(reservation.rentalCompletedAt),
     reservation_completed_flag: reservation.reservationCompletedFlag ?? false,
@@ -649,6 +658,7 @@ export async function createReservation(
     payment_amount: input.paymentAmount,
     payment_id: input.paymentId,
     payment_date: paymentDate,
+    extension_paid_flag: false,
     rental_duration_hours: input.rentalDurationHours ?? undefined,
     rental_completed_at: toIsoStringIfPossible(input.rentalCompletedAt),
     reservation_completed_flag: input.reservationCompletedFlag ?? false,

@@ -212,6 +212,13 @@ export default function ReservationListPage() {
     return extendedHours > 0 ? extendedHours : 0;
   };
 
+
+  const getReservationTypeLabel = (reservation: Reservation): "通常予約" | "通常＋延長" => {
+    const hasExtendedHours = getExtensionHours(reservation) > 0;
+    const hasPaidForExtension = reservation.extensionPaidFlag === true;
+    return hasExtendedHours && hasPaidForExtension ? "通常＋延長" : "通常予約";
+  };
+
   return (
     <>
       <Head>
@@ -287,7 +294,7 @@ export default function ReservationListPage() {
                 <thead>
                   <tr>
                     <th scope="col">予約番号</th>
-                    <th scope="col">延長</th>
+                    <th scope="col">予約種別</th>
                     <th scope="col">延長時間</th>
                     <th
                       scope="col"
@@ -660,10 +667,10 @@ export default function ReservationListPage() {
                       >
                         <td className={tableStyles.monospace}>{reservation.id}</td>
                         <td>
-                          {getExtensionHours(reservation) > 0 ? (
-                            <span className={`${tableStyles.badge} ${tableStyles.badgeOn}`}>延長</span>
+                          {getReservationTypeLabel(reservation) === "通常＋延長" ? (
+                            <span className={`${tableStyles.badge} ${tableStyles.badgeOn}`}>通常＋延長</span>
                           ) : (
-                            <span className={`${tableStyles.badge} ${tableStyles.badgeNeutral}`}>-</span>
+                            <span className={`${tableStyles.badge} ${tableStyles.badgeNeutral}`}>通常予約</span>
                           )}
                         </td>
                         <td>{getExtensionHours(reservation) > 0 ? `+${getExtensionHours(reservation)}時間` : "-"}</td>
