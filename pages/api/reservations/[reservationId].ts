@@ -316,6 +316,9 @@ export default async function handler(
       if (typeof body.paymentAmount === "string") {
         updates.paymentAmount = body.paymentAmount;
       }
+      if (typeof body.extensionPaidFlag === "boolean") {
+        updates.extensionPaidFlag = body.extensionPaidFlag;
+      }
 
       if (typeof body.memberPhone === "string") {
         updates.memberPhone = body.memberPhone;

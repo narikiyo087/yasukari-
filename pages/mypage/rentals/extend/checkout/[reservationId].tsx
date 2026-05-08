@@ -267,6 +267,7 @@ export default function RentalExtensionCheckoutPage() {
             returnAt: updatedReturnAt,
             paymentId: chargeData.chargeId,
             paymentDate,
+            extensionPaidFlag: true,
           }),
         });
 
