@@ -37,7 +37,7 @@ export const getStaticPaths: GetStaticPaths = () => {
   const paths = Array.from(tags).map((t) => ({
     params: { tag: t },
   }))
-  return { paths, fallback: false }
+  return { paths, fallback: "blocking" }
 }
 
 export const getStaticProps: GetStaticProps = ({ params }) => {
@@ -75,7 +75,7 @@ export const getStaticProps: GetStaticProps = ({ params }) => {
     p.tags?.split(',').map((t) => t.trim()).includes(tag)
   )
 
-  return { props: { tag, tagPosts, posts } }
+  return { props: { tag, tagPosts, posts }, revalidate: 60 }
 }
 
 interface Props {
