@@ -148,10 +148,6 @@ const NAV_ITEMS: NavItem[] = [
     href: `${ADMIN_DASHBOARD_ROOT}/coupon-rules`,
   },
   {
-    label: "メルマガ配信設定",
-    href: `${ADMIN_DASHBOARD_ROOT}/newsletter-settings`,
-  },
-  {
     label: "テストメール",
     href: `${ADMIN_DASHBOARD_ROOT}/test-mail`,
   },
