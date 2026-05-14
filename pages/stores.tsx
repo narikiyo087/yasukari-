@@ -40,7 +40,7 @@ export default function StoresPage() {
             </tr>
             <tr>
               <th className="text-left w-32 p-2 border">営業時間</th>
-              <td className="p-2 border">10:00 〜 19:00 （月曜定休）</td>
+              <td className="p-2 border">10:00 〜 19:00 （月曜・木曜定休）</td>
             </tr>
           </tbody>
         </table>
@@ -83,7 +83,7 @@ export default function StoresPage() {
             </tr>
             <tr>
               <th className="text-left w-32 p-2 border">営業時間</th>
-              <td className="p-2 border">10:00 〜 19:00 （月曜定休）</td>
+              <td className="p-2 border">10:00 〜 19:00 （月曜・木曜定休）</td>
             </tr>
           </tbody>
         </table>
