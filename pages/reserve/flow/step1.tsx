@@ -187,8 +187,6 @@ export default function ReserveFlowStep1() {
       returnDate,
       pickupTime,
       returnTime,
-      customerName,
-      email,
     });
 
   useEffect(() => {

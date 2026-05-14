@@ -8,6 +8,7 @@ import PayjpCheckout from "../../../components/PayjpCheckout";
 import { getPayjpPublicKey, getPayjpPublicKeyError } from "../../../lib/payjp";
 
 const ACCESSORY_KEYS = ["halfCap", "jetHelmet", "brandHelmet", "glove"] as const;
+const RESERVE_FLOW_STEP3_STORAGE_KEY = "reserve-flow-step3-payload";
 
 const formatDateLabel = (dateString: string, fallback: string) => {
   const parsed = new Date(dateString);
@@ -95,70 +96,82 @@ export default function ReserveFlowStep3() {
 
   useEffect(() => {
     if (!router.isReady) return;
-
-    const params = router.query;
-    const requiredParams = [
-      "store",
-      "modelName",
-      "managementNumber",
-      "pickupDate",
-      "returnDate",
-      "pickupTime",
-      "returnTime",
-      "totalAmount",
-    ] as const;
-    const missingParams = requiredParams.filter((key) => {
-      const value = params[key];
-      return typeof value !== "string" || value.trim() === "";
-    });
-
-    if (typeof params.store === "string" && params.store) setStore(params.store);
-    if (typeof params.modelName === "string" && params.modelName) setModelName(params.modelName);
-    if (typeof params.managementNumber === "string" && params.managementNumber)
-      setManagementNumber(params.managementNumber);
-    if (typeof params.pickupDate === "string" && params.pickupDate) setPickupDate(params.pickupDate);
-    if (typeof params.returnDate === "string" && params.returnDate) setReturnDate(params.returnDate);
-    if (typeof params.pickupTime === "string" && params.pickupTime) setPickupTime(params.pickupTime);
-    if (typeof params.returnTime === "string" && params.returnTime) setReturnTime(params.returnTime);
-    if (typeof params.totalAmount === "string") {
-      const parsed = Number(params.totalAmount);
-      if (!Number.isNaN(parsed)) {
-        setTotalAmount(parsed);
-      } else if (!missingParams.includes("totalAmount")) {
-        missingParams.push("totalAmount");
-      }
-    }
-    if (typeof params.couponCode === "string") setCouponCode(params.couponCode);
-    if (typeof params.couponDiscount === "string") setCouponDiscount(Number(params.couponDiscount));
-    if (typeof params.accessoryTotal === "string") setAccessoryTotal(Number(params.accessoryTotal));
-    if (typeof params.protectionTotal === "string") setProtectionTotal(Number(params.protectionTotal));
-
-    const nextAccessorySelection: Record<string, number> = {};
-    ACCESSORY_KEYS.forEach((key) => {
-      const value = params[key];
-      if (typeof value === "string") {
-        const parsed = Number(value);
-        if (!Number.isNaN(parsed) && parsed > 0) {
-          nextAccessorySelection[key] = parsed;
-        }
-      }
-    });
-    setAccessorySelection(nextAccessorySelection);
-
-    const vehicleSelection =
-      params.vehicle === "1" ? true : params.vehicle === "0" ? false : protectionSelection.vehicle;
-    const theftSelection =
-      params.theft === "1" ? true : params.theft === "0" ? false : protectionSelection.theft;
-    setProtectionSelection({ vehicle: vehicleSelection, theft: theftSelection });
-
-    if (missingParams.length > 0) {
+    const rawPayload =
+      typeof window !== "undefined"
+        ? window.sessionStorage.getItem(RESERVE_FLOW_STEP3_STORAGE_KEY)
+        : null;
+    if (!rawPayload) {
       setQueryError("画面を更新したため予約情報が取得できませんでした。最初のページからやり直してください。");
       setQueryReady(false);
-    } else {
+      return;
+    }
+
+    try {
+      const payload = JSON.parse(rawPayload) as {
+        store?: string;
+        modelName?: string;
+        managementNumber?: string;
+        pickupDate?: string;
+        returnDate?: string;
+        pickupTime?: string;
+        returnTime?: string;
+        totalAmount?: number;
+        couponCode?: string;
+        couponDiscount?: number;
+        accessoryTotal?: number;
+        protectionTotal?: number;
+        protectionSelection?: Record<string, boolean>;
+        accessorySelection?: Record<string, number>;
+      };
+
+      if (
+        !payload.store ||
+        !payload.modelName ||
+        !payload.managementNumber ||
+        !payload.pickupDate ||
+        !payload.returnDate ||
+        !payload.pickupTime ||
+        !payload.returnTime ||
+        typeof payload.totalAmount !== "number"
+      ) {
+        throw new Error("Invalid reservation payload");
+      }
+
+      setStore(payload.store);
+      setModelName(payload.modelName);
+      setManagementNumber(payload.managementNumber);
+      setPickupDate(payload.pickupDate);
+      setReturnDate(payload.returnDate);
+      setPickupTime(payload.pickupTime);
+      setReturnTime(payload.returnTime);
+      setTotalAmount(payload.totalAmount);
+      setCouponCode(payload.couponCode ?? "");
+      setCouponDiscount(typeof payload.couponDiscount === "number" ? payload.couponDiscount : 0);
+      setAccessoryTotal(typeof payload.accessoryTotal === "number" ? payload.accessoryTotal : 0);
+      setProtectionTotal(typeof payload.protectionTotal === "number" ? payload.protectionTotal : 0);
+
+      const nextAccessorySelection: Record<string, number> = {};
+      ACCESSORY_KEYS.forEach((key) => {
+        const value = payload.accessorySelection?.[key];
+        if (typeof value === "number" && value > 0) {
+          nextAccessorySelection[key] = value;
+        }
+      });
+      setAccessorySelection(nextAccessorySelection);
+
+      setProtectionSelection({
+        vehicle: payload.protectionSelection?.vehicle ?? true,
+        theft: payload.protectionSelection?.theft ?? true,
+      });
+
       setQueryError("");
       setQueryReady(true);
+    } catch (error) {
+      console.error(error);
+      setQueryError("予約情報が不正です。最初のページからやり直してください。");
+      setQueryReady(false);
     }
-  }, [router.isReady, router.query]);
+  }, [router.isReady]);
 
   useEffect(() => {
     if (!authChecked) return;
