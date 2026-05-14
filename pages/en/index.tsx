@@ -75,7 +75,7 @@ export default function HomeEn({ blogSlides, blogTags, bikeModelsAll, bikeClasse
     {
       name: "Adachi-Odai Main Store",
       description: "Affordable rental bikes in Adachi-ku with a wide selection ready to ride.",
-      img: "https://lh3.googleusercontent.com/gps-cs-s/AC9h4nqVQEu7iamQVzNqnomQOvgsiEUR7DIW3ZdaAHEnxWggYWnC73HV5doQ1TwHabb2CW_mPNIfW1bbR8gKFCRrVYybhzd5kZ7iuU0cOLGuamr8lRc_onfgLsFbYbPWL0AaoCn9v30=s680-w680-h510-rw",
+      img: "https://yasukari-file.s3.ap-northeast-1.amazonaws.com/PhotoUploads/1769056287667-dc75b5a4-20d8-46f7-93be-38c35767e257-adachiten-001.jpg",
       href: "/stores#adachi",
     },
     {
