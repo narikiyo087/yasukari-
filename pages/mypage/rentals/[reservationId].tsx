@@ -105,8 +105,8 @@ const getInsuranceDurationKey = (days: number) => {
   return '1m';
 };
 
-const formatCoverageDetail = (price: number | null | undefined, days: number | null) => {
-  if (price == null || days == null) return '未設定';
+const formatCoverageDetail = (price: number | null | undefined) => {
+  if (price == null) return '未設定';
   return `${price.toLocaleString('ja-JP')}円`;
 };
 
@@ -458,13 +458,13 @@ export default function RentalDetailPage() {
                       <div className="rounded-lg bg-gray-50 px-3 py-2">
                         <dt className="text-xs text-gray-500">車両補償</dt>
                         <dd className="font-semibold text-gray-900">
-                          {formatCoverageDetail(vehicleCoverageFee, rentalDays)}
+                          {formatCoverageDetail(vehicleCoverageFee)}
                         </dd>
                       </div>
                       <div className="rounded-lg bg-gray-50 px-3 py-2">
                         <dt className="text-xs text-gray-500">盗難補償</dt>
                         <dd className="font-semibold text-gray-900">
-                          {formatCoverageDetail(theftCoverageFee, rentalDays)}
+                          {formatCoverageDetail(theftCoverageFee)}
                         </dd>
                       </div>
                       {notesValue ? (
