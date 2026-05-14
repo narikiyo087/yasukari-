@@ -30,6 +30,8 @@ export default function ReservationListPage() {
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("ALL");
+  const [pickupStartFilter, setPickupStartFilter] = useState("");
+  const [pickupEndFilter, setPickupEndFilter] = useState("");
   const [sortState, setSortState] = useState<{
     key:
       | "storeName"
@@ -115,10 +117,18 @@ export default function ReservationListPage() {
 
   const filteredReservations = useMemo(() => {
     const normalizedTerm = searchTerm.trim().toLowerCase();
+    const pickupStartTime = pickupStartFilter ? new Date(pickupStartFilter).getTime() : null;
+    const pickupEndTime = pickupEndFilter ? new Date(pickupEndFilter).getTime() : null;
 
     const filtered = reservations.filter((reservation) => {
       const matchesStatus =
         statusFilter === "ALL" ? true : reservation.status === statusFilter;
+      const pickupTime = new Date(reservation.pickupAt).getTime();
+      const hasValidPickupTime = Number.isFinite(pickupTime);
+      const matchesPickupStart =
+        pickupStartTime === null ? true : hasValidPickupTime && pickupTime >= pickupStartTime;
+      const matchesPickupEnd =
+        pickupEndTime === null ? true : hasValidPickupTime && pickupTime <= pickupEndTime;
 
       const matchesTerm = normalizedTerm
         ? [
@@ -133,7 +143,7 @@ export default function ReservationListPage() {
           ].some((value) => value?.toLowerCase().includes(normalizedTerm))
         : true;
 
-      return matchesStatus && matchesTerm;
+      return matchesStatus && matchesTerm && matchesPickupStart && matchesPickupEnd;
     });
 
     const directionMultiplier = sortState.direction === "asc" ? 1 : -1;
@@ -175,7 +185,15 @@ export default function ReservationListPage() {
 
       return String(aValue).localeCompare(String(bValue), "ja") * directionMultiplier;
     });
-  }, [reservations, searchTerm, sortState.direction, sortState.key, statusFilter]);
+  }, [
+    pickupEndFilter,
+    pickupStartFilter,
+    reservations,
+    searchTerm,
+    sortState.direction,
+    sortState.key,
+    statusFilter,
+  ]);
 
   const handleSort = (key: typeof sortState.key) => {
     setSortState((current) =>
@@ -281,6 +299,29 @@ export default function ReservationListPage() {
                         </option>
                       ))}
                     </select>
+                  </label>
+                </div>
+                <div className={styles.tableToolbarGroup}>
+                  <label className={tableStyles.selectionLabel}>
+                    貸出日時:
+                    <input
+                      type="datetime-local"
+                      className={styles.tableSearchInput}
+                      value={pickupStartFilter}
+                      onChange={(event) => setPickupStartFilter(event.target.value)}
+                      aria-label="貸出日時の開始"
+                    />
+                  </label>
+                  <span className={styles.sectionDescription}>〜</span>
+                  <label className={tableStyles.selectionLabel}>
+                    <span className={tableStyles.visuallyHidden}>貸出日時の終了</span>
+                    <input
+                      type="datetime-local"
+                      className={styles.tableSearchInput}
+                      value={pickupEndFilter}
+                      onChange={(event) => setPickupEndFilter(event.target.value)}
+                      aria-label="貸出日時の終了"
+                    />
                   </label>
                 </div>
                 <div className={styles.tableToolbarGroup}>
