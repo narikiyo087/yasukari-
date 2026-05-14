@@ -105,19 +105,9 @@ const getInsuranceDurationKey = (days: number) => {
   return '1m';
 };
 
-const formatRentalPeriod = (days: number) => {
-  if (days <= 1) return '24時間';
-  if (days <= 2) return '2日間';
-  if (days <= 4) return '4日間';
-  if (days <= 7) return '1週間';
-  if (days <= 14) return '2週間';
-  if (days <= 31) return '1ヶ月';
-  return `${days}日間`;
-};
-
 const formatCoverageDetail = (price: number | null | undefined, days: number | null) => {
   if (price == null || days == null) return '未設定';
-  return `${formatRentalPeriod(days)} / ${price.toLocaleString('ja-JP')}円`;
+  return `${price.toLocaleString('ja-JP')}円`;
 };
 
 const displacementLabel = (displacement?: number) => {
