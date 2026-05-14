@@ -36,6 +36,7 @@ const ACCESSORY_DISPLAY_ORDER: Array<{ key: string; label: string }> = [
 ];
 
 const HELMET_ACCESSORY_KEYS = new Set(["halfCap", "jetHelmet", "brandHelmet"]);
+const RESERVE_FLOW_STEP3_STORAGE_KEY = "reserve-flow-step3-payload";
 
 const defaultFees = {
   rental: 3980,
@@ -742,7 +743,7 @@ export default function ReserveFlowStep2() {
   }, [vehicleModelId]);
 
   const handleNext = () => {
-    const params = new URLSearchParams({
+    const payload = {
       store,
       modelName,
       managementNumber,
@@ -751,21 +752,28 @@ export default function ReserveFlowStep2() {
       pickupTime,
       returnTime,
       couponCode,
-      couponDiscount: couponDiscount.toString(),
-      accessoryTotal: selectedAccessoryFee.toString(),
-      protectionTotal: selectedProtectionFee.toString(),
-      totalAmount: totalAmount.toString(),
-    });
+      couponDiscount,
+      accessoryTotal: selectedAccessoryFee,
+      protectionTotal: selectedProtectionFee,
+      totalAmount,
+      protectionSelection: PROTECTION_OPTION_DEFINITIONS.reduce<Record<string, boolean>>(
+        (acc, option) => {
+          acc[option.key] = protectionSelection[option.key];
+          return acc;
+        },
+        {}
+      ),
+      accessorySelection: accessoryOptions.reduce<Record<string, number>>((acc, option) => {
+        acc[option.key] = accessorySelection[option.key] ?? 0;
+        return acc;
+      }, {}),
+    };
 
-    PROTECTION_OPTION_DEFINITIONS.forEach((option) => {
-      params.append(option.key, protectionSelection[option.key] ? "1" : "0");
-    });
+    if (typeof window !== "undefined") {
+      window.sessionStorage.setItem(RESERVE_FLOW_STEP3_STORAGE_KEY, JSON.stringify(payload));
+    }
 
-    accessoryOptions.forEach((option) => {
-      params.append(option.key, String(accessorySelection[option.key] ?? 0));
-    });
-
-    void router.push(`/reserve/flow/step3?${params.toString()}`);
+    void router.push("/reserve/flow/step3");
   };
 
   const handleBack = () => {
