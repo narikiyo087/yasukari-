@@ -156,8 +156,8 @@ export default function HeaderEn() {
                   <NavItem icon={<FaUser />} label="Login" />
                 </Link>
               )}
-              <Link href="/en/pricing">
-                <NavItem icon={<FaClipboardList />} label="Bikes & Pricing" />
+              <Link href="/en/products">
+                <NavItem icon={<FaClipboardList />} label="All Bike Models" />
               </Link>
               <Link href="/en/beginner">
                 <NavItem icon={<FaQuestionCircle />} label="Beginner Guide" />
@@ -224,8 +224,8 @@ export default function HeaderEn() {
                 )}
               </li>
               <li>
-                <Link href="/en/pricing">
-                  <NavItem icon={<FaClipboardList />} label="Bikes & Pricing" />
+                <Link href="/en/products">
+                  <NavItem icon={<FaClipboardList />} label="All Bike Models" />
                 </Link>
               </li>
               <li>
