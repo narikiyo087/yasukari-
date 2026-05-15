@@ -570,13 +570,24 @@ export default function VehicleDetailPage() {
                 <dd>
                   {isDetailEditing ? (
                     <div className={formStyles.field}>
-                      <input
-                        type="url"
-                        value={detailForm?.videoUrl ?? ""}
-                        onChange={(event) =>
-                          setDetailForm((prev) => (prev ? { ...prev, videoUrl: event.target.value } : prev))
-                        }
-                      />
+                      <div className="flex items-center gap-2">
+                        <input
+                          type="url"
+                          value={detailForm?.videoUrl ?? ""}
+                          onChange={(event) =>
+                            setDetailForm((prev) => (prev ? { ...prev, videoUrl: event.target.value } : prev))
+                          }
+                        />
+                        <button
+                          type="button"
+                          className={styles.tableToolbarButton}
+                          onClick={() =>
+                            setDetailForm((prev) => (prev ? { ...prev, videoUrl: "" } : prev))
+                          }
+                        >
+                          クリア
+                        </button>
+                      </div>
                     </div>
                   ) : vehicle.videoUrl ? (
                     vehicle.videoUrl
@@ -590,12 +601,23 @@ export default function VehicleDetailPage() {
                 <dd>
                   {isDetailEditing ? (
                     <div className={formStyles.field}>
-                      <textarea
-                        value={detailForm?.notes ?? ""}
-                        onChange={(event) =>
-                          setDetailForm((prev) => (prev ? { ...prev, notes: event.target.value } : prev))
-                        }
-                      />
+                      <div className="flex flex-col gap-2">
+                        <textarea
+                          value={detailForm?.notes ?? ""}
+                          onChange={(event) =>
+                            setDetailForm((prev) => (prev ? { ...prev, notes: event.target.value } : prev))
+                          }
+                        />
+                        <button
+                          type="button"
+                          className={styles.tableToolbarButton}
+                          onClick={() =>
+                            setDetailForm((prev) => (prev ? { ...prev, notes: "" } : prev))
+                          }
+                        >
+                          クリア
+                        </button>
+                      </div>
                     </div>
                   ) : vehicle.notes ? (
                     vehicle.notes

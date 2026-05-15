@@ -278,12 +278,11 @@ export default function MyPageEn() {
   useEffect(() => {
     if (loading) return;
 
-    const controller = new AbortController();
+    let active = true;
     const fetchReservations = async () => {
       try {
         const response = await fetch('/api/reservations/me', {
           credentials: 'include',
-          signal: controller.signal,
         });
 
         if (response.status === 401) {
@@ -312,19 +311,26 @@ export default function MyPageEn() {
 
         setReservations(activeReservations);
       } catch (err) {
-        if (!controller.signal.aborted) {
+        if (active) {
           console.error(err);
           setReservationsError('Could not load your reservations. Please try again later.');
         }
       } finally {
-        if (!controller.signal.aborted) {
+        if (active) {
           setLoadingReservations(false);
         }
       }
     };
 
     void fetchReservations();
-    return () => controller.abort();
+    const intervalId = window.setInterval(() => {
+      void fetchReservations();
+    }, 5 * 60 * 1000);
+
+    return () => {
+      active = false;
+      window.clearInterval(intervalId);
+    };
   }, [loading, router]);
 
   const localeLabel = (value: string | undefined) => {

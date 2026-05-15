@@ -408,6 +408,14 @@ async function handlePut(
       updatedAt: timestamp,
     };
 
+    if (typeof videoUrl === "string" && videoUrl.trim().length === 0) {
+      delete item.videoUrl;
+    }
+
+    if (typeof notes === "string" && notes.trim().length === 0) {
+      delete item.notes;
+    }
+
     if (normalizedAvailability !== undefined) {
       item.rentalAvailability = normalizedAvailability;
     }
