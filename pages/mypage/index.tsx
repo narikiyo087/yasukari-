@@ -48,6 +48,7 @@ export default function MyPage() {
   const [accidentError, setAccidentError] = useState('');
   const [accidentUploading, setAccidentUploading] = useState(false);
   const [accidentSubmitted, setAccidentSubmitted] = useState(false);
+  const [accidentDescription, setAccidentDescription] = useState('');
   const [showReturnModal, setShowReturnModal] = useState(false);
   const [showReturnExpiredModal, setShowReturnExpiredModal] = useState(false);
   const [showUnlockQrModal, setShowUnlockQrModal] = useState(false);
@@ -108,6 +109,7 @@ export default function MyPage() {
 
   const resetAccidentModal = () => {
     setAccidentFile(null);
+    setAccidentDescription('');
     setAccidentError('');
     setAccidentUploading(false);
     setAccidentSubmitted(false);
@@ -545,6 +547,11 @@ export default function MyPage() {
   const handleAccidentSubmit = async () => {
     if (!accidentFile) {
       setAccidentError('写真をアップロードしてください。');
+      return;
+    }
+
+    if (!accidentDescription.trim()) {
+      setAccidentError('事故・転倒の状況を入力してください。');
       return;
     }
 
@@ -1564,6 +1571,21 @@ export default function MyPage() {
                 }}
                 className="block w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm"
               />
+              <label className="block text-xs font-semibold text-gray-600" htmlFor="accident-description">
+                事故・転倒の状況
+              </label>
+              <textarea
+                id="accident-description"
+                value={accidentDescription}
+                onChange={(event) => {
+                  setAccidentSubmitted(false);
+                  setAccidentError('');
+                  setAccidentDescription(event.target.value);
+                }}
+                placeholder="いつ・どこで・どのように発生したかを記入してください"
+                rows={4}
+                className="block w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm"
+              />
               <label className="block text-xs font-semibold text-gray-600 sm:hidden">
                 スマホで撮影してアップロード
                 <input
@@ -1587,7 +1609,7 @@ export default function MyPage() {
               <button
                 type="button"
                 onClick={handleAccidentSubmit}
-                disabled={accidentUploading}
+                disabled={accidentUploading || !accidentFile || !accidentDescription.trim()}
                 className="inline-flex w-full items-center justify-center rounded-full bg-red-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-red-700 disabled:cursor-not-allowed disabled:bg-red-300"
               >
                 {accidentUploading ? '送信中…' : '送信'}

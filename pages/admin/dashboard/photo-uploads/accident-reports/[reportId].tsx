@@ -15,6 +15,7 @@ type AccidentReport = {
   phone: string;
   uploadedAt: string;
   imageUrl: string;
+  description: string;
 };
 
 export default function AccidentReportDetailPage() {
@@ -130,6 +131,10 @@ export default function AccidentReportDetailPage() {
                   <span className={styles.detailMetaValue}>
                     {report.uploadedAt}
                   </span>
+                </div>
+                <div className={styles.detailMetaRow}>
+                  <span className={styles.detailMetaLabel}>事故・転倒の状況</span>
+                  <span className={styles.detailMetaValue}>{report.description || '-'}</span>
                 </div>
                 <Link
                   href="/admin/dashboard/photo-uploads/accident-reports"
