@@ -164,6 +164,7 @@ type VehicleRecord = {
   managementNumber: string;
   licensePlateNumber?: string;
   parkingNumber?: string;
+  videoUrl?: string;
 };
 
 const RESERVATIONS_TABLE = process.env.RESERVATIONS_TABLE ?? "yoyakuKanri";
