@@ -16,6 +16,7 @@ type UploadRequestBody = {
   data?: string;
   fileName?: string;
   contentType?: string;
+  description?: string;
 };
 
 function normalizePrefix(prefix: string) {
@@ -81,10 +82,16 @@ export default async function handler(
       return;
     }
 
-    const { data, fileName, contentType }: UploadRequestBody = request.body ?? {};
+    const { data, fileName, contentType, description }: UploadRequestBody = request.body ?? {};
 
     if (typeof data !== "string" || data.length === 0) {
       response.status(400).json({ message: "画像データが送信されていません。" });
+      return;
+    }
+
+
+    if (typeof description !== "string" || description.trim().length === 0) {
+      response.status(400).json({ message: "事故・転倒の状況を入力してください。" });
       return;
     }
 
@@ -118,14 +125,16 @@ export default async function handler(
         TableName: TABLE_NAME,
         Key: { user_id: payload.sub },
         UpdateExpression:
-          "SET #accident_report_url = :url, #accident_report_uploaded_at = :uploaded_at",
+          "SET #accident_report_url = :url, #accident_report_uploaded_at = :uploaded_at, #accident_report_description = :description",
         ExpressionAttributeNames: {
           "#accident_report_url": "accident_report_url",
           "#accident_report_uploaded_at": "accident_report_uploaded_at",
+          "#accident_report_description": "accident_report_description",
         },
         ExpressionAttributeValues: {
           ":url": url,
           ":uploaded_at": uploadedAt,
+          ":description": description.trim(),
         },
       })
     );

@@ -32,6 +32,7 @@ export type RegistrationData = {
   enquete_chance: string;
   accident_report_url?: string;
   accident_report_uploaded_at?: string;
+  accident_report_description?: string;
   return_report_url?: string;
   return_report_uploaded_at?: string;
   rental_terms_agreed_at?: string;

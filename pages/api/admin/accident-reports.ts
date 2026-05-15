@@ -13,6 +13,7 @@ type AccidentReportItem = {
   phone: string;
   uploadedAt: string;
   imageUrl: string;
+  description: string;
 };
 
 const formatDateTime = (value?: string): string => {
@@ -65,6 +66,7 @@ export default async function handler(
           phone: item.mobile ?? item.tel ?? "-",
           uploadedAt: formatDateTime(uploadedAtRaw),
           imageUrl: item.accident_report_url ?? "",
+          description: item.accident_report_description ?? "-",
           uploadedAtRaw,
         };
       })
