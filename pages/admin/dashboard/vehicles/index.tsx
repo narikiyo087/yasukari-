@@ -1767,26 +1767,26 @@ export default function VehicleListPage() {
                     <dd>
                       {isDetailEditing ? (
                         <div className={formStyles.field}>
-                          <div className="flex items-center gap-2">
-                          <input
-                            type="url"
-                            value={detailForm?.videoUrl ?? ""}
-                            onChange={(event) =>
-                              setDetailForm((prev) =>
-                                prev ? { ...prev, videoUrl: event.target.value } : prev
-                              )
-                            }
-                          />
-                          <button
-                            type="button"
-                            className={styles.tableToolbarButton}
-                            onClick={() =>
-                              setDetailForm((prev) => (prev ? { ...prev, videoUrl: "" } : prev))
-                            }
-                          >
-                            クリア
-                          </button>
-                        </div>
+                          <div className="flex flex-col items-start gap-2">
+                            <input
+                              type="url"
+                              value={detailForm?.videoUrl ?? ""}
+                              onChange={(event) =>
+                                setDetailForm((prev) =>
+                                  prev ? { ...prev, videoUrl: event.target.value } : prev
+                                )
+                              }
+                            />
+                            <button
+                              type="button"
+                              className={styles.tableToolbarButton}
+                              onClick={() =>
+                                setDetailForm((prev) => (prev ? { ...prev, videoUrl: "" } : prev))
+                              }
+                            >
+                              クリア
+                            </button>
+                          </div>
                         </div>
                       ) : selectedVehicle.videoUrl ? (
                         selectedVehicle.videoUrl
