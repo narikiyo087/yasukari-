@@ -570,7 +570,7 @@ export default function VehicleDetailPage() {
                 <dd>
                   {isDetailEditing ? (
                     <div className={formStyles.field}>
-                      <div className="flex items-center gap-2">
+                      <div className="flex flex-col items-start gap-2">
                         <input
                           type="url"
                           value={detailForm?.videoUrl ?? ""}
