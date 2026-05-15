@@ -97,11 +97,24 @@ export default function ProductDetailPage({
 
   const storeOptions = useMemo(() => {
     const uniqueStores = new Set<string>();
+    (bike.stores ?? []).forEach((storeId) => {
+      if (storeId) uniqueStores.add(storeId);
+    });
     vehicles.forEach((vehicle) => {
       if (vehicle.storeId) uniqueStores.add(vehicle.storeId);
     });
     return Array.from(uniqueStores);
-  }, [vehicles]);
+  }, [bike.stores, vehicles]);
+
+  const storeStockCount = useMemo(() => {
+    const counts = new Map<string, number>();
+    storeOptions.forEach((storeId) => counts.set(storeId, 0));
+    vehicles.forEach((vehicle) => {
+      if (!vehicle.storeId) return;
+      counts.set(vehicle.storeId, (counts.get(vehicle.storeId) ?? 0) + 1);
+    });
+    return counts;
+  }, [storeOptions, vehicles]);
 
   const filteredVehicleOptions = useMemo(() => {
     if (!selectedStoreId) return [];
@@ -339,6 +352,7 @@ export default function ProductDetailPage({
                           ) : (
                             storeOptions.map((storeId) => {
                               const isSelected = storeId === selectedStoreId;
+                              const stockCount = storeStockCount.get(storeId) ?? 0;
                               return (
                                 <button
                                   key={storeId}
@@ -350,7 +364,7 @@ export default function ProductDetailPage({
                                       : "bg-white text-gray-700 ring-1 ring-gray-200 hover:ring-red-200"
                                   }`}
                                 >
-                                  {storeId}
+                                  {storeId}（在庫{stockCount}件）
                                 </button>
                               );
                             })
