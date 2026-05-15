@@ -16,6 +16,7 @@ import RecentlyViewed from "../../components/RecentlyViewed";
 import type { Reservation } from "../../lib/reservations";
 import { formatAdjustedYenPrice } from "../../lib/pricing";
 import useInternationalPricingMultiplier from "../../lib/useInternationalPricingMultiplier";
+import { STORE_OPTIONS } from "../../lib/dashboard/storeOptions";
 
 interface Props {
   bike: BikeModel;
@@ -97,6 +98,7 @@ export default function ProductDetailPage({
 
   const storeOptions = useMemo(() => {
     const uniqueStores = new Set<string>();
+    STORE_OPTIONS.forEach((store) => uniqueStores.add(store.id));
     (bike.stores ?? []).forEach((storeId) => {
       if (storeId) uniqueStores.add(storeId);
     });
