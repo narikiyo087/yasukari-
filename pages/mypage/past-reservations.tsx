@@ -205,15 +205,18 @@ export default function PastReservationsPage() {
                               <span className="inline-flex items-center rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-800">
                                 {reservation.status}
                               </span>
-                              <span
-                                className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold ${
-                                  reservation.reservationCompletedFlag
-                                    ? 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200'
-                                    : 'bg-amber-50 text-amber-700 ring-1 ring-amber-200'
-                                }`}
-                              >
-                                {reservationCompletionLabel(reservation.reservationCompletedFlag)}
-                              </span>
+                              {reservationCompletionLabel(reservation.reservationCompletedFlag) !==
+                                reservation.status && (
+                                <span
+                                  className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold ${
+                                    reservation.reservationCompletedFlag
+                                      ? 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200'
+                                      : 'bg-amber-50 text-amber-700 ring-1 ring-amber-200'
+                                  }`}
+                                >
+                                  {reservationCompletionLabel(reservation.reservationCompletedFlag)}
+                                </span>
+                              )}
                             </div>
                           </div>
                           {reservation.vehicleChangedAt && !reservation.vehicleChangeNotified && (
