@@ -1767,6 +1767,7 @@ export default function VehicleListPage() {
                     <dd>
                       {isDetailEditing ? (
                         <div className={formStyles.field}>
+                          <div className="flex items-center gap-2">
                           <input
                             type="url"
                             value={detailForm?.videoUrl ?? ""}
@@ -1776,6 +1777,16 @@ export default function VehicleListPage() {
                               )
                             }
                           />
+                          <button
+                            type="button"
+                            className={styles.tableToolbarButton}
+                            onClick={() =>
+                              setDetailForm((prev) => (prev ? { ...prev, videoUrl: "" } : prev))
+                            }
+                          >
+                            クリア
+                          </button>
+                        </div>
                         </div>
                       ) : selectedVehicle.videoUrl ? (
                         selectedVehicle.videoUrl
@@ -1789,6 +1800,7 @@ export default function VehicleListPage() {
                     <dd>
                       {isDetailEditing ? (
                         <div className={formStyles.field}>
+                          <div className="flex flex-col gap-2">
                           <textarea
                             value={detailForm?.notes ?? ""}
                             onChange={(event) =>
@@ -1797,6 +1809,16 @@ export default function VehicleListPage() {
                               )
                             }
                           />
+                          <button
+                            type="button"
+                            className={styles.tableToolbarButton}
+                            onClick={() =>
+                              setDetailForm((prev) => (prev ? { ...prev, notes: "" } : prev))
+                            }
+                          >
+                            クリア
+                          </button>
+                        </div>
                         </div>
                       ) : selectedVehicle.notes ? (
                         selectedVehicle.notes

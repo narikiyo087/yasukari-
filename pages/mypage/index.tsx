@@ -300,12 +300,11 @@ export default function MyPage() {
   useEffect(() => {
     if (loading) return;
 
-    const controller = new AbortController();
+    let active = true;
     const fetchReservations = async () => {
       try {
         const response = await fetch('/api/reservations/me', {
           credentials: 'include',
-          signal: controller.signal,
         });
 
         if (response.status === 401) {
@@ -357,19 +356,26 @@ export default function MyPage() {
 
         setReservations(activeReservations);
       } catch (err) {
-        if (!controller.signal.aborted) {
+        if (active) {
           console.error(err);
           setReservationsError('レンタル中のバイク情報の取得に失敗しました。時間をおいて再度お試しください。');
         }
       } finally {
-        if (!controller.signal.aborted) {
+        if (active) {
           setLoadingReservations(false);
         }
       }
     };
 
     void fetchReservations();
-    return () => controller.abort();
+    const intervalId = window.setInterval(() => {
+      void fetchReservations();
+    }, 5 * 60 * 1000);
+
+    return () => {
+      active = false;
+      window.clearInterval(intervalId);
+    };
   }, [loading, router]);
 
   const localeLabel = (value: string | undefined) => {

@@ -228,7 +228,7 @@ const chunkArray = <T,>(items: T[], size: number): T[][] => {
 
 const fetchVehicleInfoMap = async (
   vehicleCodes: string[]
-): Promise<Map<string, { licensePlateNumber?: string; parkingNumber?: string }>> => {
+): Promise<Map<string, { licensePlateNumber?: string; parkingNumber?: string; videoUrl?: string }>> => {
   const uniqueCodes = Array.from(
     new Set(vehicleCodes.filter((code) => typeof code === "string" && code.trim()))
   ) as string[];
@@ -238,7 +238,7 @@ const fetchVehicleInfoMap = async (
   }
 
   const client = getDocumentClient();
-  const infoMap = new Map<string, { licensePlateNumber?: string; parkingNumber?: string }>();
+  const infoMap = new Map<string, { licensePlateNumber?: string; parkingNumber?: string; videoUrl?: string }>();
   const batches = chunkArray(uniqueCodes, 100);
 
   await Promise.all(
@@ -248,7 +248,7 @@ const fetchVehicleInfoMap = async (
           RequestItems: {
             [VEHICLES_TABLE]: {
               Keys: batch.map((managementNumber) => ({ managementNumber })),
-              ProjectionExpression: "managementNumber, licensePlateNumber, parkingNumber",
+              ProjectionExpression: "managementNumber, licensePlateNumber, parkingNumber, videoUrl",
             },
           },
         })
@@ -266,6 +266,7 @@ const fetchVehicleInfoMap = async (
         const entry = {
           ...(item.licensePlateNumber ? { licensePlateNumber: item.licensePlateNumber } : {}),
           ...(item.parkingNumber ? { parkingNumber: item.parkingNumber } : {}),
+          ...(item.videoUrl ? { videoUrl: item.videoUrl } : {}),
         };
         if (Object.keys(entry).length > 0) {
           infoMap.set(item.managementNumber, entry);
@@ -305,6 +306,11 @@ const attachVehicleInfo = async (
 
       if (info.parkingNumber && reservation.parkingNumber !== info.parkingNumber) {
         nextReservation.parkingNumber = info.parkingNumber;
+        isUpdated = true;
+      }
+
+      if (info.videoUrl && reservation.videoUrl !== info.videoUrl) {
+        nextReservation.videoUrl = info.videoUrl;
         isUpdated = true;
       }
 
