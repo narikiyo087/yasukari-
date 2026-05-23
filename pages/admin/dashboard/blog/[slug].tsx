@@ -14,6 +14,8 @@ export default function EditCustomerBlogPage() {
   const [tags, setTags] = useState("");
   const [eyecatch, setEyecatch] = useState("");
   const [content, setContent] = useState("");
+  const [showJa, setShowJa] = useState(true);
+  const [showEn, setShowEn] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -33,6 +35,8 @@ export default function EditCustomerBlogPage() {
           date?: string;
           tags?: string;
           eyecatch?: string;
+          showJa?: boolean;
+          showEn?: boolean;
           content: string;
         } = await response.json();
 
@@ -40,6 +44,8 @@ export default function EditCustomerBlogPage() {
         setDate(data.date ?? "");
         setTags(data.tags ?? "");
         setEyecatch(data.eyecatch ?? "");
+        setShowJa(data.showJa ?? true);
+        setShowEn(data.showEn ?? false);
         setContent(data.content ?? "");
         setError(null);
       } catch (loadError) {
@@ -64,7 +70,7 @@ export default function EditCustomerBlogPage() {
       const response = await fetch(`/api/customer-blog/${slugString}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ title, date, tags, eyecatch, content }),
+        body: JSON.stringify({ title, date, tags, eyecatch, showJa, showEn, content }),
       });
 
       if (!response.ok) {
@@ -152,6 +158,18 @@ export default function EditCustomerBlogPage() {
                       value={eyecatch}
                       onChange={(event) => setEyecatch(event.target.value)}
                     />
+                  </div>
+                  <div className={formStyles.field}>
+                    <label className="inline-flex items-center gap-2">
+                      <input type="checkbox" checked={showJa} onChange={(event) => setShowJa(event.target.checked)} />
+                      日本語ページで表示する
+                    </label>
+                  </div>
+                  <div className={formStyles.field}>
+                    <label className="inline-flex items-center gap-2">
+                      <input type="checkbox" checked={showEn} onChange={(event) => setShowEn(event.target.checked)} />
+                      英語ページ（/en）で表示する
+                    </label>
                   </div>
                 </div>
 

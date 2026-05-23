@@ -50,7 +50,7 @@ export default function HomeEn({ blogSlides, blogTags, bikeModelsAll, bikeClasse
 
   const hotKeywords = blogTags.slice(0, 12).map((tag) => ({
     label: tag,
-    href: `/blog_for_custmor/tag/${encodeURIComponent(tag)}?click_from=top_keywords`,
+    href: `/en/blog_for_custmor/tag/${encodeURIComponent(tag)}?click_from=top_keywords`,
   }));
 
   const featureHighlights = [
@@ -344,8 +344,10 @@ export const getStaticProps: GetStaticProps<Props> = async () => {
     const date = meta.date || slug.match(/^\d{4}-\d{2}-\d{2}/)?.[0] || "";
     const eyecatch = meta.eyecatch || undefined;
     const tags = meta.tags;
+    const showEn = meta.showEn === "true";
+    if (!showEn) return null;
     return { slug, title, date, eyecatch, tags };
-  });
+  }).filter((post): post is { slug: string; title: string; date: string; eyecatch?: string; tags?: string } => post !== null);
 
   posts.sort((a, b) => b.date.localeCompare(a.date));
   const tagSet = new Set<string>();
@@ -359,7 +361,7 @@ export const getStaticProps: GetStaticProps<Props> = async () => {
 
   const blogSlides: BlogSlide[] = posts.slice(0, 10).map((p) => ({
     title: p.title,
-    href: `/blog_for_custmor/${p.slug}`,
+    href: `/en/blog_for_custmor/${p.slug}`,
     img: p.eyecatch || "",
   }));
   const [bikeModelsAll, bikeClasses] = await Promise.all([

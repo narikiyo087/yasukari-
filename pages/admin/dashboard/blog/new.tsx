@@ -13,6 +13,8 @@ export default function CreateCustomerBlogPage() {
   const [tags, setTags] = useState("");
   const [eyecatch, setEyecatch] = useState("");
   const [content, setContent] = useState("");
+  const [showJa, setShowJa] = useState(true);
+  const [showEn, setShowEn] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -25,7 +27,7 @@ export default function CreateCustomerBlogPage() {
       const response = await fetch("/api/customer-blog", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ slug, title, date, tags, eyecatch, content }),
+        body: JSON.stringify({ slug, title, date, tags, eyecatch, showJa, showEn, content }),
       });
 
       if (!response.ok) {
@@ -123,6 +125,18 @@ export default function CreateCustomerBlogPage() {
                     onChange={(event) => setEyecatch(event.target.value)}
                     placeholder="https://example.com/eyecatch.jpg"
                   />
+                </div>
+                <div className={formStyles.field}>
+                  <label className="inline-flex items-center gap-2">
+                    <input type="checkbox" checked={showJa} onChange={(event) => setShowJa(event.target.checked)} />
+                    日本語ページで表示する
+                  </label>
+                </div>
+                <div className={formStyles.field}>
+                  <label className="inline-flex items-center gap-2">
+                    <input type="checkbox" checked={showEn} onChange={(event) => setShowEn(event.target.checked)} />
+                    英語ページ（/en）で表示する
+                  </label>
                 </div>
               </div>
 

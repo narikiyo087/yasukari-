@@ -1,9 +1,8 @@
 import fs from 'fs'
 import path from 'path'
-import { GetStaticPaths, GetStaticProps } from 'next'
 import Head from 'next/head'
 import Link from 'next/link'
-import PostSearch from '../../../components/PostSearch'
+import PostSearch from '../../components/PostSearch'
 
 type PostMeta = {
   slug: string
@@ -14,33 +13,7 @@ type PostMeta = {
   eyecatch?: string
 }
 
-export const getStaticPaths: GetStaticPaths = () => {
-  const dir = path.join(process.cwd(), 'blog_for_custmor')
-  const files = fs.readdirSync(dir).filter((f) => f.endsWith('.md'))
-  const tags = new Set<string>()
-  files.forEach((file) => {
-    const lines = fs.readFileSync(path.join(dir, file), 'utf8').split(/\r?\n/)
-    let idx = 0
-    if (lines[idx] === '---') {
-      idx++
-      while (idx < lines.length && lines[idx] !== '---') {
-        const [k, ...v] = lines[idx].split(':')
-        if (k.trim() === 'tags') {
-          v.join(':')
-            .split(',')
-            .forEach((t) => tags.add(t.trim()))
-        }
-        idx++
-      }
-    }
-  })
-  const paths = Array.from(tags).map((t) => ({
-    params: { tag: t },
-  }))
-  return { paths, fallback: "blocking" }
-}
-
-export const getStaticProps: GetStaticProps = ({ params }) => {
+export async function getStaticProps() {
   const dir = path.join(process.cwd(), 'blog_for_custmor')
   const files = fs.readdirSync(dir).filter((f) => f.endsWith('.md'))
   const posts: PostMeta[] = files.map((file) => {
@@ -65,41 +38,58 @@ export const getStaticProps: GetStaticProps = ({ params }) => {
     const excerpt = excerptLine.replace(/\*/g, '').slice(0, 80)
     const tags = meta.tags
     const eyecatch = meta.eyecatch || undefined
-    const showJa = meta.showJa !== 'false'
-    if (!showJa) return null
+    const showEn = meta.showEn === 'true'
+    if (!showEn) return null
     return { slug, title, date: dateMatch, excerpt, tags, eyecatch }
-  }).filter((post): post is PostMeta => post !== null)
+  })
+  .filter((post): post is PostMeta => post !== null)
 
   posts.sort((a, b) => b.date.localeCompare(a.date))
 
-  const tag = decodeURIComponent(params!.tag as string)
-  const tagPosts = posts.filter((p) =>
-    p.tags?.split(',').map((t) => t.trim()).includes(tag)
+  const tags = Array.from(
+    new Set(
+      posts.flatMap((p) =>
+        p.tags ? p.tags.split(',').map((t) => t.trim()) : []
+      )
+    )
   )
 
-  return { props: { tag, tagPosts, posts }, revalidate: 60 }
+  return { props: { posts, tags }, revalidate: 60 }
 }
 
-interface Props {
-  tag: string
-  tagPosts: PostMeta[]
+export default function BlogIndex({
+  posts,
+  tags,
+}: {
   posts: PostMeta[]
-}
-
-export default function TagPage({ tag, tagPosts, posts }: Props) {
+  tags: string[]
+}) {
   return (
     <div className="max-w-6xl mx-auto p-4 flex flex-row flex-wrap gap-6">
       <Head>
-        <title>#{tag} の記事 - ヤスカリ</title>
+        <title>新着Blog・お知らせ - Yasukari</title>
       </Head>
       <div className="w-[70%]">
-        <h1 className="text-xl font-bold mb-4">タグ: #{tag}</h1>
+        <h1 className="text-xl font-bold mb-4">新着Blog・お知らせ</h1>
+        {tags.length > 0 && (
+          <div className="mb-4 text-sm space-x-2">
+            {tags.map((t) => (
+              <Link
+                key={t}
+                href={`/en/blog_for_custmor/tag/${encodeURIComponent(t)}`}
+                className="text-blue-600 hover:underline"
+              >
+                #{t}
+              </Link>
+            ))}
+          </div>
+        )}
         <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-          {tagPosts.map((post) => (
+          {posts.map((post) => (
             <Link
               key={post.slug}
-              href={`/blog_for_custmor/${post.slug}`}
-              className="block p-4 bg-white rounded shadow hover:bg-gray-50"
+              href={`/en/blog_for_custmor/${post.slug}`}
+              className="block p-4 bg-white rounded shadow hover:bg-gray-50 hover-glow"
             >
               {post.eyecatch && (
                 <img
@@ -123,13 +113,10 @@ export default function TagPage({ tag, tagPosts, posts }: Props) {
               {post.excerpt && <p>{post.excerpt}</p>}
             </Link>
           ))}
-          {tagPosts.length === 0 && (
-            <p className="text-gray-500">該当する記事がありません。</p>
-          )}
         </div>
       </div>
       <div className="w-[25%] space-y-4">
-        <PostSearch posts={posts} basePath="/blog_for_custmor" />
+        <PostSearch posts={posts} basePath="/en/blog_for_custmor" />
       </div>
     </div>
   )

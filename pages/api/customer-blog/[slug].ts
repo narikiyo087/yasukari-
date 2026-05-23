@@ -25,7 +25,7 @@ export default async function handler(
     }
 
     if (req.method === "PUT") {
-      const { title, date, tags, eyecatch, content } = req.body ?? {};
+      const { title, date, tags, eyecatch, showJa, showEn, content } = req.body ?? {};
 
       if (!title || !content) {
         return res
@@ -38,6 +38,8 @@ export default async function handler(
         date: date ?? undefined,
         tags: tags ?? undefined,
         eyecatch: eyecatch ?? undefined,
+        showJa: showJa ?? true,
+        showEn: showEn ?? false,
         content,
       });
 

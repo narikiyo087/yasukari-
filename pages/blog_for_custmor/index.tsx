@@ -38,8 +38,11 @@ export async function getStaticProps() {
     const excerpt = excerptLine.replace(/\*/g, '').slice(0, 80)
     const tags = meta.tags
     const eyecatch = meta.eyecatch || undefined
+    const showJa = meta.showJa !== 'false'
+    if (!showJa) return null
     return { slug, title, date: dateMatch, excerpt, tags, eyecatch }
   })
+  .filter((post): post is PostMeta => post !== null)
 
   posts.sort((a, b) => b.date.localeCompare(a.date))
 
