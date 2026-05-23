@@ -3,6 +3,7 @@ import crypto from 'crypto';
 export type CognitoIdTokenPayload = {
   sub: string;
   email?: string;
+  'custom:locale'?: string;
   'cognito:username'?: string;
   token_use?: string;
   aud?: string;

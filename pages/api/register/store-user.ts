@@ -96,7 +96,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       })
     );
 
-    await deliverFullRegistrationEmail(payload.email);
+    await deliverFullRegistrationEmail(payload.email, authPayload?.['custom:locale']);
 
     return res.status(200).json({ message: 'ユーザー情報を保存しした。' });
   } catch (error) {

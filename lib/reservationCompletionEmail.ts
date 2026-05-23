@@ -7,6 +7,9 @@ type MailSendResult = {
   simulated: boolean;
 };
 
+const isEnglishReservation = (reservation: Reservation): boolean =>
+  reservation.notes?.includes("Saved via Pay.JP payment") ?? false;
+
 const formatDateTime = (value: string): string => {
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) {
@@ -60,6 +63,7 @@ const buildOptionLines = (reservation: Reservation): string[] => {
 };
 
 const buildTextBody = (reservation: Reservation): string => {
+  const useEnglish = isEnglishReservation(reservation);
   const pickup = reservation.pickupAt ? formatDateTime(reservation.pickupAt) : "-";
   const dropoff = reservation.returnAt ? formatDateTime(reservation.returnAt) : "-";
   const optionLines = buildOptionLines(reservation);
@@ -74,6 +78,34 @@ const buildTextBody = (reservation: Reservation): string => {
         `QR URL: ${reservation.keyboxQrImageUrl || "-"}`,
       ]
     : [];
+
+  if (useEnglish) {
+    return [
+      "Thank you for choosing Yasukari.",
+      "",
+      "Your reservation has been confirmed.",
+      "Please review the details below and arrive at the store on time.",
+      "",
+      "Reservation details:",
+      `Reservation ID: ${reservation.id}`,
+      `Pickup: ${pickup}`,
+      `Return: ${dropoff}`,
+      `Store: ${reservation.storeName}`,
+      `Vehicle: ${reservation.vehicleModel} (${reservation.vehiclePlate || reservation.vehicleCode})`,
+      `Plate number: ${reservation.vehiclePlate || "-"}`,
+      "Options:",
+      ...optionLines,
+      `Total: ¥${reservation.paymentAmount}`,
+      ...minowaAccessLines,
+      "",
+      "My page",
+      myPageUrl,
+      "",
+      "For inquiries, please reply to this email.",
+      "",
+      ...EMAIL_FOOTER_TEXT_LINES,
+    ].filter(Boolean).join("\n");
+  }
 
   return [
     "いつも「ヤスカリ」をご利用いただきまして",
@@ -119,6 +151,7 @@ const buildTextBody = (reservation: Reservation): string => {
 };
 
 const buildHtmlBody = (reservation: Reservation): string => {
+  const useEnglish = isEnglishReservation(reservation);
   const pickup = reservation.pickupAt ? formatDateTime(reservation.pickupAt) : "-";
   const dropoff = reservation.returnAt ? formatDateTime(reservation.returnAt) : "-";
   const optionLines = buildOptionLines(reservation);
@@ -135,6 +168,30 @@ const buildHtmlBody = (reservation: Reservation): string => {
     </p>
 `
     : "";
+
+
+  if (useEnglish) {
+    return `<!DOCTYPE html>
+<html lang="en">
+  <body>
+    <p>Thank you for choosing Yasukari.</p>
+    <p>Your reservation has been confirmed.</p>
+    <p><strong>Reservation ID:</strong> ${reservation.id}<br />
+    <strong>Pickup:</strong> ${pickup}<br />
+    <strong>Return:</strong> ${dropoff}<br />
+    <strong>Store:</strong> ${reservation.storeName}<br />
+    <strong>Vehicle:</strong> ${reservation.vehicleModel} (${reservation.vehiclePlate || reservation.vehicleCode})<br />
+    <strong>Plate number:</strong> ${reservation.vehiclePlate || "-"}</p>
+    <p><strong>Options</strong></p>
+    <ul>${optionItems}</ul>
+    <p><strong>Total:</strong> ¥${reservation.paymentAmount}</p>
+    ${minowaAccessSection}
+    <p>My page: <a href="${myPageUrl}">${myPageUrl}</a></p>
+    <p>For inquiries, please reply to this email.</p>
+    ${EMAIL_FOOTER_HTML}
+  </body>
+</html>`;
+  }
 
   return `<!DOCTYPE html>
 <html lang="ja">
@@ -262,7 +319,9 @@ export async function sendReservationCompletionEmail(reservation: Reservation): 
     return { simulated: true };
   }
 
-  const subject = "【ヤスカリ】バイクレンタルのご予約完了";
+  const subject = isEnglishReservation(reservation)
+    ? "[Yasukari] Your bike rental reservation is confirmed"
+    : "【ヤスカリ】バイクレンタルのご予約完了";
   const text = buildTextBody(reservation);
   const html = buildHtmlBody(reservation);
 
