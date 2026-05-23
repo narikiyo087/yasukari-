@@ -102,7 +102,7 @@ export default function BlogPost({ html, meta, posts }: Props) {
   return (
     <div className="max-w-6xl mx-auto p-4 flex flex-row flex-wrap gap-6">
       <Head>
-        <title>{meta.title ? `${meta.title} - ヤスカリ` : 'ブログ'}</title>
+        <title>{meta.title ? `${meta.title} - Yasukari` : 'Blog'}</title>
         {meta.eyecatch && (
           <meta property="og:image" content={meta.eyecatch} />
         )}
@@ -119,7 +119,7 @@ export default function BlogPost({ html, meta, posts }: Props) {
                   return (
                     <Link
                       key={t}
-                      href={`/blog_for_custmor/tag/${encodeURIComponent(t)}`}
+                      href={`/en/blog_for_custmor/tag/${encodeURIComponent(t)}`}
                       className="text-blue-600 text-xs hover:underline"
                     >
                       #{t}
@@ -140,7 +140,7 @@ export default function BlogPost({ html, meta, posts }: Props) {
         <div dangerouslySetInnerHTML={{ __html: html }} />
       </article>
       <div className="w-[25%] space-y-4">
-        <PostSearch posts={posts} basePath="/blog_for_custmor" />
+        <PostSearch posts={posts} basePath="/en/blog_for_custmor" />
       </div>
     </div>
   )
@@ -153,7 +153,7 @@ export const getStaticPaths: GetStaticPaths = () => {
     .filter((file) => {
       const md = fs.readFileSync(path.join(dir, file), 'utf8')
       const match = md.match(/^---\n([\s\S]*?)\n---\n?/)
-      return !match || !/showJa:\s*false/.test(match[1])
+      return !match || !/showEn:\s*true/.test(match[1])
     })
     .map((file) => ({ params: { slug: file.replace(/\.md$/, '') } }))
   return { paths, fallback: "blocking" }
@@ -165,7 +165,7 @@ export const getStaticProps: GetStaticProps = ({ params }) => {
   const filePath = path.join(dir, `${slug}.md`)
   const md = fs.readFileSync(filePath, 'utf8')
   const { html, meta } = parseMarkdown(md)
-  if (meta.showJa === 'false') {
+  if (meta.showEn !== 'true') {
     return { notFound: true, revalidate: 60 }
   }
 
@@ -192,7 +192,7 @@ export const getStaticProps: GetStaticProps = ({ params }) => {
       .find((l) => l.trim() && !l.startsWith('#'))
       ?.replace(/\*/g, '')
     const excerpt = excerptLine ? excerptLine.slice(0, 80) : undefined
-    if (meta.showJa === 'false') return null
+    if (meta.showEn !== 'true') return null
     return { slug, title, excerpt }
   }).filter((post): post is SearchPost => post !== null)
 

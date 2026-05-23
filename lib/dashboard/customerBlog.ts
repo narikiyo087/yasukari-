@@ -7,6 +7,8 @@ export type CustomerBlogMeta = {
   date?: string;
   tags?: string;
   eyecatch?: string;
+  showJa?: boolean;
+  showEn?: boolean;
   excerpt?: string;
 };
 
@@ -99,6 +101,8 @@ async function readPost(slug: string): Promise<CustomerBlogPost> {
     date: meta.date,
     tags: meta.tags,
     eyecatch: meta.eyecatch,
+    showJa: meta.showJa !== "false",
+    showEn: meta.showEn === "true",
     excerpt: deriveExcerpt(body),
     content: body,
   };
@@ -130,6 +134,8 @@ export async function saveCustomerBlogPost(
     date?: string;
     tags?: string;
     eyecatch?: string;
+    showJa?: boolean;
+    showEn?: boolean;
     content: string;
   }
 ): Promise<CustomerBlogPost> {
@@ -143,6 +149,8 @@ export async function saveCustomerBlogPost(
       date: data.date,
       tags: data.tags,
       eyecatch: data.eyecatch,
+      showJa: String(data.showJa ?? true),
+      showEn: String(data.showEn ?? false),
     },
     data.content
   );

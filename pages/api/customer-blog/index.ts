@@ -19,7 +19,7 @@ export default async function handler(
     }
 
     if (req.method === "POST") {
-      const { slug, title, date, tags, eyecatch, content } = req.body ?? {};
+      const { slug, title, date, tags, eyecatch, showJa, showEn, content } = req.body ?? {};
 
       if (!slug || !title || !content) {
         return res
@@ -48,6 +48,8 @@ export default async function handler(
         date: date ?? undefined,
         tags: tags ?? undefined,
         eyecatch: eyecatch ?? undefined,
+        showJa: showJa ?? true,
+        showEn: showEn ?? false,
         content,
       });
 
