@@ -16,6 +16,9 @@ type MailSendResult = {
   simulated: boolean;
 };
 
+const isEnglishReservation = (reservation: Reservation): boolean =>
+  reservation.notes?.includes("Saved via Pay.JP payment") ?? false;
+
 const formatDateTime = (value: string): string => {
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) {
@@ -37,6 +40,26 @@ const buildTextBody = ({
 }: RentalExtensionEmailParams): string => {
   const previousReturn = previousReturnAt ? formatDateTime(previousReturnAt) : "-";
   const nextReturn = newReturnAt ? formatDateTime(newReturnAt) : "-";
+
+  if (isEnglishReservation(reservation)) {
+    return [
+      "Thank you for choosing Yasukari bike rental.",
+      "Your extension payment has been completed. Please review the details below.",
+      "",
+      "Extension details",
+      `Store: ${reservation.storeName}`,
+      `Vehicle: ${reservation.vehicleModel} (${reservation.vehiclePlate || reservation.vehicleCode})`,
+      `Extension days: ${extensionDays}`,
+      `Previous return: ${previousReturn}`,
+      `New return: ${nextReturn}`,
+      `Extension fee: ${formatAmount(amount)}`,
+      paymentId ? `Payment ID: ${paymentId}` : undefined,
+      "",
+      "For inquiries, please reply to this email.",
+      "",
+      ...EMAIL_FOOTER_TEXT_LINES,
+    ].filter(Boolean).join("\n");
+  }
 
   return [
     "この度はヤスカリバイクレンタルをご利用いただきありがとうございます。",
@@ -82,6 +105,26 @@ const buildHtmlBody = ({
 }: RentalExtensionEmailParams): string => {
   const previousReturn = previousReturnAt ? formatDateTime(previousReturnAt) : "-";
   const nextReturn = newReturnAt ? formatDateTime(newReturnAt) : "-";
+
+  if (isEnglishReservation(reservation)) {
+    return `<!DOCTYPE html>
+<html lang="en">
+  <body>
+    <p>Thank you for choosing Yasukari bike rental.<br />Your extension payment has been completed.</p>
+    <ul>
+      <li>Store: ${reservation.storeName}</li>
+      <li>Vehicle: ${reservation.vehicleModel} (${reservation.vehiclePlate || reservation.vehicleCode})</li>
+      <li>Extension days: ${extensionDays}</li>
+      <li>Previous return: ${previousReturn}</li>
+      <li>New return: ${nextReturn}</li>
+      <li>Extension fee: ${formatAmount(amount)}</li>
+      ${paymentId ? `<li>Payment ID: ${paymentId}</li>` : ""}
+    </ul>
+    <p>For inquiries, please reply to this email.</p>
+    ${EMAIL_FOOTER_HTML}
+  </body>
+</html>`;
+  }
 
   return `<!DOCTYPE html>
 <html lang="ja">
@@ -156,7 +199,9 @@ export async function sendRentalExtensionCompletionEmail(
     return { simulated: true };
   }
 
-  const subject = "【ヤスカリ】レンタル延長の決済完了";
+  const subject = isEnglishReservation(reservation)
+    ? "[Yasukari] Rental extension payment completed"
+    : "【ヤスカリ】レンタル延長の決済完了";
   const text = buildTextBody(params);
   const html = buildHtmlBody(params);
 

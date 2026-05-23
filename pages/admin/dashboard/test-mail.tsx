@@ -14,9 +14,13 @@ type TestMailResponse = {
 const MAIL_TYPE_OPTIONS = [
   { value: "provisional", label: "仮予約" },
   { value: "full", label: "本登録" },
+  { value: "full_en", label: "本登録（英語版）" },
   { value: "reservation_adachi", label: "予約受付完了（足立小台店）" },
   { value: "reservation_minowa", label: "予約受付完了（三ノ輪店）" },
+  { value: "reservation_adachi_en", label: "予約受付完了（足立小台店・英語版）" },
+  { value: "reservation_minowa_en", label: "予約受付完了（三ノ輪店・英語版）" },
   { value: "extension", label: "レンタル延長決済完了" },
+  { value: "extension_en", label: "レンタル延長決済完了（英語版）" },
 ];
 
 const statusText = (status?: TestMailStatus) => {
