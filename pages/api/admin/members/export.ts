@@ -6,6 +6,8 @@ import { fetchAllReservations, type Reservation } from "../../../../lib/reservat
 const CSV_HEADERS = [
   "会員番号",
   "登録日時",
+  "仮登録日時",
+  "本登録日時（免許証アップロード）",
   "会員名",
   "権限",
   "メールアドレス",
@@ -82,6 +84,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       const memberColumns = [
         memberCsvValue(member.memberNumber),
         memberCsvValue(member.registeredAt),
+        memberCsvValue(member.provisionalRegisteredAt),
+        memberCsvValue(member.fullRegisteredAt),
         memberCsvValue(member.name),
         memberCsvValue(member.role),
         memberCsvValue(member.email),

@@ -263,6 +263,14 @@ const mapMember = (
   const memberId = registration?.user_id ?? attributes.sub ?? user?.username ?? "";
   const createdAt = user?.createdAt ?? undefined;
   const updatedAt = user?.updatedAt ?? undefined;
+  const provisionalRegisteredAt = formatDateTime(createdAt ?? updatedAt);
+  const fullRegistrationRawDate = pickFirstValidDateString(
+    registration?.license_uploaded_at,
+    registration?.license_uploaded_at_2,
+    registration?.rental_terms_agreed_at,
+    updatedAt instanceof Date ? updatedAt.toISOString() : undefined,
+    createdAt instanceof Date ? createdAt.toISOString() : undefined
+  );
 
   return {
     id: memberId,
@@ -288,9 +296,23 @@ const mapMember = (
     otherContactAddress: registration?.other_address ?? "-",
     otherContactPhone: registration?.other_tel ?? "-",
     registeredAt: formatDateTime(createdAt),
+    provisionalRegisteredAt,
+    fullRegisteredAt: formatDateTime(fullRegistrationRawDate),
     notes: registration?.notes ?? "",
     isBlacklisted: registration?.is_blacklisted === true,
   };
+};
+
+const pickFirstValidDateString = (...values: Array<string | undefined>): string | undefined => {
+  for (const value of values) {
+    const normalized = value?.trim();
+    if (!normalized) continue;
+    const parsed = new Date(normalized);
+    if (!Number.isNaN(parsed.getTime())) {
+      return normalized;
+    }
+  }
+  return undefined;
 };
 
 const parseDate = (value?: string | number): Date | undefined => {
