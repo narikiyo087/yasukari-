@@ -32,6 +32,8 @@ export type Member = {
   otherContactAddress: string;
   otherContactPhone: string;
   registeredAt: string;
+  provisionalRegisteredAt: string;
+  fullRegisteredAt: string;
   notes: string;
   isBlacklisted: boolean;
 };
