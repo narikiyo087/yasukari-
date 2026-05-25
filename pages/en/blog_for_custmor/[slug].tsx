@@ -170,7 +170,8 @@ export const getStaticProps: GetStaticProps = ({ params }) => {
   }
 
   const files = fs.readdirSync(dir).filter((f) => f.endsWith('.md'))
-  const posts: SearchPost[] = files.map((file) => {
+  const posts = files
+    .map((file) => {
     const slug = file.replace(/\.md$/, '')
     const md = fs.readFileSync(path.join(dir, file), 'utf8')
     const lines = md.split(/\r?\n/)
@@ -192,9 +193,10 @@ export const getStaticProps: GetStaticProps = ({ params }) => {
       .find((l) => l.trim() && !l.startsWith('#'))
       ?.replace(/\*/g, '')
     const excerpt = excerptLine ? excerptLine.slice(0, 80) : undefined
-    if (meta.showEn !== 'true') return null
-    return { slug, title, excerpt }
-  }).filter((post): post is SearchPost => post !== null)
+      if (meta.showEn !== 'true') return null
+      return { slug, title, excerpt }
+    })
+    .filter((post): post is SearchPost => post !== null)
 
   return { props: { html, meta, posts }, revalidate: 60 }
 }
