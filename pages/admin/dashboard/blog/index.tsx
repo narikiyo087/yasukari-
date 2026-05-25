@@ -56,6 +56,29 @@ export default function CustomerBlogListPage() {
     }
   };
 
+  const renderPublicLink = (post: CustomerBlogMeta, locale: "ja" | "en") => {
+    const shouldShow = locale === "ja" ? post.showJa !== false : post.showEn === true;
+    const href =
+      locale === "ja"
+        ? `/blog_for_custmor/${post.slug}`
+        : `/en/blog_for_custmor/${post.slug}`;
+    const label = locale === "ja" ? "日本語ページ" : "英語ページ";
+
+    if (!shouldShow) {
+      return (
+        <span className={tableStyles.disabledAction} aria-disabled="true">
+          {label}
+        </span>
+      );
+    }
+
+    return (
+      <Link href={href} className={tableStyles.link}>
+        {label}
+      </Link>
+    );
+  };
+
   return (
     <>
       <Head>
@@ -96,17 +119,27 @@ export default function CustomerBlogListPage() {
                 <tbody>
                   {posts.map((post) => (
                     <tr key={post.slug}>
-                      <td>{post.title}</td>
-                      <td className={tableStyles.monospace}>{post.slug}</td>
+                      <td>
+                        <Link
+                          href={`/admin/dashboard/blog/${post.slug}`}
+                          className={tableStyles.link}
+                        >
+                          {post.title}
+                        </Link>
+                      </td>
+                      <td className={tableStyles.monospace}>
+                        <Link
+                          href={`/admin/dashboard/blog/${post.slug}`}
+                          className={tableStyles.link}
+                        >
+                          {post.slug}
+                        </Link>
+                      </td>
                       <td>{post.date ?? "-"}</td>
                       <td>{post.tags ?? "-"}</td>
                       <td className={tableStyles.actions}>
-                        <Link
-                          href={`/blog_for_custmor/${post.slug}`}
-                          className={tableStyles.link}
-                        >
-                          表示
-                        </Link>
+                        {renderPublicLink(post, "ja")}
+                        {renderPublicLink(post, "en")}
                         <Link
                           href={`/admin/dashboard/blog/${post.slug}`}
                           className={tableStyles.link}
