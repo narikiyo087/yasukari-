@@ -3,7 +3,7 @@ import path from 'path'
 import { GetStaticPaths, GetStaticProps } from 'next'
 import Head from 'next/head'
 import Link from 'next/link'
-import PostSearch from '../../../components/PostSearch'
+import PostSearch from '../../../../components/PostSearch'
 
 type PostMeta = {
   slug: string
