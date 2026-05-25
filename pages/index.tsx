@@ -337,8 +337,10 @@ export const getStaticProps: GetStaticProps<Props> = async () => {
     const date = meta.date || slug.match(/^\d{4}-\d{2}-\d{2}/)?.[0] || "";
     const eyecatch = meta.eyecatch || undefined;
     const tags = meta.tags;
+    const showJa = meta.showJa !== "false";
+    if (!showJa) return null;
     return { slug, title, date, eyecatch, tags };
-  });
+  }).filter((post): post is NonNullable<typeof post> => post !== null);
 
   posts.sort((a, b) => b.date.localeCompare(a.date));
   const tagSet = new Set<string>();
