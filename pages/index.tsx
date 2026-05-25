@@ -17,7 +17,7 @@ import RecentlyViewed from "../components/RecentlyViewed";
 import HowToUse from "../components/HowToUse";
 import SectionHeading from "../components/SectionHeading";
 import FaqAccordion, { FAQItem } from "../components/FaqAccordion";
-import faqData from "../data/faq.json";
+import { readChatbotFaq } from "../lib/server/chatbotFaq";
 import { getBikeClasses, getBikeModels, BikeClass, BikeModel } from "../lib/bikes";
 
 type BlogSlide = {
@@ -308,7 +308,8 @@ function FeatureHighlight({
 }
 
 export const getStaticProps: GetStaticProps<Props> = async () => {
-  const faqs: FAQItem[] = (faqData as any).categories.flatMap((c: any) => c.faqs);
+  const faqData = await readChatbotFaq();
+  const faqs: FAQItem[] = (faqData.categories ?? []).flatMap((c) => c.faqs);
   for (let i = faqs.length - 1; i > 0; i -= 1) {
     const j = Math.floor(Math.random() * (i + 1));
     [faqs[i], faqs[j]] = [faqs[j], faqs[i]];
