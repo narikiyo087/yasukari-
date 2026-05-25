@@ -43,7 +43,7 @@ export const getStaticPaths: GetStaticPaths = () => {
 export const getStaticProps: GetStaticProps = ({ params }) => {
   const dir = path.join(process.cwd(), 'blog_for_custmor')
   const files = fs.readdirSync(dir).filter((f) => f.endsWith('.md'))
-  const posts: PostMeta[] = files.map((file) => {
+  const posts: PostMeta[] = files.reduce<PostMeta[]>((acc, file) => {
     const slug = file.replace(/\.md$/, '')
     const md = fs.readFileSync(path.join(dir, file), 'utf8')
     const lines = md.split(/\r?\n/)
@@ -66,9 +66,17 @@ export const getStaticProps: GetStaticProps = ({ params }) => {
     const tags = meta.tags
     const eyecatch = meta.eyecatch || undefined
     const showJa = meta.showJa !== 'false'
-    if (!showJa) return null
-    return { slug, title, date: dateMatch, excerpt, tags, eyecatch }
-  }).filter((post): post is PostMeta => post !== null)
+    if (!showJa) return acc
+    acc.push({
+      slug,
+      title,
+      date: dateMatch,
+      excerpt,
+      tags,
+      eyecatch,
+    })
+    return acc
+  }, [])
 
   posts.sort((a, b) => b.date.localeCompare(a.date))
 
