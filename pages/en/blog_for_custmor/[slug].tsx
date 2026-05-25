@@ -6,7 +6,7 @@ import Link from 'next/link'
 import PostSearch from '../../../components/PostSearch'
 
 function parseMarkdown(md: string): { html: string; meta: Record<string, string> } {
-  const meta: Record<string, string> = {}
+  const meta: Partial<Record<string, string>> = {}
   let content = md
   const fm = md.match(/^---\n([\s\S]*?)\n---\n?/)
   if (fm) {
@@ -153,7 +153,7 @@ export const getStaticPaths: GetStaticPaths = () => {
     .filter((file) => {
       const md = fs.readFileSync(path.join(dir, file), 'utf8')
       const match = md.match(/^---\n([\s\S]*?)\n---\n?/)
-      return !match || !/showEn:\s*true/.test(match[1])
+      return !!match && /showEn:\s*true/.test(match[1])
     })
     .map((file) => ({ params: { slug: file.replace(/\.md$/, '') } }))
   return { paths, fallback: "blocking" }
@@ -170,13 +170,12 @@ export const getStaticProps: GetStaticProps = ({ params }) => {
   }
 
   const files = fs.readdirSync(dir).filter((f) => f.endsWith('.md'))
-  const posts: SearchPost[] = files
-    .map((file): SearchPost | null => {
+  const posts: SearchPost[] = files.reduce<SearchPost[]>((acc, file) => {
     const slug = file.replace(/\.md$/, '')
     const md = fs.readFileSync(path.join(dir, file), 'utf8')
     const lines = md.split(/\r?\n/)
     let idx = 0
-    const meta: Record<string, string> = {}
+    const meta: Partial<Record<string, string>> = {}
     if (lines[idx] === '---') {
       idx++
       while (idx < lines.length && lines[idx] !== '---') {
@@ -193,10 +192,10 @@ export const getStaticProps: GetStaticProps = ({ params }) => {
       .find((l) => l.trim() && !l.startsWith('#'))
       ?.replace(/\*/g, '')
     const excerpt = excerptLine ? excerptLine.slice(0, 80) : undefined
-      if (meta.showEn !== 'true') return null
-      return { slug, title, excerpt }
-    })
-    .filter((post): post is SearchPost => post !== null)
+    if (meta.showEn !== 'true') return acc
+    acc.push({ slug, title, excerpt })
+    return acc
+  }, [])
 
   return { props: { html, meta, posts }, revalidate: 60 }
 }
