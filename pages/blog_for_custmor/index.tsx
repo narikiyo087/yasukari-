@@ -9,7 +9,7 @@ type PostMeta = {
   title: string
   date: string
   excerpt: string
-  tags?: string
+  tags?: string | null
   eyecatch?: string
 }
 
@@ -36,7 +36,7 @@ export async function getStaticProps() {
     const dateMatch = meta.date || slug.match(/^\d{4}-\d{2}-\d{2}/)?.[0] || ''
     const excerptLine = lines.slice(idx).find((l) => l.trim() && !l.startsWith('#')) || ''
     const excerpt = excerptLine.replace(/\*/g, '').slice(0, 80)
-    const tags = meta.tags
+    const tags = meta.tags ?? null
     const eyecatch = meta.eyecatch || undefined
     const showJa = meta.showJa !== 'false'
     if (!showJa) return acc

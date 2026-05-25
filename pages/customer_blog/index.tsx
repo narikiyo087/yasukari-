@@ -8,7 +8,7 @@ interface PostMeta {
   title: string
   date: string
   excerpt: string
-  tags?: string
+  tags?: string | null
 }
 
 export async function getStaticProps() {
@@ -34,7 +34,7 @@ export async function getStaticProps() {
     const dateMatch = meta.date || slug.match(/^\d{4}-\d{2}-\d{2}/)?.[0] || ''
     const excerptLine = lines.slice(idx).find((l) => l.trim() && !l.startsWith('#')) || ''
     const excerpt = excerptLine.replace(/\*/g, '').slice(0, 80)
-    const tags = meta.tags
+    const tags = meta.tags ?? null
     return { slug, title, date: dateMatch, excerpt, tags }
   })
 
