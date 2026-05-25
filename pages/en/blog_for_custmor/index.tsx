@@ -10,7 +10,7 @@ type PostMeta = {
   date: string
   excerpt: string
   tags?: string | null
-  eyecatch?: string
+  eyecatch?: string | null
 }
 
 export async function getStaticProps() {
@@ -37,7 +37,7 @@ export async function getStaticProps() {
     const excerptLine = lines.slice(idx).find((l) => l.trim() && !l.startsWith('#')) || ''
     const excerpt = excerptLine.replace(/\*/g, '').slice(0, 80)
     const tags = meta.tags ?? null
-    const eyecatch = meta.eyecatch || undefined
+    const eyecatch = meta.eyecatch ?? null
     const showEn = meta.showEn === 'true'
     if (!showEn) return acc
     acc.push({ slug, title, date: dateMatch, excerpt, tags, eyecatch })
