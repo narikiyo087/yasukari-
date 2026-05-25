@@ -6,7 +6,7 @@ import Link from 'next/link'
 import PostSearch from '../../../components/PostSearch'
 
 function parseMarkdown(md: string): { html: string; meta: Record<string, string> } {
-  const meta: Partial<Record<string, string>> = {}
+  const meta: Record<string, string> = {}
   let content = md
   const fm = md.match(/^---\n([\s\S]*?)\n---\n?/)
   if (fm) {
@@ -175,7 +175,7 @@ export const getStaticProps: GetStaticProps = ({ params }) => {
     const md = fs.readFileSync(path.join(dir, file), 'utf8')
     const lines = md.split(/\r?\n/)
     let idx = 0
-    const meta: Partial<Record<string, string>> = {}
+    const meta: Record<string, string> = {}
     if (lines[idx] === '---') {
       idx++
       while (idx < lines.length && lines[idx] !== '---') {
