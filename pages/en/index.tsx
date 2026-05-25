@@ -347,7 +347,7 @@ export const getStaticProps: GetStaticProps<Props> = async () => {
     const showEn = meta.showEn === "true";
     if (!showEn) return null;
     return { slug, title, date, eyecatch, tags };
-  }).filter((post): post is { slug: string; title: string; date: string; eyecatch?: string; tags?: string } => post !== null);
+  }).filter((post): post is NonNullable<typeof post> => post !== null);
 
   posts.sort((a, b) => b.date.localeCompare(a.date));
   const tagSet = new Set<string>();
