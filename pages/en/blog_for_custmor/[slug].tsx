@@ -170,8 +170,8 @@ export const getStaticProps: GetStaticProps = ({ params }) => {
   }
 
   const files = fs.readdirSync(dir).filter((f) => f.endsWith('.md'))
-  const posts = files
-    .map((file) => {
+  const posts: SearchPost[] = files
+    .map((file): SearchPost | null => {
     const slug = file.replace(/\.md$/, '')
     const md = fs.readFileSync(path.join(dir, file), 'utf8')
     const lines = md.split(/\r?\n/)
