@@ -16,7 +16,7 @@ type PostMeta = {
 export async function getStaticProps() {
   const dir = path.join(process.cwd(), 'blog_for_custmor')
   const files = fs.readdirSync(dir).filter((f) => f.endsWith('.md'))
-  const posts: PostMeta[] = files.map((file) => {
+  const posts = files.map((file) => {
     const slug = file.replace(/\.md$/, '')
     const md = fs.readFileSync(path.join(dir, file), 'utf8')
     const lines = md.split(/\r?\n/)
