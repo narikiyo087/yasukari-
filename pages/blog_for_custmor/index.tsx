@@ -21,7 +21,7 @@ export async function getStaticProps() {
     const md = fs.readFileSync(path.join(dir, file), 'utf8')
     const lines = md.split(/\r?\n/)
     let idx = 0
-    const meta: Record<string, string> = {}
+    const meta: Partial<Record<string, string>> = {}
     if (lines[idx] === '---') {
       idx++
       while (idx < lines.length && lines[idx] !== '---') {
