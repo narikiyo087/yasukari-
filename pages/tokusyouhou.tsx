@@ -55,7 +55,7 @@ export default function Tokusyouhou() {
           </tr>
         </tbody>
       </table>
-      <p className="mt-6 text-center text-gray-500 text-sm">Copyright レンタルバイク『ヤスカリ』.</p>
+      <p className="mt-6 text-center text-slate-500 text-sm">Copyright レンタルバイク『ヤスカリ』.</p>
     </div>
   );
 }
