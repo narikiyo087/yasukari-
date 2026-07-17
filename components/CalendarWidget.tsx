@@ -133,7 +133,7 @@ export default function CalendarWidget({
                     key={j}
                     className={
                       'border h-8 w-8 text-center cursor-pointer transition ' +
-                      (hasPost ? 'bg-pink-50 hover:bg-pink-100' : 'text-gray-400 cursor-default')
+                      (hasPost ? 'bg-red-50 hover:bg-red-100' : 'text-slate-400 cursor-default')
                     }
                     onClick={() => handleDayClick(d)}
                   >

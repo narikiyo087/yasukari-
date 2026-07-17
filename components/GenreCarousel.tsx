@@ -48,10 +48,10 @@ export default function GenreCarousel({
           <Link
             key={index}
             href={item.href}
-            className="group flex flex-col overflow-hidden rounded-2xl border border-white/60 bg-white/80 p-6 shadow-[0_28px_42px_-30px_rgba(15,23,42,0.6)] transition duration-200 hover:-translate-y-1 hover:shadow-[0_32px_54px_-30px_rgba(220,38,38,0.45)]"
+            className="group flex flex-col overflow-hidden rounded-lg border border-slate-200 bg-white p-6 shadow-sm transition duration-200 hover:shadow-sm"
           >
             <div className="flex items-center gap-4">
-              <div className="relative h-16 w-16 overflow-hidden rounded-xl bg-red-100/70">
+              <div className="relative h-16 w-16 overflow-hidden rounded-md bg-red-100/70">
                 {item.img ? (
                   <img
                     src={item.img}
@@ -59,12 +59,12 @@ export default function GenreCarousel({
                     className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-110"
                   />
                 ) : (
-                  <span className="flex h-full w-full items-center justify-center text-3xl text-red-500">
+                  <span className="flex h-full w-full items-center justify-center text-3xl text-red-600">
                     {item.icon}
                   </span>
                 )}
                 {item.badge ? (
-                  <span className="absolute -right-2 -top-2 inline-flex rounded-full bg-red-500 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-white shadow">
+                  <span className="absolute -right-2 -top-2 inline-flex rounded-md bg-red-600 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-white shadow">
                     {item.badge}
                   </span>
                 ) : null}
@@ -72,7 +72,7 @@ export default function GenreCarousel({
               <div className="flex flex-col gap-1">
                 <h3 className="text-base font-semibold text-slate-800">{item.title}</h3>
                 {item.keywords ? (
-                  <span className="text-xs font-medium uppercase tracking-wide text-red-500">
+                  <span className="text-xs font-medium uppercase tracking-wide text-red-600">
                     {item.keywords}
                   </span>
                 ) : null}
@@ -81,7 +81,7 @@ export default function GenreCarousel({
             <p className="mt-4 text-sm text-slate-500">
               {cardDescription}
             </p>
-            <span className="mt-auto inline-flex items-center gap-2 pt-4 text-sm font-semibold text-red-500">
+            <span className="mt-auto inline-flex items-center gap-2 pt-4 text-sm font-semibold text-red-600">
               {detailLabel}
               <span aria-hidden>→</span>
             </span>

@@ -261,7 +261,7 @@ export default function ProductDetailPage({
           <nav className="text-sm text-slate-500" aria-label="Breadcrumb">
             <ol className="flex items-center gap-2">
               <li>
-                <Link href="/" className="hover:text-red-500 font-medium">
+                <Link href="/" className="hover:text-red-600 font-medium">
                   ホーム
                 </Link>
               </li>
@@ -269,7 +269,7 @@ export default function ProductDetailPage({
               <li>
                 <Link
                   href="/products"
-                  className="hover:text-red-500 font-medium"
+                  className="hover:text-red-600 font-medium"
                 >
                   車種・料金
                 </Link>
