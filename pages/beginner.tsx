@@ -65,6 +65,16 @@ export default function BeginnerGuidePage() {
         <title>はじめてガイド - ヤスカリ</title>
         <meta name="description" content="はじめての方向けに、ヤスカリのレンタルバイクの予約から来店・利用・返却までの流れをステップでわかりやすく解説します。" />
         <link rel="canonical" href="https://yasukari.com/beginner" />
+        <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="ヤスカリ" />
+        <meta property="og:title" content="はじめてガイド - ヤスカリ" />
+        <meta property="og:description" content="はじめての方向けに、ヤスカリのレンタルバイクの予約から来店・利用・返却までの流れをステップでわかりやすく解説します。" />
+        <meta property="og:url" content="https://yasukari.com/beginner" />
+        <meta property="og:image" content="https://yasukari-file.s3.ap-northeast-1.amazonaws.com/PhotoUploads/slide.jpg" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="はじめてガイド - ヤスカリ" />
+        <meta name="twitter:description" content="はじめての方向けに、ヤスカリのレンタルバイクの予約から来店・利用・返却までの流れをステップでわかりやすく解説します。" />
+        <meta name="twitter:image" content="https://yasukari-file.s3.ap-northeast-1.amazonaws.com/PhotoUploads/slide.jpg" />
       </Head>
 
       <section className="overflow-hidden">

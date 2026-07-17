@@ -33,6 +33,16 @@ export default function AllProductsPage({ bikes, classes }: Props) {
         <title>全ての車種一覧 - ヤスカリ</title>
         <meta name="description" content="東京の格安レンタルバイク「ヤスカリ」の全車種一覧。原付・125cc・中大型・EVまで整備済み車両をクラス別に掲載。足立小台本店・三ノ輪店で予約できます。" />
         <link rel="canonical" href="https://yasukari.com/products" />
+        <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="ヤスカリ" />
+        <meta property="og:title" content="全ての車種一覧 - ヤスカリ" />
+        <meta property="og:description" content="東京の格安レンタルバイク「ヤスカリ」の全車種一覧。原付・125cc・中大型・EVまで整備済み車両をクラス別に掲載。足立小台本店・三ノ輪店で予約できます。" />
+        <meta property="og:url" content="https://yasukari.com/products" />
+        <meta property="og:image" content="https://yasukari-file.s3.ap-northeast-1.amazonaws.com/PhotoUploads/slide.jpg" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="全ての車種一覧 - ヤスカリ" />
+        <meta name="twitter:description" content="東京の格安レンタルバイク「ヤスカリ」の全車種一覧。原付・125cc・中大型・EVまで整備済み車両をクラス別に掲載。足立小台本店・三ノ輪店で予約できます。" />
+        <meta name="twitter:image" content="https://yasukari-file.s3.ap-northeast-1.amazonaws.com/PhotoUploads/slide.jpg" />
       </Head>
       <main className="p-6">
         <div className="max-w-6xl mx-auto space-y-6">

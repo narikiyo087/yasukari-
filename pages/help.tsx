@@ -24,6 +24,16 @@ export default function HelpPage({ categories }: Props) {
         <title>ヘルプ - ヤスカリ</title>
         <meta name="description" content="ヤスカリのヘルプ・よくある質問（FAQ）。料金・保険・予約変更・お問い合わせ方法などをまとめています。" />
         <link rel="canonical" href="https://yasukari.com/help" />
+        <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="ヤスカリ" />
+        <meta property="og:title" content="ヘルプ - ヤスカリ" />
+        <meta property="og:description" content="ヤスカリのヘルプ・よくある質問（FAQ）。料金・保険・予約変更・お問い合わせ方法などをまとめています。" />
+        <meta property="og:url" content="https://yasukari.com/help" />
+        <meta property="og:image" content="https://yasukari-file.s3.ap-northeast-1.amazonaws.com/PhotoUploads/slide.jpg" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="ヘルプ - ヤスカリ" />
+        <meta name="twitter:description" content="ヤスカリのヘルプ・よくある質問（FAQ）。料金・保険・予約変更・お問い合わせ方法などをまとめています。" />
+        <meta name="twitter:image" content="https://yasukari-file.s3.ap-northeast-1.amazonaws.com/PhotoUploads/slide.jpg" />
       </Head>
 
       <section className="grid gap-6 rounded-lg border border-slate-200 bg-white p-6 shadow-sm md:grid-cols-[1.05fr,1fr] md:p-8">

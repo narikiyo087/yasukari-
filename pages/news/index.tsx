@@ -46,6 +46,16 @@ export default function NewsPage() {
         <title>新着情報 - ヤスカリ</title>
         <meta name="description" content="ヤスカリからの新着情報・お知らせ一覧。キャンペーンや営業時間、店舗の最新情報を発信しています。" />
         <link rel="canonical" href="https://yasukari.com/news" />
+        <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="ヤスカリ" />
+        <meta property="og:title" content="新着情報 - ヤスカリ" />
+        <meta property="og:description" content="ヤスカリからの新着情報・お知らせ一覧。キャンペーンや営業時間、店舗の最新情報を発信しています。" />
+        <meta property="og:url" content="https://yasukari.com/news" />
+        <meta property="og:image" content="https://yasukari-file.s3.ap-northeast-1.amazonaws.com/PhotoUploads/slide.jpg" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="新着情報 - ヤスカリ" />
+        <meta name="twitter:description" content="ヤスカリからの新着情報・お知らせ一覧。キャンペーンや営業時間、店舗の最新情報を発信しています。" />
+        <meta name="twitter:image" content="https://yasukari-file.s3.ap-northeast-1.amazonaws.com/PhotoUploads/slide.jpg" />
       </Head>
       <h1 className="text-2xl font-bold mb-6 text-center text-slate-900">新着情報</h1>
       <div className="space-y-4">

@@ -7,6 +7,16 @@ export default function StoresPage() {
         <title>店舗一覧 - ヤスカリ</title>
         <meta name="description" content="ヤスカリの店舗一覧。足立小台本店（足立区）と三ノ輪店（台東区・24時間セルフ）のアクセス・営業時間・地図をご案内します。" />
         <link rel="canonical" href="https://yasukari.com/stores" />
+        <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="ヤスカリ" />
+        <meta property="og:title" content="店舗一覧 - ヤスカリ" />
+        <meta property="og:description" content="ヤスカリの店舗一覧。足立小台本店（足立区）と三ノ輪店（台東区・24時間セルフ）のアクセス・営業時間・地図をご案内します。" />
+        <meta property="og:url" content="https://yasukari.com/stores" />
+        <meta property="og:image" content="https://yasukari-file.s3.ap-northeast-1.amazonaws.com/PhotoUploads/slide.jpg" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="店舗一覧 - ヤスカリ" />
+        <meta name="twitter:description" content="ヤスカリの店舗一覧。足立小台本店（足立区）と三ノ輪店（台東区・24時間セルフ）のアクセス・営業時間・地図をご案内します。" />
+        <meta name="twitter:image" content="https://yasukari-file.s3.ap-northeast-1.amazonaws.com/PhotoUploads/slide.jpg" />
       </Head>
       <h1 className="text-2xl font-bold mb-6 text-center text-slate-900">店舗一覧</h1>
 

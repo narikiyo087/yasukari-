@@ -8,6 +8,16 @@ export default function ContactPage() {
         <title>お問い合わせ - ヤスカリ</title>
         <meta name="description" content="ヤスカリへのお問い合わせ窓口。電話・メール・住所のご案内と、メール受付時間・記載事項についてご説明します。" />
         <link rel="canonical" href="https://yasukari.com/contact" />
+        <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="ヤスカリ" />
+        <meta property="og:title" content="お問い合わせ - ヤスカリ" />
+        <meta property="og:description" content="ヤスカリへのお問い合わせ窓口。電話・メール・住所のご案内と、メール受付時間・記載事項についてご説明します。" />
+        <meta property="og:url" content="https://yasukari.com/contact" />
+        <meta property="og:image" content="https://yasukari-file.s3.ap-northeast-1.amazonaws.com/PhotoUploads/slide.jpg" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="お問い合わせ - ヤスカリ" />
+        <meta name="twitter:description" content="ヤスカリへのお問い合わせ窓口。電話・メール・住所のご案内と、メール受付時間・記載事項についてご説明します。" />
+        <meta name="twitter:image" content="https://yasukari-file.s3.ap-northeast-1.amazonaws.com/PhotoUploads/slide.jpg" />
       </Head>
       <h1 className="text-2xl font-bold mb-6 text-center text-slate-900">お問い合わせ</h1>
       <p className="mb-4">下記の連絡先までお気軽にご連絡ください。</p>
