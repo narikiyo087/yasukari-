@@ -64,8 +64,8 @@ export default function HowToUse() {
         >
           {steps.map((step, idx) => (
             <SwiperSlide key={idx} className="h-auto">
-              <div className="flex h-full flex-col items-center gap-4 rounded-2xl border border-white/60 bg-white/80 p-6 text-center shadow-[0_20px_42px_-28px_rgba(15,23,42,0.45)]">
-                <div className="mx-auto w-44 overflow-hidden rounded-xl bg-white">
+              <div className="flex h-full flex-col items-center gap-4 rounded-lg border border-slate-200 bg-white p-6 text-center shadow-sm">
+                <div className="mx-auto w-44 overflow-hidden rounded-md bg-white">
                   <img
                     className="h-full w-full object-contain"
                     alt={step.alt}

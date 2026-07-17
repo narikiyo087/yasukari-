@@ -47,7 +47,7 @@ export default function RecentlyViewed() {
         >
           {displayList.map((bike) => (
             <SwiperSlide key={bike.modelCode} className="h-auto">
-              <article className="recently-viewed-card group h-full overflow-hidden rounded-2xl border border-white/60 bg-white/80 shadow-[0_28px_42px_-30px_rgba(15,23,42,0.6)] transition duration-200 hover:-translate-y-1 hover:shadow-[0_36px_62px_-34px_rgba(220,38,38,0.45)]">
+              <article className="recently-viewed-card group h-full overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm transition duration-200 hover:border-slate-300 hover:shadow-md">
                 <Link href={`/products/${bike.modelCode}`} className="flex h-full flex-col">
                   <div className="recently-viewed-card__image relative aspect-[3/4] w-full overflow-hidden">
                     <img
@@ -61,7 +61,7 @@ export default function RecentlyViewed() {
                       className="card-title text-base font-semibold text-slate-800"
                       dangerouslySetInnerHTML={{ __html: bike.modelName.replace(/\\n/g, "<br>") }}
                     />
-                    <span className="text-sm font-semibold text-red-500">詳細を見る →</span>
+                    <span className="text-sm font-semibold text-red-600">詳細を見る →</span>
                   </div>
                 </Link>
               </article>
@@ -69,7 +69,7 @@ export default function RecentlyViewed() {
           ))}
           {hasMore ? (
             <SwiperSlide className="h-auto">
-              <div className="flex h-full flex-col items-center justify-center gap-4 rounded-2xl border border-dashed border-red-200 bg-red-50/60 p-6 text-center text-sm text-red-600">
+              <div className="flex h-full flex-col items-center justify-center gap-4 rounded-lg border border-dashed border-slate-300 bg-slate-50 p-6 text-center text-sm text-slate-600">
                 <p className="font-semibold">すべての履歴をチェックする</p>
                 <Link href="/products" className="btn-primary">
                   もっと見る

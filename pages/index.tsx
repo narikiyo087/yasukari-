@@ -49,17 +49,17 @@ export default function HomePage({ blogSlides, blogTags, bikeModelsAll, bikeClas
 
   const featureHighlights = [
     {
-      icon: <FaClock className="text-3xl text-red-500" />,
+      icon: <FaClock className="text-3xl text-red-600" />,
       title: "24時間スマート予約",
       text: "お支払いまでオンラインで完結。マイページで変更も柔軟に行えます。",
     },
     {
-      icon: <FaTruck className="text-3xl text-red-500" />,
+      icon: <FaTruck className="text-3xl text-red-600" />,
       title: "メンテナンス済みの安心車両",
       text: "プロの整備士がコンディションをチェックし、いつでもベストな状態でご用意。",
     },
     {
-      icon: <FaStar className="text-3xl text-red-500" />,
+      icon: <FaStar className="text-3xl text-red-600" />,
       title: "レンタル特典とサポート",
       text: "充実の装備レンタルとロードサービスで、初めての長距離でも安心です。",
     },
@@ -135,21 +135,21 @@ export default function HomePage({ blogSlides, blogTags, bikeModelsAll, bikeClas
           >
             {stores.map((store) => (
               <SwiperSlide key={store.name} className="h-auto">
-                <article className="group h-full overflow-hidden rounded-2xl border border-white/60 bg-white/80 shadow-[0_28px_42px_-30px_rgba(15,23,42,0.6)] transition duration-200 hover:-translate-y-1 hover:shadow-[0_36px_62px_-34px_rgba(220,38,38,0.45)]">
+                <article className="group h-full overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm transition duration-200 hover:border-slate-300 hover:shadow-md">
                   <div className="store-card__image relative aspect-[3/4] w-full overflow-hidden">
                     <img
                       src={store.img}
                       alt={store.name}
                       className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
                     />
-                    <span className="absolute left-4 top-4 inline-flex items-center gap-1 rounded-full bg-white/90 px-3 py-1 text-xs font-semibold text-red-500 shadow">
+                    <span className="absolute left-4 top-4 inline-flex items-center gap-1 rounded border border-slate-200 bg-white/95 px-2.5 py-1 text-xs font-semibold text-red-600">
                       <FaMapMarkerAlt />
                       {store.name}
                     </span>
                   </div>
                   <div className="flex flex-col gap-3 px-4 py-4 sm:px-6 sm:py-6">
                     <p className="text-sm text-slate-600">{store.description}</p>
-                    <Link href={store.href} className="inline-flex items-center gap-2 text-sm font-semibold text-red-500">
+                    <Link href={store.href} className="inline-flex items-center gap-2 text-sm font-semibold text-red-600">
                       詳細を見る
                       <span aria-hidden>→</span>
                     </Link>
@@ -275,9 +275,9 @@ export default function HomePage({ blogSlides, blogTags, bikeModelsAll, bikeClas
             <Link
               key={idx}
               href={k.href}
-              className="group inline-flex items-center gap-2 rounded-full border border-white/60 bg-white/80 px-4 py-2 text-sm font-semibold text-slate-700 shadow-[0_12px_28px_-18px_rgba(220,38,38,0.35)] transition hover:-translate-y-0.5 hover:border-red-200 hover:bg-white whitespace-nowrap md:whitespace-normal"
+              className="group inline-flex items-center gap-2 rounded-md border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm transition hover:border-slate-300 hover:bg-slate-50 whitespace-nowrap md:whitespace-normal"
             >
-              <FaHashtag className="text-base text-red-500 transition group-hover:text-red-600" />
+              <FaHashtag className="text-base text-red-600" />
               <span>{k.label}</span>
             </Link>
           ))}
@@ -297,8 +297,8 @@ function FeatureHighlight({
   text: string;
 }) {
   return (
-    <article className="feature-highlight-card flex h-full flex-col gap-4 rounded-2xl border border-white/60 bg-white/80 p-6 text-center shadow-[0_20px_40px_-28px_rgba(15,23,42,0.4)] transition duration-200 hover:-translate-y-1 hover:shadow-[0_32px_52px_-28px_rgba(220,38,38,0.4)]">
-      <div className="feature-highlight-card__icon mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-red-100/70 text-red-500">
+    <article className="feature-highlight-card flex h-full flex-col gap-4 rounded-lg border border-slate-200 bg-white p-6 text-center shadow-sm transition duration-200 hover:border-slate-300 hover:shadow-md">
+      <div className="feature-highlight-card__icon mx-auto flex h-16 w-16 items-center justify-center rounded-lg bg-red-50 text-red-600">
         {icon}
       </div>
       <h3 className="card-title text-lg font-semibold text-slate-800">{title}</h3>
