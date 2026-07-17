@@ -5,6 +5,8 @@ export default function StoresPage() {
     <div className="max-w-3xl mx-auto p-6 text-sm leading-relaxed">
       <Head>
         <title>店舗一覧 - ヤスカリ</title>
+        <meta name="description" content="ヤスカリの店舗一覧。足立小台本店（足立区）と三ノ輪店（台東区・24時間セルフ）のアクセス・営業時間・地図をご案内します。" />
+        <link rel="canonical" href="https://yasukari.com/stores" />
       </Head>
       <h1 className="text-2xl font-bold mb-6 text-center text-slate-900">店舗一覧</h1>
 

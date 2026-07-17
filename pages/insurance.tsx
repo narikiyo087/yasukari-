@@ -45,6 +45,8 @@ export default function InsurancePage() {
     <div className="max-w-3xl mx-auto p-6 text-sm leading-relaxed space-y-6">
       <Head>
         <title>車両保険の内容について - ヤスカリ</title>
+        <meta name="description" content="ヤスカリのレンタルバイクに付帯する任意保険と、車両補償・盗難補償オプションの内容・料金・免責についてご案内します。" />
+        <link rel="canonical" href="https://yasukari.com/insurance" />
       </Head>
       <h1 className="text-2xl font-bold mb-6 text-center text-slate-900">車両保険の内容について</h1>
 

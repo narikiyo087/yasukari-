@@ -44,6 +44,8 @@ export default function NewsPage() {
     <div className="max-w-3xl mx-auto p-6 text-sm leading-relaxed">
       <Head>
         <title>新着情報 - ヤスカリ</title>
+        <meta name="description" content="ヤスカリからの新着情報・お知らせ一覧。キャンペーンや営業時間、店舗の最新情報を発信しています。" />
+        <link rel="canonical" href="https://yasukari.com/news" />
       </Head>
       <h1 className="text-2xl font-bold mb-6 text-center text-slate-900">新着情報</h1>
       <div className="space-y-4">

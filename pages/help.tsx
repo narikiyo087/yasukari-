@@ -22,6 +22,8 @@ export default function HelpPage({ categories }: Props) {
     <div className="space-y-12">
       <Head>
         <title>ヘルプ - ヤスカリ</title>
+        <meta name="description" content="ヤスカリのヘルプ・よくある質問（FAQ）。料金・保険・予約変更・お問い合わせ方法などをまとめています。" />
+        <link rel="canonical" href="https://yasukari.com/help" />
       </Head>
 
       <section className="grid gap-6 rounded-lg border border-slate-200 bg-white p-6 shadow-sm md:grid-cols-[1.05fr,1fr] md:p-8">

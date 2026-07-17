@@ -5,6 +5,8 @@ export default function Tokusyouhou() {
     <div className="max-w-3xl mx-auto p-6">
       <Head>
         <title>特定商取引法に基づく表記 - ヤスカリ</title>
+        <meta name="description" content="レンタルバイク「ヤスカリ」の特定商取引法に基づく表記。" />
+        <link rel="canonical" href="https://yasukari.com/tokusyouhou" />
       </Head>
       <h1 className="text-xl font-bold mb-4 text-center">特定商取引法に基づく表示</h1>
       <table className="w-full border border-collapse text-sm">

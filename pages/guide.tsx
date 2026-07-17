@@ -30,6 +30,8 @@ export default function GuidePage() {
     <div className="max-w-[1440px] mx-auto p-6 space-y-8 text-sm leading-relaxed">
       <Head>
         <title>ご利用案内 - ヤスカリ</title>
+        <meta name="description" content="ヤスカリのご利用案内。予約・来店・利用・返却の手順や走行距離の目安、キャンセル・料金の注意事項をまとめています。" />
+        <link rel="canonical" href="https://yasukari.com/guide" />
       </Head>
 
       <img

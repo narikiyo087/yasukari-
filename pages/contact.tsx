@@ -6,6 +6,8 @@ export default function ContactPage() {
     <div className="max-w-2xl mx-auto p-6 text-sm leading-relaxed">
       <Head>
         <title>お問い合わせ - ヤスカリ</title>
+        <meta name="description" content="ヤスカリへのお問い合わせ窓口。電話・メール・住所のご案内と、メール受付時間・記載事項についてご説明します。" />
+        <link rel="canonical" href="https://yasukari.com/contact" />
       </Head>
       <h1 className="text-2xl font-bold mb-6 text-center text-slate-900">お問い合わせ</h1>
       <p className="mb-4">下記の連絡先までお気軽にご連絡ください。</p>

@@ -31,6 +31,8 @@ export default function AllProductsPage({ bikes, classes }: Props) {
     <>
       <Head>
         <title>全ての車種一覧 - ヤスカリ</title>
+        <meta name="description" content="東京の格安レンタルバイク「ヤスカリ」の全車種一覧。原付・125cc・中大型・EVまで整備済み車両をクラス別に掲載。足立小台本店・三ノ輪店で予約できます。" />
+        <link rel="canonical" href="https://yasukari.com/products" />
       </Head>
       <main className="p-6">
         <div className="max-w-6xl mx-auto space-y-6">

@@ -5,6 +5,8 @@ export default function PrivacyPolicy() {
     <>
       <Head>
         <title>プライバシーポリシー - ヤスカリ</title>
+        <meta name="description" content="レンタルバイク「ヤスカリ」のプライバシーポリシー。個人情報の取り扱いについてご説明します。" />
+        <link rel="canonical" href="https://yasukari.com/privacy" />
       </Head>
       <main className="max-w-3xl mx-auto p-6 text-sm leading-relaxed">
         <h1 className="text-xl font-bold mb-4 text-center">プライバシーポリシー</h1>

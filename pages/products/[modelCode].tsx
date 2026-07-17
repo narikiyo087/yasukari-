@@ -255,6 +255,16 @@ export default function ProductDetailPage({
     <>
       <Head>
         <title>{bike.modelName} - ヤスカリ</title>
+        <meta
+          name="description"
+          content={`${bike.modelName}のレンタル料金・スペック・取扱店舗・空き状況。東京の格安レンタルバイク「ヤスカリ」で予約できます。${
+            bike.description ? ` ${bike.description}` : ""
+          }`}
+        />
+        <link
+          rel="canonical"
+          href={`https://yasukari.com/products/${bike.modelCode}`}
+        />
       </Head>
       <main className="min-h-screen bg-transparent pb-12">
         <div className="w-full py-8 space-y-10">

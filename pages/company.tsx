@@ -5,6 +5,8 @@ export default function CompanyPage() {
     <div className="max-w-3xl mx-auto p-6 text-sm leading-relaxed">
       <Head>
         <title>運営会社情報 - ヤスカリ</title>
+        <meta name="description" content="レンタルバイク「ヤスカリ」を運営する株式会社ケイジェットの会社概要（所在地・連絡先・事業内容）。" />
+        <link rel="canonical" href="https://yasukari.com/company" />
       </Head>
       <h1 className="text-2xl font-bold mb-6 text-center text-slate-900">運営会社情報</h1>
       <table className="w-full border border-slate-200 border-collapse mb-6 text-slate-700">

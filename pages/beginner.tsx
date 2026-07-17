@@ -63,6 +63,8 @@ export default function BeginnerGuidePage() {
     <div className="bg-slate-50 text-slate-800">
       <Head>
         <title>はじめてガイド - ヤスカリ</title>
+        <meta name="description" content="はじめての方向けに、ヤスカリのレンタルバイクの予約から来店・利用・返却までの流れをステップでわかりやすく解説します。" />
+        <link rel="canonical" href="https://yasukari.com/beginner" />
       </Head>
 
       <section className="overflow-hidden">

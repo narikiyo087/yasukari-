@@ -31,6 +31,8 @@ export default function TermsPage() {
     <div className="p-6 max-w-3xl mx-auto">
       <Head>
         <title>利用規約・注意事項</title>
+        <meta name="description" content="レンタルバイク「ヤスカリ」の利用規約・注意事項。" />
+        <link rel="canonical" href="https://yasukari.com/terms" />
       </Head>
       <div className="mb-6">
         <Link
