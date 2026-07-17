@@ -6,6 +6,7 @@ import { useRouter } from 'next/router';
 import type { RegistrationData } from '../../../types/registration';
 import { REQUIRED_REGISTRATION_FIELDS } from '../../../types/registration';
 import type { Reservation } from '../../../lib/reservations';
+import ReservationStatusBadge from '../../../components/ReservationStatusBadge';
 import { formatDisplayPhoneNumber } from '../../../lib/phoneNumber';
 import { prepareImageForUpload } from '../../../lib/imageProcessing';
 
@@ -911,9 +912,10 @@ export default function MyPageEn() {
                                 </div>
                               </div>
                               <div className="flex flex-wrap items-center gap-2 sm:flex-col sm:items-end">
-                                <span className="inline-flex items-center rounded bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-800">
-                                  {statusLabel(reservation.status)}
-                                </span>
+                                <ReservationStatusBadge
+                                  status={reservation.status}
+                                  label={statusLabel(reservation.status)}
+                                />
                                 <span
                                   className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold ${
                                     reservation.reservationCompletedFlag
