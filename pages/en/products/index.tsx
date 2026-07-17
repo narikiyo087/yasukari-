@@ -35,19 +35,19 @@ export default function AllProductsPageEn({ bikes, classes }: Props) {
       <main className="p-6">
         <div className="max-w-6xl mx-auto space-y-6">
           <div className="text-center space-y-2">
-            <p className="text-xs font-semibold uppercase tracking-wide text-red-500">lineup</p>
+            <p className="text-xs font-semibold uppercase tracking-wide text-red-600">lineup</p>
             <h1 className="text-2xl font-bold">All Bikes</h1>
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-slate-600">
               Browse the full lineup of bikes available on ヤスカリ.
             </p>
           </div>
 
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <div className="text-sm text-gray-700">
+            <div className="text-sm text-slate-700">
               {filteredBikes.length} items / {bikes.length} total
             </div>
             {classes.length > 0 ? (
-              <label className="flex items-center gap-3 text-sm text-gray-700">
+              <label className="flex items-center gap-3 text-sm text-slate-700">
                 <span className="font-semibold">Filter by class</span>
                 <select
                   value={selectedClass}
@@ -56,7 +56,7 @@ export default function AllProductsPageEn({ bikes, classes }: Props) {
                       e.target.value === "all" ? "all" : Number(e.target.value)
                     )
                   }
-                  className="rounded-lg border border-gray-200 bg-white px-3 py-2 shadow-sm focus:border-red-500 focus:outline-none"
+                  className="rounded-lg border border-slate-200 bg-white px-3 py-2 shadow-sm focus:border-red-500 focus:outline-none"
                 >
                   <option value="all">All</option>
                   {classes.map((cls) => (
@@ -72,15 +72,15 @@ export default function AllProductsPageEn({ bikes, classes }: Props) {
           <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
             {filteredBikes.map((bike) => (
               <Link key={bike.modelCode} href={`/en/products/${bike.modelCode}`}>
-                <div className="group bg-white rounded-2xl shadow-sm p-4 hover:-translate-y-1 hover:shadow-lg transition text-center border border-gray-100 aspect-square flex flex-col">
+                <div className="group bg-white rounded-lg shadow-sm p-4 hover:shadow-sm transition text-center border border-slate-100 aspect-square flex flex-col">
                   <div className="relative">
                     <img
                       src={bike.img}
                       alt={bike.modelName}
-                      className="w-full aspect-[4/3] object-cover rounded-xl mb-3"
+                      className="w-full aspect-[4/3] object-cover rounded-md mb-3"
                     />
                     {bike.classId && classLabelMap.has(bike.classId) ? (
-                      <span className="absolute left-3 top-3 inline-flex items-center rounded-full bg-red-600 px-3 py-1 text-xs font-semibold text-white shadow-md">
+                      <span className="absolute left-3 top-3 inline-flex items-center rounded-md bg-red-600 px-3 py-1 text-xs font-semibold text-white shadow-md">
                         {classLabelMap.get(bike.classId)}
                       </span>
                     ) : null}
@@ -89,7 +89,7 @@ export default function AllProductsPageEn({ bikes, classes }: Props) {
                     {bike.modelName}
                   </div>
                   {bike.description ? (
-                    <p className="text-sm text-gray-500 mt-2 line-clamp-2">
+                    <p className="text-sm text-slate-500 mt-2 line-clamp-2">
                       {bike.description}
                     </p>
                   ) : null}

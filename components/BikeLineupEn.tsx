@@ -78,8 +78,8 @@ export default function BikeLineupEn({ bikes, classes }: Props) {
               onClick={() => setFilter(c.value)}
               className={`rounded-full px-4 py-2 text-sm font-semibold transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 ${
                 active
-                  ? "bg-red-500 text-white shadow-lg shadow-red-200/60"
-                  : "bg-white/70 text-slate-600 hover:bg-white/90 border border-white/60"
+                  ? "bg-red-600 text-white shadow-sm"
+                  : "bg-white text-slate-600 hover:bg-white border border-slate-200"
               }`}
             >
               {c.label}
@@ -92,7 +92,7 @@ export default function BikeLineupEn({ bikes, classes }: Props) {
         {displayList.map((bike) => (
           <article
             key={bike.modelCode}
-            className="group relative overflow-hidden rounded-2xl border border-white/60 bg-white/80 shadow-[0_28px_42px_-30px_rgba(15,23,42,0.6)] transition-transform duration-200 hover:-translate-y-1 hover:shadow-[0_32px_56px_-28px_rgba(220,38,38,0.4)]"
+            className="group relative overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm transition-transform duration-200 hover:shadow-sm"
           >
             <Link href={`/en/products/${bike.modelCode}`} className="flex h-full flex-col">
               <div className="bike-lineup-card__image relative aspect-[3/4] w-full overflow-hidden">
@@ -102,7 +102,7 @@ export default function BikeLineupEn({ bikes, classes }: Props) {
                   className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
                 />
                 {bike.badge ? (
-                  <span className="absolute left-4 top-4 inline-flex items-center rounded-full bg-white/90 px-3 py-1 text-xs font-semibold text-red-500 shadow">
+                  <span className="absolute left-4 top-4 inline-flex items-center rounded-full bg-white px-3 py-1 text-xs font-semibold text-red-600 shadow">
                     {bike.badge}
                   </span>
                 ) : null}
@@ -115,7 +115,7 @@ export default function BikeLineupEn({ bikes, classes }: Props) {
                 <p className="text-sm text-slate-500">
                   Maintained by certified mechanics and ready for your next ride at a moment’s notice.
                 </p>
-                <span className="text-sm font-semibold text-red-500">View details →</span>
+                <span className="text-sm font-semibold text-red-600">View details →</span>
               </div>
             </Link>
           </article>

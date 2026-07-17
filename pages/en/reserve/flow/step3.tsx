@@ -383,12 +383,12 @@ export default function ReserveFlowStep3() {
       <Head>
         <title>Enter payment information - Step 3</title>
       </Head>
-      <main className="min-h-screen bg-gray-50 pb-16">
+      <main className="min-h-screen bg-slate-50 pb-16">
         <div className="mx-auto max-w-4xl px-4 py-10 sm:px-6 lg:px-8 space-y-8">
           <header className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-wide text-red-500">Step 3 / 3</p>
-              <h1 className="text-2xl font-bold text-gray-900">Enter payment information</h1>
+              <p className="text-xs font-semibold uppercase tracking-wide text-red-600">Step 3 / 3</p>
+              <h1 className="text-2xl font-bold text-slate-900">Enter payment information</h1>
             </div>
           </header>
 
@@ -403,41 +403,41 @@ export default function ReserveFlowStep3() {
           ) : null}
 
           <section className="space-y-6">
-            <div className="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-gray-100 space-y-4">
+            <div className="rounded-lg bg-white p-6 shadow-sm ring-1 ring-slate-100 space-y-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">Pickup & return</p>
-                  <h2 className="text-base font-bold text-gray-900">
+                  <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Pickup & return</p>
+                  <h2 className="text-base font-bold text-slate-900">
                     {pickupLabel} {pickupTime} → {returnLabel} {returnTime}
                   </h2>
                 </div>
                 <div className="flex flex-col items-end gap-1 text-right">
-                  <span className="rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-700">{store}</span>
-                  <p className="text-xs text-gray-500">{modelName} / {managementNumber}</p>
+                  <span className="rounded bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700">{store}</span>
+                  <p className="text-xs text-slate-500">{modelName} / {managementNumber}</p>
                 </div>
               </div>
-              <div className="rounded-xl bg-gray-50 p-4">
-                <div className="flex items-center justify-between text-lg font-bold text-gray-900">
+              <div className="rounded-md bg-slate-50 p-4">
+                <div className="flex items-center justify-between text-lg font-bold text-slate-900">
                   <span className="flex flex-col leading-tight">
                     <span>Rental fee</span>
                     <span>Total (tax included)</span>
                   </span>
                   <span>¥{totalAmount.toLocaleString()}</span>
                 </div>
-                <dl className="mt-3 grid grid-cols-1 gap-2 text-xs text-gray-600 sm:grid-cols-2">
-                  <div className="flex items-center justify-between rounded-lg bg-white px-3 py-2 shadow-sm ring-1 ring-gray-100">
+                <dl className="mt-3 grid grid-cols-1 gap-2 text-xs text-slate-600 sm:grid-cols-2">
+                  <div className="flex items-center justify-between rounded-lg bg-white px-3 py-2 shadow-sm ring-1 ring-slate-100">
                     <dt>Accessories & protection breakdown</dt>
-                    <dd className="font-semibold text-gray-900">
+                    <dd className="font-semibold text-slate-900">
                       ¥{(accessoryTotal + protectionTotal).toLocaleString()}
                     </dd>
                   </div>
-                  <div className="flex items-center justify-between rounded-lg bg-white px-3 py-2 shadow-sm ring-1 ring-gray-100">
+                  <div className="flex items-center justify-between rounded-lg bg-white px-3 py-2 shadow-sm ring-1 ring-slate-100">
                     <dt>Coupon</dt>
-                    <dd className="font-semibold text-gray-900">{couponCode || "Not applied"}</dd>
+                    <dd className="font-semibold text-slate-900">{couponCode || "Not applied"}</dd>
                   </div>
-                  <div className="flex items-center justify-between rounded-lg bg-white px-3 py-2 shadow-sm ring-1 ring-gray-100">
+                  <div className="flex items-center justify-between rounded-lg bg-white px-3 py-2 shadow-sm ring-1 ring-slate-100">
                     <dt>Estimated rental duration</dt>
-                    <dd className="font-semibold text-gray-900">
+                    <dd className="font-semibold text-slate-900">
                       {rentalDurationHours ? `${rentalDurationHours} hours` : "Unavailable"}
                     </dd>
                   </div>
@@ -445,24 +445,24 @@ export default function ReserveFlowStep3() {
               </div>
             </div>
 
-            <div className="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-gray-100 space-y-4">
+            <div className="rounded-lg bg-white p-6 shadow-sm ring-1 ring-slate-100 space-y-4">
               <div className="flex flex-wrap items-center justify-between gap-2">
-                <h3 className="text-sm font-semibold text-gray-900">Credit card payment</h3>
-                <span className="text-xs text-gray-500">Secure card payment form</span>
+                <h3 className="text-sm font-semibold text-slate-900">Credit card payment</h3>
+                <span className="text-xs text-slate-500">Secure card payment form</span>
               </div>
-              <p className="text-sm text-gray-600">
+              <p className="text-sm text-slate-600">
                 Press the payment button to open the secure checkout and enter your card details there.
               </p>
               <p className="text-sm font-semibold text-red-600">
                 Please do not refresh or go back during payment.
               </p>
-              <div className="flex flex-wrap items-center gap-2 text-xs text-gray-600">
-                <span className="rounded-full border border-gray-200 bg-white px-3 py-1 font-semibold text-gray-700">
+              <div className="flex flex-wrap items-center gap-2 text-xs text-slate-600">
+                <span className="rounded-full border border-slate-200 bg-white px-3 py-1 font-semibold text-slate-700">
                   Apple Pay supported
                 </span>
                 <span>You can also pay with Apple Pay.</span>
               </div>
-              <ul className="space-y-1 text-xs text-gray-500">
+              <ul className="space-y-1 text-xs text-slate-500">
                 <li>* Apple Pay is shown only on supported devices and Safari.</li>
                 <li>* If Apple Pay is not shown, please use credit card payment.</li>
                 <li>* Available payment methods may vary by environment.</li>
@@ -489,7 +489,7 @@ export default function ReserveFlowStep3() {
                       enableApplePay
                     />
                   ) : (
-                    <p className="text-sm text-gray-500">Preparing the payment form...</p>
+                    <p className="text-sm text-slate-500">Preparing the payment form...</p>
                   )}
                 </div>
               {statusMessage ? (
@@ -499,7 +499,7 @@ export default function ReserveFlowStep3() {
                 <p className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">{registrationError}</p>
               ) : null}
               {reservationPreview ? (
-                <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-900">
+                <div className="rounded-md border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-900">
                   <p className="font-semibold">Saved reservation preview</p>
                   <dl className="mt-2 grid gap-2 sm:grid-cols-2">
                     <div>

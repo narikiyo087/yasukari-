@@ -441,14 +441,14 @@ const RegistrationPage: NextPage = () => {
         <title>Full registration | ヤスカリ</title>
         <meta name="description" content="Enter the required information for full registration from My Page." />
       </Head>
-      <div className="min-h-screen bg-gray-50 text-gray-900">
-        <header className="border-b border-gray-100 bg-white">
+      <div className="min-h-screen bg-slate-50 text-slate-900">
+        <header className="border-b border-slate-100 bg-white">
           <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4 md:px-8">
             <Link href="/en" className="flex items-center gap-3">
               <img src="/static/images/logo/250x50.png" alt="ヤスカリ" width={200} height={40} className="hidden md:block" />
               <div className="flex items-center gap-2 md:hidden">
                 <img src="/static/images/logo/300x300.jpg" alt="ヤスカリ" width={44} height={44} className="rounded-full" />
-                <span className="text-sm font-semibold text-gray-800">ヤスカリ rental bikes</span>
+                <span className="text-sm font-semibold text-slate-800">ヤスカリ rental bikes</span>
               </div>
             </Link>
           </div>
@@ -456,7 +456,7 @@ const RegistrationPage: NextPage = () => {
 
         <main className="mx-auto w-full max-w-5xl px-4 py-8 md:px-8 md:py-12">
           <nav aria-label="breadcrumb" className="mb-6">
-            <ol className="flex items-center space-x-2 text-sm text-gray-500">
+            <ol className="flex items-center space-x-2 text-sm text-slate-500">
               <li>
                 <Link href="/en" className="text-red-600 hover:underline">
                   Home
@@ -469,13 +469,13 @@ const RegistrationPage: NextPage = () => {
                 </Link>
               </li>
               <li aria-hidden="true">/</li>
-              <li className="text-gray-600">Full registration</li>
+              <li className="text-slate-600">Full registration</li>
             </ol>
           </nav>
 
-          <section className="mb-8 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-            <h1 className="text-2xl font-semibold text-gray-900">Full registration form</h1>
-            <p className="mt-2 text-sm text-gray-600">
+          <section className="mb-8 rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
+            <h1 className="text-2xl font-semibold text-slate-900">Full registration form</h1>
+            <p className="mt-2 text-sm text-slate-600">
               Please enter the basic details required to use our rentals. After you submit, the information will be saved to DynamoDB (yasukariUserMain).
             </p>
             {userError ? (
@@ -483,10 +483,10 @@ const RegistrationPage: NextPage = () => {
             ) : null}
           </section>
 
-          <section className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+          <section className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
             <form className="space-y-6" onSubmit={handleSubmit}>
               <div>
-                <label className="block text-sm font-medium text-gray-700" htmlFor="email">
+                <label className="block text-sm font-medium text-slate-700" htmlFor="email">
                   Email address
                 </label>
                 <input
@@ -495,15 +495,15 @@ const RegistrationPage: NextPage = () => {
                   type="email"
                   value={sessionUser?.email ?? ''}
                   disabled
-                  className="mt-1 w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-gray-700 focus:border-red-500 focus:outline-none"
+                  className="mt-1 w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-slate-700 focus:border-red-500 focus:outline-none"
                   placeholder="example@example.com"
                 />
-                <p className="mt-1 text-xs text-gray-500">The email registered to your Cognito account is used.</p>
+                <p className="mt-1 text-xs text-slate-500">The email registered to your Cognito account is used.</p>
               </div>
 
               <div className="grid gap-4 md:grid-cols-2">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700" htmlFor="name1">
+                  <label className="block text-sm font-medium text-slate-700" htmlFor="name1">
                     Last name (Kanji)
                   </label>
                   <input
@@ -513,12 +513,12 @@ const RegistrationPage: NextPage = () => {
                     value={formData.name1}
                     onChange={handleChange}
                     required
-                    className="mt-1 w-full rounded-lg border border-gray-200 px-3 py-2 text-gray-700 focus:border-red-500 focus:outline-none"
+                    className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-slate-700 focus:border-red-500 focus:outline-none"
                   placeholder="Yamada"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700" htmlFor="name2">
+                  <label className="block text-sm font-medium text-slate-700" htmlFor="name2">
                     First name (Kanji)
                   </label>
                   <input
@@ -528,12 +528,12 @@ const RegistrationPage: NextPage = () => {
                     value={formData.name2}
                     onChange={handleChange}
                     required
-                    className="mt-1 w-full rounded-lg border border-gray-200 px-3 py-2 text-gray-700 focus:border-red-500 focus:outline-none"
+                    className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-slate-700 focus:border-red-500 focus:outline-none"
                   placeholder="Taro"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700" htmlFor="kana1">
+                  <label className="block text-sm font-medium text-slate-700" htmlFor="kana1">
                     Last name (Kana)
                   </label>
                   <input
@@ -543,12 +543,12 @@ const RegistrationPage: NextPage = () => {
                     value={formData.kana1}
                     onChange={handleChange}
                     required
-                    className="mt-1 w-full rounded-lg border border-gray-200 px-3 py-2 text-gray-700 focus:border-red-500 focus:outline-none"
+                    className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-slate-700 focus:border-red-500 focus:outline-none"
                   placeholder="YAMADA"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700" htmlFor="kana2">
+                  <label className="block text-sm font-medium text-slate-700" htmlFor="kana2">
                     First name (Kana)
                   </label>
                   <input
@@ -558,7 +558,7 @@ const RegistrationPage: NextPage = () => {
                     value={formData.kana2}
                     onChange={handleChange}
                     required
-                    className="mt-1 w-full rounded-lg border border-gray-200 px-3 py-2 text-gray-700 focus:border-red-500 focus:outline-none"
+                    className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-slate-700 focus:border-red-500 focus:outline-none"
                   placeholder="TARO"
                   />
                 </div>
@@ -566,7 +566,7 @@ const RegistrationPage: NextPage = () => {
 
               <div className="grid gap-4 md:grid-cols-2">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700" htmlFor="sex">
+                  <label className="block text-sm font-medium text-slate-700" htmlFor="sex">
                     Gender
                   </label>
                   <select
@@ -574,14 +574,14 @@ const RegistrationPage: NextPage = () => {
                     name="sex"
                     value={formData.sex}
                     onChange={handleChange}
-                    className="mt-1 w-full rounded-lg border border-gray-200 px-3 py-2 text-gray-700 focus:border-red-500 focus:outline-none"
+                    className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-slate-700 focus:border-red-500 focus:outline-none"
                   >
                     <option value="1">Male</option>
                     <option value="2">Female</option>
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700" htmlFor="birth">
+                  <label className="block text-sm font-medium text-slate-700" htmlFor="birth">
                     Birthday
                   </label>
                   <input
@@ -592,14 +592,14 @@ const RegistrationPage: NextPage = () => {
                     onChange={handleChange}
                     required
                     max="9999-12-31"
-                    className="mt-1 w-full rounded-lg border border-gray-200 px-3 py-2 text-gray-700 focus:border-red-500 focus:outline-none"
+                    className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-slate-700 focus:border-red-500 focus:outline-none"
                   />
                 </div>
               </div>
 
               <div className="grid gap-4 md:grid-cols-2">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700" htmlFor="zip">
+                  <label className="block text-sm font-medium text-slate-700" htmlFor="zip">
                     Postal code
                   </label>
                   <input
@@ -609,12 +609,12 @@ const RegistrationPage: NextPage = () => {
                     value={formData.zip}
                     onChange={handleChange}
                     required
-                    className="mt-1 w-full rounded-lg border border-gray-200 px-3 py-2 text-gray-700 focus:border-red-500 focus:outline-none"
+                    className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-slate-700 focus:border-red-500 focus:outline-none"
                     placeholder="1234567"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700" htmlFor="address1">
+                  <label className="block text-sm font-medium text-slate-700" htmlFor="address1">
                     Address line 1 (prefecture / city)
                   </label>
                   <input
@@ -624,12 +624,12 @@ const RegistrationPage: NextPage = () => {
                     value={formData.address1}
                     onChange={handleChange}
                     required
-                    className="mt-1 w-full rounded-lg border border-gray-200 px-3 py-2 text-gray-700 focus:border-red-500 focus:outline-none"
+                    className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-slate-700 focus:border-red-500 focus:outline-none"
                   placeholder="Tokyo Adachi-ku"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700" htmlFor="address2">
+                  <label className="block text-sm font-medium text-slate-700" htmlFor="address2">
                     Address line 2 (block / building)
                   </label>
                   <input
@@ -639,7 +639,7 @@ const RegistrationPage: NextPage = () => {
                     value={formData.address2}
                     onChange={handleChange}
                     required
-                    className="mt-1 w-full rounded-lg border border-gray-200 px-3 py-2 text-gray-700 focus:border-red-500 focus:outline-none"
+                    className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-slate-700 focus:border-red-500 focus:outline-none"
                   placeholder="1-1 Yasukari Building 101"
                   />
                 </div>
@@ -647,7 +647,7 @@ const RegistrationPage: NextPage = () => {
 
               <div className="grid gap-4 md:grid-cols-2">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700" htmlFor="mobile">
+                  <label className="block text-sm font-medium text-slate-700" htmlFor="mobile">
                     Mobile phone number (optional)
                   </label>
                   {availablePhones.length > 0 ? (
@@ -656,7 +656,7 @@ const RegistrationPage: NextPage = () => {
                       name="mobile-select"
                       value={selectedPhoneOption}
                       onChange={handlePhoneSelect}
-                      className="mt-1 w-full rounded-lg border border-gray-200 px-3 py-2 text-gray-700 focus:border-red-500 focus:outline-none"
+                      className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-slate-700 focus:border-red-500 focus:outline-none"
                     >
                       <option value="">Enter manually</option>
                       {availablePhones.map((phone) => {
@@ -677,12 +677,12 @@ const RegistrationPage: NextPage = () => {
                     type="tel"
                     value={formatPhoneDisplay(formData.mobile)}
                     onChange={handleChange}
-                    className="mt-1 w-full rounded-lg border border-gray-200 px-3 py-2 text-gray-700 focus:border-red-500 focus:outline-none"
+                    className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-slate-700 focus:border-red-500 focus:outline-none"
                     placeholder="09012345678"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700" htmlFor="tel">
+                  <label className="block text-sm font-medium text-slate-700" htmlFor="tel">
                     Home phone number (optional)
                   </label>
                   <input
@@ -691,7 +691,7 @@ const RegistrationPage: NextPage = () => {
                     type="tel"
                     value={formData.tel}
                     onChange={handleChange}
-                    className="mt-1 w-full rounded-lg border border-gray-200 px-3 py-2 text-gray-700 focus:border-red-500 focus:outline-none"
+                    className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-slate-700 focus:border-red-500 focus:outline-none"
                     placeholder="0312345678"
                   />
                 </div>
@@ -699,7 +699,7 @@ const RegistrationPage: NextPage = () => {
 
               <div className="grid gap-4 md:grid-cols-2">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700" htmlFor="license">
+                  <label className="block text-sm font-medium text-slate-700" htmlFor="license">
                     License number
                   </label>
                   <input
@@ -709,21 +709,21 @@ const RegistrationPage: NextPage = () => {
                     value={formData.license}
                     onChange={handleChange}
                     required
-                    className="mt-1 w-full rounded-lg border border-gray-200 px-3 py-2 text-gray-700 focus:border-red-500 focus:outline-none"
+                    className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-slate-700 focus:border-red-500 focus:outline-none"
                     placeholder="123456789012"
                   />
                 </div>
                 <div className="space-y-3">
-                  <span className="block text-sm font-medium text-gray-700">
+                  <span className="block text-sm font-medium text-slate-700">
                     Upload license images (up to 2 files)
                   </span>
                   {licenseUploads.map((upload, index) => (
                     <div
                       key={`license-upload-${index}-${upload.inputKey}`}
-                      className="rounded-lg border border-gray-200 bg-white p-3"
+                      className="rounded-lg border border-slate-200 bg-white p-3"
                     >
                       <label
-                        className="block text-xs font-medium text-gray-700"
+                        className="block text-xs font-medium text-slate-700"
                         htmlFor={`license_file_${index}`}
                       >
                         License image {index + 1}
@@ -737,13 +737,13 @@ const RegistrationPage: NextPage = () => {
                         accept="image/*"
                         onChange={handleFileChange(index)}
                         required={index === 0 && !upload.imageUrl}
-                        className="mt-1 block w-full text-sm text-gray-700 file:mr-4 file:rounded-full file:border file:border-red-600 file:bg-white file:px-4 file:py-2 file:text-sm file:font-semibold file:text-red-600 hover:file:bg-red-50"
+                        className="mt-1 block w-full text-sm text-slate-700 file:mr-4 file:rounded-full file:border file:border-red-600 file:bg-white file:px-4 file:py-2 file:text-sm file:font-semibold file:text-red-600 hover:file:bg-red-50"
                       />
                       {upload.fileName ? (
-                        <p className="mt-1 text-xs text-gray-500">Selected: {upload.fileName}</p>
+                        <p className="mt-1 text-xs text-slate-500">Selected: {upload.fileName}</p>
                       ) : null}
                       {upload.status === 'loading' ? (
-                        <p className="mt-1 text-xs text-gray-500">Uploading...</p>
+                        <p className="mt-1 text-xs text-slate-500">Uploading...</p>
                       ) : null}
                       {upload.status === 'success' ? (
                         <p className="mt-1 text-xs text-green-600">{upload.message}</p>
@@ -765,8 +765,8 @@ const RegistrationPage: NextPage = () => {
                 </div>
               </div>
 
-              <div className="rounded-lg border border-blue-100 bg-blue-50 p-4 text-sm text-gray-800">
-                <h3 className="text-base font-semibold text-gray-900">International Driving Permit check</h3>
+              <div className="rounded-lg border border-blue-100 bg-blue-50 p-4 text-sm text-slate-800">
+                <h3 className="text-base font-semibold text-slate-900">International Driving Permit check</h3>
                 <div className="mt-3 space-y-3">
                   <div>
                     <p className="font-medium">Q1. Do you have an International Driving Permit (IDP) under the 1949 Geneva Convention format?</p>
@@ -786,14 +786,14 @@ const RegistrationPage: NextPage = () => {
                     <p className="ml-2">❌ No → You cannot drive in Japan</p>
                   </div>
                 </div>
-                <p className="mt-3 text-xs text-gray-700">
+                <p className="mt-3 text-xs text-slate-700">
                   Notes: You can drive for up to one year from your entry date into Japan. Vienna Convention IDPs are not valid in Japan. The issuing country and permit format are critical.
                 </p>
               </div>
 
               <div className="grid gap-4 md:grid-cols-2">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700" htmlFor="work_place">
+                  <label className="block text-sm font-medium text-slate-700" htmlFor="work_place">
                     Workplace name (optional)
                   </label>
                   <input
@@ -802,12 +802,12 @@ const RegistrationPage: NextPage = () => {
                     type="text"
                     value={formData.work_place}
                     onChange={handleChange}
-                    className="mt-1 w-full rounded-lg border border-gray-200 px-3 py-2 text-gray-700 focus:border-red-500 focus:outline-none"
+                    className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-slate-700 focus:border-red-500 focus:outline-none"
                   placeholder="Yasukari Inc."
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700" htmlFor="work_address">
+                  <label className="block text-sm font-medium text-slate-700" htmlFor="work_address">
                     Workplace address (optional)
                   </label>
                   <input
@@ -816,12 +816,12 @@ const RegistrationPage: NextPage = () => {
                     type="text"
                     value={formData.work_address}
                     onChange={handleChange}
-                    className="mt-1 w-full rounded-lg border border-gray-200 px-3 py-2 text-gray-700 focus:border-red-500 focus:outline-none"
+                    className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-slate-700 focus:border-red-500 focus:outline-none"
                   placeholder="Tokyo Adachi-ku"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700" htmlFor="work_tel">
+                  <label className="block text-sm font-medium text-slate-700" htmlFor="work_tel">
                     Workplace phone (optional)
                   </label>
                   <input
@@ -830,7 +830,7 @@ const RegistrationPage: NextPage = () => {
                     type="tel"
                     value={formData.work_tel}
                     onChange={handleChange}
-                    className="mt-1 w-full rounded-lg border border-gray-200 px-3 py-2 text-gray-700 focus:border-red-500 focus:outline-none"
+                    className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-slate-700 focus:border-red-500 focus:outline-none"
                     placeholder="0312345678"
                   />
                 </div>
@@ -838,7 +838,7 @@ const RegistrationPage: NextPage = () => {
 
               <div className="grid gap-4 md:grid-cols-2">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700" htmlFor="other_name">
+                  <label className="block text-sm font-medium text-slate-700" htmlFor="other_name">
                     Emergency contact name (optional)
                   </label>
                   <input
@@ -847,12 +847,12 @@ const RegistrationPage: NextPage = () => {
                     type="text"
                     value={formData.other_name}
                     onChange={handleChange}
-                    className="mt-1 w-full rounded-lg border border-gray-200 px-3 py-2 text-gray-700 focus:border-red-500 focus:outline-none"
+                    className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-slate-700 focus:border-red-500 focus:outline-none"
                   placeholder="Hanako Yamada"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700" htmlFor="other_address">
+                  <label className="block text-sm font-medium text-slate-700" htmlFor="other_address">
                     Emergency contact address (optional)
                   </label>
                   <input
@@ -861,12 +861,12 @@ const RegistrationPage: NextPage = () => {
                     type="text"
                     value={formData.other_address}
                     onChange={handleChange}
-                    className="mt-1 w-full rounded-lg border border-gray-200 px-3 py-2 text-gray-700 focus:border-red-500 focus:outline-none"
+                    className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-slate-700 focus:border-red-500 focus:outline-none"
                   placeholder="Tokyo Adachi-ku"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700" htmlFor="other_tel">
+                  <label className="block text-sm font-medium text-slate-700" htmlFor="other_tel">
                     Emergency contact phone (optional)
                   </label>
                   <input
@@ -875,17 +875,17 @@ const RegistrationPage: NextPage = () => {
                     type="tel"
                     value={formData.other_tel}
                     onChange={handleChange}
-                    className="mt-1 w-full rounded-lg border border-gray-200 px-3 py-2 text-gray-700 focus:border-red-500 focus:outline-none"
+                    className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-slate-700 focus:border-red-500 focus:outline-none"
                     placeholder="0312345678"
                   />
                 </div>
               </div>
 
-              <div className="space-y-4 rounded-xl bg-red-50 p-4 text-sm text-gray-800">
-                <h2 className="text-base font-semibold text-gray-900">Survey</h2>
+              <div className="space-y-4 rounded-md bg-red-50 p-4 text-sm text-slate-800">
+                <h2 className="text-base font-semibold text-slate-900">Survey</h2>
                 <div className="grid gap-4 md:grid-cols-2">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700" htmlFor="enquete_purpose">
+                    <label className="block text-sm font-medium text-slate-700" htmlFor="enquete_purpose">
                       Purpose of use
                     </label>
                     <select
@@ -893,7 +893,7 @@ const RegistrationPage: NextPage = () => {
                       name="enquete_purpose"
                       value={formData.enquete_purpose}
                       onChange={handleChange}
-                      className="mt-1 w-full rounded-lg border border-gray-200 px-3 py-2 text-gray-700 focus:border-red-500 focus:outline-none"
+                      className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-slate-700 focus:border-red-500 focus:outline-none"
                     >
                       {purposeOptions.map((option) => (
                         <option key={option.value} value={option.value}>
@@ -903,7 +903,7 @@ const RegistrationPage: NextPage = () => {
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700" htmlFor="enquete_want">
+                    <label className="block text-sm font-medium text-slate-700" htmlFor="enquete_want">
                       Interest in purchasing a bike
                     </label>
                     <select
@@ -911,7 +911,7 @@ const RegistrationPage: NextPage = () => {
                       name="enquete_want"
                       value={formData.enquete_want}
                       onChange={handleChange}
-                      className="mt-1 w-full rounded-lg border border-gray-200 px-3 py-2 text-gray-700 focus:border-red-500 focus:outline-none"
+                      className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-slate-700 focus:border-red-500 focus:outline-none"
                     >
                       {wantOptions.map((option) => (
                         <option key={option.value} value={option.value}>
@@ -921,7 +921,7 @@ const RegistrationPage: NextPage = () => {
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700" htmlFor="enquete_touring">
+                    <label className="block text-sm font-medium text-slate-700" htmlFor="enquete_touring">
                       Touring experience
                     </label>
                     <select
@@ -929,7 +929,7 @@ const RegistrationPage: NextPage = () => {
                       name="enquete_touring"
                       value={formData.enquete_touring}
                       onChange={handleChange}
-                      className="mt-1 w-full rounded-lg border border-gray-200 px-3 py-2 text-gray-700 focus:border-red-500 focus:outline-none"
+                      className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-slate-700 focus:border-red-500 focus:outline-none"
                     >
                       {touringOptions.map((option) => (
                         <option key={option.value} value={option.value}>
@@ -939,7 +939,7 @@ const RegistrationPage: NextPage = () => {
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700" htmlFor="enquete_magazine">
+                    <label className="block text-sm font-medium text-slate-700" htmlFor="enquete_magazine">
                       Do you read motorcycle magazines?
                     </label>
                     <select
@@ -947,7 +947,7 @@ const RegistrationPage: NextPage = () => {
                       name="enquete_magazine"
                       value={formData.enquete_magazine}
                       onChange={handleChange}
-                      className="mt-1 w-full rounded-lg border border-gray-200 px-3 py-2 text-gray-700 focus:border-red-500 focus:outline-none"
+                      className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-slate-700 focus:border-red-500 focus:outline-none"
                     >
                       {magazineOptions.map((option) => (
                         <option key={option.value} value={option.value}>
@@ -957,7 +957,7 @@ const RegistrationPage: NextPage = () => {
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700" htmlFor="enquete_chance">
+                    <label className="block text-sm font-medium text-slate-700" htmlFor="enquete_chance">
                       How did you learn about our service?
                     </label>
                     <select
@@ -965,7 +965,7 @@ const RegistrationPage: NextPage = () => {
                       name="enquete_chance"
                       value={formData.enquete_chance}
                       onChange={handleChange}
-                      className="mt-1 w-full rounded-lg border border-gray-200 px-3 py-2 text-gray-700 focus:border-red-500 focus:outline-none"
+                      className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-slate-700 focus:border-red-500 focus:outline-none"
                     >
                       {chanceOptions.map((option) => (
                         <option key={option.value} value={option.value}>
@@ -988,11 +988,11 @@ const RegistrationPage: NextPage = () => {
               ) : null}
 
               <div className="flex items-center justify-between">
-                <p className="text-xs text-gray-500">After submission, your details will be saved to DynamoDB (yasukariUserMain).</p>
+                <p className="text-xs text-slate-500">After submission, your details will be saved to DynamoDB (yasukariUserMain).</p>
                 <button
                   type="submit"
                   disabled={isSubmitting || loadingUser}
-                  className="inline-flex items-center justify-center rounded-full bg-red-600 px-6 py-3 text-sm font-semibold text-white transition hover:bg-red-700 disabled:cursor-not-allowed disabled:bg-red-300"
+                  className="inline-flex items-center justify-center rounded-md bg-red-600 px-6 py-3 text-sm font-semibold text-white transition hover:bg-red-700 disabled:cursor-not-allowed disabled:bg-red-300"
                 >
                   {isSubmitting ? 'Submitting…' : 'Complete full registration'}
                 </button>
@@ -1000,7 +1000,7 @@ const RegistrationPage: NextPage = () => {
               <div className="flex justify-center">
                 <Link
                   href="/mypage"
-                  className="inline-flex items-center gap-2 rounded-full border border-gray-200 px-6 py-3 text-sm font-semibold text-gray-700 transition hover:border-gray-300"
+                  className="inline-flex items-center gap-2 rounded-full border border-slate-200 px-6 py-3 text-sm font-semibold text-slate-700 transition hover:border-slate-300"
                 >
                   Back to My Page
                 </Link>

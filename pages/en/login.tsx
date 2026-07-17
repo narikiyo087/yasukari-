@@ -112,38 +112,38 @@ export default function LoginPageEn() {
       <Head>
         <title>Login | ヤスカリ</title>
       </Head>
-      <div className="min-h-screen bg-white text-gray-900">
+      <div className="min-h-screen bg-white text-slate-900">
         <main className="mx-auto w-full max-w-5xl px-4 py-8 md:px-8 md:py-12">
           <nav aria-label="breadcrumb" className="mb-6">
-            <ol className="flex items-center space-x-2 text-sm text-gray-500">
+            <ol className="flex items-center space-x-2 text-sm text-slate-500">
               <li>
                 <Link href="/en" className="text-blue-600 hover:underline">
                   Home
                 </Link>
               </li>
               <li aria-hidden="true">/</li>
-              <li className="text-gray-600">Login</li>
+              <li className="text-slate-600">Login</li>
             </ol>
           </nav>
 
           <div className="grid gap-6 md:grid-cols-2">
-            <section className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-              <h1 className="text-2xl font-bold text-gray-900">Manage your rentals from My Page</h1>
-              <p className="mt-3 text-sm leading-relaxed text-gray-600">
+            <section className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
+              <h1 className="text-2xl font-bold text-slate-900">Manage your rentals from My Page</h1>
+              <p className="mt-3 text-sm leading-relaxed text-slate-600">
                 Track your active rentals, extend plans online, and keep your payment details up to date from one place. We
                 also share member-only promotions here.
               </p>
-              <ul className="mt-4 space-y-3 text-sm text-gray-700">
+              <ul className="mt-4 space-y-3 text-sm text-slate-700">
                 {[{ text: 'Check the latest rental status and history anytime' }, { text: 'Complete extensions and option add-ons online' }, { text: 'Receive member-exclusive coupons and new bike updates first' }].map(
                   (item) => (
                     <li key={item.text} className="flex items-start gap-3">
-                      <span className="mt-1 h-2.5 w-2.5 rounded-full bg-red-500" aria-hidden="true" />
+                      <span className="mt-1 h-2.5 w-2.5 rounded-full bg-red-600" aria-hidden="true" />
                       <span>{item.text}</span>
                     </li>
                   )
                 )}
               </ul>
-              <div className="mt-6 rounded-xl bg-red-50 p-4 text-sm text-red-700">
+              <div className="mt-6 rounded-md bg-red-50 p-4 text-sm text-red-700">
                 <p className="font-semibold">New to ヤスカリ?</p>
                 <p className="mt-1 leading-relaxed">
                   You can start with a quick pre-registration using your email. If you are new, please proceed to the
@@ -160,9 +160,9 @@ export default function LoginPageEn() {
               </div>
             </section>
 
-            <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+            <div className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
               <div className="mb-6 space-y-2 text-center">
-                <h2 className="text-xl font-semibold text-gray-900">Login / Sign up</h2>
+                <h2 className="text-xl font-semibold text-slate-900">Login / Sign up</h2>
               </div>
               {error ? (
                 <p className="mb-4 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-600">{error}</p>
@@ -171,7 +171,7 @@ export default function LoginPageEn() {
                 <button
                   type="button"
                   onClick={handleLogout}
-                  className="inline-flex w-full items-center justify-center rounded-full bg-gray-800 px-6 py-3 text-sm font-semibold text-white transition hover:bg-gray-900 disabled:cursor-not-allowed disabled:opacity-60"
+                  className="inline-flex w-full items-center justify-center rounded-full bg-slate-800 px-6 py-3 text-sm font-semibold text-white transition hover:bg-slate-900 disabled:cursor-not-allowed disabled:opacity-60"
                   disabled={startingLogout}
                 >
                   {startingLogout ? 'Redirecting to logout…' : 'Log out'}
@@ -181,7 +181,7 @@ export default function LoginPageEn() {
                   <button
                     type="button"
                     onClick={handleLogin}
-                    className="inline-flex w-full items-center justify-center rounded-full bg-red-600 px-6 py-3 text-sm font-semibold text-white transition hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-60"
+                    className="inline-flex w-full items-center justify-center rounded-md bg-red-600 px-6 py-3 text-sm font-semibold text-white transition hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-60"
                     disabled={checkingSession || startingLogin}
                   >
                     {checkingSession ? 'Checking your session…' : startingLogin ? 'Preparing redirect…' : 'Go to login page'}
@@ -196,8 +196,8 @@ export default function LoginPageEn() {
                   </button>
                 </>
               )}
-              <div className="mt-6 rounded-xl bg-gray-50 p-4 text-left text-xs leading-relaxed text-gray-600">
-                <p className="font-semibold text-gray-900">How login works</p>
+              <div className="mt-6 rounded-md bg-slate-50 p-4 text-left text-xs leading-relaxed text-slate-600">
+                <p className="font-semibold text-slate-900">How login works</p>
                 <ol className="mt-2 list-decimal space-y-1 pl-4">
                   <li>Tap "Go to login page" to open the hosted login screen</li>
                   <li>After authentication, you will be redirected back to {process.env.NEXT_PUBLIC_SITE_NAME ?? 'My Page'}</li>
@@ -205,7 +205,7 @@ export default function LoginPageEn() {
                   <li>Please complete the full registration to save the information required for reservations</li>
                 </ol>
               </div>
-              <p className="mt-6 text-center text-xs text-gray-500">
+              <p className="mt-6 text-center text-xs text-slate-500">
                 Don&apos;t have an account?{' '}
                 <button
                   type="button"

@@ -731,7 +731,7 @@ export default function MyPageEn() {
         <title>My Page</title>
       </Head>
       <main className="mx-auto flex min-h-screen w-full max-w-3xl flex-col gap-8 px-4 py-12">
-        <header className="space-y-2 text-sm text-gray-600">
+        <header className="space-y-2 text-sm text-slate-600">
           <nav aria-label="breadcrumb">
             <ol className="flex items-center gap-2">
               <li>
@@ -740,21 +740,21 @@ export default function MyPageEn() {
                 </a>
               </li>
               <li aria-hidden="true">/</li>
-              <li className="text-gray-600">My Page</li>
+              <li className="text-slate-600">My Page</li>
             </ol>
           </nav>
-          <h1 className="text-2xl font-semibold text-gray-900">My Page</h1>
-          <p className="text-sm text-gray-500">View and manage your current profile details.</p>
-          <div className="mt-3 rounded-lg border border-rose-300 bg-gradient-to-r from-rose-50 via-rose-100 to-rose-50 p-4 text-xs text-rose-900 shadow-sm ring-1 ring-rose-200/70">
+          <h1 className="text-2xl font-semibold text-slate-900">My Page</h1>
+          <p className="text-sm text-slate-500">View and manage your current profile details.</p>
+          <div className="mt-3 rounded-lg border border-red-300 bg-gradient-to-r from-rose-50 via-rose-100 to-rose-50 p-4 text-xs text-red-900 shadow-sm ring-1 ring-red-200/70">
             <div className="flex items-start gap-3">
               <span
                 aria-hidden
-                className="flex h-8 w-8 items-center justify-center rounded-full bg-rose-200 text-lg text-rose-700 shadow-sm"
+                className="flex h-8 w-8 items-center justify-center rounded-full bg-red-200 text-lg text-red-700 shadow-sm"
               >
                 ⚠️
               </span>
               <div>
-                <p className="text-sm font-semibold text-rose-900">Guidance for breakdowns</p>
+                <p className="text-sm font-semibold text-red-900">Guidance for breakdowns</p>
                 <p className="mt-2">
                   If your bike breaks down while riding within 180 km of the rental store, you can use our 24/7 roadside
                   assistance at no extra cost. Please call the store during business hours, or contact roadside assistance
@@ -764,7 +764,7 @@ export default function MyPageEn() {
                 <p className="mt-2 font-semibold">Yasukari phone: 03-5856-8200</p>
                 <Link
                   href="/en/help"
-                  className="mt-3 inline-flex items-center justify-center rounded-full border border-rose-200 bg-white px-4 py-2 text-xs font-semibold text-rose-700 shadow-sm transition hover:bg-rose-100"
+                  className="mt-3 inline-flex items-center justify-center rounded-full border border-red-200 bg-white px-4 py-2 text-xs font-semibold text-red-700 shadow-sm transition hover:bg-red-100"
                 >
                   View the FAQ
                 </Link>
@@ -774,18 +774,18 @@ export default function MyPageEn() {
         </header>
 
         {loading ? (
-          <section className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-            <p className="text-sm text-gray-700">Checking your sign-in status…</p>
+          <section className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
+            <p className="text-sm text-slate-700">Checking your sign-in status…</p>
           </section>
         ) : (
           <>
             {error ? (
-              <section className="rounded-2xl border border-red-200 bg-red-50 p-6 shadow-sm">
+              <section className="rounded-lg border border-red-200 bg-red-50 p-6 shadow-sm">
                 <p className="text-sm text-red-700">{error}</p>
               </section>
             ) : null}
 
-            <section className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+            <section className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
               <div className="flex flex-wrap items-start justify-between gap-4">
                 <button
                   type="button"
@@ -794,12 +794,12 @@ export default function MyPageEn() {
                   className="group flex flex-1 items-start justify-between gap-3 text-left md:pointer-events-none md:cursor-default"
                 >
                   <div>
-                    <h2 className="text-lg font-semibold text-gray-900">Current rentals</h2>
-                    <p className="mt-1 text-sm text-gray-600">Your active rental information appears here.</p>
+                    <h2 className="text-lg font-semibold text-slate-900">Current rentals</h2>
+                    <p className="mt-1 text-sm text-slate-600">Your active rental information appears here.</p>
                   </div>
                   <span
                     aria-hidden
-                    className={`ml-3 inline-flex h-9 w-9 items-center justify-center rounded-full border border-gray-200 bg-gray-50 text-xs font-semibold text-gray-600 transition-transform md:hidden ${
+                    className={`ml-3 inline-flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 bg-slate-50 text-xs font-semibold text-slate-600 transition-transform md:hidden ${
                       mobileSectionsOpen.reservations ? 'rotate-180' : ''
                     }`}
                   >
@@ -814,7 +814,7 @@ export default function MyPageEn() {
                       {extensionTargetReservationId ? (
                         <Link
                           href={`/mypage/rentals/extend/${extensionTargetReservationId}`}
-                          className="inline-flex items-center justify-center rounded-full bg-red-600 px-4 py-2 text-xs font-semibold text-white shadow-md ring-2 ring-inset ring-red-500 ring-offset-1 ring-offset-white transition hover:bg-red-700"
+                          className="inline-flex items-center justify-center rounded-md bg-red-600 px-4 py-2 text-xs font-semibold text-white shadow-md ring-2 ring-inset ring-red-500 ring-offset-1 ring-offset-white transition hover:bg-red-700"
                         >
                           Extend rental
                         </Link>
@@ -830,7 +830,7 @@ export default function MyPageEn() {
                       <button
                         type="button"
                         onClick={() => activeKeyboxQrImageUrl && setShowUnlockQrModal(true)}
-                        className="inline-flex items-center justify-center rounded-full bg-white px-4 py-2 text-xs font-semibold text-gray-700 shadow-md ring-2 ring-inset ring-gray-200 ring-offset-1 ring-offset-white transition hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-60 sm:hidden"
+                        className="inline-flex items-center justify-center rounded-full bg-white px-4 py-2 text-xs font-semibold text-slate-700 shadow-md ring-2 ring-inset ring-slate-200 ring-offset-1 ring-offset-white transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-60 sm:hidden"
                         disabled={!activeKeyboxQrImageUrl}
                       >
                         Show unlock QR
@@ -839,19 +839,19 @@ export default function MyPageEn() {
                         type="button"
                         onClick={handleReturnOpen}
                         disabled={!activeReturnReservation}
-                        className="inline-flex items-center justify-center rounded-full bg-red-600 px-4 py-2 text-xs font-semibold text-white shadow-md ring-2 ring-inset ring-red-500 ring-offset-1 ring-offset-white transition hover:bg-red-700 disabled:cursor-not-allowed disabled:bg-red-200 disabled:text-white/70 disabled:ring-red-200"
+                        className="inline-flex items-center justify-center rounded-md bg-red-600 px-4 py-2 text-xs font-semibold text-white shadow-md ring-2 ring-inset ring-red-500 ring-offset-1 ring-offset-white transition hover:bg-red-700 disabled:cursor-not-allowed disabled:bg-red-200 disabled:text-white/70 disabled:ring-red-200"
                       >
                         Return
                       </button>
                       <button
                         type="button"
                         onClick={handleAccidentOpen}
-                        className="inline-flex items-center justify-center rounded-full bg-red-600 px-4 py-2 text-xs font-semibold text-white shadow-md ring-2 ring-inset ring-red-500 ring-offset-1 ring-offset-white transition hover:bg-red-700"
+                        className="inline-flex items-center justify-center rounded-md bg-red-600 px-4 py-2 text-xs font-semibold text-white shadow-md ring-2 ring-inset ring-red-500 ring-offset-1 ring-offset-white transition hover:bg-red-700"
                       >
                         Accident / fall
                       </button>
                     </div>
-                    <div className="mt-2 text-sm text-gray-700">
+                    <div className="mt-2 text-sm text-slate-700">
                       <Link
                         href={unmannedRentalGuideUrl}
                         className="text-sky-700 underline underline-offset-2 transition hover:text-sky-800"
@@ -862,13 +862,13 @@ export default function MyPageEn() {
                   </>
                 ) : null}
 
-                <div className="mt-4 space-y-3 text-sm text-gray-700">
+                <div className="mt-4 space-y-3 text-sm text-slate-700">
                   {reservationsError ? (
                     <p className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-red-700">{reservationsError}</p>
                   ) : loadingReservations ? (
-                    <p className="rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-gray-700">Loading reservation data…</p>
+                    <p className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-slate-700">Loading reservation data…</p>
                   ) : reservations.length === 0 ? (
-                    <p className="rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-gray-700">
+                    <p className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-slate-700">
                       You have no active reservations right now. Completed bookings are listed under Past reservations.
                     </p>
                   ) : (
@@ -884,7 +884,7 @@ export default function MyPageEn() {
                         return (
                           <li
                             key={reservation.id}
-                            className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm ring-1 ring-gray-100"
+                            className="rounded-md border border-slate-200 bg-white p-4 shadow-sm ring-1 ring-slate-100"
                           >
                             <div className="flex flex-wrap items-start justify-between gap-3">
                               <div className="flex items-start gap-3">
@@ -898,20 +898,20 @@ export default function MyPageEn() {
                                       ? `${reservation.vehicleModel} thumbnail`
                                       : 'Vehicle thumbnail'
                                   }
-                                  className="h-12 w-12 rounded-md border border-gray-200 bg-white object-cover shadow-sm"
+                                  className="h-12 w-12 rounded-md border border-slate-200 bg-white object-cover shadow-sm"
                                   loading="lazy"
                                 />
                                 <div>
-                                  <p className="text-sm font-semibold text-gray-900">
+                                  <p className="text-sm font-semibold text-slate-900">
                                     {reservation.storeName} / {reservation.vehicleModel}
                                   </p>
-                                  <p className="text-xs text-gray-600">
+                                  <p className="text-xs text-slate-600">
                                     {reservation.vehicleCode} {reservation.vehiclePlate}
                                   </p>
                                 </div>
                               </div>
                               <div className="flex flex-wrap items-center gap-2 sm:flex-col sm:items-end">
-                                <span className="inline-flex items-center rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-800">
+                                <span className="inline-flex items-center rounded bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-800">
                                   {statusLabel(reservation.status)}
                                 </span>
                                 <span
@@ -932,25 +932,25 @@ export default function MyPageEn() {
                               </p>
                             ) : null}
                             <dl className="mt-3 grid gap-2 sm:grid-cols-2">
-                              <div className="rounded-lg bg-gray-50 px-3 py-2">
-                                <dt className="text-xs text-gray-500">Pickup → Return</dt>
-                                <dd className="font-semibold text-gray-900">
+                              <div className="rounded-lg bg-slate-50 px-3 py-2">
+                                <dt className="text-xs text-slate-500">Pickup → Return</dt>
+                                <dd className="font-semibold text-slate-900">
                                   {formatReservationDatetime(reservation.pickupAt)} → {formatReservationDatetime(reservation.returnAt)}
                                 </dd>
                               </div>
-                              <div className="rounded-lg bg-gray-50 px-3 py-2">
-                                <dt className="text-xs text-gray-500">Reservation details</dt>
-                                <dd className="font-semibold text-gray-900">
+                              <div className="rounded-lg bg-slate-50 px-3 py-2">
+                                <dt className="text-xs text-slate-500">Reservation details</dt>
+                                <dd className="font-semibold text-slate-900">
                                   Vehicle code: {reservation.vehicleCode || '-'} / Plate number: {reservation.vehiclePlate || 'Not set'}
                                 </dd>
                               </div>
-                              <div className="rounded-lg bg-gray-50 px-3 py-2">
-                                <dt className="text-xs text-gray-500">Payment amount</dt>
-                                <dd className="font-semibold text-gray-900">{reservation.paymentAmount} yen</dd>
+                              <div className="rounded-lg bg-slate-50 px-3 py-2">
+                                <dt className="text-xs text-slate-500">Payment amount</dt>
+                                <dd className="font-semibold text-slate-900">{reservation.paymentAmount} yen</dd>
                               </div>
-                              <div className="rounded-lg bg-gray-50 px-3 py-2">
-                                <dt className="text-xs text-gray-500">Payment date</dt>
-                                <dd className="font-semibold text-gray-900">
+                              <div className="rounded-lg bg-slate-50 px-3 py-2">
+                                <dt className="text-xs text-slate-500">Payment date</dt>
+                                <dd className="font-semibold text-slate-900">
                                   {reservation.paymentDate ? formatReservationDatetime(reservation.paymentDate) : 'Not recorded'}
                                 </dd>
                               </div>
@@ -967,8 +967,8 @@ export default function MyPageEn() {
                                 </div>
                                 <div className="mt-3 grid gap-3">
                                   <div className="rounded-lg bg-white px-3 py-2 shadow-sm">
-                                    <dt className="text-xs text-gray-600">PIN code</dt>
-                                    <dd className="font-mono text-lg font-semibold text-gray-900">{reservation.keyboxPinCode}</dd>
+                                    <dt className="text-xs text-slate-600">PIN code</dt>
+                                    <dd className="font-mono text-lg font-semibold text-slate-900">{reservation.keyboxPinCode}</dd>
                                   </div>
                                 </div>
                                 <div className="mt-3 flex flex-wrap items-center gap-3">
@@ -982,10 +982,10 @@ export default function MyPageEn() {
                                         <img
                                           src={reservation.keyboxQrImageUrl}
                                           alt="Unlock QR code"
-                                          className="h-20 w-20 rounded border border-gray-200 object-contain transition group-hover:scale-105"
+                                          className="h-20 w-20 rounded border border-slate-200 object-contain transition group-hover:scale-105"
                                         />
                                       </button>
-                                      <div className="text-xs text-gray-600">Hold it over the keybox reader to unlock.</div>
+                                      <div className="text-xs text-slate-600">Hold it over the keybox reader to unlock.</div>
                                     </div>
                                   ) : null}
                                 </div>
@@ -1007,7 +1007,7 @@ export default function MyPageEn() {
                                   href={accessLink}
                                   target="_blank"
                                   rel="noopener noreferrer"
-                                  className="inline-flex items-center justify-center rounded-full border border-gray-200 bg-white px-4 py-2 text-xs font-semibold text-gray-700 transition hover:border-gray-300 hover:bg-gray-50"
+                                  className="inline-flex items-center justify-center rounded-md border border-slate-200 bg-white px-4 py-2 text-xs font-semibold text-slate-700 transition hover:border-slate-300 hover:bg-slate-50"
                                 >
                                   Directions to the store
                                 </a>
@@ -1044,7 +1044,7 @@ export default function MyPageEn() {
                     href="/en/mypage/past-reservations"
                     target="_blank"
                     rel="noreferrer"
-                    className={`${sectionActionClass} border border-gray-200 bg-white text-gray-700 transition hover:border-gray-300 hover:bg-gray-50`}
+                    className={`${sectionActionClass} border border-slate-200 bg-white text-slate-700 transition hover:border-slate-300 hover:bg-slate-50`}
                   >
                     Past reservations
                   </Link>
@@ -1060,7 +1060,7 @@ export default function MyPageEn() {
               </div>
             </section>
 
-            <section className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+            <section className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
               <div className="flex flex-wrap items-start justify-between gap-4">
                 <button
                   type="button"
@@ -1068,10 +1068,10 @@ export default function MyPageEn() {
                   onClick={() => toggleMobileSection('profile')}
                   className="group flex flex-1 items-center justify-between gap-3 text-left md:pointer-events-none md:cursor-default"
                 >
-                  <h2 className="text-lg font-semibold text-gray-900">Profile information</h2>
+                  <h2 className="text-lg font-semibold text-slate-900">Profile information</h2>
                   <span
                     aria-hidden
-                    className={`ml-3 inline-flex h-9 w-9 items-center justify-center rounded-full border border-gray-200 bg-gray-50 text-xs font-semibold text-gray-600 transition-transform md:hidden ${
+                    className={`ml-3 inline-flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 bg-slate-50 text-xs font-semibold text-slate-600 transition-transform md:hidden ${
                       mobileSectionsOpen.profile ? 'rotate-180' : ''
                     }`}
                   >
@@ -1092,28 +1092,28 @@ export default function MyPageEn() {
                 ) : null}
 
                 {loadingAttributes ? (
-                  <p className="mt-3 text-sm text-gray-700">Loading your profile…</p>
+                  <p className="mt-3 text-sm text-slate-700">Loading your profile…</p>
                 ) : attributes ? (
-                  <dl className="mt-4 grid gap-4 text-sm text-gray-700 md:grid-cols-2">
+                  <dl className="mt-4 grid gap-4 text-sm text-slate-700 md:grid-cols-2">
                     <div>
-                      <dt className="font-medium text-gray-600">Phone number</dt>
-                      <dd className="mt-1 text-gray-800">{formatPhoneLabel(attributes.phone_number)}</dd>
+                      <dt className="font-medium text-slate-600">Phone number</dt>
+                      <dd className="mt-1 text-slate-800">{formatPhoneLabel(attributes.phone_number)}</dd>
                     </div>
                     <div>
-                      <dt className="font-medium text-gray-600">Handle name</dt>
-                      <dd className="mt-1 text-gray-800">{attributes['custom:handle'] ?? 'Not set'}</dd>
+                      <dt className="font-medium text-slate-600">Handle name</dt>
+                      <dd className="mt-1 text-slate-800">{attributes['custom:handle'] ?? 'Not set'}</dd>
                     </div>
                     <div>
-                      <dt className="font-medium text-gray-600">Location / language</dt>
-                      <dd className="mt-1 text-gray-800">{localeLabel(attributes['custom:locale'])}</dd>
+                      <dt className="font-medium text-slate-600">Location / language</dt>
+                      <dd className="mt-1 text-slate-800">{localeLabel(attributes['custom:locale'])}</dd>
                     </div>
                     <div>
-                      <dt className="font-medium text-gray-600">Nickname</dt>
-                      <dd className="mt-1 text-gray-800">{attributes.name ?? 'Not set'}</dd>
+                      <dt className="font-medium text-slate-600">Nickname</dt>
+                      <dd className="mt-1 text-slate-800">{attributes.name ?? 'Not set'}</dd>
                     </div>
                   </dl>
                 ) : (
-                  <p className="mt-3 text-sm text-gray-700">We couldn&apos;t load your profile details.</p>
+                  <p className="mt-3 text-sm text-slate-700">We couldn&apos;t load your profile details.</p>
                 )}
               </div>
               <div className={`${mobileSectionsOpen.profile ? 'mt-4 flex' : 'hidden'} justify-center md:hidden`}>
@@ -1126,7 +1126,7 @@ export default function MyPageEn() {
               </div>
             </section>
 
-            <section className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+            <section className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
               <div className="flex flex-wrap items-start justify-between gap-4">
                 <button
                   type="button"
@@ -1135,8 +1135,8 @@ export default function MyPageEn() {
                   className="group flex flex-1 items-start justify-between gap-3 text-left md:pointer-events-none md:cursor-default"
                 >
                   <div>
-                    <h2 className="text-lg font-semibold text-gray-900">Full registration</h2>
-                    <p className="mt-1 text-sm text-gray-600">Enter the required details for rentals.</p>
+                    <h2 className="text-lg font-semibold text-slate-900">Full registration</h2>
+                    <p className="mt-1 text-sm text-slate-600">Enter the required details for rentals.</p>
                     {loadingRegistration ? null : registration ? (
                       isRegistrationComplete ? (
                         <p className="mt-2 inline-flex items-center rounded-full bg-green-50 px-3 py-1 text-xs font-semibold text-green-700 ring-1 ring-inset ring-green-200">
@@ -1148,14 +1148,14 @@ export default function MyPageEn() {
                         </p>
                       )
                     ) : (
-                      <p className="mt-2 inline-flex items-center rounded-full bg-gray-50 px-3 py-1 text-xs font-semibold text-gray-700 ring-1 ring-inset ring-gray-200">
+                      <p className="mt-2 inline-flex items-center rounded-full bg-slate-50 px-3 py-1 text-xs font-semibold text-slate-700 ring-1 ring-inset ring-slate-200">
                         No registration saved yet
                       </p>
                     )}
                   </div>
                   <span
                     aria-hidden
-                    className={`ml-3 inline-flex h-9 w-9 items-center justify-center rounded-full border border-gray-200 bg-gray-50 text-xs font-semibold text-gray-600 transition-transform md:hidden ${
+                    className={`ml-3 inline-flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 bg-slate-50 text-xs font-semibold text-slate-600 transition-transform md:hidden ${
                       mobileSectionsOpen.registration ? 'rotate-180' : ''
                     }`}
                   >
@@ -1185,33 +1185,33 @@ export default function MyPageEn() {
                     ) : null}
                     <dl className="grid gap-4 md:grid-cols-2">
                       <div>
-                        <dt className="text-xs font-semibold text-gray-500">Name</dt>
-                        <dd className="mt-1 text-gray-900">{`${registration.name1} ${registration.name2}`}</dd>
+                        <dt className="text-xs font-semibold text-slate-500">Name</dt>
+                        <dd className="mt-1 text-slate-900">{`${registration.name1} ${registration.name2}`}</dd>
                       </div>
                       <div>
-                        <dt className="text-xs font-semibold text-gray-500">Furigana</dt>
-                        <dd className="mt-1 text-gray-900">{`${registration.kana1} ${registration.kana2}`}</dd>
+                        <dt className="text-xs font-semibold text-slate-500">Furigana</dt>
+                        <dd className="mt-1 text-slate-900">{`${registration.kana1} ${registration.kana2}`}</dd>
                       </div>
                       <div>
-                        <dt className="text-xs font-semibold text-gray-500">Gender</dt>
-                        <dd className="mt-1 text-gray-900">{sexLabel(registration.sex)}</dd>
+                        <dt className="text-xs font-semibold text-slate-500">Gender</dt>
+                        <dd className="mt-1 text-slate-900">{sexLabel(registration.sex)}</dd>
                       </div>
                       <div>
-                        <dt className="text-xs font-semibold text-gray-500">Address</dt>
-                        <dd className="mt-1 text-gray-900">{`〒${registration.zip} ${registration.address1} ${registration.address2}`}</dd>
+                        <dt className="text-xs font-semibold text-slate-500">Address</dt>
+                        <dd className="mt-1 text-slate-900">{`〒${registration.zip} ${registration.address1} ${registration.address2}`}</dd>
                       </div>
                       <div>
-                        <dt className="text-xs font-semibold text-gray-500">Birthday</dt>
-                        <dd className="mt-1 text-gray-900">{registration.birth}</dd>
+                        <dt className="text-xs font-semibold text-slate-500">Birthday</dt>
+                        <dd className="mt-1 text-slate-900">{registration.birth}</dd>
                       </div>
                       <div>
-                        <dt className="text-xs font-semibold text-gray-500">License number</dt>
-                        <dd className="mt-1 text-gray-900">{registration.license ? 'Registered (number hidden)' : 'Not registered'}</dd>
+                        <dt className="text-xs font-semibold text-slate-500">License number</dt>
+                        <dd className="mt-1 text-slate-900">{registration.license ? 'Registered (number hidden)' : 'Not registered'}</dd>
                       </div>
                     </dl>
                   </div>
                 ) : (
-                  <p className="rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-gray-700">
+                  <p className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-slate-700">
                     No registration details yet. Please fill out the form to proceed.
                   </p>
                 )}
@@ -1226,7 +1226,7 @@ export default function MyPageEn() {
               </div>
             </section>
 
-            <section className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+            <section className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
               <button
                 type="button"
                 aria-expanded={mobileSectionsOpen.rentalTerms}
@@ -1234,8 +1234,8 @@ export default function MyPageEn() {
                 className="group flex w-full items-start justify-between gap-3 text-left md:pointer-events-none md:cursor-default"
               >
                 <div>
-                  <h2 className="text-lg font-semibold text-gray-900">Rental terms agreement</h2>
-                  <p className="mt-2 text-sm text-gray-600">Check and update your agreement to the motorcycle rental terms.</p>
+                  <h2 className="text-lg font-semibold text-slate-900">Rental terms agreement</h2>
+                  <p className="mt-2 text-sm text-slate-600">Check and update your agreement to the motorcycle rental terms.</p>
                   {loadingRentalTerms ? null : rentalTermsAgreed ? (
                     <p className="mt-2 inline-flex items-center rounded-full bg-green-50 px-3 py-1 text-xs font-semibold text-green-700 ring-1 ring-inset ring-green-200">
                       Agreed
@@ -1248,7 +1248,7 @@ export default function MyPageEn() {
                 </div>
                 <span
                   aria-hidden
-                  className={`ml-3 inline-flex h-9 w-9 items-center justify-center rounded-full border border-gray-200 bg-gray-50 text-xs font-semibold text-gray-600 transition-transform md:hidden ${
+                  className={`ml-3 inline-flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 bg-slate-50 text-xs font-semibold text-slate-600 transition-transform md:hidden ${
                     mobileSectionsOpen.rentalTerms ? 'rotate-180' : ''
                   }`}
                 >
@@ -1256,7 +1256,7 @@ export default function MyPageEn() {
                 </span>
               </button>
               <div className={`${mobileSectionsOpen.rentalTerms ? 'mt-4 block' : 'hidden'} md:mt-4 md:block`}>
-                <p className="text-sm text-gray-700">
+                <p className="text-sm text-slate-700">
                   Tick the box below to save your agreement status in the database. You can read the full terms <Link className="text-red-600 underline underline-offset-2" href="/rental-bike-terms">here</Link>.
                 </p>
                 {rentalTermsError ? (
@@ -1264,32 +1264,32 @@ export default function MyPageEn() {
                 ) : null}
 
                 {registration ? (
-                  <label className="mt-4 inline-flex items-start gap-3 text-sm text-gray-900">
+                  <label className="mt-4 inline-flex items-start gap-3 text-sm text-slate-900">
                     <input
                       type="checkbox"
-                      className="mt-1 h-4 w-4 rounded border-gray-300 text-red-600 focus:ring-red-500"
+                      className="mt-1 h-4 w-4 rounded border-slate-300 text-red-600 focus:ring-red-500"
                       onChange={handleRentalTermsToggle}
                       checked={rentalTermsAgreed}
                       disabled={loadingRentalTerms || savingRentalTerms || loadingRegistration}
                     />
                     <span className="leading-relaxed">
                       Do you agree to the motorcycle rental terms?
-                      <span className="mt-1 block text-xs text-gray-500">Unchecking will save you as not agreed.</span>
+                      <span className="mt-1 block text-xs text-slate-500">Unchecking will save you as not agreed.</span>
                     </span>
                   </label>
                 ) : (
-                  <p className="mt-4 rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-700">
+                  <p className="mt-4 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-700">
                     You can set your agreement status after saving your registration details. Please complete the registration form first.
                   </p>
                 )}
 
-                <p className="mt-3 text-xs text-gray-500">
+                <p className="mt-3 text-xs text-slate-500">
                   Last updated: {loadingRentalTerms ? 'Checking…' : formatAgreementTimestamp(rentalTermsUpdatedAt)}
                 </p>
               </div>
             </section>
 
-            <section className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+            <section className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
               <button
                 type="button"
                 aria-expanded={mobileSectionsOpen.logout}
@@ -1297,14 +1297,14 @@ export default function MyPageEn() {
                 className="group flex w-full items-start justify-between gap-3 text-left md:pointer-events-none md:cursor-default"
               >
                 <div>
-                  <h2 className="text-lg font-semibold text-gray-900">Log out</h2>
-                  <p className="mt-2 text-sm text-gray-600">
+                  <h2 className="text-lg font-semibold text-slate-900">Log out</h2>
+                  <p className="mt-2 text-sm text-slate-600">
                     Logging out will hide My Page until you sign in again.
                   </p>
                 </div>
                 <span
                   aria-hidden
-                  className={`ml-3 inline-flex h-9 w-9 items-center justify-center rounded-full border border-gray-200 bg-gray-50 text-xs font-semibold text-gray-600 transition-transform md:hidden ${
+                  className={`ml-3 inline-flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 bg-slate-50 text-xs font-semibold text-slate-600 transition-transform md:hidden ${
                     mobileSectionsOpen.logout ? 'rotate-180' : ''
                   }`}
                 >
@@ -1325,17 +1325,17 @@ export default function MyPageEn() {
           </>
         )}
 
-        <section className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+        <section className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
           <button
             type="button"
             aria-expanded={mobileSectionsOpen.links}
             onClick={() => toggleMobileSection('links')}
             className="group flex w-full items-center justify-between gap-3 text-left md:pointer-events-none md:cursor-default"
           >
-            <h2 className="text-lg font-semibold text-gray-900">Helpful links</h2>
+            <h2 className="text-lg font-semibold text-slate-900">Helpful links</h2>
             <span
               aria-hidden
-              className={`ml-3 inline-flex h-9 w-9 items-center justify-center rounded-full border border-gray-200 bg-gray-50 text-xs font-semibold text-gray-600 transition-transform md:hidden ${
+              className={`ml-3 inline-flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 bg-slate-50 text-xs font-semibold text-slate-600 transition-transform md:hidden ${
                 mobileSectionsOpen.links ? 'rotate-180' : ''
               }`}
             >
@@ -1343,7 +1343,7 @@ export default function MyPageEn() {
             </span>
           </button>
           <div className={`${mobileSectionsOpen.links ? 'mt-3 block' : 'hidden'} md:mt-3 md:block`}>
-            <ul className="space-y-2 text-sm text-gray-700">
+            <ul className="space-y-2 text-sm text-slate-700">
               <li>
                 <Link className="text-red-600 hover:underline" href="/en/pricing">
                   View pricing
@@ -1360,14 +1360,14 @@ export default function MyPageEn() {
       </main>
       {showCancelNotice ? (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
-          <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl">
-            <h2 className="text-lg font-semibold text-gray-900">Reservation cancellation notice</h2>
-            <p className="mt-3 text-sm text-gray-700">
+          <div className="w-full max-w-md rounded-lg bg-white p-6 shadow-xl">
+            <h2 className="text-lg font-semibold text-slate-900">Reservation cancellation notice</h2>
+            <p className="mt-3 text-sm text-slate-700">
               Your reservation has been marked as cancelled by our staff. If you have any questions, please contact support.
             </p>
             <button
               type="button"
-              className="mt-6 inline-flex w-full items-center justify-center rounded-full bg-red-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-red-700"
+              className="mt-6 inline-flex w-full items-center justify-center rounded-md bg-red-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-red-700"
               onClick={() => setShowCancelNotice(false)}
             >
               Close
@@ -1377,22 +1377,22 @@ export default function MyPageEn() {
       ) : null}
       {showAccidentModal ? (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
-          <div className="w-full max-w-md rounded-2xl border-2 border-rose-200 bg-white p-6 shadow-2xl ring-1 ring-rose-100">
+          <div className="w-full max-w-md rounded-lg border-2 border-red-200 bg-white p-6 shadow-xl ring-1 ring-red-100">
             <div className="flex items-start justify-between gap-3">
               <div>
-                <h2 className="text-lg font-semibold text-gray-900">Accident / fall report</h2>
-                <p className="mt-2 text-sm text-gray-600">Please send a photo of the bike&apos;s condition.</p>
+                <h2 className="text-lg font-semibold text-slate-900">Accident / fall report</h2>
+                <p className="mt-2 text-sm text-slate-600">Please send a photo of the bike&apos;s condition.</p>
               </div>
               <button
                 type="button"
                 onClick={handleAccidentClose}
-                className="rounded-full border border-gray-200 px-3 py-1 text-xs font-semibold text-gray-600 transition hover:border-gray-300 hover:text-gray-800"
+                className="rounded-full border border-slate-200 px-3 py-1 text-xs font-semibold text-slate-600 transition hover:border-slate-300 hover:text-slate-800"
               >
                 Close
               </button>
             </div>
             <div className="mt-4 space-y-3">
-              <label className="block text-xs font-semibold text-gray-600">Photo upload</label>
+              <label className="block text-xs font-semibold text-slate-600">Photo upload</label>
               <input
                 type="file"
                 accept="image/*"
@@ -1402,9 +1402,9 @@ export default function MyPageEn() {
                   const file = event.target.files?.[0] ?? null;
                   setAccidentFile(file);
                 }}
-                className="block w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm"
+                className="block w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm"
               />
-              <label className="block text-xs font-semibold text-gray-600 sm:hidden">
+              <label className="block text-xs font-semibold text-slate-600 sm:hidden">
                 Take a photo on your phone and upload
                 <input
                   type="file"
@@ -1416,7 +1416,7 @@ export default function MyPageEn() {
                     const file = event.target.files?.[0] ?? null;
                     setAccidentFile(file);
                   }}
-                  className="mt-2 block w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm"
+                  className="mt-2 block w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm"
                 />
               </label>
               {accidentError ? (
@@ -1428,12 +1428,12 @@ export default function MyPageEn() {
                 type="button"
                 onClick={handleAccidentSubmit}
                 disabled={accidentUploading}
-                className="inline-flex w-full items-center justify-center rounded-full bg-red-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-red-700 disabled:cursor-not-allowed disabled:bg-red-300"
+                className="inline-flex w-full items-center justify-center rounded-md bg-red-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-red-700 disabled:cursor-not-allowed disabled:bg-red-300"
               >
                 {accidentUploading ? 'Sending…' : 'Send'}
               </button>
               {accidentSubmitted ? (
-                <div className="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-900">
+                <div className="rounded-md border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-900">
                   <p className="font-semibold">Your report has been submitted.</p>
                   <div className="mt-3 space-y-2 text-xs text-emerald-900">
                     <p>① Roadside assistance contact details</p>
@@ -1450,29 +1450,29 @@ export default function MyPageEn() {
       ) : null}
       {showReturnModal ? (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
-          <div className="w-full max-w-md rounded-2xl border-2 border-amber-200 bg-white p-6 shadow-2xl ring-1 ring-amber-100">
+          <div className="w-full max-w-md rounded-lg border-2 border-amber-200 bg-white p-6 shadow-xl ring-1 ring-amber-100">
             <div className="flex items-start justify-between gap-3">
               <div>
-                <h2 className="text-lg font-semibold text-gray-900">Bike return</h2>
+                <h2 className="text-lg font-semibold text-slate-900">Bike return</h2>
                 {returnStep === 'survey' ? (
-                  <p className="mt-2 text-sm text-gray-600">Thank you for riding with us!</p>
+                  <p className="mt-2 text-sm text-slate-600">Thank you for riding with us!</p>
                 ) : returnStep === 'done' ? (
-                  <p className="mt-2 text-sm text-gray-600">Submission complete.</p>
+                  <p className="mt-2 text-sm text-slate-600">Submission complete.</p>
                 ) : (
-                  <p className="mt-2 text-sm text-gray-600">Were you able to park inside the designated area?</p>
+                  <p className="mt-2 text-sm text-slate-600">Were you able to park inside the designated area?</p>
                 )}
               </div>
               <button
                 type="button"
                 onClick={handleReturnClose}
-                className="rounded-full border border-gray-200 px-3 py-1 text-xs font-semibold text-gray-600 transition hover:border-gray-300 hover:text-gray-800"
+                className="rounded-full border border-slate-200 px-3 py-1 text-xs font-semibold text-slate-600 transition hover:border-slate-300 hover:text-slate-800"
               >
                 Close
               </button>
             </div>
             {returnStep === 'check' ? (
               <div className="mt-4 space-y-3">
-                <label className="block text-xs font-semibold text-gray-600">Photo upload</label>
+                <label className="block text-xs font-semibold text-slate-600">Photo upload</label>
                 <input
                   type="file"
                   accept="image/*"
@@ -1481,9 +1481,9 @@ export default function MyPageEn() {
                     const file = event.target.files?.[0] ?? null;
                     setReturnFile(file);
                   }}
-                  className="block w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm"
+                  className="block w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm"
                 />
-                <label className="block text-xs font-semibold text-gray-600 sm:hidden">
+                <label className="block text-xs font-semibold text-slate-600 sm:hidden">
                   Take a photo on your phone and upload
                   <input
                     type="file"
@@ -1494,7 +1494,7 @@ export default function MyPageEn() {
                       const file = event.target.files?.[0] ?? null;
                       setReturnFile(file);
                     }}
-                    className="mt-2 block w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm"
+                    className="mt-2 block w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm"
                   />
                 </label>
                 {returnError ? (
@@ -1504,7 +1504,7 @@ export default function MyPageEn() {
                   type="button"
                   onClick={handleReturnComplete}
                   disabled={returnUploading}
-                  className="inline-flex w-full items-center justify-center rounded-full bg-red-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-red-700"
+                  className="inline-flex w-full items-center justify-center rounded-md bg-red-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-red-700"
                 >
                   {returnUploading ? 'Sending…' : 'Complete return'}
                 </button>
@@ -1512,9 +1512,9 @@ export default function MyPageEn() {
             ) : null}
             {returnStep === 'survey' ? (
               <div className="mt-4 space-y-4">
-                <div className="rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-700">
-                  <p className="font-semibold text-gray-900">Overall rating</p>
-                  <p className="mt-1 text-xs text-gray-600">How was the bike?</p>
+                <div className="rounded-md border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700">
+                  <p className="font-semibold text-slate-900">Overall rating</p>
+                  <p className="mt-1 text-xs text-slate-600">How was the bike?</p>
                   <div className="mt-3 flex gap-2">
                     {[1, 2, 3, 4, 5].map((value) => (
                       <button
@@ -1523,7 +1523,7 @@ export default function MyPageEn() {
                         onClick={() => setReturnRating(value)}
                         aria-label={`${value} star`}
                         className={`text-2xl transition ${
-                          returnRating >= value ? 'text-amber-400' : 'text-gray-300'
+                          returnRating >= value ? 'text-amber-400' : 'text-slate-300'
                         }`}
                       >
                         ★
@@ -1531,14 +1531,14 @@ export default function MyPageEn() {
                     ))}
                   </div>
                 </div>
-                <div className="rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-700">
-                  <p className="font-semibold text-gray-900">Survey</p>
-                  <p className="mt-1 text-xs text-gray-600">Is there a bike you&apos;d like to try next?</p>
+                <div className="rounded-md border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700">
+                  <p className="font-semibold text-slate-900">Survey</p>
+                  <p className="mt-1 text-xs text-slate-600">Is there a bike you&apos;d like to try next?</p>
                   <textarea
                     value={returnSurvey}
                     onChange={(event) => setReturnSurvey(event.target.value)}
                     rows={3}
-                    className="mt-3 w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm"
+                    className="mt-3 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm"
                     placeholder="Example: I&apos;m interested in an electric bike"
                   />
                 </div>
@@ -1556,12 +1556,12 @@ export default function MyPageEn() {
               </div>
             ) : null}
             {returnStep === 'done' ? (
-              <div className="mt-4 space-y-3 text-sm text-gray-700">
+              <div className="mt-4 space-y-3 text-sm text-slate-700">
                 <p className="rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-emerald-800">
                   Thanks for your cooperation. Your reservation status has been updated.
                 </p>
-                <div className="rounded-lg border border-gray-200 bg-gray-50 px-3 py-3">
-                  <p className="text-sm font-semibold text-gray-900">We&apos;d love it if you shared your experience.</p>
+                <div className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-3">
+                  <p className="text-sm font-semibold text-slate-900">We&apos;d love it if you shared your experience.</p>
                   <div className="mt-3 flex flex-wrap gap-2">
                     <a
                       href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(
@@ -1569,7 +1569,7 @@ export default function MyPageEn() {
                       )}&url=${encodeURIComponent(reviewStore?.url ?? 'https://yasukari.com')}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center justify-center rounded-full bg-red-600 px-4 py-2 text-xs font-semibold text-white shadow-sm transition hover:bg-red-700"
+                      className="inline-flex items-center justify-center rounded-md bg-red-600 px-4 py-2 text-xs font-semibold text-white shadow-sm transition hover:bg-red-700"
                     >
                       Share on Twitter
                     </a>
@@ -1579,20 +1579,20 @@ export default function MyPageEn() {
                       )}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center justify-center rounded-full bg-red-600 px-4 py-2 text-xs font-semibold text-white shadow-sm transition hover:bg-red-700"
+                      className="inline-flex items-center justify-center rounded-md bg-red-600 px-4 py-2 text-xs font-semibold text-white shadow-sm transition hover:bg-red-700"
                     >
                       Share on LINE
                     </a>
                   </div>
                 </div>
                 {reviewStore ? (
-                  <div className="rounded-lg border border-gray-200 bg-white px-3 py-3">
-                    <p className="text-sm font-semibold text-gray-900">Leave a review here</p>
+                  <div className="rounded-lg border border-slate-200 bg-white px-3 py-3">
+                    <p className="text-sm font-semibold text-slate-900">Leave a review here</p>
                     <a
                       href={reviewStore.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="mt-3 inline-flex w-full items-center justify-center rounded-full bg-red-600 px-4 py-2 text-xs font-semibold text-white shadow-sm transition hover:bg-red-700"
+                      className="mt-3 inline-flex w-full items-center justify-center rounded-md bg-red-600 px-4 py-2 text-xs font-semibold text-white shadow-sm transition hover:bg-red-700"
                     >
                       {reviewStore.name}
                     </a>
@@ -1601,7 +1601,7 @@ export default function MyPageEn() {
                 <button
                   type="button"
                   onClick={handleReturnClose}
-                  className="inline-flex w-full items-center justify-center rounded-full bg-red-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-red-700"
+                  className="inline-flex w-full items-center justify-center rounded-md bg-red-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-red-700"
                 >
                   Close
                 </button>
@@ -1612,7 +1612,7 @@ export default function MyPageEn() {
       ) : null}
       {showReturnExpiredModal ? (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
-          <div className="w-full max-w-md overflow-hidden rounded-2xl border-2 border-red-500 bg-yellow-50 shadow-2xl ring-4 ring-yellow-200">
+          <div className="w-full max-w-md overflow-hidden rounded-lg border-2 border-red-500 bg-yellow-50 shadow-xl ring-4 ring-yellow-200">
             <div className="flex items-start gap-3 bg-yellow-100 px-5 py-4">
               <div className="flex h-11 w-11 items-center justify-center rounded-full bg-white text-red-600 shadow-inner">
                 <span className="text-xl font-bold">!</span>
@@ -1627,7 +1627,7 @@ export default function MyPageEn() {
               </div>
             </div>
             <div className="bg-yellow-50 px-6 pb-6 pt-4">
-              <div className="rounded-xl bg-yellow-100 px-4 py-3 text-sm text-red-900">
+              <div className="rounded-md bg-yellow-100 px-4 py-3 text-sm text-red-900">
                 <ul className="list-disc space-y-2 pl-4">
                   <li>Please keep the bike in a safe location until the return is complete.</li>
                   <li>If you need more time, use the Extend rental option.</li>
@@ -1637,7 +1637,7 @@ export default function MyPageEn() {
               <button
                 type="button"
                 onClick={handleReturnClose}
-                className="mt-4 inline-flex w-full items-center justify-center rounded-full bg-red-600 px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-red-700"
+                className="mt-4 inline-flex w-full items-center justify-center rounded-md bg-red-600 px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-red-700"
               >
                 Close
               </button>
@@ -1647,19 +1647,19 @@ export default function MyPageEn() {
       ) : null}
       {showUnlockQrModal && activeKeyboxQrImageUrl ? (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-4 py-6">
-          <div className="w-full max-w-lg rounded-3xl bg-white p-4 shadow-2xl">
+          <div className="w-full max-w-lg rounded-lg bg-white p-4 shadow-xl">
             <div className="flex justify-center">
               <img
                 src={activeKeyboxQrImageUrl}
                 alt="Unlock QR code"
-                className="h-[70vh] w-full max-w-sm rounded-2xl border border-gray-200 bg-white object-contain"
+                className="h-[70vh] w-full max-w-sm rounded-lg border border-slate-200 bg-white object-contain"
               />
             </div>
-            <p className="mt-4 text-center text-sm text-gray-700">Hold it over the keybox reader.</p>
+            <p className="mt-4 text-center text-sm text-slate-700">Hold it over the keybox reader.</p>
             <button
               type="button"
               onClick={() => setShowUnlockQrModal(false)}
-              className="mt-4 inline-flex w-full items-center justify-center rounded-full bg-gray-900 px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-gray-800"
+              className="mt-4 inline-flex w-full items-center justify-center rounded-full bg-slate-900 px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-slate-800"
             >
               Close
             </button>

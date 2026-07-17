@@ -47,7 +47,7 @@ export default function BeginnerGuidePageEn() {
           </li>
         </ul>
       </section>
-      <FaArrowDown className="mx-auto text-2xl text-gray-500" />
+      <FaArrowDown className="mx-auto text-2xl text-slate-500" />
 
       <section className="border rounded p-4 space-y-2">
         <h2 className="text-lg font-semibold text-slate-900">02. Visiting the store</h2>
@@ -61,7 +61,7 @@ export default function BeginnerGuidePageEn() {
           Yasukari is operated by Rebike K-JET. When you arrive, please speak with the Rebike K-JET staff.
         </p>
       </section>
-      <FaArrowDown className="mx-auto text-2xl text-gray-500" />
+      <FaArrowDown className="mx-auto text-2xl text-slate-500" />
 
       <section className="border rounded p-4 space-y-2">
         <h2 className="text-lg font-semibold text-slate-900">03. During your rental</h2>
@@ -115,7 +115,7 @@ export default function BeginnerGuidePageEn() {
         <p className="mt-2">If you experience issues while riding, please contact the store during business hours.</p>
         <p>If the bike cannot be ridden outside business hours, please use roadside assistance.</p>
       </section>
-      <FaArrowDown className="mx-auto text-2xl text-gray-500" />
+      <FaArrowDown className="mx-auto text-2xl text-slate-500" />
 
       <section className="border rounded p-4 space-y-2">
         <h2 className="text-lg font-semibold text-slate-900">04. Returning the bike</h2>

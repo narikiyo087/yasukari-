@@ -9,7 +9,7 @@ import {
 
 export default function FooterEn() {
   return (
-    <footer className="bg-gray-100 border-t border-gray-200 text-sm text-gray-700">
+    <footer className="bg-slate-100 border-t border-slate-200 text-sm text-slate-700">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 gap-8 sm:grid-cols-3">
           {/* Brand intro & contact */}
@@ -131,14 +131,14 @@ export default function FooterEn() {
         </div>
 
         {/* Logo & copyright */}
-        <div className="border-t border-gray-300 mt-8 pt-6 text-center">
+        <div className="border-t border-slate-300 mt-8 pt-6 text-center">
           <img
             src="https://yasukari-file.s3.ap-northeast-1.amazonaws.com/PhotoUploads/1769056104573-d731196a-700f-4cc2-948b-68cfdb40d14a-yasukari-logo.jpg"
             alt="ヤスカリ ロゴ"
             width={120}
             className="mx-auto mb-2"
           />
-          <p className="text-gray-400">© 2025 ヤスカリ Inc.</p>
+          <p className="text-slate-400">© 2025 ヤスカリ Inc.</p>
         </div>
       </div>
     </footer>

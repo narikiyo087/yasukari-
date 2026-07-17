@@ -235,7 +235,7 @@ const ProfileSetupPageEn: NextPage = () => {
         <title>Basic information</title>
       </Head>
       <main className="mx-auto flex min-h-screen w-full max-w-3xl flex-col gap-8 px-4 py-10">
-        <header className="space-y-2 text-sm text-gray-600">
+        <header className="space-y-2 text-sm text-slate-600">
           <nav aria-label="breadcrumb">
             <ol className="flex items-center gap-2">
               <li>
@@ -250,66 +250,66 @@ const ProfileSetupPageEn: NextPage = () => {
                 </Link>
               </li>
               <li aria-hidden="true">/</li>
-              <li className="text-gray-600">Basic information</li>
+              <li className="text-slate-600">Basic information</li>
             </ol>
           </nav>
-          <h1 className="text-2xl font-semibold text-gray-900">Basic information</h1>
-          <p className="text-sm text-gray-500">
+          <h1 className="text-2xl font-semibold text-slate-900">Basic information</h1>
+          <p className="text-sm text-slate-500">
             Register the details needed for booking and communication. Phone number, name, handle name, and location/language are required.
           </p>
         </header>
 
         {error ? (
-          <section className="rounded-2xl border border-red-200 bg-red-50 p-6 shadow-sm">
+          <section className="rounded-lg border border-red-200 bg-red-50 p-6 shadow-sm">
             <p className="text-sm text-red-700">{error}</p>
           </section>
         ) : null}
 
         {success ? (
-          <section className="rounded-2xl border border-green-200 bg-green-50 p-6 shadow-sm">
+          <section className="rounded-lg border border-green-200 bg-green-50 p-6 shadow-sm">
             <p className="text-sm text-green-700">{success}</p>
           </section>
         ) : null}
 
         {loading ? (
-          <section className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-            <p className="text-sm text-gray-700">Loading your information…</p>
+          <section className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
+            <p className="text-sm text-slate-700">Loading your information…</p>
           </section>
         ) : (
           <>
-            <section className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+            <section className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
               <div className="flex flex-wrap items-start justify-between gap-4">
                 <div>
-                  <h2 className="text-lg font-semibold text-gray-900">Current profile</h2>
-                  <p className="mt-1 text-sm text-gray-600">Please review your saved details below.</p>
+                  <h2 className="text-lg font-semibold text-slate-900">Current profile</h2>
+                  <p className="mt-1 text-sm text-slate-600">Please review your saved details below.</p>
                 </div>
                 <Link
                   href={applyLocaleToPath('/mypage')}
-                  className="inline-flex items-center rounded-full border border-gray-200 px-4 py-2 text-sm font-semibold text-gray-700 transition hover:border-gray-300 hover:text-gray-800"
+                  className="inline-flex items-center rounded-full border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-slate-300 hover:text-slate-800"
                 >
                   Back to My Page
                 </Link>
               </div>
-              <dl className="mt-4 grid gap-4 text-sm text-gray-700 md:grid-cols-2">
+              <dl className="mt-4 grid gap-4 text-sm text-slate-700 md:grid-cols-2">
                 <div>
-                  <dt className="font-medium text-gray-600">Phone number</dt>
-                  <dd className="mt-1 text-gray-800">{formatDisplayPhoneNumber(attributes.phone_number)}</dd>
+                  <dt className="font-medium text-slate-600">Phone number</dt>
+                  <dd className="mt-1 text-slate-800">{formatDisplayPhoneNumber(attributes.phone_number)}</dd>
                 </div>
                 <div>
-                  <dt className="font-medium text-gray-600">Name</dt>
-                  <dd className="mt-1 text-gray-800">{attributes.name ?? 'Not set'}</dd>
+                  <dt className="font-medium text-slate-600">Name</dt>
+                  <dd className="mt-1 text-slate-800">{attributes.name ?? 'Not set'}</dd>
                 </div>
                 <div>
-                  <dt className="font-medium text-gray-600">Handle name</dt>
-                  <dd className="mt-1 text-gray-800">{attributes['custom:handle'] ?? 'Not set'}</dd>
+                  <dt className="font-medium text-slate-600">Handle name</dt>
+                  <dd className="mt-1 text-slate-800">{attributes['custom:handle'] ?? 'Not set'}</dd>
                 </div>
                 <div>
-                  <dt className="font-medium text-gray-600">Location / language</dt>
-                  <dd className="mt-1 text-gray-800">{localeLabel(attributes['custom:locale'])}</dd>
+                  <dt className="font-medium text-slate-600">Location / language</dt>
+                  <dd className="mt-1 text-slate-800">{localeLabel(attributes['custom:locale'])}</dd>
                 </div>
               </dl>
 
-              <div className="mt-4 space-y-2 text-sm text-gray-700">
+              <div className="mt-4 space-y-2 text-sm text-slate-700">
                 {missingKeys.length === 0 ? (
                   <p className="rounded-lg border border-green-200 bg-green-50 px-3 py-2 text-green-700">
                     All required fields are saved.
@@ -335,22 +335,22 @@ const ProfileSetupPageEn: NextPage = () => {
             </section>
 
             {showForm ? (
-              <section className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-                <h2 className="text-lg font-semibold text-gray-900">Edit basic information</h2>
-                <p className="mt-1 text-sm text-gray-600">Fill out the form below to update your profile.</p>
+              <section className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
+                <h2 className="text-lg font-semibold text-slate-900">Edit basic information</h2>
+                <p className="mt-1 text-sm text-slate-600">Fill out the form below to update your profile.</p>
 
                 <form className="mt-4 space-y-6" onSubmit={handleSubmit}>
                   <div className="space-y-4">
                     <div className="grid gap-4 md:grid-cols-[1fr_2fr]">
                       <div>
-                        <label className="block text-sm font-medium text-gray-700" htmlFor="phone_country">
+                        <label className="block text-sm font-medium text-slate-700" htmlFor="phone_country">
                           Country/Region
                         </label>
                         <select
                           id="phone_country"
                           name="phone_country"
                           defaultValue={phoneCountry}
-                          className="mt-1 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 shadow-sm focus:border-red-500 focus:outline-none focus:ring-1 focus:ring-red-500"
+                          className="mt-1 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm focus:border-red-500 focus:outline-none focus:ring-1 focus:ring-red-500"
                         >
                           {COUNTRY_OPTIONS.map((country) => (
                             <option key={country.dialCode} value={country.dialCode}>
@@ -360,7 +360,7 @@ const ProfileSetupPageEn: NextPage = () => {
                         </select>
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-gray-700" htmlFor="phone_national">
+                        <label className="block text-sm font-medium text-slate-700" htmlFor="phone_national">
                           Phone number
                         </label>
                         <input
@@ -370,15 +370,15 @@ const ProfileSetupPageEn: NextPage = () => {
                           required
                           defaultValue={phoneNational}
                           placeholder="09012345678"
-                          className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 shadow-sm focus:border-red-500 focus:outline-none focus:ring-1 focus:ring-red-500"
+                          className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-900 shadow-sm focus:border-red-500 focus:outline-none focus:ring-1 focus:ring-red-500"
                         />
-                        <p className="mt-1 text-xs text-gray-500">Enter without hyphens, starting with 0.</p>
+                        <p className="mt-1 text-xs text-slate-500">Enter without hyphens, starting with 0.</p>
                       </div>
                     </div>
 
                     <div className="grid gap-4 md:grid-cols-2">
                       <div>
-                        <label className="block text-sm font-medium text-gray-700" htmlFor="name">
+                        <label className="block text-sm font-medium text-slate-700" htmlFor="name">
                           Name (required)
                         </label>
                         <input
@@ -387,11 +387,11 @@ const ProfileSetupPageEn: NextPage = () => {
                           type="text"
                           required
                           defaultValue={attributes.name ?? ''}
-                          className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 shadow-sm focus:border-red-500 focus:outline-none focus:ring-1 focus:ring-red-500"
+                          className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-900 shadow-sm focus:border-red-500 focus:outline-none focus:ring-1 focus:ring-red-500"
                         />
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-gray-700" htmlFor="handle">
+                        <label className="block text-sm font-medium text-slate-700" htmlFor="handle">
                           Handle name (required)
                         </label>
                         <input
@@ -400,14 +400,14 @@ const ProfileSetupPageEn: NextPage = () => {
                           type="text"
                           required
                           defaultValue={attributes['custom:handle'] ?? ''}
-                          className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 shadow-sm focus:border-red-500 focus:outline-none focus:ring-1 focus:ring-red-500"
+                          className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-900 shadow-sm focus:border-red-500 focus:outline-none focus:ring-1 focus:ring-red-500"
                         />
-                        <p className="mt-1 text-xs text-gray-500">This will be shown in your reservation history.</p>
+                        <p className="mt-1 text-xs text-slate-500">This will be shown in your reservation history.</p>
                       </div>
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-gray-700" htmlFor="locale">
+                      <label className="block text-sm font-medium text-slate-700" htmlFor="locale">
                         Location / language (required)
                       </label>
                       <select
@@ -415,25 +415,25 @@ const ProfileSetupPageEn: NextPage = () => {
                         name="locale"
                         required
                       defaultValue={localeSelectValue()}
-                        className="mt-1 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 shadow-sm focus:border-red-500 focus:outline-none focus:ring-1 focus:ring-red-500"
+                        className="mt-1 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm focus:border-red-500 focus:outline-none focus:ring-1 focus:ring-red-500"
                       >
                         <option value="">Select</option>
                         <option value="jp">Japanese region</option>
                         <option value="en">English-speaking region</option>
                       </select>
-                      <p className="mt-1 text-xs text-gray-500">We use this to offer tailored support.</p>
+                      <p className="mt-1 text-xs text-slate-500">We use this to offer tailored support.</p>
                     </div>
                   </div>
 
                   <div className="flex flex-wrap items-center gap-3 text-sm">
                     <button
                       type="submit"
-                      className="inline-flex items-center rounded-full bg-red-600 px-6 py-2 font-semibold text-white transition hover:bg-red-700 disabled:opacity-60"
+                      className="inline-flex items-center rounded-md bg-red-600 px-6 py-2 font-semibold text-white transition hover:bg-red-700 disabled:opacity-60"
                       disabled={saving}
                     >
                       {saving ? 'Saving…' : 'Save basic information'}
                     </button>
-                    <p className="text-gray-600">Required fields: phone number, name, handle name, and location/language.</p>
+                    <p className="text-slate-600">Required fields: phone number, name, handle name, and location/language.</p>
                   </div>
                 </form>
               </section>

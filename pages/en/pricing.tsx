@@ -117,19 +117,19 @@ export default function PricingPageEn() {
       <Head>
         <title>Models & Pricing - ヤスカリ</title>
       </Head>
-      <h1 className="text-2xl font-bold mb-4 text-center">Vehicle Types & Rates</h1>
-      <p className="mb-6 text-sm text-gray-700">
+      <h1 className="text-2xl font-bold mb-6 text-center text-slate-900">Vehicle Types & Rates</h1>
+      <p className="mb-6 text-sm text-slate-700">
         Photos of the listed bikes are examples. Actual rental vehicles may differ in color or model year.
       </p>
       {categories.map((c) => (
         <section key={c.name} className="mb-8">
-          <h2 className="text-xl font-semibold mb-2">{c.name}</h2>
-          <table className="w-full text-sm border-collapse border">
+          <h2 className="text-xl font-semibold mb-2 text-slate-900">{c.name}</h2>
+          <table className="w-full text-sm border-collapse border border-slate-200 text-slate-700">
             <tbody>
               {c.prices.map((p) => (
                 <tr key={p.period}>
-                  <th className="w-32 p-2 border text-left bg-gray-50">{p.period}</th>
-                  <td className="p-2 border">{p.price}</td>
+                  <th className="w-40 p-3 border border-slate-200 text-left bg-slate-50 font-semibold text-slate-900">{p.period}</th>
+                  <td className="p-3 border border-slate-200 text-right font-bold text-slate-900 tabular-nums">{p.price}</td>
                 </tr>
               ))}
             </tbody>

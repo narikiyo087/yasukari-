@@ -50,8 +50,8 @@ export default function HowToUseEn() {
             {idx > 0 && (
               <FaCaretRight className="hidden text-2xl text-red-300 md:block" />
             )}
-            <div className="flex flex-1 flex-col items-center gap-4 rounded-2xl border border-white/60 bg-white/80 p-6 text-center shadow-[0_20px_42px_-28px_rgba(15,23,42,0.45)]">
-              <div className="mx-auto w-44 overflow-hidden rounded-xl bg-white">
+            <div className="flex flex-1 flex-col items-center gap-4 rounded-lg border border-slate-200 bg-white p-6 text-center shadow-sm">
+              <div className="mx-auto w-44 overflow-hidden rounded-md bg-white">
                 <img
                   className="h-full w-full object-contain"
                   alt={step.alt}
