@@ -126,7 +126,7 @@ export default function Header() {
     <div className="sticky top-0 z-50">
       {/* トップバー */}
       <AnnouncementBar />
-      <header className="bg-white shadow-md border-b-2 border-red-600 relative">
+      <header className="bg-white shadow-sm border-b border-slate-200 relative">
         <div className="mx-auto flex items-center justify-between px-4 py-3 w-full max-w-screen-xl">
           {/* ロゴ */}
           <Link href="/" className="flex items-center">
@@ -138,7 +138,7 @@ export default function Header() {
           </Link>
           <div className="flex items-center gap-4">
             <button
-              className="sm:hidden text-gray-700 p-2 rounded-md border border-gray-200 active:scale-95 transition"
+              className="sm:hidden text-slate-700 p-2 rounded-md border border-slate-200 active:scale-95 transition"
               onClick={() => setMenuOpen((o) => !o)}
               ref={menuButtonRef}
               aria-label="メニューを開閉"
@@ -181,20 +181,20 @@ export default function Header() {
                 </span>
               </Link>
               {showLanguageSwitch && (
-                <div className="flex items-center rounded-full border border-red-500 bg-red-50/70 shadow-sm text-xs font-semibold text-gray-800">
+                <div className="flex items-center rounded-md border border-slate-300 bg-white shadow-sm text-xs font-semibold text-slate-800">
                 <button
                   type="button"
-                  className="px-3 py-1 rounded-full transition-colors hover:bg-red-100"
+                  className="px-3 py-1 rounded transition-colors hover:bg-slate-100"
                   aria-current="page"
                   onClick={() => handleLanguageClick('ja')}
                   disabled={languageSwitchDisabled}
                 >
                   日本語
                 </button>
-                <span className="h-5 w-px bg-red-200" aria-hidden />
+                <span className="h-5 w-px bg-slate-200" aria-hidden />
                 <button
                   type="button"
-                  className="px-3 py-1 rounded-full transition-colors hover:bg-red-100"
+                  className="px-3 py-1 rounded transition-colors hover:bg-slate-100"
                   onClick={() => handleLanguageClick('en')}
                   disabled={languageSwitchDisabled}
                 >
@@ -255,10 +255,10 @@ export default function Header() {
               </li>
               {showLanguageSwitch && (
                 <li className="w-full pt-4">
-                  <div className="grid w-full grid-cols-2 overflow-hidden rounded-full border border-red-500 bg-red-50/70 text-sm font-semibold text-gray-800 shadow-sm">
+                  <div className="grid w-full grid-cols-2 overflow-hidden rounded-md border border-slate-300 bg-white text-sm font-semibold text-slate-800 shadow-sm">
                     <button
                       type="button"
-                      className="px-4 py-2 transition-colors hover:bg-red-100"
+                      className="px-4 py-2 transition-colors hover:bg-slate-100"
                       aria-current="page"
                       onClick={() => handleLanguageClick('ja')}
                       disabled={languageSwitchDisabled}
@@ -267,7 +267,7 @@ export default function Header() {
                     </button>
                     <button
                       type="button"
-                      className="px-4 py-2 transition-colors hover:bg-red-100"
+                      className="px-4 py-2 transition-colors hover:bg-slate-100"
                       onClick={() => handleLanguageClick('en')}
                       disabled={languageSwitchDisabled}
                     >
