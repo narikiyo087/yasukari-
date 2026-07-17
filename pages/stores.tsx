@@ -1,5 +1,65 @@
 import Head from 'next/head';
 
+const LOGO_URL =
+  'https://yasukari-file.s3.ap-northeast-1.amazonaws.com/PhotoUploads/1769056104573-d731196a-700f-4cc2-948b-68cfdb40d14a-yasukari-logo.jpg';
+
+// LocalBusiness structured data for the two physical stores (local SEO).
+const STORES_JSONLD = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'LocalBusiness',
+      name: 'ヤスカリ 足立小台本店',
+      image: LOGO_URL,
+      url: 'https://yasukari.com/stores#adachi',
+      telephone: '+81-3-5856-8200',
+      email: 'info@yasukari.com',
+      priceRange: '¥¥',
+      address: {
+        '@type': 'PostalAddress',
+        postalCode: '120-0046',
+        addressRegion: '東京都',
+        addressLocality: '足立区',
+        streetAddress: '小台2-9-7 1階',
+        addressCountry: 'JP',
+      },
+      openingHoursSpecification: [
+        {
+          '@type': 'OpeningHoursSpecification',
+          dayOfWeek: ['Tuesday', 'Wednesday', 'Friday', 'Saturday', 'Sunday'],
+          opens: '10:00',
+          closes: '19:00',
+        },
+      ],
+    },
+    {
+      '@type': 'LocalBusiness',
+      name: 'ヤスカリ 三ノ輪店',
+      image: LOGO_URL,
+      url: 'https://yasukari.com/stores#minowa',
+      telephone: '+81-3-5856-8200',
+      email: 'info@yasukari.com',
+      priceRange: '¥¥',
+      address: {
+        '@type': 'PostalAddress',
+        postalCode: '110-0004',
+        addressRegion: '東京都',
+        addressLocality: '台東区',
+        streetAddress: '下谷3-16-14',
+        addressCountry: 'JP',
+      },
+      openingHoursSpecification: [
+        {
+          '@type': 'OpeningHoursSpecification',
+          dayOfWeek: ['Tuesday', 'Wednesday', 'Friday', 'Saturday', 'Sunday'],
+          opens: '10:00',
+          closes: '19:00',
+        },
+      ],
+    },
+  ],
+};
+
 export default function StoresPage() {
   return (
     <div className="max-w-3xl mx-auto p-6 text-sm leading-relaxed">
@@ -17,6 +77,10 @@ export default function StoresPage() {
         <meta name="twitter:title" content="店舗一覧 - ヤスカリ" />
         <meta name="twitter:description" content="ヤスカリの店舗一覧。足立小台本店（足立区）と三ノ輪店（台東区・24時間セルフ）のアクセス・営業時間・地図をご案内します。" />
         <meta name="twitter:image" content="https://yasukari-file.s3.ap-northeast-1.amazonaws.com/PhotoUploads/slide.jpg" />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(STORES_JSONLD) }}
+        />
       </Head>
       <h1 className="text-2xl font-bold mb-6 text-center text-slate-900">店舗一覧</h1>
 
