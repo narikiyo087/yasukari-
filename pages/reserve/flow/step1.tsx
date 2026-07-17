@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import Head from "next/head";
 import Link from "next/link";
+import ReserveStepProgress from "../../../components/ReserveStepProgress";
 import { useRouter } from "next/router";
 
 import type { RegistrationData } from "../../../types/registration";
@@ -263,9 +264,9 @@ export default function ReserveFlowStep1() {
       </Head>
       <main className="min-h-screen bg-slate-50 pb-16">
         <div className="mx-auto max-w-5xl px-4 py-10 sm:px-6 lg:px-8 space-y-8">
+          <ReserveStepProgress current={1} />
           <header className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-wide text-red-600">Step 1 / 3</p>
               <h1 className="text-2xl font-bold text-slate-900">予約内容を確認する</h1>
               <p className="text-sm text-slate-600">
                 予約内容を確認して時間を指定してください。時間の選択が完了するまで次に進めません。

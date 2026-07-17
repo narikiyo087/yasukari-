@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import ReserveStepProgress from "../../../components/ReserveStepProgress";
 
 import type { Reservation } from "../../../lib/reservations";
 
@@ -136,6 +137,7 @@ export default function ReservationCompletePage() {
       </Head>
       <main className="min-h-screen bg-slate-50 pb-16">
         <div className="mx-auto max-w-4xl px-4 py-10 sm:px-6 lg:px-8 space-y-6">
+          <ReserveStepProgress current={4} />
           <header className="space-y-2 text-center">
             <p className="text-xs font-semibold uppercase tracking-wide text-emerald-600">Reservation Complete</p>
             <h1 className="text-3xl font-bold text-slate-900">予約が完了しました</h1>
