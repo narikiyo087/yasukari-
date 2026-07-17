@@ -386,7 +386,7 @@ export default function RentalExtensionCheckoutPage() {
         <title>レンタル延長 決済確認</title>
       </Head>
       <main className="mx-auto flex min-h-screen w-full max-w-3xl flex-col gap-8 px-4 py-12">
-        <header className="space-y-2 text-sm text-gray-600">
+        <header className="space-y-2 text-sm text-slate-600">
           <nav aria-label="breadcrumb">
             <ol className="flex items-center gap-2">
               <li>
@@ -407,47 +407,47 @@ export default function RentalExtensionCheckoutPage() {
                 </a>
               </li>
               <li aria-hidden="true">/</li>
-              <li className="text-gray-600">決済確認</li>
+              <li className="text-slate-600">決済確認</li>
             </ol>
           </nav>
-          <h1 className="text-2xl font-semibold text-gray-900">レンタル延長 決済確認</h1>
-          <p className="text-sm text-gray-500">内容をご確認のうえ、クレジット決済を行ってください。</p>
+          <h1 className="text-2xl font-semibold text-slate-900">レンタル延長 決済確認</h1>
+          <p className="text-sm text-slate-500">内容をご確認のうえ、クレジット決済を行ってください。</p>
         </header>
 
         {error ? (
-          <section className="rounded-2xl border border-red-200 bg-red-50 p-6 shadow-sm">
+          <section className="rounded-lg border border-red-200 bg-red-50 p-6 shadow-sm">
             <p className="text-sm text-red-700">{error}</p>
           </section>
         ) : null}
 
-        <section className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+        <section className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
           {loadingUser || loadingReservation ? (
-            <p className="text-sm text-gray-700">情報を読み込み中です…</p>
+            <p className="text-sm text-slate-700">情報を読み込み中です…</p>
           ) : reservationError ? (
             <p className="text-sm text-red-700">{reservationError}</p>
           ) : reservation ? (
             <div className="space-y-6">
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <div>
-                  <p className="text-sm font-semibold text-gray-900">{reservation.vehicleModel}</p>
-                  <p className="text-xs text-gray-600">{reservation.storeName}</p>
+                  <p className="text-sm font-semibold text-slate-900">{reservation.vehicleModel}</p>
+                  <p className="text-xs text-slate-600">{reservation.storeName}</p>
                 </div>
                 <Link
                   href={`/mypage/rentals/${reservation.id}`}
-                  className="inline-flex items-center justify-center rounded-full border border-gray-200 bg-white px-4 py-2 text-xs font-semibold text-gray-700 shadow-sm transition hover:bg-gray-100"
+                  className="inline-flex items-center justify-center rounded-full border border-slate-200 bg-white px-4 py-2 text-xs font-semibold text-slate-700 shadow-sm transition hover:bg-slate-100"
                 >
                   予約の詳細を確認
                 </Link>
               </div>
 
               <div className="grid gap-4 md:grid-cols-2">
-                <div className="rounded-xl bg-gray-50 p-4">
-                  <p className="text-xs text-gray-500">現在の返却予定</p>
-                  <p className="mt-1 text-lg font-semibold text-gray-900">
+                <div className="rounded-md bg-slate-50 p-4">
+                  <p className="text-xs text-slate-500">現在の返却予定</p>
+                  <p className="mt-1 text-lg font-semibold text-slate-900">
                     {baseReturnDate ? formatReservationDatetime(baseReturnDate) : '未設定'}
                   </p>
                 </div>
-                <div className="rounded-xl bg-emerald-50 p-4">
+                <div className="rounded-md bg-emerald-50 p-4">
                   <p className="text-xs text-emerald-700">延長後の返却予定</p>
                   <p className="mt-1 text-lg font-semibold text-emerald-900">
                     {extendedReturnDate ? formatReservationDatetime(extendedReturnDate) : '未設定'}
@@ -457,19 +457,19 @@ export default function RentalExtensionCheckoutPage() {
               </div>
 
               <div className="grid gap-4 md:grid-cols-2">
-                <div className="rounded-xl border border-gray-200 bg-gray-50 p-4">
-                  <p className="text-xs text-gray-500">クラスの追加料金(24時間)</p>
-                  <p className="mt-1 text-lg font-semibold text-gray-900">
+                <div className="rounded-md border border-slate-200 bg-slate-50 p-4">
+                  <p className="text-xs text-slate-500">クラスの追加料金(24時間)</p>
+                  <p className="mt-1 text-lg font-semibold text-slate-900">
                     {extra24hPrice != null ? formatPrice(extra24hPrice) : 'クラス情報なし'}
                   </p>
                   {loadingCatalog ? (
-                    <p className="mt-2 text-xs text-gray-500">料金を取得しています…</p>
+                    <p className="mt-2 text-xs text-slate-500">料金を取得しています…</p>
                   ) : null}
                   {!loadingCatalog && !targetClass ? (
                     <p className="mt-2 text-xs text-red-700">車両クラスが特定できませんでした。</p>
                   ) : null}
                 </div>
-                <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-4">
+                <div className="rounded-md border border-emerald-200 bg-emerald-50 p-4">
                   <p className="text-xs text-emerald-700">今回の延長費用</p>
                   <p className="mt-1 text-2xl font-bold text-emerald-900">
                     {additionalCost != null ? formatPrice(additionalCost) : '計算できません'}
@@ -484,13 +484,13 @@ export default function RentalExtensionCheckoutPage() {
 
               <div className="flex flex-wrap gap-3">
                 <div className="flex flex-col gap-3">
-                  <div className="flex flex-wrap items-center gap-2 text-xs text-gray-600">
-                    <span className="rounded-full border border-gray-200 bg-white px-3 py-1 font-semibold text-gray-700">
+                  <div className="flex flex-wrap items-center gap-2 text-xs text-slate-600">
+                    <span className="rounded-full border border-slate-200 bg-white px-3 py-1 font-semibold text-slate-700">
                       Apple Pay 対応
                     </span>
                     <span>Apple Pay での支払いも選択できます。</span>
                   </div>
-                  <ul className="space-y-1 text-xs text-gray-500">
+                  <ul className="space-y-1 text-xs text-slate-500">
                     <li>※ Apple Pay は対応端末・ブラウザ（Safari）でのみ表示されます。</li>
                     <li>※ Apple Pay が表示されない場合は、クレジットカード決済をご利用ください。</li>
                     <li>※ ご利用環境により表示される決済方法が異なる場合があります。</li>
@@ -521,7 +521,7 @@ export default function RentalExtensionCheckoutPage() {
                     ) : (
                       <button
                         type="button"
-                        className="inline-flex items-center justify-center rounded-full bg-gray-200 px-5 py-3 text-sm font-semibold text-gray-500"
+                        className="inline-flex items-center justify-center rounded-full bg-slate-200 px-5 py-3 text-sm font-semibold text-slate-500"
                         disabled
                       >
                         クレジット決済で延長する
@@ -539,28 +539,28 @@ export default function RentalExtensionCheckoutPage() {
                     pathname: `/mypage/rentals/extend/${reservation.id}`,
                     query: { extensionDays: extensionDays.toString() },
                   }}
-                  className="inline-flex items-center justify-center rounded-full border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-700 shadow-sm transition hover:bg-gray-100"
+                  className="inline-flex items-center justify-center rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-slate-100"
                 >
                   延長内容を修正
                 </Link>
               </div>
             </div>
           ) : (
-            <p className="text-sm text-gray-700">予約情報が読み込めませんでした。</p>
+            <p className="text-sm text-slate-700">予約情報が読み込めませんでした。</p>
           )}
         </section>
       </main>
       {showConfirmation ? (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
-          <div className="w-full max-w-lg rounded-2xl bg-white p-6 shadow-xl" role="dialog" aria-modal="true">
-            <h2 className="text-lg font-semibold text-gray-900">ご確認ください</h2>
-            <p className="mt-4 text-sm text-gray-900">
+          <div className="w-full max-w-lg rounded-lg bg-white p-6 shadow-xl" role="dialog" aria-modal="true">
+            <h2 className="text-lg font-semibold text-slate-900">ご確認ください</h2>
+            <p className="mt-4 text-sm text-slate-900">
               続けて長期レンタルしたい場合は長期価格との差額分を返金いたしますので、追加決済後にお問い合わせよりご連絡ください。
             </p>
             <div className="mt-6 flex justify-end">
               <button
                 type="button"
-                className="inline-flex items-center justify-center rounded-full bg-red-600 px-6 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-red-700"
+                className="inline-flex items-center justify-center rounded-md bg-red-600 px-6 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-red-700"
                 onClick={handleConfirmPayment}
               >
                 OK

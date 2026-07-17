@@ -328,7 +328,7 @@ export default function RentalDetailPage() {
         <title>レンタル詳細 - ヤスカリ</title>
       </Head>
       <main className="mx-auto flex min-h-screen w-full max-w-5xl flex-col gap-8 px-4 py-12">
-        <header className="space-y-2 text-sm text-gray-600">
+        <header className="space-y-2 text-sm text-slate-600">
           <nav aria-label="breadcrumb">
             <ol className="flex items-center gap-2">
               <li>
@@ -343,27 +343,27 @@ export default function RentalDetailPage() {
                 </Link>
               </li>
               <li aria-hidden="true">/</li>
-              <li className="text-gray-600">レンタル詳細</li>
+              <li className="text-slate-600">レンタル詳細</li>
             </ol>
           </nav>
-          <h1 className="text-2xl font-semibold text-gray-900">レンタル詳細</h1>
-          <p className="text-sm text-gray-500">レンタル中の車両情報や予約内容の詳細を確認できます。</p>
+          <h1 className="text-2xl font-semibold text-slate-900">レンタル詳細</h1>
+          <p className="text-sm text-slate-500">レンタル中の車両情報や予約内容の詳細を確認できます。</p>
         </header>
 
         {loading ? (
-          <section className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-            <p className="text-sm text-gray-700">ログイン状態を確認しています…</p>
+          <section className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
+            <p className="text-sm text-slate-700">ログイン状態を確認しています…</p>
           </section>
         ) : (
           <>
             {error ? (
-              <section className="rounded-2xl border border-red-200 bg-red-50 p-6 shadow-sm">
+              <section className="rounded-lg border border-red-200 bg-red-50 p-6 shadow-sm">
                 <p className="text-sm text-red-700">{error}</p>
               </section>
             ) : null}
 
             {reservationError ? (
-              <section className="rounded-2xl border border-red-200 bg-red-50 p-6 shadow-sm">
+              <section className="rounded-lg border border-red-200 bg-red-50 p-6 shadow-sm">
                 <p className="text-sm text-red-700">{reservationError}</p>
               </section>
             ) : null}
@@ -371,7 +371,7 @@ export default function RentalDetailPage() {
             {reservation ? (
               <>
                 <section className="grid gap-6 lg:grid-cols-[1.2fr_1fr]">
-                  <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
+                  <div className="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
                     <img
                       src={heroImage}
                       alt={reservation.vehicleModel ? `${reservation.vehicleModel} のアイキャッチ` : '車両アイキャッチ'}
@@ -379,49 +379,49 @@ export default function RentalDetailPage() {
                     />
                   </div>
                   <div className="space-y-4">
-                    <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-                      <p className="text-xs font-semibold uppercase tracking-[0.2em] text-gray-400">Model detail</p>
-                      <h2 className="mt-2 text-2xl font-semibold text-gray-900">
+                    <div className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
+                      <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">Model detail</p>
+                      <h2 className="mt-2 text-2xl font-semibold text-slate-900">
                         {reservation.vehicleModel || '車種未設定'}
                       </h2>
-                      <p className="mt-2 text-sm font-semibold text-gray-700">
+                      <p className="mt-2 text-sm font-semibold text-slate-700">
                         {displacementLabel(model?.displacementCc) ?? 'クラス未設定'}
                       </p>
-                      <p className="mt-3 text-sm text-gray-600">{modelDescription || 'スペック情報が未登録です。'}</p>
+                      <p className="mt-3 text-sm text-slate-600">{modelDescription || 'スペック情報が未登録です。'}</p>
                       <div className="mt-4 flex flex-wrap gap-2">
-                        <span className="inline-flex items-center rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-700">
+                        <span className="inline-flex items-center rounded bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700">
                           {reservation.storeName}
                         </span>
-                        <span className="inline-flex items-center rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-700">
+                        <span className="inline-flex items-center rounded bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700">
                           車両コード: {reservation.vehicleCode || '-'}
                         </span>
-                        <span className="inline-flex items-center rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-700">
+                        <span className="inline-flex items-center rounded bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700">
                           ナンバー: {reservation.vehiclePlate || '未設定'}
                         </span>
                       </div>
                     </div>
-                    <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-                      <h3 className="text-base font-semibold text-gray-900">予約詳細情報</h3>
-                      <dl className="mt-4 grid gap-3 text-sm text-gray-700">
-                        <div className="rounded-lg bg-gray-50 px-3 py-2">
-                          <dt className="text-xs text-gray-500">貸出〜返却</dt>
-                          <dd className="font-semibold text-gray-900">
+                    <div className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
+                      <h3 className="text-base font-semibold text-slate-900">予約詳細情報</h3>
+                      <dl className="mt-4 grid gap-3 text-sm text-slate-700">
+                        <div className="rounded-lg bg-slate-50 px-3 py-2">
+                          <dt className="text-xs text-slate-500">貸出〜返却</dt>
+                          <dd className="font-semibold text-slate-900">
                             {formatReservationDatetime(reservation.pickupAt)} → {formatReservationDatetime(reservation.returnAt)}
                           </dd>
                         </div>
-                        <div className="rounded-lg bg-gray-50 px-3 py-2">
-                          <dt className="text-xs text-gray-500">ご予約情報</dt>
-                          <dd className="font-semibold text-gray-900">
+                        <div className="rounded-lg bg-slate-50 px-3 py-2">
+                          <dt className="text-xs text-slate-500">ご予約情報</dt>
+                          <dd className="font-semibold text-slate-900">
                             車両コード: {reservation.vehicleCode || '-'} / ナンバープレート: {reservation.vehiclePlate || '未設定'}
                           </dd>
                         </div>
-                        <div className="rounded-lg bg-gray-50 px-3 py-2">
-                          <dt className="text-xs text-gray-500">決済金額</dt>
-                          <dd className="font-semibold text-gray-900">{formatCurrency(reservation.paymentAmount)} 円</dd>
+                        <div className="rounded-lg bg-slate-50 px-3 py-2">
+                          <dt className="text-xs text-slate-500">決済金額</dt>
+                          <dd className="font-semibold text-slate-900">{formatCurrency(reservation.paymentAmount)} 円</dd>
                         </div>
-                        <div className="rounded-lg bg-gray-50 px-3 py-2">
-                          <dt className="text-xs text-gray-500">決済日時</dt>
-                          <dd className="font-semibold text-gray-900">
+                        <div className="rounded-lg bg-slate-50 px-3 py-2">
+                          <dt className="text-xs text-slate-500">決済日時</dt>
+                          <dd className="font-semibold text-slate-900">
                             {reservation.paymentDate ? formatReservationDatetime(reservation.paymentDate) : '未登録'}
                           </dd>
                         </div>
@@ -430,72 +430,72 @@ export default function RentalDetailPage() {
                   </div>
                 </section>
 
-                <section className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+                <section className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
                   <div className="flex flex-wrap items-center justify-between gap-3">
                     <div>
-                      <p className="text-xs font-semibold uppercase tracking-[0.2em] text-gray-400">Spec</p>
-                      <h3 className="mt-2 text-lg font-semibold text-gray-900">スペック</h3>
+                      <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">Spec</p>
+                      <h3 className="mt-2 text-lg font-semibold text-slate-900">スペック</h3>
                     </div>
                     {modelError ? <span className="text-xs text-red-600">{modelError}</span> : null}
                   </div>
                   <dl className="mt-4 grid gap-3 sm:grid-cols-2">
                     {specRows.map((row) => (
-                      <div key={row.label} className="rounded-lg bg-gray-50 px-3 py-2">
-                        <dt className="text-xs text-gray-500">{row.label}</dt>
-                        <dd className="font-semibold text-gray-900">{renderValue(row.value)}</dd>
+                      <div key={row.label} className="rounded-lg bg-slate-50 px-3 py-2">
+                        <dt className="text-xs text-slate-500">{row.label}</dt>
+                        <dd className="font-semibold text-slate-900">{renderValue(row.value)}</dd>
                       </div>
                     ))}
                   </dl>
                 </section>
 
                 <section className="grid gap-6 lg:grid-cols-[1fr_1fr]">
-                  <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+                  <div className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
                     <div className="flex items-center justify-between gap-2">
-                      <h3 className="text-lg font-semibold text-gray-900">オプション・補償内容</h3>
+                      <h3 className="text-lg font-semibold text-slate-900">オプション・補償内容</h3>
                       {classError ? <span className="text-xs text-red-600">{classError}</span> : null}
                     </div>
                     <dl className="mt-4 grid gap-3">
-                      <div className="rounded-lg bg-gray-50 px-3 py-2">
-                        <dt className="text-xs text-gray-500">車両補償</dt>
-                        <dd className="font-semibold text-gray-900">
+                      <div className="rounded-lg bg-slate-50 px-3 py-2">
+                        <dt className="text-xs text-slate-500">車両補償</dt>
+                        <dd className="font-semibold text-slate-900">
                           {formatCoverageDetail(vehicleCoverageFee)}
                         </dd>
                       </div>
-                      <div className="rounded-lg bg-gray-50 px-3 py-2">
-                        <dt className="text-xs text-gray-500">盗難補償</dt>
-                        <dd className="font-semibold text-gray-900">
+                      <div className="rounded-lg bg-slate-50 px-3 py-2">
+                        <dt className="text-xs text-slate-500">盗難補償</dt>
+                        <dd className="font-semibold text-slate-900">
                           {formatCoverageDetail(theftCoverageFee)}
                         </dd>
                       </div>
                       {notesValue ? (
-                        <div className="rounded-lg bg-gray-50 px-3 py-2">
-                          <dt className="text-xs text-gray-500">備考</dt>
-                          <dd className="font-semibold text-gray-900">{notesValue}</dd>
+                        <div className="rounded-lg bg-slate-50 px-3 py-2">
+                          <dt className="text-xs text-slate-500">備考</dt>
+                          <dd className="font-semibold text-slate-900">{notesValue}</dd>
                         </div>
                       ) : null}
                     </dl>
                   </div>
-                  <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-                    <h3 className="text-lg font-semibold text-gray-900">店舗アクセス</h3>
+                  <div className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
+                    <h3 className="text-lg font-semibold text-slate-900">店舗アクセス</h3>
                     {storeInfo ? (
-                      <div className="mt-4 space-y-3 text-sm text-gray-700">
-                        <p className="font-semibold text-gray-900">{storeInfo.name}</p>
+                      <div className="mt-4 space-y-3 text-sm text-slate-700">
+                        <p className="font-semibold text-slate-900">{storeInfo.name}</p>
                         <p>{storeInfo.description}</p>
                         <ul className="list-disc space-y-1 pl-5">
                           {storeInfo.access.map((item) => (
                             <li key={item}>{item}</li>
                           ))}
                         </ul>
-                        <div className="rounded-lg bg-gray-50 px-3 py-2">
-                          <p className="text-xs text-gray-500">所在地</p>
-                          <p className="font-semibold text-gray-900">{storeInfo.address}</p>
-                          <p className="mt-1 text-xs text-gray-500">営業時間</p>
-                          <p className="font-semibold text-gray-900">{storeInfo.hours}</p>
+                        <div className="rounded-lg bg-slate-50 px-3 py-2">
+                          <p className="text-xs text-slate-500">所在地</p>
+                          <p className="font-semibold text-slate-900">{storeInfo.address}</p>
+                          <p className="mt-1 text-xs text-slate-500">営業時間</p>
+                          <p className="font-semibold text-slate-900">{storeInfo.hours}</p>
                         </div>
                         <div className="flex flex-wrap gap-2">
                           <Link
                             href={storeInfo.anchor}
-                            className="inline-flex items-center justify-center rounded-full border border-gray-200 bg-white px-4 py-2 text-xs font-semibold text-gray-700 transition hover:border-gray-300 hover:bg-gray-50"
+                            className="inline-flex items-center justify-center rounded-full border border-slate-200 bg-white px-4 py-2 text-xs font-semibold text-slate-700 transition hover:border-slate-300 hover:bg-slate-50"
                           >
                             店舗までのアクセス
                           </Link>
@@ -510,7 +510,7 @@ export default function RentalDetailPage() {
                         </div>
                       </div>
                     ) : (
-                      <p className="mt-4 text-sm text-gray-600">店舗情報が未登録です。</p>
+                      <p className="mt-4 text-sm text-slate-600">店舗情報が未登録です。</p>
                     )}
                   </div>
                 </section>

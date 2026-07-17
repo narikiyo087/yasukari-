@@ -566,10 +566,10 @@ const RegistrationPage: NextPage = () => {
         <title>本登録 | ヤスカリ</title>
         <meta name="description" content="マイページから本登録用の基本情報を入力できます。" />
       </Head>
-      <div className="min-h-screen bg-gray-50 text-gray-900">
+      <div className="min-h-screen bg-slate-50 text-slate-900">
         <main className="mx-auto w-full max-w-5xl px-4 py-8 md:px-8 md:py-12">
           <nav aria-label="breadcrumb" className="mb-6">
-            <ol className="flex items-center space-x-2 text-sm text-gray-500">
+            <ol className="flex items-center space-x-2 text-sm text-slate-500">
               <li>
                 <Link href="/" className="text-red-600 hover:underline">
                   ホーム
@@ -582,13 +582,13 @@ const RegistrationPage: NextPage = () => {
                 </Link>
               </li>
               <li aria-hidden="true">/</li>
-              <li className="text-gray-600">本登録</li>
+              <li className="text-slate-600">本登録</li>
             </ol>
           </nav>
 
-          <section className="mb-8 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-            <h1 className="text-2xl font-semibold text-gray-900">本登録フォーム</h1>
-            <p className="mt-2 text-sm text-gray-600">
+          <section className="mb-8 rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
+            <h1 className="text-2xl font-semibold text-slate-900">本登録フォーム</h1>
+            <p className="mt-2 text-sm text-slate-600">
               レンタルのご利用に必要な基本情報を入力してください。
             </p>
             {userError ? (
@@ -596,10 +596,10 @@ const RegistrationPage: NextPage = () => {
             ) : null}
           </section>
 
-          <section className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+          <section className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
             <form className="space-y-6" onSubmit={handleSubmit}>
               <div>
-                <label className="block text-sm font-medium text-gray-700" htmlFor="email">
+                <label className="block text-sm font-medium text-slate-700" htmlFor="email">
                   メールアドレス
                 </label>
                 <input
@@ -608,14 +608,14 @@ const RegistrationPage: NextPage = () => {
                   type="email"
                   value={sessionUser?.email ?? ''}
                   disabled
-                  className="mt-1 w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-gray-700 focus:border-red-500 focus:outline-none"
+                  className="mt-1 w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-slate-700 focus:border-red-500 focus:outline-none"
                   placeholder="example@example.com"
                 />
               </div>
 
               <div className="grid gap-4 md:grid-cols-2">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700" htmlFor="name1">
+                  <label className="block text-sm font-medium text-slate-700" htmlFor="name1">
                     姓（漢字）
                   </label>
                   <input
@@ -625,12 +625,12 @@ const RegistrationPage: NextPage = () => {
                     value={formData.name1}
                     onChange={handleChange}
                     required
-                    className="mt-1 w-full rounded-lg border border-gray-200 px-3 py-2 text-gray-700 focus:border-red-500 focus:outline-none"
+                    className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-slate-700 focus:border-red-500 focus:outline-none"
                     placeholder="山田"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700" htmlFor="name2">
+                  <label className="block text-sm font-medium text-slate-700" htmlFor="name2">
                     名（漢字）
                   </label>
                   <input
@@ -640,12 +640,12 @@ const RegistrationPage: NextPage = () => {
                     value={formData.name2}
                     onChange={handleChange}
                     required
-                    className="mt-1 w-full rounded-lg border border-gray-200 px-3 py-2 text-gray-700 focus:border-red-500 focus:outline-none"
+                    className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-slate-700 focus:border-red-500 focus:outline-none"
                     placeholder="太郎"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700" htmlFor="kana1">
+                  <label className="block text-sm font-medium text-slate-700" htmlFor="kana1">
                     セイ（カナ）
                   </label>
                   <input
@@ -655,12 +655,12 @@ const RegistrationPage: NextPage = () => {
                     value={formData.kana1}
                     onChange={handleChange}
                     required
-                    className="mt-1 w-full rounded-lg border border-gray-200 px-3 py-2 text-gray-700 focus:border-red-500 focus:outline-none"
+                    className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-slate-700 focus:border-red-500 focus:outline-none"
                     placeholder="ヤマダ"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700" htmlFor="kana2">
+                  <label className="block text-sm font-medium text-slate-700" htmlFor="kana2">
                     メイ（カナ）
                   </label>
                   <input
@@ -670,7 +670,7 @@ const RegistrationPage: NextPage = () => {
                     value={formData.kana2}
                     onChange={handleChange}
                     required
-                    className="mt-1 w-full rounded-lg border border-gray-200 px-3 py-2 text-gray-700 focus:border-red-500 focus:outline-none"
+                    className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-slate-700 focus:border-red-500 focus:outline-none"
                     placeholder="タロウ"
                   />
                 </div>
@@ -678,7 +678,7 @@ const RegistrationPage: NextPage = () => {
 
               <div className="grid gap-4 md:grid-cols-2">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700" htmlFor="sex">
+                  <label className="block text-sm font-medium text-slate-700" htmlFor="sex">
                     性別
                   </label>
                   <select
@@ -687,7 +687,7 @@ const RegistrationPage: NextPage = () => {
                     value={formData.sex}
                     onChange={handleChange}
                     required
-                    className="mt-1 w-full rounded-lg border border-gray-200 px-3 py-2 text-gray-700 focus:border-red-500 focus:outline-none"
+                    className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-slate-700 focus:border-red-500 focus:outline-none"
                   >
                     <option value="">性別を選択してください。</option>
                     <option value="1">男性</option>
@@ -696,7 +696,7 @@ const RegistrationPage: NextPage = () => {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700" htmlFor="birth">
+                  <label className="block text-sm font-medium text-slate-700" htmlFor="birth">
                     生年月日
                   </label>
                   <input
@@ -707,14 +707,14 @@ const RegistrationPage: NextPage = () => {
                     onChange={handleChange}
                     required
                     max="9999-12-31"
-                    className="mt-1 w-full rounded-lg border border-gray-200 px-3 py-2 text-gray-700 focus:border-red-500 focus:outline-none"
+                    className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-slate-700 focus:border-red-500 focus:outline-none"
                   />
                 </div>
               </div>
 
               <div className="grid gap-4 md:grid-cols-2">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700" htmlFor="zip">
+                  <label className="block text-sm font-medium text-slate-700" htmlFor="zip">
                     郵便番号
                   </label>
                   <input
@@ -724,12 +724,12 @@ const RegistrationPage: NextPage = () => {
                     value={formData.zip}
                     onChange={handleChange}
                     required
-                    className="mt-1 w-full rounded-lg border border-gray-200 px-3 py-2 text-gray-700 focus:border-red-500 focus:outline-none"
+                    className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-slate-700 focus:border-red-500 focus:outline-none"
                     placeholder="1234567"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700" htmlFor="address1">
+                  <label className="block text-sm font-medium text-slate-700" htmlFor="address1">
                     住所1（都道府県・市区町村）
                   </label>
                   <input
@@ -739,12 +739,12 @@ const RegistrationPage: NextPage = () => {
                     value={formData.address1}
                     onChange={handleChange}
                     required
-                    className="mt-1 w-full rounded-lg border border-gray-200 px-3 py-2 text-gray-700 focus:border-red-500 focus:outline-none"
+                    className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-slate-700 focus:border-red-500 focus:outline-none"
                     placeholder="東京都足立区千住曙町"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700" htmlFor="address2">
+                  <label className="block text-sm font-medium text-slate-700" htmlFor="address2">
                     住所2（番地・建物名など）
                   </label>
                   <input
@@ -754,7 +754,7 @@ const RegistrationPage: NextPage = () => {
                     value={formData.address2}
                     onChange={handleChange}
                     required
-                    className="mt-1 w-full rounded-lg border border-gray-200 px-3 py-2 text-gray-700 focus:border-red-500 focus:outline-none"
+                    className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-slate-700 focus:border-red-500 focus:outline-none"
                     placeholder="1-1 ヤスカリビル101"
                   />
                 </div>
@@ -762,7 +762,7 @@ const RegistrationPage: NextPage = () => {
 
               <div className="grid gap-4 md:grid-cols-2">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700" htmlFor="mobile">
+                  <label className="block text-sm font-medium text-slate-700" htmlFor="mobile">
                     携帯電話番号（任意）
                   </label>
                   {availablePhones.length > 0 ? (
@@ -771,7 +771,7 @@ const RegistrationPage: NextPage = () => {
                       name="mobile-select"
                       value={selectedPhoneOption}
                       onChange={handlePhoneSelect}
-                      className="mt-1 w-full rounded-lg border border-gray-200 px-3 py-2 text-gray-700 focus:border-red-500 focus:outline-none"
+                      className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-slate-700 focus:border-red-500 focus:outline-none"
                     >
                       <option value="">手入力する</option>
                       {availablePhones.map((phone) => {
@@ -791,12 +791,12 @@ const RegistrationPage: NextPage = () => {
                     type="tel"
                     value={formatPhoneInputValue(formData.mobile)}
                     onChange={handleChange}
-                    className="mt-1 w-full rounded-lg border border-gray-200 px-3 py-2 text-gray-700 focus:border-red-500 focus:outline-none"
+                    className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-slate-700 focus:border-red-500 focus:outline-none"
                     placeholder="09012345678"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700" htmlFor="tel">
+                  <label className="block text-sm font-medium text-slate-700" htmlFor="tel">
                     自宅電話番号（任意）
                   </label>
                   <input
@@ -805,7 +805,7 @@ const RegistrationPage: NextPage = () => {
                     type="tel"
                     value={formData.tel}
                     onChange={handleChange}
-                    className="mt-1 w-full rounded-lg border border-gray-200 px-3 py-2 text-gray-700 focus:border-red-500 focus:outline-none"
+                    className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-slate-700 focus:border-red-500 focus:outline-none"
                     placeholder="0312345678"
                   />
                 </div>
@@ -813,7 +813,7 @@ const RegistrationPage: NextPage = () => {
 
               <div className="grid gap-4 md:grid-cols-2">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700" htmlFor="license">
+                  <label className="block text-sm font-medium text-slate-700" htmlFor="license">
                     免許証番号
                   </label>
                   <input
@@ -823,21 +823,21 @@ const RegistrationPage: NextPage = () => {
                     value={formData.license}
                     onChange={handleChange}
                     required
-                    className="mt-1 w-full rounded-lg border border-gray-200 px-3 py-2 text-gray-700 focus:border-red-500 focus:outline-none"
+                    className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-slate-700 focus:border-red-500 focus:outline-none"
                     placeholder="123456789012"
                   />
                 </div>
                 <div className="space-y-3">
-                  <span className="block text-sm font-medium text-gray-700">
+                  <span className="block text-sm font-medium text-slate-700">
                     免許証画像アップロード（最大2枚）
                   </span>
                   {licenseUploads.map((upload, index) => (
                     <div
                       key={`license-upload-${index}-${upload.inputKey}`}
-                      className="rounded-lg border border-gray-200 bg-white p-3"
+                      className="rounded-lg border border-slate-200 bg-white p-3"
                     >
                       <label
-                        className="block text-xs font-medium text-gray-700"
+                        className="block text-xs font-medium text-slate-700"
                         htmlFor={`license_file_${index}`}
                       >
                         免許証画像 {index + 1}枚目{index === 1 ? '（任意）' : ''}
@@ -850,13 +850,13 @@ const RegistrationPage: NextPage = () => {
                         accept="image/*"
                         onChange={handleFileChange(index)}
                         required={index === 0 && !upload.imageUrl}
-                        className="mt-1 block w-full text-sm text-gray-700 file:mr-4 file:rounded-full file:border file:border-red-600 file:bg-white file:px-4 file:py-2 file:text-sm file:font-semibold file:text-red-600 hover:file:bg-red-50"
+                        className="mt-1 block w-full text-sm text-slate-700 file:mr-4 file:rounded-full file:border file:border-red-600 file:bg-white file:px-4 file:py-2 file:text-sm file:font-semibold file:text-red-600 hover:file:bg-red-50"
                       />
                       {upload.fileName ? (
-                        <p className="mt-1 text-xs text-gray-500">選択中: {upload.fileName}</p>
+                        <p className="mt-1 text-xs text-slate-500">選択中: {upload.fileName}</p>
                       ) : null}
                       {upload.status === 'loading' ? (
-                        <p className="mt-1 text-xs text-gray-500">アップロード中...</p>
+                        <p className="mt-1 text-xs text-slate-500">アップロード中...</p>
                       ) : null}
                       {upload.status === 'success' ? (
                         <p className="mt-1 text-xs text-green-600">{upload.message}</p>
@@ -877,7 +877,7 @@ const RegistrationPage: NextPage = () => {
                   ))}
                 </div>
               </div>
-              <div className="space-y-2 rounded-lg border border-gray-200 bg-white p-4 text-xs text-gray-600">
+              <div className="space-y-2 rounded-lg border border-slate-200 bg-white p-4 text-xs text-slate-600">
                 <p>※ 運転免許証をアップロードする際は、以下の点にご注意ください。</p>
                 <ul className="list-disc space-y-1 pl-5">
                   <li>
@@ -894,7 +894,7 @@ const RegistrationPage: NextPage = () => {
 
               <div className="grid gap-4 md:grid-cols-2">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700" htmlFor="work_place">
+                  <label className="block text-sm font-medium text-slate-700" htmlFor="work_place">
                     勤務先名（任意）
                   </label>
                   <input
@@ -903,12 +903,12 @@ const RegistrationPage: NextPage = () => {
                     type="text"
                     value={formData.work_place}
                     onChange={handleChange}
-                    className="mt-1 w-full rounded-lg border border-gray-200 px-3 py-2 text-gray-700 focus:border-red-500 focus:outline-none"
+                    className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-slate-700 focus:border-red-500 focus:outline-none"
                     placeholder="ヤスカリ株式会社"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700" htmlFor="work_address">
+                  <label className="block text-sm font-medium text-slate-700" htmlFor="work_address">
                     勤務先住所（任意）
                   </label>
                   <input
@@ -917,12 +917,12 @@ const RegistrationPage: NextPage = () => {
                     type="text"
                     value={formData.work_address}
                     onChange={handleChange}
-                    className="mt-1 w-full rounded-lg border border-gray-200 px-3 py-2 text-gray-700 focus:border-red-500 focus:outline-none"
+                    className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-slate-700 focus:border-red-500 focus:outline-none"
                     placeholder="東京都足立区千住曙町"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700" htmlFor="work_tel">
+                  <label className="block text-sm font-medium text-slate-700" htmlFor="work_tel">
                     勤務先電話番号（任意）
                   </label>
                   <input
@@ -931,7 +931,7 @@ const RegistrationPage: NextPage = () => {
                     type="tel"
                     value={formData.work_tel}
                     onChange={handleChange}
-                    className="mt-1 w-full rounded-lg border border-gray-200 px-3 py-2 text-gray-700 focus:border-red-500 focus:outline-none"
+                    className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-slate-700 focus:border-red-500 focus:outline-none"
                     placeholder="0312345678"
                   />
                 </div>
@@ -939,7 +939,7 @@ const RegistrationPage: NextPage = () => {
 
               <div className="grid gap-4 md:grid-cols-2">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700" htmlFor="other_name">
+                  <label className="block text-sm font-medium text-slate-700" htmlFor="other_name">
                     緊急連絡先氏名
                   </label>
                   <input
@@ -949,12 +949,12 @@ const RegistrationPage: NextPage = () => {
                     value={formData.other_name}
                     onChange={handleChange}
                     required
-                    className="mt-1 w-full rounded-lg border border-gray-200 px-3 py-2 text-gray-700 focus:border-red-500 focus:outline-none"
+                    className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-slate-700 focus:border-red-500 focus:outline-none"
                     placeholder="山田花子"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700" htmlFor="other_address">
+                  <label className="block text-sm font-medium text-slate-700" htmlFor="other_address">
                     緊急連絡先住所
                   </label>
                   <input
@@ -964,12 +964,12 @@ const RegistrationPage: NextPage = () => {
                     value={formData.other_address}
                     onChange={handleChange}
                     required
-                    className="mt-1 w-full rounded-lg border border-gray-200 px-3 py-2 text-gray-700 focus:border-red-500 focus:outline-none"
+                    className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-slate-700 focus:border-red-500 focus:outline-none"
                     placeholder="東京都足立区千住曙町"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700" htmlFor="other_tel">
+                  <label className="block text-sm font-medium text-slate-700" htmlFor="other_tel">
                     緊急連絡先電話番号
                   </label>
                   <input
@@ -979,17 +979,17 @@ const RegistrationPage: NextPage = () => {
                     value={formData.other_tel}
                     onChange={handleChange}
                     required
-                    className="mt-1 w-full rounded-lg border border-gray-200 px-3 py-2 text-gray-700 focus:border-red-500 focus:outline-none"
+                    className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-slate-700 focus:border-red-500 focus:outline-none"
                     placeholder="0312345678"
                   />
                 </div>
               </div>
 
-              <div className="space-y-4 rounded-xl bg-gray-50 p-4 text-sm text-gray-800">
-                <h2 className="text-base font-semibold text-gray-900">アンケート</h2>
+              <div className="space-y-4 rounded-md bg-slate-50 p-4 text-sm text-slate-800">
+                <h2 className="text-base font-semibold text-slate-900">アンケート</h2>
                 <div className="grid gap-4 md:grid-cols-2">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700" htmlFor="enquete_purpose">
+                    <label className="block text-sm font-medium text-slate-700" htmlFor="enquete_purpose">
                       ご利用目的
                     </label>
                     <select
@@ -997,7 +997,7 @@ const RegistrationPage: NextPage = () => {
                       name="enquete_purpose"
                       value={formData.enquete_purpose}
                       onChange={handleChange}
-                      className="mt-1 w-full rounded-lg border border-gray-200 px-3 py-2 text-gray-700 focus:border-red-500 focus:outline-none"
+                      className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-slate-700 focus:border-red-500 focus:outline-none"
                     >
                       {purposeOptions.map((option) => (
                         <option key={option.value} value={option.value}>
@@ -1007,7 +1007,7 @@ const RegistrationPage: NextPage = () => {
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700" htmlFor="enquete_want">
+                    <label className="block text-sm font-medium text-slate-700" htmlFor="enquete_want">
                       バイクの購入意欲
                     </label>
                     <select
@@ -1015,7 +1015,7 @@ const RegistrationPage: NextPage = () => {
                       name="enquete_want"
                       value={formData.enquete_want}
                       onChange={handleChange}
-                      className="mt-1 w-full rounded-lg border border-gray-200 px-3 py-2 text-gray-700 focus:border-red-500 focus:outline-none"
+                      className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-slate-700 focus:border-red-500 focus:outline-none"
                     >
                       {wantOptions.map((option) => (
                         <option key={option.value} value={option.value}>
@@ -1025,7 +1025,7 @@ const RegistrationPage: NextPage = () => {
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700" htmlFor="enquete_touring">
+                    <label className="block text-sm font-medium text-slate-700" htmlFor="enquete_touring">
                       バイクツーリング経験
                     </label>
                     <select
@@ -1033,7 +1033,7 @@ const RegistrationPage: NextPage = () => {
                       name="enquete_touring"
                       value={formData.enquete_touring}
                       onChange={handleChange}
-                      className="mt-1 w-full rounded-lg border border-gray-200 px-3 py-2 text-gray-700 focus:border-red-500 focus:outline-none"
+                      className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-slate-700 focus:border-red-500 focus:outline-none"
                     >
                       {touringOptions.map((option) => (
                         <option key={option.value} value={option.value}>
@@ -1043,7 +1043,7 @@ const RegistrationPage: NextPage = () => {
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700" htmlFor="enquete_magazine">
+                    <label className="block text-sm font-medium text-slate-700" htmlFor="enquete_magazine">
                       バイク雑誌の購読
                     </label>
                     <select
@@ -1051,7 +1051,7 @@ const RegistrationPage: NextPage = () => {
                       name="enquete_magazine"
                       value={formData.enquete_magazine}
                       onChange={handleChange}
-                      className="mt-1 w-full rounded-lg border border-gray-200 px-3 py-2 text-gray-700 focus:border-red-500 focus:outline-none"
+                      className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-slate-700 focus:border-red-500 focus:outline-none"
                     >
                       {magazineOptions.map((option) => (
                         <option key={option.value} value={option.value}>
@@ -1061,7 +1061,7 @@ const RegistrationPage: NextPage = () => {
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700" htmlFor="enquete_chance">
+                    <label className="block text-sm font-medium text-slate-700" htmlFor="enquete_chance">
                       当サービスを知ったきっかけ
                     </label>
                     <select
@@ -1069,7 +1069,7 @@ const RegistrationPage: NextPage = () => {
                       name="enquete_chance"
                       value={formData.enquete_chance}
                       onChange={handleChange}
-                      className="mt-1 w-full rounded-lg border border-gray-200 px-3 py-2 text-gray-700 focus:border-red-500 focus:outline-none"
+                      className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-slate-700 focus:border-red-500 focus:outline-none"
                     >
                       {chanceOptions.map((option) => (
                         <option key={option.value} value={option.value}>
@@ -1096,13 +1096,13 @@ const RegistrationPage: NextPage = () => {
                 <button
                   type="submit"
                   disabled={isSubmitting || loadingUser}
-                  className="inline-flex items-center justify-center justify-self-center rounded-full bg-red-600 px-6 py-3 text-sm font-semibold text-white transition hover:bg-red-700 disabled:cursor-not-allowed disabled:bg-red-300"
+                  className="inline-flex items-center justify-center justify-self-center rounded-md bg-red-600 px-6 py-3 text-sm font-semibold text-white transition hover:bg-red-700 disabled:cursor-not-allowed disabled:bg-red-300"
                 >
                   {isSubmitting ? '送信中…' : '完了する'}
                 </button>
                 <Link
                   href="/mypage"
-                  className="justify-self-end text-sm font-semibold text-gray-700 underline decoration-gray-300 underline-offset-4 transition hover:text-gray-900 hover:decoration-gray-500"
+                  className="justify-self-end text-sm font-semibold text-slate-700 underline decoration-gray-300 underline-offset-4 transition hover:text-slate-900 hover:decoration-gray-500"
                 >
                   戻る
                 </Link>

@@ -796,7 +796,7 @@ export default function MyPage() {
         <title>マイページ</title>
       </Head>
       <main className="mx-auto flex min-h-screen w-full max-w-3xl flex-col gap-8 px-4 py-12">
-        <header className="space-y-2 text-sm text-gray-600">
+        <header className="space-y-2 text-sm text-slate-600">
           <nav aria-label="breadcrumb">
             <ol className="flex items-center gap-2">
               <li>
@@ -805,26 +805,26 @@ export default function MyPage() {
                 </a>
               </li>
               <li aria-hidden="true">/</li>
-              <li className="text-gray-600">マイページ</li>
+              <li className="text-slate-600">マイページ</li>
             </ol>
           </nav>
-          <h1 className="text-2xl font-semibold text-gray-900">マイページ</h1>
-          <p className="text-sm text-gray-500">ログイン中のプロフィール情報を確認できます。</p>
+          <h1 className="text-2xl font-semibold text-slate-900">マイページ</h1>
+          <p className="text-sm text-slate-500">ログイン中のプロフィール情報を確認できます。</p>
           <div
-            className={`mt-3 rounded-lg border border-rose-300 bg-gradient-to-r from-rose-50 via-rose-100 to-rose-50 p-4 text-xs text-rose-900 shadow-sm ring-1 ring-rose-200/70 ${
+            className={`mt-3 rounded-lg border border-red-200 bg-red-50 p-4 text-xs text-red-900 shadow-sm ${
               showTroubleGuide ? 'block' : 'hidden md:block'
             }`}
           >
             <div className="flex items-start gap-3">
               <span
                 aria-hidden
-                className="flex h-8 w-8 items-center justify-center rounded-full bg-rose-200 text-lg text-rose-700 shadow-sm"
+                className="flex h-8 w-8 items-center justify-center rounded-full bg-red-200 text-lg text-red-700 shadow-sm"
               >
                 ⚠️
               </span>
               <div className="flex-1">
                 <div className="flex items-start justify-between gap-3">
-                  <p className="text-sm font-semibold text-rose-900">万が一の故障時のご案内</p>
+                  <p className="text-sm font-semibold text-red-900">万が一の故障時のご案内</p>
                   <button
                     type="button"
                     onClick={() => setShowTroubleGuide(false)}
@@ -842,7 +842,7 @@ export default function MyPage() {
                 <p className="mt-2 font-semibold">ヤスカリ電話番号：03-5856-8200</p>
                 <Link
                   href="/help"
-                  className="mt-3 inline-flex items-center justify-center rounded-full border border-rose-200 bg-white px-4 py-2 text-xs font-semibold text-rose-700 shadow-sm transition hover:bg-rose-100"
+                  className="mt-3 inline-flex items-center justify-center rounded-full border border-red-200 bg-white px-4 py-2 text-xs font-semibold text-red-700 shadow-sm transition hover:bg-red-100"
                 >
                   よくある質問を見る
                 </Link>
@@ -852,19 +852,19 @@ export default function MyPage() {
         </header>
 
         {loading ? (
-          <section className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-            <p className="text-sm text-gray-700">ログイン状態を確認しています…</p>
+          <section className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
+            <p className="text-sm text-slate-700">ログイン状態を確認しています…</p>
           </section>
         ) : (
           <>
             {error ? (
-              <section className="rounded-2xl border border-red-200 bg-red-50 p-6 shadow-sm">
+              <section className="rounded-lg border border-red-200 bg-red-50 p-6 shadow-sm">
                 <p className="text-sm text-red-700">{error}</p>
               </section>
             ) : null}
 
             {isMyPageRestricted ? (
-              <section className="rounded-2xl border border-amber-300 bg-amber-50 p-6 shadow-sm">
+              <section className="rounded-lg border border-amber-300 bg-amber-50 p-6 shadow-sm">
                 <h2 className="text-lg font-semibold text-amber-900">現在マイページのアクセスは制限されています</h2>
                 <p className="mt-3 text-sm text-amber-900">
                   ご利用状況の確認により、現在このアカウントのマイページ表示を制限しています。
@@ -883,7 +883,7 @@ export default function MyPage() {
               </section>
             ) : (
               <>
-            <section className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+            <section className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
               <div className="flex flex-wrap items-start justify-between gap-4">
                 <button
                   type="button"
@@ -892,12 +892,12 @@ export default function MyPage() {
                   className="group flex flex-1 items-start justify-between gap-3 text-left md:pointer-events-none md:cursor-default"
                 >
                   <div>
-                    <h2 className="text-lg font-semibold text-gray-900">レンタル中のバイク</h2>
-                    <p className="mt-1 text-sm text-gray-600">現在レンタル中のバイク情報を表示します。</p>
+                    <h2 className="text-lg font-semibold text-slate-900">レンタル中のバイク</h2>
+                    <p className="mt-1 text-sm text-slate-600">現在レンタル中のバイク情報を表示します。</p>
                   </div>
                   <span
                     aria-hidden
-                    className={`ml-3 inline-flex h-9 w-9 items-center justify-center rounded-full border border-gray-200 bg-gray-50 text-xs font-semibold text-gray-600 transition-transform md:hidden ${
+                    className={`ml-3 inline-flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 bg-slate-50 text-xs font-semibold text-slate-600 transition-transform md:hidden ${
                       mobileSectionsOpen.reservations ? 'rotate-180' : ''
                     }`}
                   >
@@ -912,7 +912,7 @@ export default function MyPage() {
                 {extensionTargetReservationId ? (
                   <Link
                     href={`/mypage/rentals/extend/${extensionTargetReservationId}`}
-                    className="inline-flex items-center justify-center rounded-full bg-red-600 px-4 py-2 text-xs font-semibold text-white shadow-md ring-2 ring-inset ring-red-500 ring-offset-1 ring-offset-white transition hover:bg-red-700"
+                    className="inline-flex items-center justify-center rounded-md bg-red-600 px-4 py-2 text-xs font-semibold text-white shadow-md ring-2 ring-inset ring-red-500 ring-offset-1 ring-offset-white transition hover:bg-red-700"
                   >
                     レンタル延長
                   </Link>
@@ -928,7 +928,7 @@ export default function MyPage() {
                 <button
                   type="button"
                   onClick={() => activeKeyboxQrImageUrl && setShowUnlockQrModal(true)}
-                  className="inline-flex items-center justify-center rounded-full bg-white px-4 py-2 text-xs font-semibold text-gray-700 shadow-md ring-2 ring-inset ring-gray-200 ring-offset-1 ring-offset-white transition hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-60 sm:hidden"
+                  className="inline-flex items-center justify-center rounded-full bg-white px-4 py-2 text-xs font-semibold text-slate-700 shadow-md ring-2 ring-inset ring-slate-200 ring-offset-1 ring-offset-white transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-60 sm:hidden"
                   disabled={!activeKeyboxQrImageUrl}
                 >
                   解錠用のQRを表示
@@ -937,26 +937,26 @@ export default function MyPage() {
                   type="button"
                   onClick={handleReturnOpen}
                   disabled={!activeReturnReservation}
-                  className="inline-flex items-center justify-center rounded-full bg-red-600 px-4 py-2 text-xs font-semibold text-white shadow-md ring-2 ring-inset ring-red-500 ring-offset-1 ring-offset-white transition hover:bg-red-700 disabled:cursor-not-allowed disabled:bg-red-200 disabled:text-white/70 disabled:ring-red-200"
+                  className="inline-flex items-center justify-center rounded-md bg-red-600 px-4 py-2 text-xs font-semibold text-white shadow-md ring-2 ring-inset ring-red-500 ring-offset-1 ring-offset-white transition hover:bg-red-700 disabled:cursor-not-allowed disabled:bg-red-200 disabled:text-white/70 disabled:ring-red-200"
                 >
                   返却
                 </button>
                 <button
                   type="button"
                   onClick={handleAccidentOpen}
-                  className="inline-flex items-center justify-center rounded-full bg-red-600 px-4 py-2 text-xs font-semibold text-white shadow-md ring-2 ring-inset ring-red-500 ring-offset-1 ring-offset-white transition hover:bg-red-700"
+                  className="inline-flex items-center justify-center rounded-md bg-red-600 px-4 py-2 text-xs font-semibold text-white shadow-md ring-2 ring-inset ring-red-500 ring-offset-1 ring-offset-white transition hover:bg-red-700"
                 >
                   事故・転倒
                 </button>
               </div>
-              <div className="mt-2 text-sm text-gray-700">
+              <div className="mt-2 text-sm text-slate-700">
                 <Link
                   href="/blog_for_custmor/2025-09-01-minowa-procedures"
                   className="text-sky-700 underline underline-offset-2 transition hover:text-sky-800"
                 >
                   セルフ店でのレンタルについて
                 </Link>
-                <p className="mt-2 text-xs text-gray-600">
+                <p className="mt-2 text-xs text-slate-600">
                   セルフでのレンタルが難しそうな場合は、
                   <Link href="/stores#adachi" className="ml-1 font-semibold text-red-600 hover:underline">
                     足立小台本店の利用をお願いします。
@@ -966,13 +966,13 @@ export default function MyPage() {
             </>
           ) : null}
 
-          <div className="mt-4 space-y-3 text-sm text-gray-700">
+          <div className="mt-4 space-y-3 text-sm text-slate-700">
                 {reservationsError ? (
                   <p className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-red-700">{reservationsError}</p>
                 ) : loadingReservations ? (
-                  <p className="rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-gray-700">予約データを読み込み中です…</p>
+                  <p className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-slate-700">予約データを読み込み中です…</p>
                 ) : reservations.length === 0 ? (
-                  <p className="rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-gray-700">
+                  <p className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-slate-700">
                     まだ利用中の予約はありません。予約完了分は「過去の予約」から確認できます。
                   </p>
                 ) : (
@@ -988,7 +988,7 @@ export default function MyPage() {
                       return (
                         <li
                           key={reservation.id}
-                          className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm ring-1 ring-gray-100"
+                          className="rounded-md border border-slate-200 bg-white p-4 shadow-sm ring-1 ring-slate-100"
                         >
                           <div className="flex flex-wrap items-start justify-between gap-3">
                             <div className="flex items-start gap-3">
@@ -1002,20 +1002,20 @@ export default function MyPage() {
                                     ? `${reservation.vehicleModel} のサムネイル`
                                     : '車両サムネイル'
                                 }
-                                className="h-12 w-12 rounded-md border border-gray-200 bg-white object-cover shadow-sm"
+                                className="h-12 w-12 rounded-md border border-slate-200 bg-white object-cover shadow-sm"
                                 loading="lazy"
                               />
                               <div>
-                                <p className="text-sm font-semibold text-gray-900">
+                                <p className="text-sm font-semibold text-slate-900">
                                   {reservation.storeName} / {reservation.vehicleModel}
                                 </p>
-                                <p className="text-xs text-gray-600">
+                                <p className="text-xs text-slate-600">
                                   {reservation.vehicleCode} {reservation.vehiclePlate}
                                 </p>
                               </div>
                             </div>
                             <div className="flex flex-wrap items-center gap-2 sm:flex-col sm:items-end">
-                              <span className="inline-flex items-center rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-800">
+                              <span className="inline-flex items-center rounded bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-800">
                                 {reservation.status}
                               </span>
                               <span
@@ -1036,31 +1036,31 @@ export default function MyPage() {
                           </p>
                         )}
                         <dl className="mt-3 grid gap-2 sm:grid-cols-2">
-                          <div className="rounded-lg bg-gray-50 px-3 py-2">
-                            <dt className="text-xs text-gray-500">貸出〜返却</dt>
-                            <dd className="font-semibold text-gray-900">
+                          <div className="rounded-lg bg-slate-50 px-3 py-2">
+                            <dt className="text-xs text-slate-500">貸出〜返却</dt>
+                            <dd className="font-semibold text-slate-900">
                               {formatReservationDatetime(reservation.pickupAt)} → {formatReservationDatetime(reservation.returnAt)}
                             </dd>
                           </div>
-                          <div className="rounded-lg bg-gray-50 px-3 py-2">
-                            <dt className="text-xs text-gray-500">ご予約情報</dt>
-                            <dd className="font-semibold text-gray-900">
+                          <div className="rounded-lg bg-slate-50 px-3 py-2">
+                            <dt className="text-xs text-slate-500">ご予約情報</dt>
+                            <dd className="font-semibold text-slate-900">
                               ナンバープレート: {reservation.vehiclePlate || '未設定'}
                             </dd>
                           </div>
-                          <div className="rounded-lg bg-gray-50 px-3 py-2">
-                            <dt className="text-xs text-gray-500">駐車No</dt>
-                            <dd className="font-semibold text-gray-900">
+                          <div className="rounded-lg bg-slate-50 px-3 py-2">
+                            <dt className="text-xs text-slate-500">駐車No</dt>
+                            <dd className="font-semibold text-slate-900">
                               {reservation.parkingNumber || '未設定'}
                             </dd>
                           </div>
-                          <div className="rounded-lg bg-gray-50 px-3 py-2">
-                            <dt className="text-xs text-gray-500">決済金額</dt>
-                            <dd className="font-semibold text-gray-900">{reservation.paymentAmount} 円</dd>
+                          <div className="rounded-lg bg-slate-50 px-3 py-2">
+                            <dt className="text-xs text-slate-500">決済金額</dt>
+                            <dd className="font-semibold text-slate-900">{reservation.paymentAmount} 円</dd>
                           </div>
-                          <div className="rounded-lg bg-gray-50 px-3 py-2">
-                            <dt className="text-xs text-gray-500">決済日時</dt>
-                            <dd className="font-semibold text-gray-900">
+                          <div className="rounded-lg bg-slate-50 px-3 py-2">
+                            <dt className="text-xs text-slate-500">決済日時</dt>
+                            <dd className="font-semibold text-slate-900">
                               {reservation.paymentDate ? formatReservationDatetime(reservation.paymentDate) : '未登録'}
                             </dd>
                           </div>
@@ -1077,8 +1077,8 @@ export default function MyPage() {
                           </div>
                           <div className="mt-3 grid gap-3">
                             <div className="rounded-lg bg-white px-3 py-2 shadow-sm">
-                              <dt className="text-xs text-gray-600">PINコード</dt>
-                              <dd className="font-mono text-lg font-semibold text-gray-900">{reservation.keyboxPinCode}</dd>
+                              <dt className="text-xs text-slate-600">PINコード</dt>
+                              <dd className="font-mono text-lg font-semibold text-slate-900">{reservation.keyboxPinCode}</dd>
                             </div>
                           </div>
                           <div className="mt-3 flex flex-wrap items-center gap-3">
@@ -1092,10 +1092,10 @@ export default function MyPage() {
                                   <img
                                     src={reservation.keyboxQrImageUrl}
                                     alt="解錠用QRコード"
-                                    className="h-20 w-20 rounded border border-gray-200 object-contain transition group-hover:scale-105"
+                                    className="h-20 w-20 rounded border border-slate-200 object-contain transition group-hover:scale-105"
                                   />
                                 </button>
-                                <div className="text-xs text-gray-600">QRをタップして、鍵ボックスのリーダーにかざして解錠してください。</div>
+                                <div className="text-xs text-slate-600">QRをタップして、鍵ボックスのリーダーにかざして解錠してください。</div>
                               </div>
                             ) : null}
                           </div>
@@ -1122,7 +1122,7 @@ export default function MyPage() {
                                 マニュアル動画
                               </Link>
                             ) : (
-                              <span className="inline-flex items-center justify-center rounded-full border border-gray-200 bg-gray-100 px-4 py-2 text-xs font-semibold text-gray-400">
+                              <span className="inline-flex items-center justify-center rounded-full border border-slate-200 bg-slate-100 px-4 py-2 text-xs font-semibold text-slate-400">
                                 マニュアル動画
                               </span>
                             )}
@@ -1131,7 +1131,7 @@ export default function MyPage() {
                                 href={accessLink}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="inline-flex items-center justify-center rounded-full border border-gray-200 bg-white px-4 py-2 text-xs font-semibold text-gray-700 transition hover:border-gray-300 hover:bg-gray-50"
+                              className="inline-flex items-center justify-center rounded-full border border-slate-200 bg-white px-4 py-2 text-xs font-semibold text-slate-700 transition hover:border-slate-300 hover:bg-slate-50"
                             >
                               店舗までのアクセス
                             </a>
@@ -1158,7 +1158,7 @@ export default function MyPage() {
                   href="/mypage/past-reservations"
                   target="_blank"
                   rel="noreferrer"
-                  className={`${sectionActionClass} border border-gray-200 bg-white text-gray-700 transition hover:border-gray-300 hover:bg-gray-50`}
+                  className={`${sectionActionClass} border border-slate-200 bg-white text-slate-700 transition hover:border-slate-300 hover:bg-slate-50`}
                 >
                   過去の予約
                 </Link>
@@ -1174,7 +1174,7 @@ export default function MyPage() {
             </div>
             </section>
 
-            <section className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+            <section className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
               <div className="flex flex-wrap items-start justify-between gap-4">
                 <button
                   type="button"
@@ -1183,12 +1183,12 @@ export default function MyPage() {
                   className="group flex flex-1 items-center justify-between gap-3 text-left md:pointer-events-none md:cursor-default"
                 >
                   <div>
-                    <h2 className="text-lg font-semibold text-gray-900">ヤスカリの利用方法</h2>
-                    <p className="mt-1 text-sm text-gray-600">ホームページに掲載している利用方法を確認できます。</p>
+                    <h2 className="text-lg font-semibold text-slate-900">ヤスカリの利用方法</h2>
+                    <p className="mt-1 text-sm text-slate-600">ホームページに掲載している利用方法を確認できます。</p>
                   </div>
                   <span
                     aria-hidden
-                    className={`ml-3 inline-flex h-9 w-9 items-center justify-center rounded-full border border-gray-200 bg-gray-50 text-xs font-semibold text-gray-600 transition-transform md:hidden ${
+                    className={`ml-3 inline-flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 bg-slate-50 text-xs font-semibold text-slate-600 transition-transform md:hidden ${
                       mobileSectionsOpen.howToUse ? 'rotate-180' : ''
                     }`}
                   >
@@ -1200,7 +1200,7 @@ export default function MyPage() {
               <div className={`${mobileSectionsOpen.howToUse ? 'mt-4 block' : 'hidden'} md:mt-4 md:block`}>
                 <ul className="grid gap-3 md:grid-cols-2">
                   {howToUseSteps.map((step) => (
-                    <li key={step.title} className="rounded-xl border border-gray-200 bg-gray-50 p-4">
+                    <li key={step.title} className="rounded-md border border-slate-200 bg-slate-50 p-4">
                       <div className="mx-auto h-[100px] w-[100px] overflow-hidden rounded-lg bg-white md:h-36 md:w-36">
                         <img
                           src={step.image}
@@ -1210,12 +1210,12 @@ export default function MyPage() {
                           className="h-full w-full object-contain"
                         />
                       </div>
-                      <p className="mt-3 text-xs font-semibold text-gray-900 md:text-sm">{step.title}</p>
-                      <p className="mt-2 text-xs leading-relaxed text-gray-700 md:text-sm">{step.description}</p>
+                      <p className="mt-3 text-xs font-semibold text-slate-900 md:text-sm">{step.title}</p>
+                      <p className="mt-2 text-xs leading-relaxed text-slate-700 md:text-sm">{step.description}</p>
                     </li>
                   ))}
                 </ul>
-                <div className="mt-4 space-y-2 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
+                <div className="mt-4 space-y-2 rounded-md border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
                   <p>
                     ※三ノ輪店は無人セルフ店舗のため、店員のサポートがありませんので不明点は事前にご確認ください
                   </p>
@@ -1226,7 +1226,7 @@ export default function MyPage() {
               </div>
             </section>
 
-            <section className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+            <section className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
               <div className="flex flex-wrap items-start justify-between gap-4">
                 <button
                   type="button"
@@ -1234,10 +1234,10 @@ export default function MyPage() {
                   onClick={() => toggleMobileSection('profile')}
                   className="group flex flex-1 items-center justify-between gap-3 text-left md:pointer-events-none md:cursor-default"
                 >
-                  <h2 className="text-lg font-semibold text-gray-900">プロフィール情報</h2>
+                  <h2 className="text-lg font-semibold text-slate-900">プロフィール情報</h2>
                   <span
                     aria-hidden
-                    className={`ml-3 inline-flex h-9 w-9 items-center justify-center rounded-full border border-gray-200 bg-gray-50 text-xs font-semibold text-gray-600 transition-transform md:hidden ${
+                    className={`ml-3 inline-flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 bg-slate-50 text-xs font-semibold text-slate-600 transition-transform md:hidden ${
                       mobileSectionsOpen.profile ? 'rotate-180' : ''
                     }`}
                   >
@@ -1258,28 +1258,28 @@ export default function MyPage() {
                 ) : null}
 
                 {loadingAttributes ? (
-                  <p className="mt-3 text-sm text-gray-700">属性を取得しています…</p>
+                  <p className="mt-3 text-sm text-slate-700">属性を取得しています…</p>
                 ) : attributes ? (
-                  <dl className="mt-4 grid gap-4 text-sm text-gray-700 md:grid-cols-2">
+                  <dl className="mt-4 grid gap-4 text-sm text-slate-700 md:grid-cols-2">
                     <div>
-                      <dt className="font-medium text-gray-600">電話番号</dt>
-                      <dd className="mt-1 text-gray-800">{formatPhoneLabel(attributes.phone_number)}</dd>
+                      <dt className="font-medium text-slate-600">電話番号</dt>
+                      <dd className="mt-1 text-slate-800">{formatPhoneLabel(attributes.phone_number)}</dd>
                     </div>
                     <div>
-                      <dt className="font-medium text-gray-600">ハンドルネーム</dt>
-                      <dd className="mt-1 text-gray-800">{attributes['custom:handle'] ?? '未設定'}</dd>
+                      <dt className="font-medium text-slate-600">ハンドルネーム</dt>
+                      <dd className="mt-1 text-slate-800">{attributes['custom:handle'] ?? '未設定'}</dd>
                     </div>
                     <div>
-                      <dt className="font-medium text-gray-600">ロケーション / 言語</dt>
-                      <dd className="mt-1 text-gray-800">{localeLabel(attributes['custom:locale'])}</dd>
+                      <dt className="font-medium text-slate-600">ロケーション / 言語</dt>
+                      <dd className="mt-1 text-slate-800">{localeLabel(attributes['custom:locale'])}</dd>
                     </div>
                     <div>
-                      <dt className="font-medium text-gray-600">ニックネーム</dt>
-                      <dd className="mt-1 text-gray-800">{attributes.name ?? '未設定'}</dd>
+                      <dt className="font-medium text-slate-600">ニックネーム</dt>
+                      <dd className="mt-1 text-slate-800">{attributes.name ?? '未設定'}</dd>
                     </div>
                   </dl>
                 ) : (
-                  <p className="mt-3 text-sm text-gray-700">プロフィール情報を取得できませんでした。</p>
+                  <p className="mt-3 text-sm text-slate-700">プロフィール情報を取得できませんでした。</p>
                 )}
               </div>
               <div className={`${mobileSectionsOpen.profile ? 'mt-4 flex' : 'hidden'} justify-center md:hidden`}>
@@ -1292,7 +1292,7 @@ export default function MyPage() {
               </div>
             </section>
 
-            <section className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+            <section className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
               <div className="flex flex-wrap items-start justify-between gap-4">
                 <button
                   type="button"
@@ -1301,8 +1301,8 @@ export default function MyPage() {
                   className="group flex flex-1 items-start justify-between gap-3 text-left md:pointer-events-none md:cursor-default"
                 >
                   <div>
-                    <h2 className="text-lg font-semibold text-gray-900">本登録</h2>
-                    <p className="mt-1 text-sm text-gray-600">レンタルに必要な基本情報を入力するフォームです。</p>
+                    <h2 className="text-lg font-semibold text-slate-900">本登録</h2>
+                    <p className="mt-1 text-sm text-slate-600">レンタルに必要な基本情報を入力するフォームです。</p>
                     {loadingRegistration ? null : registration ? (
                       isRegistrationComplete ? (
                         <p className="mt-2 inline-flex items-center rounded-full bg-green-50 px-3 py-1 text-xs font-semibold text-green-700 ring-1 ring-inset ring-green-200">
@@ -1314,14 +1314,14 @@ export default function MyPage() {
                         </p>
                       )
                     ) : (
-                      <p className="mt-2 inline-flex items-center rounded-full bg-gray-50 px-3 py-1 text-xs font-semibold text-gray-700 ring-1 ring-inset ring-gray-200">
+                      <p className="mt-2 inline-flex items-center rounded-full bg-slate-50 px-3 py-1 text-xs font-semibold text-slate-700 ring-1 ring-inset ring-slate-200">
                         本登録がまだ保存されていません
                       </p>
                     )}
                   </div>
                   <span
                     aria-hidden
-                    className={`ml-3 inline-flex h-9 w-9 items-center justify-center rounded-full border border-gray-200 bg-gray-50 text-xs font-semibold text-gray-600 transition-transform md:hidden ${
+                    className={`ml-3 inline-flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 bg-slate-50 text-xs font-semibold text-slate-600 transition-transform md:hidden ${
                       mobileSectionsOpen.registration ? 'rotate-180' : ''
                     }`}
                   >
@@ -1351,33 +1351,33 @@ export default function MyPage() {
                     ) : null}
                     <dl className="grid gap-4 md:grid-cols-2">
                       <div>
-                        <dt className="text-xs font-semibold text-gray-500">氏名</dt>
-                        <dd className="mt-1 text-gray-900">{`${registration.name1} ${registration.name2}`}</dd>
+                        <dt className="text-xs font-semibold text-slate-500">氏名</dt>
+                        <dd className="mt-1 text-slate-900">{`${registration.name1} ${registration.name2}`}</dd>
                       </div>
                       <div>
-                        <dt className="text-xs font-semibold text-gray-500">フリガナ</dt>
-                        <dd className="mt-1 text-gray-900">{`${registration.kana1} ${registration.kana2}`}</dd>
+                        <dt className="text-xs font-semibold text-slate-500">フリガナ</dt>
+                        <dd className="mt-1 text-slate-900">{`${registration.kana1} ${registration.kana2}`}</dd>
                       </div>
                       <div>
-                        <dt className="text-xs font-semibold text-gray-500">性別</dt>
-                        <dd className="mt-1 text-gray-900">{sexLabel(registration.sex)}</dd>
+                        <dt className="text-xs font-semibold text-slate-500">性別</dt>
+                        <dd className="mt-1 text-slate-900">{sexLabel(registration.sex)}</dd>
                       </div>
                       <div>
-                        <dt className="text-xs font-semibold text-gray-500">住所</dt>
-                        <dd className="mt-1 text-gray-900">{`〒${registration.zip} ${registration.address1} ${registration.address2}`}</dd>
+                        <dt className="text-xs font-semibold text-slate-500">住所</dt>
+                        <dd className="mt-1 text-slate-900">{`〒${registration.zip} ${registration.address1} ${registration.address2}`}</dd>
                       </div>
                       <div>
-                        <dt className="text-xs font-semibold text-gray-500">誕生日</dt>
-                        <dd className="mt-1 text-gray-900">{registration.birth}</dd>
+                        <dt className="text-xs font-semibold text-slate-500">誕生日</dt>
+                        <dd className="mt-1 text-slate-900">{registration.birth}</dd>
                       </div>
                       <div>
-                        <dt className="text-xs font-semibold text-gray-500">免許証番号</dt>
-                        <dd className="mt-1 text-gray-900">{registration.license ? '登録済み（番号は非表示）' : '未登録'}</dd>
+                        <dt className="text-xs font-semibold text-slate-500">免許証番号</dt>
+                        <dd className="mt-1 text-slate-900">{registration.license ? '登録済み（番号は非表示）' : '未登録'}</dd>
                       </div>
                     </dl>
                   </div>
                 ) : (
-                  <p className="rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-gray-700">
+                  <p className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-slate-700">
                     本登録情報がまだありません。フォームから登録を進めてください。
                   </p>
                 )}
@@ -1394,7 +1394,7 @@ export default function MyPage() {
 
             
 
-            <section className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+            <section className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
               <button
                 type="button"
                 aria-expanded={mobileSectionsOpen.rentalTerms}
@@ -1402,8 +1402,8 @@ export default function MyPage() {
                 className="group flex w-full items-start justify-between gap-3 text-left md:pointer-events-none md:cursor-default"
               >
                 <div>
-                  <h2 className="text-lg font-semibold text-gray-900">利用規約への同意</h2>
-                  <p className="mt-2 text-sm text-gray-600">バイクレンタル利用規約への同意状況を確認・更新できます。</p>
+                  <h2 className="text-lg font-semibold text-slate-900">利用規約への同意</h2>
+                  <p className="mt-2 text-sm text-slate-600">バイクレンタル利用規約への同意状況を確認・更新できます。</p>
                   {loadingRentalTerms ? null : rentalTermsAgreed ? (
                     <p className="mt-2 inline-flex items-center rounded-full bg-green-50 px-3 py-1 text-xs font-semibold text-green-700 ring-1 ring-inset ring-green-200">
                       同意済み
@@ -1416,7 +1416,7 @@ export default function MyPage() {
                 </div>
                 <span
                   aria-hidden
-                  className={`ml-3 inline-flex h-9 w-9 items-center justify-center rounded-full border border-gray-200 bg-gray-50 text-xs font-semibold text-gray-600 transition-transform md:hidden ${
+                  className={`ml-3 inline-flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 bg-slate-50 text-xs font-semibold text-slate-600 transition-transform md:hidden ${
                     mobileSectionsOpen.rentalTerms ? 'rotate-180' : ''
                   }`}
                 >
@@ -1424,7 +1424,7 @@ export default function MyPage() {
                 </span>
               </button>
               <div className={`${mobileSectionsOpen.rentalTerms ? 'mt-4 block' : 'hidden'} md:mt-4 md:block`}>
-                <p className="text-sm text-gray-700">
+                <p className="text-sm text-slate-700">
                   下記のチェックボックスにチェックを入れると、バイクレンタル利用規約への同意がデータベースに保存されます。
                   規約の内容は <Link className="text-red-600 underline underline-offset-2" href="/rental-bike-terms">こちら</Link> から確認できます。
                 </p>
@@ -1433,34 +1433,34 @@ export default function MyPage() {
                 ) : null}
 
                 {registration ? (
-                  <label className="mt-4 inline-flex items-start gap-3 text-sm text-gray-900">
+                  <label className="mt-4 inline-flex items-start gap-3 text-sm text-slate-900">
                     <input
                       type="checkbox"
-                      className="mt-1 h-4 w-4 rounded border-gray-300 text-red-600 focus:ring-red-500"
+                      className="mt-1 h-4 w-4 rounded border-slate-300 text-red-600 focus:ring-red-500"
                       onChange={handleRentalTermsToggle}
                       checked={rentalTermsAgreed}
                       disabled={loadingRentalTerms || savingRentalTerms || loadingRegistration}
                     />
                     <span className="leading-relaxed">
                       バイクレンタル利用規約に同意しますか？
-                      <span className="mt-1 block text-xs text-gray-500">
+                      <span className="mt-1 block text-xs text-slate-500">
                         チェックを外すと未同意の状態として保存されます。
                       </span>
                     </span>
                   </label>
                 ) : (
-                  <p className="mt-4 rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-700">
+                  <p className="mt-4 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-700">
                     本登録情報が保存されてから利用規約への同意を設定できます。まずは本登録フォームから登録を完了してください。
                   </p>
                 )}
 
-                <p className="mt-3 text-xs text-gray-500">
+                <p className="mt-3 text-xs text-slate-500">
                   最終更新: {loadingRentalTerms ? '確認中…' : formatAgreementTimestamp(rentalTermsUpdatedAt)}
                 </p>
               </div>
             </section>
 
-            <section className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+            <section className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
               <button
                 type="button"
                 aria-expanded={mobileSectionsOpen.logout}
@@ -1468,14 +1468,14 @@ export default function MyPage() {
                 className="group flex w-full items-start justify-between gap-3 text-left md:pointer-events-none md:cursor-default"
               >
                 <div>
-                  <h2 className="text-lg font-semibold text-gray-900">ログアウト</h2>
-                  <p className="mt-2 text-sm text-gray-600">
+                  <h2 className="text-lg font-semibold text-slate-900">ログアウト</h2>
+                  <p className="mt-2 text-sm text-slate-600">
                     ログアウトすると再度ログインするまでマイページを表示できません。
                   </p>
                 </div>
                 <span
                   aria-hidden
-                  className={`ml-3 inline-flex h-9 w-9 items-center justify-center rounded-full border border-gray-200 bg-gray-50 text-xs font-semibold text-gray-600 transition-transform md:hidden ${
+                  className={`ml-3 inline-flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 bg-slate-50 text-xs font-semibold text-slate-600 transition-transform md:hidden ${
                     mobileSectionsOpen.logout ? 'rotate-180' : ''
                   }`}
                 >
@@ -1498,17 +1498,17 @@ export default function MyPage() {
           </>
         )}
 
-        <section className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+        <section className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
           <button
             type="button"
             aria-expanded={mobileSectionsOpen.links}
             onClick={() => toggleMobileSection('links')}
             className="group flex w-full items-center justify-between gap-3 text-left md:pointer-events-none md:cursor-default"
           >
-            <h2 className="text-lg font-semibold text-gray-900">連携リンク</h2>
+            <h2 className="text-lg font-semibold text-slate-900">連携リンク</h2>
             <span
               aria-hidden
-              className={`ml-3 inline-flex h-9 w-9 items-center justify-center rounded-full border border-gray-200 bg-gray-50 text-xs font-semibold text-gray-600 transition-transform md:hidden ${
+              className={`ml-3 inline-flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 bg-slate-50 text-xs font-semibold text-slate-600 transition-transform md:hidden ${
                 mobileSectionsOpen.links ? 'rotate-180' : ''
               }`}
             >
@@ -1516,7 +1516,7 @@ export default function MyPage() {
             </span>
           </button>
           <div className={`${mobileSectionsOpen.links ? 'mt-3 block' : 'hidden'} md:mt-3 md:block`}>
-            <ul className="space-y-2 text-sm text-gray-700">
+            <ul className="space-y-2 text-sm text-slate-700">
               <li>
                 <Link className="text-red-600 hover:underline" href="/pricing">
                   料金表を見る
@@ -1533,14 +1533,14 @@ export default function MyPage() {
       </main>
       {showCancelNotice ? (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
-          <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl">
-            <h2 className="text-lg font-semibold text-gray-900">予約キャンセルのお知らせ</h2>
-            <p className="mt-3 text-sm text-gray-700">
+          <div className="w-full max-w-md rounded-lg bg-white p-6 shadow-xl">
+            <h2 className="text-lg font-semibold text-slate-900">予約キャンセルのお知らせ</h2>
+            <p className="mt-3 text-sm text-slate-700">
               予約キャンセルが管理者にて設定されました。ご不明点があればサポートまでご連絡ください。
             </p>
             <button
               type="button"
-              className="mt-6 inline-flex w-full items-center justify-center rounded-full bg-red-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-red-700"
+              className="mt-6 inline-flex w-full items-center justify-center rounded-md bg-red-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-red-700"
               onClick={() => setShowCancelNotice(false)}
             >
               閉じる
@@ -1550,22 +1550,22 @@ export default function MyPage() {
       ) : null}
       {showAccidentModal ? (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
-          <div className="w-full max-w-md rounded-2xl border-2 border-rose-200 bg-white p-6 shadow-2xl ring-1 ring-rose-100">
+          <div className="w-full max-w-md rounded-lg border-2 border-red-200 bg-white p-6 shadow-xl ring-1 ring-red-100">
             <div className="flex items-start justify-between gap-3">
               <div>
-                <h2 className="text-lg font-semibold text-gray-900">【事故・転倒報告】</h2>
-                <p className="mt-2 text-sm text-gray-600">バイクの状態を写真で送付してください</p>
+                <h2 className="text-lg font-semibold text-slate-900">【事故・転倒報告】</h2>
+                <p className="mt-2 text-sm text-slate-600">バイクの状態を写真で送付してください</p>
               </div>
               <button
                 type="button"
                 onClick={handleAccidentClose}
-                className="rounded-full border border-gray-200 px-3 py-1 text-xs font-semibold text-gray-600 transition hover:border-gray-300 hover:text-gray-800"
+                className="rounded-full border border-slate-200 px-3 py-1 text-xs font-semibold text-slate-600 transition hover:border-slate-300 hover:text-slate-800"
               >
                 閉じる
               </button>
             </div>
             <div className="mt-4 space-y-3">
-              <label className="block text-xs font-semibold text-gray-600">写真アップロード</label>
+              <label className="block text-xs font-semibold text-slate-600">写真アップロード</label>
               <input
                 type="file"
                 accept="image/*"
@@ -1575,9 +1575,9 @@ export default function MyPage() {
                   const file = event.target.files?.[0] ?? null;
                   setAccidentFile(file);
                 }}
-                className="block w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm"
+                className="block w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm"
               />
-              <label className="block text-xs font-semibold text-gray-600" htmlFor="accident-description">
+              <label className="block text-xs font-semibold text-slate-600" htmlFor="accident-description">
                 事故・転倒の状況
               </label>
               <textarea
@@ -1590,9 +1590,9 @@ export default function MyPage() {
                 }}
                 placeholder="いつ・どこで・どのように発生したかを記入してください"
                 rows={4}
-                className="block w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm"
+                className="block w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm"
               />
-              <label className="block text-xs font-semibold text-gray-600 sm:hidden">
+              <label className="block text-xs font-semibold text-slate-600 sm:hidden">
                 スマホで撮影してアップロード
                 <input
                   type="file"
@@ -1604,7 +1604,7 @@ export default function MyPage() {
                     const file = event.target.files?.[0] ?? null;
                     setAccidentFile(file);
                   }}
-                  className="mt-2 block w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm"
+                  className="mt-2 block w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm"
                 />
               </label>
               {accidentError ? (
@@ -1616,12 +1616,12 @@ export default function MyPage() {
                 type="button"
                 onClick={handleAccidentSubmit}
                 disabled={accidentUploading || !accidentFile || !accidentDescription.trim()}
-                className="inline-flex w-full items-center justify-center rounded-full bg-red-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-red-700 disabled:cursor-not-allowed disabled:bg-red-300"
+                className="inline-flex w-full items-center justify-center rounded-md bg-red-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-red-700 disabled:cursor-not-allowed disabled:bg-red-300"
               >
                 {accidentUploading ? '送信中…' : '送信'}
               </button>
               {accidentSubmitted ? (
-                <div className="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-900">
+                <div className="rounded-md border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-900">
                   <p className="font-semibold">送信が完了しました。</p>
                   <div className="mt-3 space-y-2 text-xs text-emerald-900">
                     <p>① レッカーTELの案内</p>
@@ -1638,29 +1638,29 @@ export default function MyPage() {
       ) : null}
       {showReturnModal ? (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
-          <div className="w-full max-w-md rounded-2xl border-2 border-amber-200 bg-white p-6 shadow-2xl ring-1 ring-amber-100">
+          <div className="w-full max-w-md rounded-lg border-2 border-amber-200 bg-white p-6 shadow-xl ring-1 ring-amber-100">
             <div className="flex items-start justify-between gap-3">
               <div>
-                <h2 className="text-lg font-semibold text-gray-900">【バイクの返却】</h2>
+                <h2 className="text-lg font-semibold text-slate-900">【バイクの返却】</h2>
                 {returnStep === 'survey' ? (
-                  <p className="mt-2 text-sm text-gray-600">ご利用ありがとうございました！</p>
+                  <p className="mt-2 text-sm text-slate-600">ご利用ありがとうございました！</p>
                 ) : returnStep === 'done' ? (
-                  <p className="mt-2 text-sm text-gray-600">送信が完了しました。</p>
+                  <p className="mt-2 text-sm text-slate-600">送信が完了しました。</p>
                 ) : (
-                  <p className="mt-2 text-sm text-gray-600">枠線の中に停められましたか？</p>
+                  <p className="mt-2 text-sm text-slate-600">枠線の中に停められましたか？</p>
                 )}
               </div>
               <button
                 type="button"
                 onClick={handleReturnClose}
-                className="rounded-full border border-gray-200 px-3 py-1 text-xs font-semibold text-gray-600 transition hover:border-gray-300 hover:text-gray-800"
+                className="rounded-full border border-slate-200 px-3 py-1 text-xs font-semibold text-slate-600 transition hover:border-slate-300 hover:text-slate-800"
               >
                 閉じる
               </button>
             </div>
             {returnStep === 'check' ? (
               <div className="mt-4 space-y-3">
-                <label className="block text-xs font-semibold text-gray-600">写真アップロード</label>
+                <label className="block text-xs font-semibold text-slate-600">写真アップロード</label>
                 <input
                   type="file"
                   accept="image/*"
@@ -1669,9 +1669,9 @@ export default function MyPage() {
                     const file = event.target.files?.[0] ?? null;
                     setReturnFile(file);
                   }}
-                  className="block w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm"
+                  className="block w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm"
                 />
-                <label className="block text-xs font-semibold text-gray-600 sm:hidden">
+                <label className="block text-xs font-semibold text-slate-600 sm:hidden">
                   スマホで撮影してアップロード
                   <input
                     type="file"
@@ -1682,7 +1682,7 @@ export default function MyPage() {
                       const file = event.target.files?.[0] ?? null;
                       setReturnFile(file);
                     }}
-                    className="mt-2 block w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm"
+                    className="mt-2 block w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm"
                   />
                 </label>
                 {returnError ? (
@@ -1692,7 +1692,7 @@ export default function MyPage() {
                   type="button"
                   onClick={handleReturnComplete}
                   disabled={returnUploading}
-                  className="inline-flex w-full items-center justify-center rounded-full bg-red-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-red-700"
+                  className="inline-flex w-full items-center justify-center rounded-md bg-red-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-red-700"
                 >
                   {returnUploading ? '送信中…' : '返却完了'}
                 </button>
@@ -1700,9 +1700,9 @@ export default function MyPage() {
             ) : null}
             {returnStep === 'survey' ? (
               <div className="mt-4 space-y-4">
-                <div className="rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-700">
-                  <p className="font-semibold text-gray-900">【総合評価】</p>
-                  <p className="mt-1 text-xs text-gray-600">バイクはいかがでしたか？</p>
+                <div className="rounded-md border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700">
+                  <p className="font-semibold text-slate-900">【総合評価】</p>
+                  <p className="mt-1 text-xs text-slate-600">バイクはいかがでしたか？</p>
                   <div className="mt-3 flex gap-2">
                     {[1, 2, 3, 4, 5].map((value) => (
                       <button
@@ -1711,7 +1711,7 @@ export default function MyPage() {
                         onClick={() => setReturnRating(value)}
                         aria-label={`${value}つ星`}
                         className={`text-2xl transition ${
-                          returnRating >= value ? 'text-amber-400' : 'text-gray-300'
+                          returnRating >= value ? 'text-amber-400' : 'text-slate-300'
                         }`}
                       >
                         ★
@@ -1719,14 +1719,14 @@ export default function MyPage() {
                     ))}
                   </div>
                 </div>
-                <div className="rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-700">
-                  <p className="font-semibold text-gray-900">【アンケート】</p>
-                  <p className="mt-1 text-xs text-gray-600">今後乗ってみたいバイクはありますか？</p>
+                <div className="rounded-md border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700">
+                  <p className="font-semibold text-slate-900">【アンケート】</p>
+                  <p className="mt-1 text-xs text-slate-600">今後乗ってみたいバイクはありますか？</p>
                   <textarea
                     value={returnSurvey}
                     onChange={(event) => setReturnSurvey(event.target.value)}
                     rows={3}
-                    className="mt-3 w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm"
+                    className="mt-3 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm"
                     placeholder="例）電動バイクに興味があります"
                   />
                 </div>
@@ -1744,12 +1744,12 @@ export default function MyPage() {
               </div>
             ) : null}
             {returnStep === 'done' ? (
-              <div className="mt-4 space-y-3 text-sm text-gray-700">
+              <div className="mt-4 space-y-3 text-sm text-slate-700">
                 <p className="rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-emerald-800">
                   ご協力ありがとうございました。レンタル中のバイク情報を更新しました。
                 </p>
-                <div className="rounded-lg border border-gray-200 bg-gray-50 px-3 py-3">
-                  <p className="text-sm font-semibold text-gray-900">よろしければシェアをお願いします。</p>
+                <div className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-3">
+                  <p className="text-sm font-semibold text-slate-900">よろしければシェアをお願いします。</p>
                   <div className="mt-3 flex flex-wrap gap-2">
                     <a
                       href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(
@@ -1757,7 +1757,7 @@ export default function MyPage() {
                       )}&url=${encodeURIComponent(reviewStore?.url ?? 'https://yasukari.com')}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center justify-center rounded-full bg-red-600 px-4 py-2 text-xs font-semibold text-white shadow-sm transition hover:bg-red-700"
+                      className="inline-flex items-center justify-center rounded-md bg-red-600 px-4 py-2 text-xs font-semibold text-white shadow-sm transition hover:bg-red-700"
                     >
                       Twitterでシェア
                     </a>
@@ -1767,20 +1767,20 @@ export default function MyPage() {
                       )}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center justify-center rounded-full bg-red-600 px-4 py-2 text-xs font-semibold text-white shadow-sm transition hover:bg-red-700"
+                      className="inline-flex items-center justify-center rounded-md bg-red-600 px-4 py-2 text-xs font-semibold text-white shadow-sm transition hover:bg-red-700"
                     >
                       LINEでシェア
                     </a>
                   </div>
                 </div>
                 {reviewStore ? (
-                  <div className="rounded-lg border border-gray-200 bg-white px-3 py-3">
-                    <p className="text-sm font-semibold text-gray-900">レビュー口コミはこちら</p>
+                  <div className="rounded-lg border border-slate-200 bg-white px-3 py-3">
+                    <p className="text-sm font-semibold text-slate-900">レビュー口コミはこちら</p>
                     <a
                       href={reviewStore.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="mt-3 inline-flex w-full items-center justify-center rounded-full bg-red-600 px-4 py-2 text-xs font-semibold text-white shadow-sm transition hover:bg-red-700"
+                      className="mt-3 inline-flex w-full items-center justify-center rounded-md bg-red-600 px-4 py-2 text-xs font-semibold text-white shadow-sm transition hover:bg-red-700"
                     >
                       {reviewStore.name}
                     </a>
@@ -1789,7 +1789,7 @@ export default function MyPage() {
                 <button
                   type="button"
                   onClick={handleReturnClose}
-                  className="inline-flex w-full items-center justify-center rounded-full bg-red-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-red-700"
+                  className="inline-flex w-full items-center justify-center rounded-md bg-red-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-red-700"
                 >
                   閉じる
                 </button>
@@ -1800,7 +1800,7 @@ export default function MyPage() {
       ) : null}
       {showReturnExpiredModal ? (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
-          <div className="w-full max-w-md overflow-hidden rounded-2xl border-2 border-red-500 bg-yellow-50 shadow-2xl ring-4 ring-yellow-200">
+          <div className="w-full max-w-md overflow-hidden rounded-lg border-2 border-red-500 bg-yellow-50 shadow-xl ring-4 ring-yellow-200">
             <div className="flex items-start gap-3 bg-yellow-100 px-5 py-4">
               <div className="flex h-11 w-11 items-center justify-center rounded-full bg-white text-red-600 shadow-inner">
                 <span className="text-xl font-bold">!</span>
@@ -1815,7 +1815,7 @@ export default function MyPage() {
               </div>
             </div>
             <div className="bg-yellow-50 px-6 pb-6 pt-4">
-              <div className="rounded-xl bg-yellow-100 px-4 py-3 text-sm text-red-900">
+              <div className="rounded-md bg-yellow-100 px-4 py-3 text-sm text-red-900">
                 <ul className="list-disc space-y-2 pl-4">
                   <li>返却が完了するまで車両を安全な場所で保管してください。</li>
                   <li>延長を希望される場合は「レンタル延長」からお手続きください。</li>
@@ -1825,7 +1825,7 @@ export default function MyPage() {
               <button
                 type="button"
                 onClick={handleReturnClose}
-                className="mt-4 inline-flex w-full items-center justify-center rounded-full bg-red-600 px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-red-700"
+                className="mt-4 inline-flex w-full items-center justify-center rounded-md bg-red-600 px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-red-700"
               >
                 閉じる
               </button>
@@ -1835,19 +1835,19 @@ export default function MyPage() {
       ) : null}
       {showUnlockQrModal && activeKeyboxQrImageUrl ? (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-4 py-6">
-          <div className="w-full max-w-lg rounded-3xl bg-white p-4 shadow-2xl">
+          <div className="w-full max-w-lg rounded-lg bg-white p-4 shadow-xl">
             <div className="flex justify-center">
               <img
                 src={activeKeyboxQrImageUrl}
                 alt="解錠用QRコード"
-                className="h-[70vh] w-full max-w-sm rounded-2xl border border-gray-200 bg-white object-contain"
+                className="h-[70vh] w-full max-w-sm rounded-lg border border-slate-200 bg-white object-contain"
               />
             </div>
-            <p className="mt-4 text-center text-sm text-gray-700">鍵ボックスのリーダーにかざしてください。</p>
+            <p className="mt-4 text-center text-sm text-slate-700">鍵ボックスのリーダーにかざしてください。</p>
             <button
               type="button"
               onClick={() => setShowUnlockQrModal(false)}
-              className="mt-4 inline-flex w-full items-center justify-center rounded-full bg-gray-900 px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-gray-800"
+              className="mt-4 inline-flex w-full items-center justify-center rounded-full bg-slate-900 px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-slate-800"
             >
               閉じる
             </button>
