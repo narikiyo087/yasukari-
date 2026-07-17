@@ -46,7 +46,7 @@ export default function InsurancePage() {
       <Head>
         <title>車両保険の内容について - ヤスカリ</title>
       </Head>
-      <h1 className="text-xl font-bold mb-4 text-center">車両保険の内容について</h1>
+      <h1 className="text-2xl font-bold mb-6 text-center text-slate-900">車両保険の内容について</h1>
 
       <section className="space-y-4">
         <p>レンタルバイク『ヤスカリ』の基本料金には、以下の任意保険が付帯しています。</p>
@@ -60,23 +60,23 @@ export default function InsurancePage() {
       </section>
 
       <section>
-        <h2 className="font-semibold mb-2">車両補償料金</h2>
+        <h2 className="text-lg font-semibold mb-2 text-slate-900">車両補償料金</h2>
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[560px] border border-collapse text-center">
+          <table className="w-full min-w-[560px] border border-slate-200 border-collapse text-center text-slate-700">
             <thead>
               <tr>
-                <th className="border p-2">クラス</th>
-                <th className="border p-2">1日</th>
-                <th className="border p-2">1週間</th>
-                <th className="border p-2">2週間</th>
-                <th className="border p-2">1ヶ月</th>
+                <th className="border border-slate-200 p-3 bg-slate-50 font-semibold text-slate-900">クラス</th>
+                <th className="border border-slate-200 p-3 bg-slate-50 font-semibold text-slate-900">1日</th>
+                <th className="border border-slate-200 p-3 bg-slate-50 font-semibold text-slate-900">1週間</th>
+                <th className="border border-slate-200 p-3 bg-slate-50 font-semibold text-slate-900">2週間</th>
+                <th className="border border-slate-200 p-3 bg-slate-50 font-semibold text-slate-900">1ヶ月</th>
               </tr>
             </thead>
             <tbody>
               {vehicleCoverage.map((row, idx) => (
                 <tr key={idx}>
                   {row.map((cell, i) => (
-                    <td key={i} className="border p-2">{cell}</td>
+                    <td key={i} className="border border-slate-200 p-3">{cell}</td>
                   ))}
                 </tr>
               ))}
@@ -87,22 +87,22 @@ export default function InsurancePage() {
       </section>
 
       <section>
-        <h2 className="font-semibold mb-2">盗難補償オプション</h2>
+        <h2 className="text-lg font-semibold mb-2 text-slate-900">盗難補償オプション</h2>
         <p>加入すると、バイクが盗難にあった場合にオートバイの時価額の50%を補償します。未加入の場合は時価額100%をご負担いただきます。</p>
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[520px] border border-collapse text-center mt-2">
+          <table className="w-full min-w-[520px] border border-slate-200 border-collapse text-center text-slate-700 mt-2">
             <thead>
               <tr>
-                <th className="border p-2">クラス</th>
-                <th className="border p-2">料金</th>
-                <th className="border p-2">遅延の場合</th>
+                <th className="border border-slate-200 p-3 bg-slate-50 font-semibold text-slate-900">クラス</th>
+                <th className="border border-slate-200 p-3 bg-slate-50 font-semibold text-slate-900">料金</th>
+                <th className="border border-slate-200 p-3 bg-slate-50 font-semibold text-slate-900">遅延の場合</th>
               </tr>
             </thead>
             <tbody>
               {theftCoverage.map((row, idx) => (
                 <tr key={idx}>
                   {row.map((cell, i) => (
-                    <td key={i} className="border p-2">{cell || '-'}</td>
+                    <td key={i} className="border border-slate-200 p-3">{cell || '-'}</td>
                   ))}
                 </tr>
               ))}
@@ -113,7 +113,7 @@ export default function InsurancePage() {
       </section>
 
       <section>
-        <h2 className="font-semibold mb-2">補償対象外となる主な例</h2>
+        <h2 className="text-lg font-semibold mb-2 text-slate-900">補償対象外となる主な例</h2>
         <ul className="list-disc list-inside space-y-1">
           {exclusions.map((ex, idx) => (
             <li key={idx}>{ex}</li>

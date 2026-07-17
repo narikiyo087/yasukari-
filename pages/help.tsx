@@ -24,8 +24,8 @@ export default function HelpPage({ categories }: Props) {
         <title>ヘルプ - ヤスカリ</title>
       </Head>
 
-      <section className="grid gap-6 rounded-2xl border border-slate-200 bg-white/80 p-6 shadow-sm md:grid-cols-[1.05fr,1fr] md:p-8">
-        <div className="overflow-hidden rounded-xl ring-1 ring-slate-100">
+      <section className="grid gap-6 rounded-lg border border-slate-200 bg-white p-6 shadow-sm md:grid-cols-[1.05fr,1fr] md:p-8">
+        <div className="overflow-hidden rounded-md border border-slate-200">
           <img
             src="https://yasukari-file.s3.ap-northeast-1.amazonaws.com/PhotoUploads/faq-barner.jpg"
             alt="ヘルプバナー"
@@ -33,7 +33,7 @@ export default function HelpPage({ categories }: Props) {
           />
         </div>
         <div className="flex flex-col gap-3 self-center">
-          <p className="text-xs font-semibold uppercase tracking-wider text-rose-600">Support Center</p>
+          <p className="text-xs font-semibold uppercase tracking-wider text-red-600">Support Center</p>
           <h1 className="text-2xl font-bold text-slate-900">ヘルプ</h1>
           <p className="text-sm leading-relaxed text-slate-700">
             よくある質問やお問い合わせ方法をまとめました。お困りのときは、まずこちらをご確認ください。
@@ -41,9 +41,9 @@ export default function HelpPage({ categories }: Props) {
         </div>
       </section>
 
-      <section className="space-y-4 rounded-2xl border border-slate-200 bg-white/80 p-6 shadow-sm md:p-8">
+      <section className="space-y-4 rounded-lg border border-slate-200 bg-white p-6 shadow-sm md:p-8">
         <div className="text-center space-y-2">
-          <span className="inline-flex items-center justify-center rounded-full bg-rose-50 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-rose-700">
+          <span className="inline-flex items-center justify-center rounded bg-red-50 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-red-700">
             FAQ
           </span>
           <h2 className="text-xl font-bold text-slate-900">よくある質問</h2>
@@ -65,25 +65,25 @@ export default function HelpPage({ categories }: Props) {
         />
       </section>
 
-      <section className="space-y-4 rounded-2xl border border-slate-200 bg-white/80 p-6 shadow-sm md:p-8">
+      <section className="space-y-4 rounded-lg border border-slate-200 bg-white p-6 shadow-sm md:p-8">
         <div className="text-center space-y-2">
-          <span className="inline-flex items-center justify-center rounded-full bg-rose-50 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-rose-700">
+          <span className="inline-flex items-center justify-center rounded bg-red-50 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-red-700">
             Contact
           </span>
           <h2 className="text-xl font-bold text-slate-900">お問い合わせ</h2>
           <p className="text-sm text-slate-600">お急ぎの際はお電話で、その他はメールや来店でも承ります。</p>
         </div>
-        <ul className="divide-y divide-slate-200 rounded-xl bg-rose-50/60 ring-1 ring-rose-100">
+        <ul className="divide-y divide-slate-200 rounded-lg bg-slate-50 border border-slate-200">
           <li className="grid grid-cols-1 gap-1 px-4 py-3 text-sm font-medium text-slate-800 sm:grid-cols-[120px,1fr] sm:items-center sm:px-5 sm:py-4">
-            <span className="text-rose-700">電話</span>
+            <span className="text-red-700">電話</span>
             <span className="font-semibold text-slate-900">03-5856-8200</span>
           </li>
           <li className="grid grid-cols-1 gap-1 px-4 py-3 text-sm font-medium text-slate-800 sm:grid-cols-[120px,1fr] sm:items-center sm:px-5 sm:py-4">
-            <span className="text-rose-700">メール</span>
+            <span className="text-red-700">メール</span>
             <span className="font-semibold text-slate-900">info@yasukari.com</span>
           </li>
           <li className="grid grid-cols-1 gap-1 px-4 py-3 text-sm font-medium text-slate-800 sm:grid-cols-[120px,1fr] sm:items-center sm:px-5 sm:py-4">
-            <span className="text-rose-700">住所</span>
+            <span className="text-red-700">住所</span>
             <span className="font-semibold text-slate-900">東京都足立区小台2-9-7 1階</span>
           </li>
         </ul>

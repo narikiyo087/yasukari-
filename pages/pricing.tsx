@@ -122,19 +122,19 @@ export default function PricingPage() {
       <Head>
         <title>車種・料金 - ヤスカリ</title>
       </Head>
-      <h1 className="text-2xl font-bold mb-4 text-center">車種・料金一覧</h1>
-      <p className="mb-6 text-sm text-gray-700">
+      <h1 className="text-2xl font-bold mb-6 text-center text-slate-900">車種・料金一覧</h1>
+      <p className="mb-6 text-sm text-slate-600">
         掲載されている車種の写真はイメージとしての参考例です。実際にご提供する車両は、色や年式などが異なる場合がございますので、あらかじめご了承ください。
       </p>
       {categories.map((c) => (
         <section key={c.name} className="mb-8">
-          <h2 className="text-xl font-semibold mb-2">{c.name}</h2>
-          <table className="w-full text-sm border-collapse border">
+          <h2 className="text-xl font-semibold mb-2 text-slate-900">{c.name}</h2>
+          <table className="w-full text-sm border-collapse border border-slate-200 text-slate-700">
             <tbody>
               {c.prices.map((p) => (
                 <tr key={p.period}>
-                  <th className="w-32 p-2 border text-left bg-gray-50">{p.period}</th>
-                  <td className="p-2 border">
+                  <th className="w-40 p-3 border border-slate-200 text-left bg-slate-50 font-semibold text-slate-900">{p.period}</th>
+                  <td className="p-3 border border-slate-200 text-right font-bold text-slate-900 tabular-nums">
                     {(() => {
                       const formatted = formatAdjustedYenPrice(p.price, priceMultiplier)
                       return formatted ? `${formatted}〜` : `${p.price}円〜`

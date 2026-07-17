@@ -45,13 +45,13 @@ export default function NewsPage() {
       <Head>
         <title>新着情報 - ヤスカリ</title>
       </Head>
-      <h1 className="text-xl font-bold mb-4 text-center">新着情報</h1>
+      <h1 className="text-2xl font-bold mb-6 text-center text-slate-900">新着情報</h1>
       <div className="space-y-4">
         {posts.map((post, idx) => {
           const content = (
             <>
-              <h2 className="font-semibold">{post.title}</h2>
-              <p className="text-gray-500 text-xs mb-1">{post.date}</p>
+              <h2 className="font-semibold text-slate-900">{post.title}</h2>
+              <p className="text-slate-400 text-xs mb-1">{post.date}</p>
               <p>{post.excerpt}</p>
             </>
           )
@@ -59,12 +59,12 @@ export default function NewsPage() {
             <Link
               key={idx}
               href={post.href}
-              className="block p-4 bg-white rounded shadow hover:bg-gray-50 hover-glow"
+              className="block p-4 bg-white rounded-lg border border-slate-200 shadow-sm transition hover:border-slate-300 hover:shadow-md"
             >
               {content}
             </Link>
           ) : (
-            <div key={idx} className="p-4 bg-white rounded shadow hover-glow">
+            <div key={idx} className="p-4 bg-white rounded-lg border border-slate-200 shadow-sm">
               {content}
             </div>
           )
