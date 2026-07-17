@@ -212,7 +212,7 @@ export default function ProductDetailPageEn({
       <Head>
         <title>{bike.modelName} - ヤスカリ</title>
       </Head>
-      <main className="min-h-screen bg-gradient-to-b from-gray-50 to-white pb-12">
+      <main className="min-h-screen bg-transparent pb-12">
         <div className="w-full py-8 space-y-10">
           <nav className="text-sm text-slate-500" aria-label="Breadcrumb">
             <ol className="flex items-center gap-2">
