@@ -5,6 +5,21 @@ export default function PrivacyPolicyEn() {
     <>
       <Head>
         <title>Privacy Policy - ヤスカリ</title>
+        <meta name="description" content="Yasukari privacy policy and how we handle personal information." />
+        <link rel="canonical" href="https://yasukari.com/en/privacy" />
+        <link rel="alternate" hrefLang="ja" href="https://yasukari.com/privacy" />
+        <link rel="alternate" hrefLang="en" href="https://yasukari.com/en/privacy" />
+        <link rel="alternate" hrefLang="x-default" href="https://yasukari.com/privacy" />
+        <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="Yasukari" />
+        <meta property="og:title" content="Privacy Policy - ヤスカリ" />
+        <meta property="og:description" content="Yasukari privacy policy and how we handle personal information." />
+        <meta property="og:url" content="https://yasukari.com/en/privacy" />
+        <meta property="og:image" content="https://yasukari-file.s3.ap-northeast-1.amazonaws.com/PhotoUploads/slide.jpg" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Privacy Policy - ヤスカリ" />
+        <meta name="twitter:description" content="Yasukari privacy policy and how we handle personal information." />
+        <meta name="twitter:image" content="https://yasukari-file.s3.ap-northeast-1.amazonaws.com/PhotoUploads/slide.jpg" />
       </Head>
       <main className="max-w-3xl mx-auto p-6 text-sm leading-relaxed">
         <h1 className="text-xl font-bold mb-4 text-center">Privacy Policy</h1>

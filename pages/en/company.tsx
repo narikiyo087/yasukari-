@@ -5,6 +5,21 @@ export default function CompanyPageEn() {
     <div className="max-w-3xl mx-auto p-6 text-sm leading-relaxed">
       <Head>
         <title>Company Information - ヤスカリ</title>
+        <meta name="description" content="Company information for Yasukari, the affordable Tokyo motorcycle rental service operated by K-JET Inc." />
+        <link rel="canonical" href="https://yasukari.com/en/company" />
+        <link rel="alternate" hrefLang="ja" href="https://yasukari.com/company" />
+        <link rel="alternate" hrefLang="en" href="https://yasukari.com/en/company" />
+        <link rel="alternate" hrefLang="x-default" href="https://yasukari.com/company" />
+        <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="Yasukari" />
+        <meta property="og:title" content="Company Information - ヤスカリ" />
+        <meta property="og:description" content="Company information for Yasukari, the affordable Tokyo motorcycle rental service operated by K-JET Inc." />
+        <meta property="og:url" content="https://yasukari.com/en/company" />
+        <meta property="og:image" content="https://yasukari-file.s3.ap-northeast-1.amazonaws.com/PhotoUploads/slide.jpg" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Company Information - ヤスカリ" />
+        <meta name="twitter:description" content="Company information for Yasukari, the affordable Tokyo motorcycle rental service operated by K-JET Inc." />
+        <meta name="twitter:image" content="https://yasukari-file.s3.ap-northeast-1.amazonaws.com/PhotoUploads/slide.jpg" />
       </Head>
       <h1 className="text-xl font-bold mb-4 text-center">Company Information</h1>
       <table className="w-full border border-collapse mb-6">

@@ -7,6 +7,21 @@ export default function BeginnerGuidePageEn() {
     <div className="max-w-[1440px] mx-auto p-6 space-y-6 text-sm leading-relaxed">
       <Head>
         <title>Beginner&apos;s Guide - ヤスカリ</title>
+        <meta name="description" content="First-time guide to renting a motorcycle in Tokyo with Yasukari — from booking to pickup, riding and return, explained step by step." />
+        <link rel="canonical" href="https://yasukari.com/en/beginner" />
+        <link rel="alternate" hrefLang="ja" href="https://yasukari.com/beginner" />
+        <link rel="alternate" hrefLang="en" href="https://yasukari.com/en/beginner" />
+        <link rel="alternate" hrefLang="x-default" href="https://yasukari.com/beginner" />
+        <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="Yasukari" />
+        <meta property="og:title" content="Beginner's Guide - ヤスカリ" />
+        <meta property="og:description" content="First-time guide to renting a motorcycle in Tokyo with Yasukari — from booking to pickup, riding and return, explained step by step." />
+        <meta property="og:url" content="https://yasukari.com/en/beginner" />
+        <meta property="og:image" content="https://yasukari-file.s3.ap-northeast-1.amazonaws.com/PhotoUploads/slide.jpg" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Beginner's Guide - ヤスカリ" />
+        <meta name="twitter:description" content="First-time guide to renting a motorcycle in Tokyo with Yasukari — from booking to pickup, riding and return, explained step by step." />
+        <meta name="twitter:image" content="https://yasukari-file.s3.ap-northeast-1.amazonaws.com/PhotoUploads/slide.jpg" />
       </Head>
 
       <img

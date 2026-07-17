@@ -5,6 +5,21 @@ export default function ExternalDisclosureEn() {
     <>
       <Head>
         <title>External Data Transmission - ヤスカリ</title>
+        <meta name="description" content="About external data transmission on the Yasukari website." />
+        <link rel="canonical" href="https://yasukari.com/en/external" />
+        <link rel="alternate" hrefLang="ja" href="https://yasukari.com/external" />
+        <link rel="alternate" hrefLang="en" href="https://yasukari.com/en/external" />
+        <link rel="alternate" hrefLang="x-default" href="https://yasukari.com/external" />
+        <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="Yasukari" />
+        <meta property="og:title" content="External Data Transmission - ヤスカリ" />
+        <meta property="og:description" content="About external data transmission on the Yasukari website." />
+        <meta property="og:url" content="https://yasukari.com/en/external" />
+        <meta property="og:image" content="https://yasukari-file.s3.ap-northeast-1.amazonaws.com/PhotoUploads/slide.jpg" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="External Data Transmission - ヤスカリ" />
+        <meta name="twitter:description" content="About external data transmission on the Yasukari website." />
+        <meta name="twitter:image" content="https://yasukari-file.s3.ap-northeast-1.amazonaws.com/PhotoUploads/slide.jpg" />
       </Head>
       <main className="max-w-3xl mx-auto p-6 text-sm leading-relaxed">
         <h1 className="text-xl font-bold mb-4 text-center">External Data Transmission</h1>

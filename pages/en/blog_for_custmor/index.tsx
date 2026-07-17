@@ -68,6 +68,21 @@ export default function BlogIndex({
     <div className="max-w-6xl mx-auto p-4 flex flex-row flex-wrap gap-6">
       <Head>
         <title>新着Blog・お知らせ - Yasukari</title>
+        <meta name="description" content="News and blog from Yasukari — campaigns, hours and the latest store updates." />
+        <link rel="canonical" href="https://yasukari.com/en/blog_for_custmor" />
+        <link rel="alternate" hrefLang="ja" href="https://yasukari.com/blog_for_custmor" />
+        <link rel="alternate" hrefLang="en" href="https://yasukari.com/en/blog_for_custmor" />
+        <link rel="alternate" hrefLang="x-default" href="https://yasukari.com/blog_for_custmor" />
+        <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="Yasukari" />
+        <meta property="og:title" content="新着Blog・お知らせ - Yasukari" />
+        <meta property="og:description" content="News and blog from Yasukari — campaigns, hours and the latest store updates." />
+        <meta property="og:url" content="https://yasukari.com/en/blog_for_custmor" />
+        <meta property="og:image" content="https://yasukari-file.s3.ap-northeast-1.amazonaws.com/PhotoUploads/slide.jpg" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="新着Blog・お知らせ - Yasukari" />
+        <meta name="twitter:description" content="News and blog from Yasukari — campaigns, hours and the latest store updates." />
+        <meta name="twitter:image" content="https://yasukari-file.s3.ap-northeast-1.amazonaws.com/PhotoUploads/slide.jpg" />
       </Head>
       <div className="w-[70%]">
         <h1 className="text-xl font-bold mb-4">新着Blog・お知らせ</h1>
