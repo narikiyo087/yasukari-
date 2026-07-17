@@ -96,16 +96,58 @@ interface Props {
   html: string
   meta: Record<string, string>
   posts: SearchPost[]
+  slug: string
 }
 
-export default function BlogPost({ html, meta, posts }: Props) {
+const YASUKARI_LOGO =
+  'https://yasukari-file.s3.ap-northeast-1.amazonaws.com/PhotoUploads/1769056104573-d731196a-700f-4cc2-948b-68cfdb40d14a-yasukari-logo.jpg'
+
+export default function BlogPost({ html, meta, posts, slug }: Props) {
+  const pageTitle = meta.title ? `${meta.title} - ヤスカリ` : 'ブログ - ヤスカリ'
+  const description = (
+    meta.description ||
+    meta.excerpt ||
+    html.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim() ||
+    'ヤスカリのブログ記事です。'
+  ).slice(0, 120)
+  const url = `https://yasukari.com/blog_for_custmor/${slug}`
+  const articleJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BlogPosting',
+    headline: meta.title || slug,
+    ...(meta.eyecatch ? { image: meta.eyecatch } : {}),
+    ...(meta.date ? { datePublished: meta.date, dateModified: meta.date } : {}),
+    author: { '@type': 'Organization', name: 'ヤスカリ' },
+    publisher: {
+      '@type': 'Organization',
+      name: 'ヤスカリ',
+      logo: { '@type': 'ImageObject', url: YASUKARI_LOGO },
+    },
+    mainEntityOfPage: url,
+    description,
+  }
   return (
     <div className="max-w-6xl mx-auto p-4 flex flex-row flex-wrap gap-6">
       <Head>
-        <title>{meta.title ? `${meta.title} - ヤスカリ` : 'ブログ'}</title>
+        <title>{pageTitle}</title>
+        <meta name="description" content={description} />
+        <link rel="canonical" href={url} />
+        <meta property="og:type" content="article" />
+        <meta property="og:site_name" content="ヤスカリ" />
+        <meta property="og:title" content={pageTitle} />
+        <meta property="og:description" content={description} />
+        <meta property="og:url" content={url} />
+        {meta.eyecatch && <meta property="og:image" content={meta.eyecatch} />}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={pageTitle} />
+        <meta name="twitter:description" content={description} />
         {meta.eyecatch && (
-          <meta property="og:image" content={meta.eyecatch} />
+          <meta name="twitter:image" content={meta.eyecatch} />
         )}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
+        />
       </Head>
       <article className="markdown-body w-[70%]">
         {meta.title && (
@@ -197,5 +239,5 @@ export const getStaticProps: GetStaticProps = ({ params }) => {
     return acc
   }, [])
 
-  return { props: { html, meta, posts }, revalidate: 60 }
+  return { props: { html, meta, posts, slug }, revalidate: 60 }
 }
