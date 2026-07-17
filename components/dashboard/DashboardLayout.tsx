@@ -53,6 +53,7 @@ const NAV_GROUPS: NavGroup[] = [
     items: [
       { label: "ダッシュボード", href: ADMIN_DASHBOARD_ROOT },
       { label: "レンタル予約管理", href: `${ADMIN_DASHBOARD_ROOT}/reservations` },
+      { label: "承認待ち（統合）", href: `${ADMIN_DASHBOARD_ROOT}/approvals` },
       { label: "承認待ち：免許証確認", href: `${ADMIN_DASHBOARD_ROOT}/photo-uploads/license-uploads` },
       { label: "承認待ち：事故・転倒報告", href: `${ADMIN_DASHBOARD_ROOT}/photo-uploads/accident-reports` },
       { label: "承認待ち：返却完了確認", href: `${ADMIN_DASHBOARD_ROOT}/photo-uploads/return-completions` },
