@@ -1,7 +1,28 @@
+import fs from "fs";
+import path from "path";
 import type { GetServerSideProps } from "next";
 import { getBikeModels } from "../lib/bikes";
 
 const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://yasukari.com";
+
+// Collect published (showJa !== false) blog post slugs for the sitemap.
+const getBlogSlugs = (): string[] => {
+  try {
+    const dir = path.join(process.cwd(), "blog_for_custmor");
+    return fs
+      .readdirSync(dir)
+      .filter((f) => f.endsWith(".md"))
+      .filter((file) => {
+        const md = fs.readFileSync(path.join(dir, file), "utf8");
+        const fm = md.match(/^---\n([\s\S]*?)\n---/);
+        return !fm || !/showJa:\s*false/.test(fm[1]);
+      })
+      .map((file) => file.replace(/\.md$/, ""));
+  } catch (error) {
+    console.error("sitemap: failed to read blog posts", error);
+    return [];
+  }
+};
 
 // Core pages that exist in both Japanese and English.
 const jaPaths = [
@@ -102,10 +123,17 @@ export const getServerSideProps: GetServerSideProps = async ({ res }) => {
     console.error("sitemap: failed to load bike models", error);
   }
 
+  // Individual blog posts.
+  const blogEntries = getBlogSlugs().map((slug) => {
+    const p = `/blog_for_custmor/${slug}`;
+    return buildUrlEntry(p, [{ href: `${baseUrl}${p}`, hreflang: "ja" }], "0.6");
+  });
+
   const urlEntries = [
     ...coreEntries,
     ...jaOnlyEntries,
     ...productEntries,
+    ...blogEntries,
   ].join("");
 
   const sitemap = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">${urlEntries}\n</urlset>`;
