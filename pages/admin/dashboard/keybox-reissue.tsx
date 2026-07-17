@@ -355,10 +355,10 @@ export default function KeyboxReissuePage() {
                             <img
                               src={result.qrImageUrl}
                               alt="再発行されたQRコード"
-                              className="h-24 w-24 rounded border border-gray-200 object-contain"
+                              className="h-24 w-24 rounded border border-slate-200 object-contain"
                             />
                           ) : (
-                            <span className="text-xs text-gray-500">-</span>
+                            <span className="text-xs text-slate-500">-</span>
                           )}
                         </td>
                       </tr>

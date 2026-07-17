@@ -94,7 +94,7 @@
 
 .sidebarCard {
   padding: 1rem 0.95rem;
-  border-radius: 0.9rem;
+  border-radius: 8px;
   border: 1px solid rgba(226, 232, 240, 0.9);
   background: #f8fafc;
   display: flex;
@@ -138,9 +138,9 @@
 }
 
 .statusBadgeActive {
-  background: rgba(248, 113, 113, 0.15);
+  background: rgba(214, 40, 40, 0.15);
   color: #b91c1c;
-  border-color: rgba(248, 113, 113, 0.35);
+  border-color: rgba(214, 40, 40, 0.35);
 }
 
 .statusBadgeInactive {
@@ -162,7 +162,7 @@
   justify-content: center;
   gap: 0.35rem;
   padding: 0.55rem 0.8rem;
-  border-radius: 0.7rem;
+  border-radius: 6px;
   font-weight: 700;
   font-size: 0.95rem;
   border: 1px solid rgba(59, 130, 246, 0.3);
@@ -185,7 +185,7 @@
 
 .sidebarActionButton {
   padding: 0.65rem 0.85rem;
-  border-radius: 0.75rem;
+  border-radius: 6px;
   border: 1px solid rgba(37, 99, 235, 0.4);
   background: linear-gradient(135deg, rgba(37, 99, 235, 0.9), rgba(59, 130, 246, 0.85));
   color: #ffffff;
@@ -218,7 +218,7 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0.55rem 0.85rem;
-  border-radius: 0.75rem;
+  border-radius: 6px;
   color: rgba(55, 65, 81, 0.92);
   text-decoration: none;
   font-weight: 600;
@@ -264,7 +264,7 @@
   display: inline-flex;
   align-items: center;
   padding: 0.4rem 0.75rem;
-  border-radius: 0.65rem;
+  border-radius: 6px;
   color: rgba(75, 85, 99, 0.92);
   text-decoration: none;
   font-size: 0.9rem;
@@ -348,7 +348,7 @@
   flex-direction: column;
   gap: 1.2rem;
   padding: clamp(1.25rem, 3vw, 2.25rem);
-  border-radius: 1rem;
+  border-radius: 8px;
   background: #fff;
   border: 1px solid rgba(148, 163, 184, 0.25);
 }
@@ -364,7 +364,7 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: rgba(248, 113, 113, 0.95);
+  color: rgba(214, 40, 40, 0.95);
   margin-bottom: 0.15rem;
 }
 
@@ -392,7 +392,7 @@
   flex-direction: column;
   gap: 0.35rem;
   padding: 1rem 1.25rem;
-  border-radius: 0.9rem;
+  border-radius: 8px;
   background: linear-gradient(135deg, #fff 0%, #f8fafc 100%);
   border: 1px solid rgba(226, 232, 240, 0.9);
   box-shadow: 0 5px 16px rgba(15, 23, 42, 0.04);
@@ -406,7 +406,7 @@
 .dashboardStatCard:focus-visible {
   transform: translateY(-2px);
   box-shadow: 0 8px 22px rgba(15, 23, 42, 0.08);
-  border-color: rgba(248, 113, 113, 0.5);
+  border-color: rgba(214, 40, 40, 0.5);
 }
 
 .dashboardStatLabel {
@@ -432,7 +432,7 @@
   display: flex;
   flex-direction: column;
   gap: clamp(1.1rem, 2vw, 1.8rem);
-  border-radius: 1rem;
+  border-radius: 8px;
   background: #fff;
   border: 1px solid rgba(148, 163, 184, 0.25);
   padding: clamp(1.25rem, 3vw, 2.25rem);
@@ -449,7 +449,7 @@
   flex-direction: column;
   gap: 0.85rem;
   padding: 1.1rem 1.25rem;
-  border-radius: 0.95rem;
+  border-radius: 8px;
   border: 1px solid rgba(226, 232, 240, 0.9);
   background: linear-gradient(145deg, #fff 0%, #f8fafc 100%);
   box-shadow: 0 6px 20px rgba(15, 23, 42, 0.05);
@@ -464,7 +464,7 @@
 
 .chartPlaceholder {
   border: 1px dashed rgba(148, 163, 184, 0.8);
-  border-radius: 0.9rem;
+  border-radius: 8px;
   background: repeating-linear-gradient(
       45deg,
       rgba(241, 245, 249, 0.8),
@@ -519,10 +519,10 @@
   margin: 0;
   color: var(--primary-color-dark);
   font-weight: 700;
-  background: rgba(248, 113, 113, 0.08);
+  background: rgba(214, 40, 40, 0.08);
   border: 1px solid rgba(239, 68, 68, 0.2);
   padding: 0.75rem 0.9rem;
-  border-radius: 0.75rem;
+  border-radius: 6px;
 }
 
 .chartEmptyState {
@@ -570,7 +570,7 @@
   gap: 0.5rem 0.75rem;
   align-items: center;
   padding: 0.65rem 0.75rem;
-  border-radius: 0.85rem;
+  border-radius: 8px;
   background: #f8fafc;
   border: 1px solid rgba(226, 232, 240, 0.9);
 }
@@ -578,7 +578,7 @@
 .legendSwatch {
   width: 0.85rem;
   height: 0.85rem;
-  border-radius: 0.25rem;
+  border-radius: 4px;
   display: inline-block;
 }
 
@@ -608,7 +608,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 0.8rem 0.95rem;
-  border-radius: 0.8rem;
+  border-radius: 6px;
   background: #f8fafc;
   border: 1px dashed rgba(226, 232, 240, 0.9);
 }
@@ -630,7 +630,7 @@
   justify-content: center;
   padding: 0.35rem 0.65rem;
   border-radius: 9999px;
-  background: rgba(248, 113, 113, 0.12);
+  background: rgba(214, 40, 40, 0.12);
   color: var(--primary-color-dark);
   font-weight: 800;
   min-width: 96px;
@@ -654,7 +654,7 @@
   flex-direction: column;
   gap: 0.75rem;
   padding: 1rem 1.25rem;
-  border-radius: 0.9rem;
+  border-radius: 8px;
   background: #f8fafc;
   border: 1px solid rgba(226, 232, 240, 0.9);
 }
@@ -738,7 +738,7 @@
   flex-direction: column;
   gap: 0.5rem;
   padding: 0.75rem;
-  border-radius: 0.75rem;
+  border-radius: 6px;
   background: #ffffff;
   border: 1px solid rgba(226, 232, 240, 0.9);
   box-shadow: 0 1px 2px rgba(15, 23, 42, 0.05);
@@ -819,7 +819,7 @@
 .calendarNote {
   margin-top: 0.25rem;
   padding: 6px 8px;
-  border-radius: 0.5rem;
+  border-radius: 6px;
   background: #f9fafb;
   border: 1px solid rgba(226, 232, 240, 0.9);
   color: rgba(30, 41, 59, 0.92);
@@ -832,7 +832,7 @@
   transform: translateX(-50%);
   width: min(320px, 90vw);
   background: #ffffff;
-  border-radius: 1rem;
+  border-radius: 8px;
   border: 1px solid rgba(226, 232, 240, 0.9);
   box-shadow: 0 18px 35px rgba(15, 23, 42, 0.15);
   padding: 1rem;
@@ -880,7 +880,7 @@
   margin-top: 1rem;
   padding: 0.75rem 0.5rem 0.25rem;
   background: linear-gradient(180deg, #f8fafc 0%, #ffffff 60%);
-  border-radius: 0.85rem;
+  border-radius: 8px;
   border: 1px solid rgba(226, 232, 240, 0.9);
 }
 
@@ -896,7 +896,7 @@
   align-items: center;
   gap: 0.65rem;
   padding: 0.35rem 0.45rem;
-  border-radius: 0.65rem;
+  border-radius: 6px;
 }
 
 .statusLegendDot {
@@ -916,7 +916,7 @@
   align-items: flex-start;
   gap: 0.75rem;
   padding: 0.9rem 1rem;
-  border-radius: 0.9rem;
+  border-radius: 8px;
   background: #f8fafc;
   border: 1px dashed rgba(148, 163, 184, 0.65);
 }
@@ -988,7 +988,7 @@
 .menuLinkAction:hover,
 .menuLinkAction:focus-visible {
   text-decoration: none;
-  border-color: rgba(248, 113, 113, 0.6);
+  border-color: rgba(214, 40, 40, 0.6);
   color: var(--primary-color-dark);
 }
 
@@ -998,7 +998,7 @@
   gap: 0.45rem;
   align-items: flex-start;
   padding: 0.9rem 1.1rem;
-  border-radius: 0.9rem;
+  border-radius: 8px;
   border: 1px solid rgba(148, 163, 184, 0.35);
   background: #f8fafc;
   color: rgba(30, 41, 59, 0.9);
@@ -1012,12 +1012,12 @@
 .menuCard:focus-visible {
   outline: none;
   background: #fff;
-  border-color: rgba(248, 113, 113, 0.5);
+  border-color: rgba(214, 40, 40, 0.5);
 }
 
 .menuCardActive {
-  border-color: rgba(248, 113, 113, 0.5);
-  background: rgba(248, 113, 113, 0.08);
+  border-color: rgba(214, 40, 40, 0.5);
+  background: rgba(214, 40, 40, 0.08);
   color: var(--primary-color-dark);
 }
 
@@ -1037,7 +1037,7 @@
   gap: 0.4rem;
   padding: 0.3rem 0.75rem;
   border-radius: 9999px;
-  background: rgba(248, 113, 113, 0.15);
+  background: rgba(214, 40, 40, 0.15);
   color: var(--primary-color-dark);
   font-weight: 600;
   font-size: 0.78rem;
@@ -1046,7 +1046,7 @@
 }
 
 .section {
-  border-radius: 1rem;
+  border-radius: 8px;
   background: #fff;
   border: 1px solid rgba(148, 163, 184, 0.25);
   padding: clamp(1.25rem, 3vw, 2.5rem);
@@ -1071,7 +1071,7 @@
 .tableSearchInput {
   min-width: 220px;
   padding: 0.55rem 0.75rem;
-  border-radius: 0.75rem;
+  border-radius: 6px;
   border: 1px solid rgba(203, 213, 225, 0.9);
   background: #fff;
   font: inherit;
@@ -1087,7 +1087,7 @@
 .tableSelect {
   min-width: 160px;
   padding: 0.55rem 2.2rem 0.55rem 0.75rem;
-  border-radius: 0.75rem;
+  border-radius: 6px;
   border: 1px solid rgba(203, 213, 225, 0.9);
   background: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 20 20' fill='none'%3e%3cpath d='M5.5 7.5L10 12.5L14.5 7.5' stroke='%236b7280' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3e%3c/svg%3e")
       no-repeat right 0.65rem center/12px 12px,
@@ -1167,7 +1167,7 @@
   gap: 0.35rem;
   padding: 0.55rem 1.1rem;
   border-radius: 9999px;
-  border: 1px solid rgba(248, 113, 113, 0.55);
+  border: 1px solid rgba(214, 40, 40, 0.55);
   background: rgba(254, 226, 226, 0.6);
   font-size: 0.85rem;
   font-weight: 700;
@@ -1181,7 +1181,7 @@
 .tableDangerButton:focus-visible {
   outline: none;
   background: rgba(254, 226, 226, 0.9);
-  border-color: rgba(248, 113, 113, 0.8);
+  border-color: rgba(214, 40, 40, 0.8);
   color: #991b1b;
 }
 
@@ -1215,7 +1215,7 @@
   gap: 1.2rem;
   padding: clamp(1.25rem, 2vw + 1rem, 1.8rem);
   border: 1px solid rgba(148, 163, 184, 0.35);
-  border-radius: 1rem;
+  border-radius: 8px;
   background: linear-gradient(135deg, #ffffff 0%, #f8fafc 60%, #eef2ff 100%);
   box-shadow: 0 16px 40px rgba(15, 23, 42, 0.08);
 }
@@ -1226,7 +1226,7 @@
   inset: 0;
   pointer-events: none;
   background: radial-gradient(circle at 15% 15%, rgba(59, 130, 246, 0.12), transparent 35%),
-    radial-gradient(circle at 85% 20%, rgba(248, 113, 113, 0.12), transparent 32%);
+    radial-gradient(circle at 85% 20%, rgba(214, 40, 40, 0.12), transparent 32%);
 }
 
 .formSections {
@@ -1258,7 +1258,7 @@
   font: inherit;
   font-variant-numeric: tabular-nums;
   padding: 0.75rem 0.9rem;
-  border-radius: 0.9rem;
+  border-radius: 8px;
   border: 1px solid rgba(148, 163, 184, 0.6);
   background: linear-gradient(180deg, #ffffff, #f8fafc);
   box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.08);
@@ -1287,7 +1287,7 @@
   justify-content: center;
   gap: 0.5rem;
   padding: 0.7rem 1.35rem;
-  border-radius: 0.95rem;
+  border-radius: 8px;
   border: 1px solid rgba(59, 130, 246, 0.25);
   background: linear-gradient(135deg, #2563eb, #fb7185);
   color: #ffffff;
@@ -1360,7 +1360,7 @@
   align-items: center;
   gap: 0.45rem;
   padding: 0.55rem 1.2rem;
-  border-radius: 0.85rem;
+  border-radius: 8px;
   border: 1px solid rgba(148, 163, 184, 0.4);
   background: #fff;
   color: rgba(30, 41, 59, 0.82);
@@ -1400,7 +1400,7 @@
 }
 
 .iconButtonDanger {
-  background: #fef2f2;
+  background: #f8fafc;
   color: #991b1b;
   border-color: #fecdd3;
 }
@@ -1408,7 +1408,7 @@
 .iconButtonDanger:hover,
 .iconButtonDanger:focus-visible {
   background: #fee2e2;
-  border-color: #fca5a5;
+  border-color: #f7c6c6;
 }
 
 .iconButtonDisabled {
@@ -1433,7 +1433,7 @@
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
-  border-radius: 1rem;
+  border-radius: 8px;
   padding: 1.5rem;
   border: 1px dashed rgba(148, 163, 184, 0.6);
   background: rgba(248, 250, 252, 0.4);
@@ -1443,7 +1443,7 @@
 .detailPanel {
   margin-top: 1.5rem;
   padding: 1.5rem;
-  border-radius: 0.9rem;
+  border-radius: 8px;
   border: 1px solid rgba(148, 163, 184, 0.35);
   background: #fff;
 }
@@ -1478,7 +1478,7 @@
   align-items: center;
   gap: 0.35rem;
   padding: 0.4rem 0.65rem;
-  border-radius: 0.65rem;
+  border-radius: 6px;
   border: 1px solid rgba(148, 163, 184, 0.45);
   background: #fff;
   color: rgba(30, 41, 59, 0.85);
@@ -1515,7 +1515,7 @@
 .selectInput {
   min-width: 200px;
   padding: 0.55rem 0.75rem;
-  border-radius: 0.65rem;
+  border-radius: 6px;
   border: 1px solid rgba(148, 163, 184, 0.6);
   background: #fff;
   font-weight: 600;
@@ -1553,7 +1553,7 @@
 .inlineNotice {
   margin-top: 0.5rem;
   padding: 0.6rem 0.75rem;
-  border-radius: 0.65rem;
+  border-radius: 6px;
   border: 1px solid rgba(148, 163, 184, 0.4);
   background: #f8fafc;
   font-size: 0.92rem;
@@ -1568,7 +1568,7 @@
 
 .noticeDanger {
   border-color: #fecdd3;
-  background: #fef2f2;
+  background: #f8fafc;
   color: #991b1b;
 }
 
@@ -1589,7 +1589,7 @@
 .textArea {
   width: 100%;
   padding: 0.75rem;
-  border-radius: 0.75rem;
+  border-radius: 6px;
   border: 1px solid rgba(148, 163, 184, 0.55);
   background: #fff;
   resize: vertical;
@@ -1608,7 +1608,7 @@
   flex-direction: column;
   gap: 0.35rem;
   border: 1px solid rgba(226, 232, 240, 0.9);
-  border-radius: 0.75rem;
+  border-radius: 6px;
   padding: 0.75rem 0.9rem;
   background: #f8fafc;
 }
@@ -1668,7 +1668,7 @@
 
 .conversationItem {
   border: 1px solid rgba(226, 232, 240, 0.9);
-  border-radius: 0.8rem;
+  border-radius: 6px;
   padding: 0.9rem 1rem;
   background: #f8fafc;
 }
@@ -1704,7 +1704,7 @@
 .statCard {
   background: #f8fafc;
   border: 1px solid rgba(226, 232, 240, 0.9);
-  border-radius: 0.85rem;
+  border-radius: 8px;
   padding: 0.85rem 1rem;
 }
 
@@ -1728,7 +1728,7 @@
   gap: 1rem;
   background: linear-gradient(180deg, #f8fafc 0%, #eef2ff 100%);
   border: 1px solid rgba(203, 213, 225, 0.8);
-  border-radius: 1.1rem;
+  border-radius: 8px;
   padding: 1rem 1rem 0.25rem;
   box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
 }
@@ -1745,7 +1745,7 @@
   scroll-behavior: smooth;
   background: #ffffff;
   border: 1px solid rgba(226, 232, 240, 0.95);
-  border-radius: 1rem;
+  border-radius: 8px;
 }
 
 .chatMessage {
@@ -1808,7 +1808,7 @@
 .chatBubble {
   margin: 0;
   padding: 0.8rem 1rem;
-  border-radius: 1.05rem;
+  border-radius: 8px;
   background: linear-gradient(135deg, #eef2ff 0%, #ffffff 100%);
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03);
   color: rgba(30, 41, 59, 0.95);
@@ -1848,7 +1848,7 @@
 .replyTextarea {
   width: 100%;
   padding: 0.85rem 0.95rem;
-  border-radius: 0.85rem;
+  border-radius: 8px;
   border: 1px solid rgba(203, 213, 225, 0.9);
   background: #fff;
   font: inherit;
@@ -1888,7 +1888,7 @@
 .modalCard {
   width: min(640px, 100%);
   background: #fff;
-  border-radius: 1rem;
+  border-radius: 8px;
   padding: 1.5rem;
   box-shadow: 0 25px 50px rgba(15, 23, 42, 0.2);
   display: flex;
@@ -1925,7 +1925,7 @@
 .modalInput {
   width: 100%;
   padding: 0.75rem 0.9rem;
-  border-radius: 0.75rem;
+  border-radius: 6px;
   border: 1px solid rgba(203, 213, 225, 0.9);
   font: inherit;
   color: inherit;

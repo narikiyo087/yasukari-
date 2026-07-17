@@ -10,7 +10,7 @@
   gap: clamp(1rem, 2vw, 1.5rem);
   background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
   border: 1px solid rgba(148, 163, 184, 0.25);
-  border-radius: 1.25rem;
+  border-radius: 10px;
   padding: clamp(1rem, 3vw, 1.5rem);
   box-shadow: 0 12px 24px rgba(15, 23, 42, 0.05);
 }
@@ -27,7 +27,7 @@
   justify-content: space-between;
   padding: 0.9rem 1rem;
   border: 1px solid rgba(203, 213, 225, 0.75);
-  border-radius: 0.9rem;
+  border-radius: 8px;
   background: #ffffff;
   color: inherit;
   text-decoration: none;
@@ -59,7 +59,7 @@
   gap: clamp(0.75rem, 2vw, 1.25rem);
   background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
   border: 1px solid rgba(148, 163, 184, 0.25);
-  border-radius: 1.25rem;
+  border-radius: 10px;
   padding: clamp(1rem, 3vw, 1.5rem);
   box-shadow: 0 12px 24px rgba(15, 23, 42, 0.05);
 }
@@ -83,7 +83,7 @@
 
 .calendarCard {
   background: #ffffff;
-  border-radius: 1rem;
+  border-radius: 8px;
   border: 1px solid rgba(148, 163, 184, 0.3);
   padding: clamp(1.25rem, 3vw, 2rem);
   display: flex;
@@ -107,7 +107,7 @@
 
 .monthButton {
   padding: 0.4rem 0.75rem;
-  border-radius: 0.6rem;
+  border-radius: 6px;
   background: #1d4ed8;
   color: #ffffff;
   font-weight: 600;
@@ -217,7 +217,7 @@
   min-width: 180px;
   background: #ffffff;
   border: 1px solid rgba(203, 213, 225, 0.9);
-  border-radius: 0.75rem;
+  border-radius: 6px;
   box-shadow: 0 14px 30px rgba(15, 23, 42, 0.12);
   padding: 0.4rem;
   z-index: 10;
@@ -230,7 +230,7 @@
   border: none;
   background: transparent;
   padding: 0.55rem 0.75rem;
-  border-radius: 0.6rem;
+  border-radius: 6px;
   text-align: left;
   font-size: 0.95rem;
   color: rgba(30, 41, 59, 0.9);
@@ -252,7 +252,7 @@
 
 .weekdayPanel {
   background: #ffffff;
-  border-radius: 1rem;
+  border-radius: 8px;
   border: 1px solid rgba(148, 163, 184, 0.3);
   padding: clamp(1.15rem, 2.5vw, 1.8rem);
   display: flex;
@@ -268,7 +268,7 @@
 
 .weekdayButton {
   padding: 0.65rem 0.75rem;
-  border-radius: 0.75rem;
+  border-radius: 6px;
   border: 1px solid rgba(203, 213, 225, 0.9);
   background: rgba(241, 245, 249, 0.75);
   font-weight: 600;
@@ -290,10 +290,10 @@
 
 .errorMessage {
   padding: 0.75rem 1rem;
-  border-radius: 0.75rem;
-  background: rgba(248, 113, 113, 0.15);
+  border-radius: 6px;
+  background: rgba(214, 40, 40, 0.15);
   color: #b91c1c;
-  border: 1px solid rgba(248, 113, 113, 0.35);
+  border: 1px solid rgba(214, 40, 40, 0.35);
 }
 
 .loadingMessage {
@@ -314,7 +314,7 @@
 
 .noteModal {
   background: #ffffff;
-  border-radius: 1rem;
+  border-radius: 8px;
   padding: clamp(1.25rem, 2.5vw, 1.75rem);
   max-width: 420px;
   width: 100%;
@@ -328,7 +328,7 @@
   min-height: 120px;
   resize: vertical;
   padding: 0.75rem;
-  border-radius: 0.65rem;
+  border-radius: 6px;
   border: 1px solid rgba(203, 213, 225, 0.9);
   font-size: 0.95rem;
   color: rgba(30, 41, 59, 0.9);
@@ -348,7 +348,7 @@
 
 .noteModal button {
   padding: 0.55rem 1rem;
-  border-radius: 0.65rem;
+  border-radius: 6px;
   border: none;
   font-weight: 600;
   cursor: pointer;

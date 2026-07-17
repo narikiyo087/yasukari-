@@ -20,7 +20,7 @@
 .treeGuide {
   margin-top: 0.75rem;
   padding: 0.75rem 1rem;
-  border-radius: 0.75rem;
+  border-radius: 6px;
   background: rgba(241, 245, 249, 0.6);
   border: 1px dashed rgba(148, 163, 184, 0.5);
   color: rgba(51, 65, 85, 0.95);
@@ -42,7 +42,7 @@
 
 .categoryNode {
   border: 1px solid rgba(148, 163, 184, 0.25);
-  border-radius: 0.9rem;
+  border-radius: 8px;
   background: #fff;
   display: flex;
   flex-direction: column;
@@ -131,7 +131,7 @@
 
 .faqNode {
   border: 1px solid rgba(226, 232, 240, 0.9);
-  border-radius: 0.75rem;
+  border-radius: 6px;
   padding: 0.85rem;
   background: rgba(248, 250, 252, 0.8);
   display: flex;
