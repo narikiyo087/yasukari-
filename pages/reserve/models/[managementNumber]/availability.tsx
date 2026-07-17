@@ -12,7 +12,7 @@ import {
 
 const STATUS_COLORS: Record<"AVAILABLE" | "UNAVAILABLE", string> = {
   AVAILABLE: "bg-emerald-500",
-  UNAVAILABLE: "bg-rose-500",
+  UNAVAILABLE: "bg-red-600",
 };
 const MAX_ADVANCE_MONTHS = 3;
 const MAX_RENTAL_DAYS = 31;
@@ -216,39 +216,39 @@ const availabilityIcon = (entry?: RentalAvailabilityDay, date?: Date) => {
       <Head>
         <title>{resolvedModelName}の空き状況 - ヤスカリ</title>
       </Head>
-      <main className="min-h-screen bg-gray-50 pb-16">
+      <main className="min-h-screen bg-slate-50 pb-16">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
-          <nav className="text-sm text-gray-500" aria-label="Breadcrumb">
+          <nav className="text-sm text-slate-500" aria-label="Breadcrumb">
             <ol className="flex items-center gap-2">
               <li>
-                <Link href="/" className="hover:text-red-500 font-medium">
+                <Link href="/" className="hover:text-red-600 font-medium">
                   ホーム
                 </Link>
               </li>
-              <li className="text-gray-300">/</li>
+              <li className="text-slate-300">/</li>
               <li>
-                <Link href="/products" className="hover:text-red-500 font-medium">
+                <Link href="/products" className="hover:text-red-600 font-medium">
                   車種・料金
                 </Link>
               </li>
-              <li className="text-gray-300">/</li>
-              <li className="text-gray-900 font-semibold" aria-current="page">
+              <li className="text-slate-300">/</li>
+              <li className="text-slate-900 font-semibold" aria-current="page">
                 車種の空き状況
               </li>
             </ol>
           </nav>
 
-          <header className="bg-white shadow-sm ring-1 ring-gray-100 rounded-2xl p-6 sm:p-8">
-            <p className="text-xs font-semibold uppercase tracking-wide text-red-500">Availability</p>
-            <h1 className="mt-2 text-2xl font-bold text-gray-900">車種の空き状況</h1>
-            <p className="mt-2 text-gray-700">
+          <header className="bg-white shadow-sm ring-1 ring-slate-100 rounded-lg p-6 sm:p-8">
+            <p className="text-xs font-semibold uppercase tracking-wide text-red-600">Availability</p>
+            <h1 className="mt-2 text-2xl font-bold text-slate-900">車種の空き状況</h1>
+            <p className="mt-2 text-slate-700">
               バイクスケジュールのデータを基に、レンタル可否をカレンダーで確認できます。
             </p>
             <div className="mt-4 flex flex-wrap gap-3">
               {managementNumber ? (
                 <Link
                   href={`/reserve/models/${managementNumber}`}
-                  className="inline-flex items-center justify-center rounded-lg border border-gray-200 px-4 py-2 text-sm font-semibold text-gray-700 hover:border-gray-300 transition"
+                  className="inline-flex items-center justify-center rounded-lg border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 hover:border-slate-300 transition"
                 >
                   店舗・日時選択に戻る
                 </Link>
@@ -257,33 +257,33 @@ const availabilityIcon = (entry?: RentalAvailabilityDay, date?: Date) => {
           </header>
 
           <section className="grid gap-6 lg:grid-cols-3">
-            <div className="lg:col-span-2 bg-white shadow-sm ring-1 ring-gray-100 rounded-2xl p-6 sm:p-8">
+            <div className="lg:col-span-2 bg-white shadow-sm ring-1 ring-slate-100 rounded-lg p-6 sm:p-8">
               <div className="flex items-center justify-between gap-3 flex-wrap">
                 <div>
-                  <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">Calendar</p>
-                  <h2 className="text-lg font-bold text-gray-900">空き状況カレンダー</h2>
-                  <p className="text-sm text-gray-600 mt-1">
+                  <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Calendar</p>
+                  <h2 className="text-lg font-bold text-slate-900">空き状況カレンダー</h2>
+                  <p className="text-sm text-slate-600 mt-1">
                     日付をクリックすると、その日のステータスを表示します。
                   </p>
-                  <p className="text-xs text-gray-500 mt-1">
+                  <p className="text-xs text-slate-500 mt-1">
                     出発日は3か月先まで指定可能・貸出期間は最大1か月（{MAX_RENTAL_DAYS}日）です。
                   </p>
                 </div>
                 <div className="flex items-center gap-2">
                   <button
                     type="button"
-                    className="inline-flex items-center rounded-lg border border-gray-200 px-3 py-2 text-sm font-semibold text-gray-700 hover:border-gray-300 transition"
+                    className="inline-flex items-center rounded-lg border border-slate-200 px-3 py-2 text-sm font-semibold text-slate-700 hover:border-slate-300 transition"
                     onClick={() => setCalendarMonthOffset((prev) => prev - 1)}
                     disabled={!canMovePrevMonth}
                   >
                     前の月
                   </button>
-                  <div className="text-sm font-semibold text-gray-900">
+                  <div className="text-sm font-semibold text-slate-900">
                     {displayMonth.getFullYear()}年{displayMonth.getMonth() + 1}月
                   </div>
                   <button
                     type="button"
-                    className="inline-flex items-center rounded-lg border border-gray-200 px-3 py-2 text-sm font-semibold text-gray-700 hover:border-gray-300 transition"
+                    className="inline-flex items-center rounded-lg border border-slate-200 px-3 py-2 text-sm font-semibold text-slate-700 hover:border-slate-300 transition"
                     onClick={() => setCalendarMonthOffset((prev) => prev + 1)}
                     disabled={!canMoveNextMonth}
                   >
@@ -292,17 +292,17 @@ const availabilityIcon = (entry?: RentalAvailabilityDay, date?: Date) => {
                 </div>
               </div>
 
-              {loadError && <p className="mt-4 text-sm text-rose-600">{loadError}</p>}
+              {loadError && <p className="mt-4 text-sm text-red-600">{loadError}</p>}
               {isLoading && !loadError ? (
-                <p className="mt-4 text-sm text-gray-600">空き状況を読み込み中です...</p>
+                <p className="mt-4 text-sm text-slate-600">空き状況を読み込み中です...</p>
               ) : null}
               {!isLoading && !vehicle ? (
-                <p className="mt-4 text-sm text-rose-600">該当する車両が見つかりませんでした。</p>
+                <p className="mt-4 text-sm text-red-600">該当する車両が見つかりませんでした。</p>
               ) : null}
 
-              <div className="mt-6 overflow-hidden rounded-xl border border-gray-100">
+              <div className="mt-6 overflow-hidden rounded-md border border-slate-100">
                 <table className="w-full text-center text-sm">
-                  <thead className="bg-gray-50 text-gray-600">
+                  <thead className="bg-slate-50 text-slate-600">
                     <tr>
                       {"日月火水木金土".split("").map((weekday) => (
                         <th key={weekday} className="py-2 font-semibold">
@@ -311,9 +311,9 @@ const availabilityIcon = (entry?: RentalAvailabilityDay, date?: Date) => {
                       ))}
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-gray-100 bg-white">
+                  <tbody className="divide-y divide-slate-100 bg-white">
                     {calendarWeeks.map((week, weekIndex) => (
-                      <tr key={`week-${weekIndex}`} className="divide-x divide-gray-100">
+                      <tr key={`week-${weekIndex}`} className="divide-x divide-slate-100">
                         {week.map((cell, dayIndex) => {
                           const entry = availabilityMap[cell.key];
                           const isSelected = selectedDate === cell.key;
@@ -322,8 +322,8 @@ const availabilityIcon = (entry?: RentalAvailabilityDay, date?: Date) => {
                             <td
                               key={`${weekIndex}-${dayIndex}`}
                               className={`h-20 align-top p-2 text-left transition ${
-                                !cell.isCurrentMonth ? "bg-gray-50 text-gray-400" : "bg-white"
-                              } ${isOutsideBookingWindow ? "bg-gray-100 text-gray-400" : ""} ${
+                                !cell.isCurrentMonth ? "bg-slate-50 text-slate-400" : "bg-white"
+                              } ${isOutsideBookingWindow ? "bg-slate-100 text-slate-400" : ""} ${
                                 isSelected ? "ring-2 ring-red-500" : ""
                               }`}
                             >
@@ -333,10 +333,10 @@ const availabilityIcon = (entry?: RentalAvailabilityDay, date?: Date) => {
                                 onClick={() => setSelectedDate(cell.key)}
                               >
                                 <div className="flex items-center justify-between">
-                                  <span className="text-xs font-semibold text-gray-700">
+                                  <span className="text-xs font-semibold text-slate-700">
                                     {cell.date.getDate()}日
                                   </span>
-                                  <span className="text-sm font-semibold text-gray-700">
+                                  <span className="text-sm font-semibold text-slate-700">
                                     {availabilityIcon(entry, cell.date)}
                                   </span>
                                 </div>
@@ -352,67 +352,67 @@ const availabilityIcon = (entry?: RentalAvailabilityDay, date?: Date) => {
             </div>
 
             <div className="space-y-6">
-              <div className="bg-white shadow-sm ring-1 ring-gray-100 rounded-2xl p-6 sm:p-8">
-                <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">Vehicle</p>
-                <h2 className="text-lg font-bold text-gray-900">車両情報</h2>
+              <div className="bg-white shadow-sm ring-1 ring-slate-100 rounded-lg p-6 sm:p-8">
+                <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Vehicle</p>
+                <h2 className="text-lg font-bold text-slate-900">車両情報</h2>
                 {vehicle ? (
-                  <dl className="mt-4 space-y-3 text-sm text-gray-700">
+                  <dl className="mt-4 space-y-3 text-sm text-slate-700">
                     <div className="flex items-start justify-between gap-4">
-                      <dt className="text-gray-500">管理番号</dt>
-                      <dd className="font-semibold text-gray-900">{vehicle.managementNumber}</dd>
+                      <dt className="text-slate-500">管理番号</dt>
+                      <dd className="font-semibold text-slate-900">{vehicle.managementNumber}</dd>
                     </div>
                     <div className="flex items-start justify-between gap-4">
-                      <dt className="text-gray-500">モデル</dt>
-                      <dd className="font-semibold text-gray-900">{resolvedModelName}</dd>
+                      <dt className="text-slate-500">モデル</dt>
+                      <dd className="font-semibold text-slate-900">{resolvedModelName}</dd>
                     </div>
                     <div className="flex items-start justify-between gap-4">
-                      <dt className="text-gray-500">店舗</dt>
-                      <dd className="font-semibold text-gray-900">{resolvedStoreLabel}</dd>
+                      <dt className="text-slate-500">店舗</dt>
+                      <dd className="font-semibold text-slate-900">{resolvedStoreLabel}</dd>
                     </div>
                   </dl>
                 ) : (
-                  <p className="mt-4 text-sm text-gray-600">
+                  <p className="mt-4 text-sm text-slate-600">
                     {isLoading ? "読み込み中です..." : "車両情報を取得できませんでした。"}
                   </p>
                 )}
               </div>
 
-              <div className="bg-white shadow-sm ring-1 ring-gray-100 rounded-2xl p-6 sm:p-8 space-y-4">
+              <div className="bg-white shadow-sm ring-1 ring-slate-100 rounded-lg p-6 sm:p-8 space-y-4">
                 <div>
-                  <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">Legend</p>
-                  <h2 className="text-lg font-bold text-gray-900">ステータス表示</h2>
+                  <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Legend</p>
+                  <h2 className="text-lg font-bold text-slate-900">ステータス表示</h2>
                 </div>
-                <ul className="space-y-2 text-sm text-gray-700">
+                <ul className="space-y-2 text-sm text-slate-700">
                   <li className="flex items-center justify-between gap-3">
-                    <span className="font-semibold text-gray-900">〇</span>
-                    <span className="text-gray-700">レンタル可</span>
+                    <span className="font-semibold text-slate-900">〇</span>
+                    <span className="text-slate-700">レンタル可</span>
                   </li>
                   <li className="flex items-center justify-between gap-3">
-                    <span className="font-semibold text-gray-900">×</span>
-                    <span className="text-gray-700">レンタル不可</span>
+                    <span className="font-semibold text-slate-900">×</span>
+                    <span className="text-slate-700">レンタル不可</span>
                   </li>
                   <li className="flex items-center justify-between gap-3">
-                    <span className="font-semibold text-gray-900">ー</span>
-                    <span className="text-gray-700">予約受付期間外</span>
+                    <span className="font-semibold text-slate-900">ー</span>
+                    <span className="text-slate-700">予約受付期間外</span>
                   </li>
                   <li className="flex items-center gap-3">
                     <span className={`h-3 w-3 rounded-full ${STATUS_COLORS.AVAILABLE}`} aria-hidden />
-                    <span className="font-semibold text-gray-900">レンタル可</span>
+                    <span className="font-semibold text-slate-900">レンタル可</span>
                   </li>
                   <li className="flex items-center gap-3">
                     <span className={`h-3 w-3 rounded-full ${STATUS_COLORS.UNAVAILABLE}`} aria-hidden />
-                    <span className="font-semibold text-gray-900">レンタル不可</span>
+                    <span className="font-semibold text-slate-900">レンタル不可</span>
                   </li>
                 </ul>
               </div>
 
-              <div className="bg-white shadow-sm ring-1 ring-gray-100 rounded-2xl p-6 sm:p-8">
-                <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">Selected day</p>
-                <h2 className="text-lg font-bold text-gray-900">選択中の日付</h2>
+              <div className="bg-white shadow-sm ring-1 ring-slate-100 rounded-lg p-6 sm:p-8">
+                <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Selected day</p>
+                <h2 className="text-lg font-bold text-slate-900">選択中の日付</h2>
                 {selectedDate ? (
-                  <div className="mt-4 space-y-2 text-sm text-gray-700">
-                    <p className="font-semibold text-gray-900">{selectedDate}</p>
-                    <p className="inline-flex items-center gap-2 text-gray-900">
+                  <div className="mt-4 space-y-2 text-sm text-slate-700">
+                    <p className="font-semibold text-slate-900">{selectedDate}</p>
+                    <p className="inline-flex items-center gap-2 text-slate-900">
                       <span
                         className={`h-3 w-3 rounded-full ${
                           selectedDate && !isWithinBookingWindow(new Date(selectedDate))
@@ -432,7 +432,7 @@ const availabilityIcon = (entry?: RentalAvailabilityDay, date?: Date) => {
                     </p>
                   </div>
                 ) : (
-                  <p className="mt-4 text-sm text-gray-600">日付を選択すると詳細が表示されます。</p>
+                  <p className="mt-4 text-sm text-slate-600">日付を選択すると詳細が表示されます。</p>
                 )}
               </div>
             </div>

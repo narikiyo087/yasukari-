@@ -233,74 +233,74 @@ export default function ReserveModelPage({
       <Head>
         <title>{resolvedModelName}の予約 - ヤスカリ</title>
       </Head>
-      <main className="min-h-screen bg-gray-50 pb-16">
+      <main className="min-h-screen bg-slate-50 pb-16">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
-          <nav className="text-sm text-gray-500" aria-label="Breadcrumb">
+          <nav className="text-sm text-slate-500" aria-label="Breadcrumb">
             <ol className="flex items-center gap-2">
               <li>
-                <Link href="/" className="hover:text-red-500 font-medium">
+                <Link href="/" className="hover:text-red-600 font-medium">
                   ホーム
                 </Link>
               </li>
-              <li className="text-gray-300">/</li>
+              <li className="text-slate-300">/</li>
               <li>
-                <Link href="/products" className="hover:text-red-500 font-medium">
+                <Link href="/products" className="hover:text-red-600 font-medium">
                   車種・料金
                 </Link>
               </li>
               {resolvedModelCode ? (
                 <>
-                  <li className="text-gray-300">/</li>
+                  <li className="text-slate-300">/</li>
                   <li>
                     <Link
                       href={`/products/${resolvedModelCode}`}
-                      className="hover:text-red-500 font-medium"
+                      className="hover:text-red-600 font-medium"
                     >
                       {resolvedModelName}
                     </Link>
                   </li>
                 </>
               ) : null}
-              <li className="text-gray-300">/</li>
-              <li className="text-gray-900 font-semibold" aria-current="page">
+              <li className="text-slate-300">/</li>
+              <li className="text-slate-900 font-semibold" aria-current="page">
                 店舗・日時の選択
               </li>
             </ol>
           </nav>
 
-          <header className="bg-white shadow-sm ring-1 ring-gray-100 rounded-2xl p-6 sm:p-8">
-            <p className="text-xs font-semibold uppercase tracking-wide text-red-500">
+          <header className="bg-white shadow-sm ring-1 ring-slate-100 rounded-lg p-6 sm:p-8">
+            <p className="text-xs font-semibold uppercase tracking-wide text-red-600">
               Reservation
             </p>
-            <h1 className="mt-2 text-2xl font-bold text-gray-900">日時の選択</h1>
-            <p className="mt-2 text-gray-700">
+            <h1 className="mt-2 text-2xl font-bold text-slate-900">日時の選択</h1>
+            <p className="mt-2 text-slate-700">
               {resolvedModelName} の予約リクエストです。日時を選択してお進みください。
             </p>
           </header>
 
-          <section className="bg-white shadow-sm ring-1 ring-gray-100 rounded-2xl p-6 sm:p-8 space-y-6">
+          <section className="bg-white shadow-sm ring-1 ring-slate-100 rounded-lg p-6 sm:p-8 space-y-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">Model</p>
-                <p className="text-lg font-bold text-gray-900">{resolvedModelName}</p>
-                <p className="text-sm text-gray-600">管理番号：{managementNumber}</p>
+                <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Model</p>
+                <p className="text-lg font-bold text-slate-900">{resolvedModelName}</p>
+                <p className="text-sm text-slate-600">管理番号：{managementNumber}</p>
               </div>
               {resolvedImage ? (
                 <img
                   src={resolvedImage}
                   alt={resolvedModelName}
-                  className="h-20 w-32 object-cover rounded-lg ring-1 ring-gray-100"
+                  className="h-20 w-32 object-cover rounded-lg ring-1 ring-slate-100"
                 />
               ) : null}
             </div>
 
             <div className="space-y-4">
-              <div className="rounded-xl border border-gray-100 bg-gray-50 p-4 shadow-sm">
+              <div className="rounded-md border border-slate-100 bg-slate-50 p-4 shadow-sm">
                     <div className="flex flex-wrap items-center gap-3 mb-3">
-                      <p className="text-xs font-semibold text-gray-900">カレンダーから選択</p>
+                      <p className="text-xs font-semibold text-slate-900">カレンダーから選択</p>
                       <div className="grid w-full grid-cols-2 gap-2 text-[11px] sm:w-auto sm:flex sm:flex-wrap sm:items-center sm:gap-2">
                         <span className="inline-flex items-center gap-1 rounded-full bg-red-100 px-2 py-1 text-red-700">
-                          <span className="h-2 w-2 rounded-full bg-red-500" />出発日
+                          <span className="h-2 w-2 rounded-full bg-red-600" />出発日
                         </span>
                         <span className="inline-flex items-center gap-1 rounded-full bg-blue-100 px-2 py-1 text-blue-700">
                           <span className="h-2 w-2 rounded-full bg-blue-500" />返却予定日
@@ -308,7 +308,7 @@ export default function ReserveModelPage({
                         <span className="inline-flex items-center gap-1 rounded-full bg-green-100 px-2 py-1 text-green-700">
                           <span className="h-2 w-2 rounded-full bg-green-500" />レンタル期間
                         </span>
-                        <span className="inline-flex items-center gap-1 rounded-full bg-gray-200 px-2 py-1 text-gray-700">
+                        <span className="inline-flex items-center gap-1 rounded-full bg-slate-200 px-2 py-1 text-slate-700">
                           休: 店舗休業日
                         </span>
                       </div>
@@ -342,7 +342,7 @@ export default function ReserveModelPage({
                   <div className="mt-3 flex flex-wrap items-center gap-2 text-sm">
                     <button
                       type="button"
-                      className={`rounded-full px-3 py-1 font-semibold shadow-sm transition focus:outline-none focus:ring-2 focus:ring-offset-2 ${activeSelection === "pickup" ? "bg-red-500 text-white focus:ring-red-500" : "bg-white text-gray-700 ring-1 ring-gray-200 hover:bg-gray-100 focus:ring-gray-300"}`}
+                      className={`rounded-full px-3 py-1 font-semibold shadow-sm transition focus:outline-none focus:ring-2 focus:ring-offset-2 ${activeSelection === "pickup" ? "bg-red-600 text-white focus:ring-red-500" : "bg-white text-slate-700 ring-1 ring-slate-200 hover:bg-slate-100 focus:ring-slate-300"}`}
                       onClick={() => {
                         if (pickup) {
                           setReturnDate("");
@@ -354,36 +354,36 @@ export default function ReserveModelPage({
                     </button>
                     <button
                       type="button"
-                      className={`rounded-full px-3 py-1 font-semibold shadow-sm transition focus:outline-none focus:ring-2 focus:ring-offset-2 ${activeSelection === "return" ? "bg-blue-500 text-white focus:ring-blue-500" : "bg-white text-gray-700 ring-1 ring-gray-200 hover:bg-gray-100 focus:ring-gray-300"}`}
+                      className={`rounded-full px-3 py-1 font-semibold shadow-sm transition focus:outline-none focus:ring-2 focus:ring-offset-2 ${activeSelection === "return" ? "bg-blue-500 text-white focus:ring-blue-500" : "bg-white text-slate-700 ring-1 ring-slate-200 hover:bg-slate-100 focus:ring-slate-300"}`}
                       onClick={() => setActiveSelection("return")}
                       disabled={!pickup}
                     >
                       返却予定日を選択
                     </button>
                   </div>
-                  <p className="mt-2 text-xs text-gray-600">
+                  <p className="mt-2 text-xs text-slate-600">
                     貸出日を選択してください。3か月先までの予約が可能です。
                   </p>
-                  <p className="mt-1 text-xs text-gray-600">
+                  <p className="mt-1 text-xs text-slate-600">
                     貸出期間は最大1か月（31日）までです。
                   </p>
-                  <p className="mt-3 text-xs text-gray-600">
+                  <p className="mt-3 text-xs text-slate-600">
                     {activeSelection === "pickup"
                       ? "明日以降の日付から出発日を選択してください"
                       : "出発日以降の日付から返却予定日を選択してください"}
                   </p>
                   {!availabilityLoaded ? (
-                    <p className="mt-2 text-xs text-gray-500">空き状況を読み込み中です...</p>
+                    <p className="mt-2 text-xs text-slate-500">空き状況を読み込み中です...</p>
                   ) : availabilityError ? (
-                    <p className="mt-2 text-xs text-red-500">{availabilityError}</p>
+                    <p className="mt-2 text-xs text-red-600">{availabilityError}</p>
                   ) : !holidayLoaded ? (
-                    <p className="mt-2 text-xs text-gray-500">店舗休日を読み込み中です...</p>
+                    <p className="mt-2 text-xs text-slate-500">店舗休日を読み込み中です...</p>
                   ) : holidayError ? (
-                    <p className="mt-2 text-xs text-red-500">{holidayError}</p>
+                    <p className="mt-2 text-xs text-red-600">{holidayError}</p>
                   ) : null}
               </div>
               {storeNotice ? (
-                <div className="rounded-lg bg-gray-50 p-3 text-xs text-gray-700 leading-relaxed">
+                <div className="rounded-lg bg-slate-50 p-3 text-xs text-slate-700 leading-relaxed">
                   三ノ輪店はセルフ店（セルフサービス）です。スタッフによる詳しい操作説明は行っておりません。
                   <br />
                   バイクの操作に不安がある方やセルフでのレンタルが難しそうな場合は、
@@ -395,35 +395,35 @@ export default function ReserveModelPage({
             </div>
 
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-              <p className="text-sm text-gray-600">
+              <p className="text-sm text-slate-600">
               </p>
               <button
                 type="button"
                 onClick={handleReviewReservation}
                 disabled={!canProceed || checkingSession}
-                className="inline-flex items-center justify-center rounded-lg bg-red-500 px-5 py-3 text-sm font-semibold text-white shadow hover:bg-red-600 transition disabled:cursor-not-allowed disabled:bg-red-300"
+                className="inline-flex items-center justify-center rounded-lg bg-red-600 px-5 py-3 text-sm font-semibold text-white shadow hover:bg-red-700 transition disabled:cursor-not-allowed disabled:bg-red-300"
               >
                 {checkingSession ? "確認中..." : "予約内容を確認する"}
               </button>
             </div>
 
-            <div className="flex flex-wrap gap-3 pt-2 border-t border-gray-100">
+            <div className="flex flex-wrap gap-3 pt-2 border-t border-slate-100">
               <Link
                 href={`/reserve/models/${managementNumber}/availability`}
-                className="inline-flex items-center justify-center rounded-lg bg-gray-900 px-4 py-2 text-sm font-semibold text-white shadow hover:bg-black transition"
+                className="inline-flex items-center justify-center rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white shadow hover:bg-black transition"
               >
                 車種の空き状況を見る
               </Link>
               <Link
                 href={resolvedModelCode ? `/products/${resolvedModelCode}` : "/products"}
-                className="inline-flex items-center justify-center rounded-lg border border-gray-200 px-4 py-2 text-sm font-semibold text-gray-700 hover:border-gray-300 transition"
+                className="inline-flex items-center justify-center rounded-lg border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 hover:border-slate-300 transition"
               >
                 車種ページに戻る
               </Link>
             </div>
 
-            <div className="rounded-xl border border-gray-100 bg-gray-50 p-4 text-sm text-gray-700 space-y-2">
-              <p className="text-sm font-semibold text-gray-900">注意事項</p>
+            <div className="rounded-md border border-slate-100 bg-slate-50 p-4 text-sm text-slate-700 space-y-2">
+              <p className="text-sm font-semibold text-slate-900">注意事項</p>
               <p>
                 レンタル当日、予期せぬ車両トラブルについて（故障、事故）等で車両を変更していただく場合がございますので、ご了承ください。
               </p>
@@ -632,28 +632,28 @@ function Calendar({
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between">
-        <div className="text-sm font-semibold text-gray-900">
+        <div className="text-sm font-semibold text-slate-900">
           {month.getFullYear()}年 {month.getMonth() + 1}月
         </div>
         <div className="flex gap-2">
           <button
             type="button"
             onClick={() => moveMonth(-1)}
-            className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-700 shadow-sm transition hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+            className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-700 shadow-sm transition hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
           >
             ←
           </button>
           <button
             type="button"
             onClick={() => moveMonth(1)}
-            className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-700 shadow-sm transition hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+            className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-700 shadow-sm transition hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
           >
             →
           </button>
         </div>
       </div>
 
-      <div className="grid grid-cols-7 gap-1 text-center text-xs font-semibold text-gray-500">
+      <div className="grid grid-cols-7 gap-1 text-center text-xs font-semibold text-slate-500">
         {weekDays.map((day) => (
           <div key={day} className="py-1">
             {day}
@@ -675,12 +675,12 @@ function Calendar({
           const baseClasses = "flex h-12 w-full flex-col items-center justify-center rounded-lg text-sm font-semibold transition";
 
           const stateClass = (() => {
-            if (isPickup) return "bg-red-500 text-white shadow";
+            if (isPickup) return "bg-red-600 text-white shadow";
             if (isReturn) return "bg-blue-500 text-white shadow";
             if (isInRange) return "bg-green-100 text-green-900";
-            if (disabled) return "text-gray-300 bg-gray-100";
-            if (!inCurrentMonth) return "text-gray-300";
-            return "bg-white text-gray-900 ring-1 ring-gray-200 hover:bg-gray-50";
+            if (disabled) return "text-slate-300 bg-slate-100";
+            if (!inCurrentMonth) return "text-slate-300";
+            return "bg-white text-slate-900 ring-1 ring-slate-200 hover:bg-slate-50";
           })();
 
           return (
@@ -693,7 +693,7 @@ function Calendar({
             >
               <span>{date.getDate()}</span>
               {holiday && inCurrentMonth ? (
-                <span className="text-[10px] leading-none text-red-500">休</span>
+                <span className="text-[10px] leading-none text-red-600">休</span>
               ) : null}
             </button>
           );

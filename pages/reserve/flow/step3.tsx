@@ -474,12 +474,12 @@ export default function ReserveFlowStep3() {
       <Head>
         <title>決済情報の入力 - ステップ3</title>
       </Head>
-      <main className="min-h-screen bg-gray-50 pb-16">
+      <main className="min-h-screen bg-slate-50 pb-16">
         <div className="mx-auto max-w-4xl px-4 py-10 sm:px-6 lg:px-8 space-y-8">
           <header className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-wide text-red-500">Step 3 / 3</p>
-              <h1 className="text-2xl font-bold text-gray-900">決済情報の入力</h1>
+              <p className="text-xs font-semibold uppercase tracking-wide text-red-600">Step 3 / 3</p>
+              <h1 className="text-2xl font-bold text-slate-900">決済情報の入力</h1>
             </div>
           </header>
 
@@ -494,41 +494,41 @@ export default function ReserveFlowStep3() {
           ) : null}
 
           <section className="space-y-6">
-            <div className="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-gray-100 space-y-4">
+            <div className="rounded-lg bg-white p-6 shadow-sm ring-1 ring-slate-100 space-y-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">貸出・返却日時</p>
-                  <h2 className="text-base font-bold text-gray-900">
+                  <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">貸出・返却日時</p>
+                  <h2 className="text-base font-bold text-slate-900">
                     {pickupLabel} {pickupTime} → {returnLabel} {returnTime}
                   </h2>
                 </div>
                 <div className="flex flex-col items-end gap-1 text-right">
-                  <span className="rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-700">{store}</span>
-                  <p className="text-xs text-gray-500">{modelName} / {managementNumber}</p>
+                  <span className="rounded bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700">{store}</span>
+                  <p className="text-xs text-slate-500">{modelName} / {managementNumber}</p>
                 </div>
               </div>
-              <div className="rounded-xl bg-gray-50 p-4">
-                <div className="flex items-center justify-between text-lg font-bold text-gray-900">
+              <div className="rounded-md bg-slate-50 p-4">
+                <div className="flex items-center justify-between text-lg font-bold text-slate-900">
                   <span className="flex flex-col leading-tight">
                     <span>レンタル料金</span>
                     <span>合計（税込）</span>
                   </span>
                   <span>{totalAmount.toLocaleString()}円</span>
                 </div>
-                <dl className="mt-3 grid grid-cols-1 gap-2 text-xs text-gray-600 sm:grid-cols-2">
-                  <div className="flex items-center justify-between rounded-lg bg-white px-3 py-2 shadow-sm ring-1 ring-gray-100">
+                <dl className="mt-3 grid grid-cols-1 gap-2 text-xs text-slate-600 sm:grid-cols-2">
+                  <div className="flex items-center justify-between rounded-lg bg-white px-3 py-2 shadow-sm ring-1 ring-slate-100">
                     <dt>用品・補償の内訳</dt>
-                    <dd className="font-semibold text-gray-900">
+                    <dd className="font-semibold text-slate-900">
                       {(accessoryTotal + protectionTotal).toLocaleString()}円
                     </dd>
                   </div>
-                  <div className="flex items-center justify-between rounded-lg bg-white px-3 py-2 shadow-sm ring-1 ring-gray-100">
+                  <div className="flex items-center justify-between rounded-lg bg-white px-3 py-2 shadow-sm ring-1 ring-slate-100">
                     <dt>クーポン</dt>
-                    <dd className="font-semibold text-gray-900">{couponCode || "未使用"}</dd>
+                    <dd className="font-semibold text-slate-900">{couponCode || "未使用"}</dd>
                   </div>
-                  <div className="flex items-center justify-between rounded-lg bg-white px-3 py-2 shadow-sm ring-1 ring-gray-100">
+                  <div className="flex items-center justify-between rounded-lg bg-white px-3 py-2 shadow-sm ring-1 ring-slate-100">
                     <dt>想定レンタル時間</dt>
-                    <dd className="font-semibold text-gray-900">
+                    <dd className="font-semibold text-slate-900">
                       {rentalDurationHours ? `${rentalDurationHours} 時間` : "算出不可"}
                     </dd>
                   </div>
@@ -536,24 +536,24 @@ export default function ReserveFlowStep3() {
               </div>
             </div>
 
-            <div className="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-gray-100 space-y-4">
+            <div className="rounded-lg bg-white p-6 shadow-sm ring-1 ring-slate-100 space-y-4">
               <div className="flex flex-wrap items-center justify-between gap-2">
-                <h3 className="text-sm font-semibold text-gray-900">クレジットカード決済</h3>
-                <span className="text-xs text-gray-500">安全なカード決済フォーム</span>
+                <h3 className="text-sm font-semibold text-slate-900">クレジットカード決済</h3>
+                <span className="text-xs text-slate-500">安全なカード決済フォーム</span>
               </div>
-              <p className="text-sm text-gray-600">
+              <p className="text-sm text-slate-600">
                 決済ボタンを押すと安全な決済画面が開きます。カード情報はそちらで入力してください。
               </p>
               <p className="text-sm font-semibold text-red-600">
                 決済中は更新ボタンや戻るボタンを押さないようにしてください。
               </p>
-              <div className="flex flex-wrap items-center gap-2 text-xs text-gray-600">
-                <span className="rounded-full border border-gray-200 bg-white px-3 py-1 font-semibold text-gray-700">
+              <div className="flex flex-wrap items-center gap-2 text-xs text-slate-600">
+                <span className="rounded-full border border-slate-200 bg-white px-3 py-1 font-semibold text-slate-700">
                   Apple Pay 対応
                 </span>
                 <span>Apple Pay での支払いも選択できます。</span>
               </div>
-              <ul className="space-y-1 text-xs text-gray-500">
+              <ul className="space-y-1 text-xs text-slate-500">
                 <li>※ Apple Pay は対応端末・ブラウザ（Safari）でのみ表示されます。</li>
                 <li>※ Apple Pay が表示されない場合は、クレジットカード決済をご利用ください。</li>
                 <li>※ ご利用環境により表示される決済方法が異なる場合があります。</li>
@@ -580,7 +580,7 @@ export default function ReserveFlowStep3() {
                       enableApplePay
                     />
                   ) : (
-                    <p className="text-sm text-gray-500">決済フォームを準備しています…</p>
+                    <p className="text-sm text-slate-500">決済フォームを準備しています…</p>
                   )}
                 </div>
               {statusMessage ? (
@@ -590,7 +590,7 @@ export default function ReserveFlowStep3() {
                 <p className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">{registrationError}</p>
               ) : null}
               {reservationPreview ? (
-                <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-900">
+                <div className="rounded-md border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-900">
                   <p className="font-semibold">保存された予約情報（プレビュー）</p>
                   <dl className="mt-2 grid gap-2 sm:grid-cols-2">
                     <div>
