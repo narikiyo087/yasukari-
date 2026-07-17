@@ -1,8 +1,17 @@
-import { Html, Head, Main, NextScript } from 'next/document'
+import Document, {
+  Html,
+  Head,
+  Main,
+  NextScript,
+  DocumentContext,
+  DocumentInitialProps,
+} from 'next/document'
 
-export default function Document() {
+type DocProps = DocumentInitialProps & { lang: string }
+
+export default function AppDocument({ lang }: DocProps) {
   return (
-    <Html lang="ja">
+    <Html lang={lang}>
       <Head>
         {/* External styles and icons */}
         <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -33,4 +42,15 @@ export default function Document() {
       </body>
     </Html>
   )
+}
+
+// Set <html lang> per locale: English under /en, Japanese elsewhere.
+// Runs for both SSR and SSG so the raw HTML reports the correct language.
+AppDocument.getInitialProps = async (
+  ctx: DocumentContext
+): Promise<DocProps> => {
+  const initialProps = await Document.getInitialProps(ctx)
+  const path = ctx.asPath || ctx.pathname || ''
+  const lang = path === '/en' || path.startsWith('/en/') ? 'en' : 'ja'
+  return { ...initialProps, lang }
 }
