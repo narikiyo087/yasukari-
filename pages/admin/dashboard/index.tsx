@@ -36,7 +36,41 @@ type MenuSection = {
   links?: MenuLink[];
 };
 
-const bikeManagementLinks: MenuLink[] = [
+// Dashboard body mirrors the sidebar's To-Be IA (docs §7): 6 groups.
+const dailyOpsLinks: MenuLink[] = [
+  { label: "レンタル予約管理", href: `${ADMIN_DASHBOARD_ROOT}/reservations` },
+  {
+    label: "承認待ち：免許証確認",
+    href: `${ADMIN_DASHBOARD_ROOT}/photo-uploads/license-uploads`,
+  },
+  {
+    label: "承認待ち：事故・転倒報告",
+    href: `${ADMIN_DASHBOARD_ROOT}/photo-uploads/accident-reports`,
+  },
+  {
+    label: "承認待ち：返却完了確認",
+    href: `${ADMIN_DASHBOARD_ROOT}/photo-uploads/return-completions`,
+  },
+  { label: "写真アップロード一覧", href: `${ADMIN_DASHBOARD_ROOT}/photo-uploads` },
+  { label: "KEYBOX解錠キーの発行", href: `${ADMIN_DASHBOARD_ROOT}/keybox-issue` },
+  { label: "KEYBOX再発行", href: `${ADMIN_DASHBOARD_ROOT}/keybox-reissue` },
+  { label: "KEYBOX実行ログ", href: `${ADMIN_DASHBOARD_ROOT}/keybox-logs` },
+  { label: "バイクスケジュール管理", href: `${ADMIN_DASHBOARD_ROOT}/bike-schedules` },
+];
+
+const membersCommsLinks: MenuLink[] = [
+  { label: "会員一覧", href: `${ADMIN_DASHBOARD_ROOT}/members` },
+  { label: "メール送信履歴", href: `${ADMIN_DASHBOARD_ROOT}/mail-history` },
+  { label: "テストメール", href: `${ADMIN_DASHBOARD_ROOT}/test-mail` },
+  { label: "メルマガ設定", href: `${ADMIN_DASHBOARD_ROOT}/newsletter-settings` },
+  { label: "チャットボットQA管理", href: `${ADMIN_DASHBOARD_ROOT}/chatbot/faq` },
+  {
+    label: "チャットボット問い合わせ一覧",
+    href: `${ADMIN_DASHBOARD_ROOT}/chatbot/inquiries`,
+  },
+];
+
+const catalogLinks: MenuLink[] = [
   {
     label: "クラス一覧",
     href: `${ADMIN_DASHBOARD_ROOT}/bike-classes`,
@@ -47,149 +81,82 @@ const bikeManagementLinks: MenuLink[] = [
     href: `${ADMIN_DASHBOARD_ROOT}/bike-models`,
     actions: [{ label: "＋登録", href: `${ADMIN_DASHBOARD_ROOT}/bike-models/register` }],
   },
+  { label: "料金設定", href: `${ADMIN_DASHBOARD_ROOT}/bike-models/rental-pricing` },
   {
     label: "車両一覧",
     href: `${ADMIN_DASHBOARD_ROOT}/vehicles`,
     actions: [{ label: "＋登録", href: `${ADMIN_DASHBOARD_ROOT}/vehicles/register` }],
   },
   {
-    label: "バイクスケジュール管理",
-    href: `${ADMIN_DASHBOARD_ROOT}/bike-schedules`,
+    label: "用品一覧",
+    href: `${ADMIN_DASHBOARD_ROOT}/accessories`,
+    actions: [{ label: "＋登録", href: `${ADMIN_DASHBOARD_ROOT}/accessories/register` }],
   },
+  { label: "用品オプション", href: `${ADMIN_DASHBOARD_ROOT}/accessories/options` },
 ];
 
-const blogManagementLinks: MenuLink[] = [
+const promoLinks: MenuLink[] = [
+  { label: "新着情報／告知バー", href: `${ADMIN_DASHBOARD_ROOT}/announcements` },
   {
-    label: "記事一覧",
+    label: "ブログ管理",
     href: `${ADMIN_DASHBOARD_ROOT}/blog`,
     actions: [{ label: "＋投稿", href: `${ADMIN_DASHBOARD_ROOT}/blog/new` }],
   },
-];
-
-const couponManagementLinks: MenuLink[] = [
+  ...HOLIDAY_MANAGER_STORES.map((store) => ({
+    label: `休日管理：${store.label}`,
+    href: `${ADMIN_DASHBOARD_ROOT}/holiday-manager/${store.id}`,
+  })),
+  { label: "ハイシーズン設定", href: `${ADMIN_DASHBOARD_ROOT}/high-season-manager` },
   {
-    label: "クーポン一覧",
+    label: "クーポン管理",
     href: `${ADMIN_DASHBOARD_ROOT}/coupon-rules`,
-    actions: [
-      { label: "＋登録", href: `${ADMIN_DASHBOARD_ROOT}/coupon-rules/register` },
-    ],
+    actions: [{ label: "＋登録", href: `${ADMIN_DASHBOARD_ROOT}/coupon-rules/register` }],
   },
 ];
 
-const keyboxLinks: MenuLink[] = [
-  {
-    label: "KEYBOX解錠キーの発行",
-    href: `${ADMIN_DASHBOARD_ROOT}/keybox-issue`,
-  },
-  {
-    label: "KEYBOX実行ログ",
-    href: `${ADMIN_DASHBOARD_ROOT}/keybox-logs`,
-  },
+const analyticsLinks: MenuLink[] = [
+  { label: "予約分析", href: `${ANALYTICS_ROOT}/reservations` },
+  { label: "会員分析", href: `${ANALYTICS_ROOT}/members` },
+  { label: "車両分析", href: `${ANALYTICS_ROOT}/vehicles` },
+  { label: "車種分析", href: `${ANALYTICS_ROOT}/bike-models` },
+];
+
+const settingsLinks: MenuLink[] = [
+  { label: "サイト表示切替", href: SITE_VISIBILITY_PATH },
 ];
 
 const menuSections: MenuSection[] = [
   {
-    title: "ダッシュボード",
-    description: "管理メニューのトップページです。",
+    title: "① 今日の運用",
+    description:
+      "本日の予約・返却・承認待ちなど日々の運用はここから。承認待ち（免許・事故・返却）を1か所に集約し、見落としを防ぎます。",
+    links: dailyOpsLinks,
   },
   {
-    title: "サイト表示切替",
+    title: "② 会員・連絡",
+    description: "会員情報の確認、メール配信・履歴、チャットボット対応。",
+    links: membersCommsLinks,
+  },
+  {
+    title: "③ 商品マスタ",
+    description: "クラス・車種・車両・料金・用品などのマスタを管理します。",
+    links: catalogLinks,
+  },
+  {
+    title: "④ 販促・カレンダー",
+    description: "告知バー・ブログ・休日・ハイシーズン・クーポンの設定。",
+    links: promoLinks,
+  },
+  {
+    title: "⑤ 分析",
+    description: "予約・会員・車両・車種の集計を確認できます。",
+    links: analyticsLinks,
+  },
+  {
+    title: "⑥ サイト設定",
     description:
       "サイト全体を工事中ページへ切り替えます。赤いページから切替・解除を行ってください。",
-    links: [
-      {
-        label: "サイト表示切替ページへ",
-        href: SITE_VISIBILITY_PATH,
-        actions: [{ label: "開く", href: SITE_VISIBILITY_PATH }],
-      },
-    ],
-  },
-  {
-    title: "新着情報管理",
-    description: "トップページ上部の告知バーに表示される内容を編集できます。",
-    links: [
-      {
-        label: "トップバー設定",
-        href: `${ADMIN_DASHBOARD_ROOT}/announcements`,
-      },
-    ],
-  },
-  {
-    title: "バイク管理",
-    description: "バイクに関する情報を確認・登録できます。",
-    links: bikeManagementLinks,
-  },
-  {
-    title: "オプション（用品）",
-    description: "用品の料金を確認・登録できます。",
-    links: [
-      {
-        label: "用品一覧",
-        href: `${ADMIN_DASHBOARD_ROOT}/accessories`,
-        actions: [
-          { label: "＋登録", href: `${ADMIN_DASHBOARD_ROOT}/accessories/register` },
-        ],
-      },
-      {
-        label: "用品登録",
-        href: `${ADMIN_DASHBOARD_ROOT}/accessories/register`,
-      },
-    ],
-  },
-  {
-    title: "会員管理",
-    description: "会員情報の確認や状態の把握を行うための管理メニューです。",
-    links: [
-      { label: "会員一覧", href: `${ADMIN_DASHBOARD_ROOT}/members` },
-    ],
-  },
-  {
-    title: "レンタル予約管理",
-    description: "予約内容と車両の紐付けを確認・更新できます。",
-    links: [
-      {
-        label: "バイクレンタル一覧",
-        href: `${ADMIN_DASHBOARD_ROOT}/reservations`,
-      },
-    ],
-  },
-  {
-    title: "サポート",
-    description: "チャットボットへの問い合わせ内容やQAカテゴリを管理できます。",
-    links: [
-      {
-        label: "チャットボットQA管理",
-        href: `${ADMIN_DASHBOARD_ROOT}/chatbot/faq`,
-      },
-      {
-        label: "チャットボット問い合わせ一覧",
-        href: `${ADMIN_DASHBOARD_ROOT}/chatbot/inquiries`,
-      },
-    ],
-  },
-  {
-    title: "ブログ管理",
-    description: "ブログ記事を確認・追加・編集できます。",
-    links: blogManagementLinks,
-  },
-  {
-    title: "休日管理",
-    description: "店舗の営業日と休日を管理できます。",
-    links: HOLIDAY_MANAGER_STORES.map((store) => ({
-      label: `${store.label}の休日`,
-      href: `${ADMIN_DASHBOARD_ROOT}/holiday-manager/${store.id}`,
-    })),
-  },
-  {
-    title: "クーポン管理",
-    description:
-      "クーポンの登録・編集や対象クラスの設定を行う管理メニューです。",
-    links: couponManagementLinks,
-  },
-  {
-    title: "KEYBOX管理",
-    description: "無人店舗用のPIN発行と実行ログを確認できます。",
-    links: keyboxLinks,
+    links: settingsLinks,
   },
 ];
 
@@ -434,7 +401,7 @@ export default function DashboardTopPage() {
                     <p className={styles.menuGroupNote}>{section.description}</p>
                   )}
                 </div>
-                {section.title === "ダッシュボード" && (
+                {section.title === "① 今日の運用" && (
                   <div
                     className={styles.dashboardStats}
                     aria-label="ダッシュボードサマリー"
