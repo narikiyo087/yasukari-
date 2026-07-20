@@ -4,4 +4,11 @@ Disallow: /admin/
 Disallow: /mypage/
 Disallow: /en/mypage/
 Disallow: /auth/
+Disallow: /api/
+Disallow: /register/test
+Disallow: /test
+Disallow: /monitor
+Disallow: /wait
+Disallow: /source/
+Disallow: /chat-design
 Sitemap: https://yasukari.com/sitemap.xml

@@ -5,6 +5,18 @@ export default function PrivacyPolicy() {
     <>
       <Head>
         <title>プライバシーポリシー - ヤスカリ</title>
+        <meta name="description" content="レンタルバイク「ヤスカリ」のプライバシーポリシー。個人情報の取り扱いについてご説明します。" />
+        <link rel="canonical" href="https://yasukari.com/privacy" />
+        <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="ヤスカリ" />
+        <meta property="og:title" content="プライバシーポリシー - ヤスカリ" />
+        <meta property="og:description" content="レンタルバイク「ヤスカリ」のプライバシーポリシー。個人情報の取り扱いについてご説明します。" />
+        <meta property="og:url" content="https://yasukari.com/privacy" />
+        <meta property="og:image" content="https://yasukari-file.s3.ap-northeast-1.amazonaws.com/PhotoUploads/slide.jpg" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="プライバシーポリシー - ヤスカリ" />
+        <meta name="twitter:description" content="レンタルバイク「ヤスカリ」のプライバシーポリシー。個人情報の取り扱いについてご説明します。" />
+        <meta name="twitter:image" content="https://yasukari-file.s3.ap-northeast-1.amazonaws.com/PhotoUploads/slide.jpg" />
       </Head>
       <main className="max-w-3xl mx-auto p-6 text-sm leading-relaxed">
         <h1 className="text-xl font-bold mb-4 text-center">プライバシーポリシー</h1>

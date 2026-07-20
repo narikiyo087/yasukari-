@@ -255,6 +255,34 @@ export default function ProductDetailPage({
     <>
       <Head>
         <title>{bike.modelName} - ヤスカリ</title>
+        <meta
+          name="description"
+          content={`${bike.modelName}のレンタル料金・スペック・取扱店舗・空き状況。東京の格安レンタルバイク「ヤスカリ」で予約できます。${
+            bike.description ? ` ${bike.description}` : ""
+          }`}
+        />
+        <link
+          rel="canonical"
+          href={`https://yasukari.com/products/${bike.modelCode}`}
+        />
+        <meta property="og:type" content="product" />
+        <meta property="og:site_name" content="ヤスカリ" />
+        <meta property="og:title" content={`${bike.modelName} - ヤスカリ`} />
+        <meta
+          property="og:description"
+          content={`${bike.modelName}のレンタル料金・スペック・取扱店舗・空き状況。東京の格安レンタルバイク「ヤスカリ」で予約できます。`}
+        />
+        <meta
+          property="og:url"
+          content={`https://yasukari.com/products/${bike.modelCode}`}
+        />
+        <meta property="og:image" content={bike.img} />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={`${bike.modelName} - ヤスカリ`} />
+        <meta
+          name="twitter:image"
+          content={bike.img}
+        />
       </Head>
       <main className="min-h-screen bg-transparent pb-12">
         <div className="w-full py-8 space-y-10">

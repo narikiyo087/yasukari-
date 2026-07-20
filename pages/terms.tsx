@@ -31,6 +31,18 @@ export default function TermsPage() {
     <div className="p-6 max-w-3xl mx-auto">
       <Head>
         <title>利用規約・注意事項</title>
+        <meta name="description" content="レンタルバイク「ヤスカリ」の利用規約・注意事項。" />
+        <link rel="canonical" href="https://yasukari.com/terms" />
+        <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="ヤスカリ" />
+        <meta property="og:title" content="利用規約・注意事項" />
+        <meta property="og:description" content="レンタルバイク「ヤスカリ」の利用規約・注意事項。" />
+        <meta property="og:url" content="https://yasukari.com/terms" />
+        <meta property="og:image" content="https://yasukari-file.s3.ap-northeast-1.amazonaws.com/PhotoUploads/slide.jpg" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="利用規約・注意事項" />
+        <meta name="twitter:description" content="レンタルバイク「ヤスカリ」の利用規約・注意事項。" />
+        <meta name="twitter:image" content="https://yasukari-file.s3.ap-northeast-1.amazonaws.com/PhotoUploads/slide.jpg" />
       </Head>
       <div className="mb-6">
         <Link

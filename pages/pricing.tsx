@@ -121,6 +121,18 @@ export default function PricingPage() {
     <div className="max-w-3xl mx-auto p-6">
       <Head>
         <title>車種・料金 - ヤスカリ</title>
+        <meta name="description" content="ヤスカリのレンタルバイク料金一覧。原付から大型まで、24時間・2日・1週間・1ヶ月などクラス別の料金をまとめています。" />
+        <link rel="canonical" href="https://yasukari.com/pricing" />
+        <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="ヤスカリ" />
+        <meta property="og:title" content="車種・料金 - ヤスカリ" />
+        <meta property="og:description" content="ヤスカリのレンタルバイク料金一覧。原付から大型まで、24時間・2日・1週間・1ヶ月などクラス別の料金をまとめています。" />
+        <meta property="og:url" content="https://yasukari.com/pricing" />
+        <meta property="og:image" content="https://yasukari-file.s3.ap-northeast-1.amazonaws.com/PhotoUploads/slide.jpg" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="車種・料金 - ヤスカリ" />
+        <meta name="twitter:description" content="ヤスカリのレンタルバイク料金一覧。原付から大型まで、24時間・2日・1週間・1ヶ月などクラス別の料金をまとめています。" />
+        <meta name="twitter:image" content="https://yasukari-file.s3.ap-northeast-1.amazonaws.com/PhotoUploads/slide.jpg" />
       </Head>
       <h1 className="text-2xl font-bold mb-6 text-center text-slate-900">車種・料金一覧</h1>
       <p className="mb-6 text-sm text-slate-600">

@@ -108,6 +108,27 @@ export default function HomePage({ blogSlides, blogTags, bikeModelsAll, bikeClas
           content="東京で格安のレンタルバイク・原付をお探しならヤスカリ。足立小台本店・三ノ輪店の2店舗で、整備済みバイクをスムーズに予約できます。"
         />
         <meta name="twitter:image" content="https://yasukari-file.s3.ap-northeast-1.amazonaws.com/PhotoUploads/slide.jpg" />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Organization",
+              name: "ヤスカリ",
+              legalName: "株式会社ケイジェット",
+              url: "https://yasukari.com/",
+              logo: "https://yasukari-file.s3.ap-northeast-1.amazonaws.com/PhotoUploads/1769056104573-d731196a-700f-4cc2-948b-68cfdb40d14a-yasukari-logo.jpg",
+              telephone: "+81-3-5856-8200",
+              email: "info@yasukari.com",
+              sameAs: [
+                "https://www.instagram.com/yasukari_819",
+                "https://x.com/yasukari_819",
+                "https://www.youtube.com/@yasukari_819",
+                "https://line.me/R/ti/p/@yasukari_819",
+              ],
+            }),
+          }}
+        />
       </Head>
 
       <HeroSlider slides={heroSlides} />

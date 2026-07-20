@@ -30,6 +30,18 @@ export default function GuidePage() {
     <div className="max-w-[1440px] mx-auto p-6 space-y-8 text-sm leading-relaxed">
       <Head>
         <title>ご利用案内 - ヤスカリ</title>
+        <meta name="description" content="ヤスカリのご利用案内。予約・来店・利用・返却の手順や走行距離の目安、キャンセル・料金の注意事項をまとめています。" />
+        <link rel="canonical" href="https://yasukari.com/guide" />
+        <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="ヤスカリ" />
+        <meta property="og:title" content="ご利用案内 - ヤスカリ" />
+        <meta property="og:description" content="ヤスカリのご利用案内。予約・来店・利用・返却の手順や走行距離の目安、キャンセル・料金の注意事項をまとめています。" />
+        <meta property="og:url" content="https://yasukari.com/guide" />
+        <meta property="og:image" content="https://yasukari-file.s3.ap-northeast-1.amazonaws.com/PhotoUploads/slide.jpg" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="ご利用案内 - ヤスカリ" />
+        <meta name="twitter:description" content="ヤスカリのご利用案内。予約・来店・利用・返却の手順や走行距離の目安、キャンセル・料金の注意事項をまとめています。" />
+        <meta name="twitter:image" content="https://yasukari-file.s3.ap-northeast-1.amazonaws.com/PhotoUploads/slide.jpg" />
       </Head>
 
       <img
