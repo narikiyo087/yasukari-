@@ -136,7 +136,11 @@ export default function LoginPage() {
   return (
     <>
       <Head>
-        <title>ログイン</title>
+        <title>ログイン / 新規登録 | 激安・便利なレンタルバイクのヤスカリ。</title>
+        <meta
+          name="description"
+          content="ヤスカリ会員のログイン・新規登録ページです。マイページからレンタル状況の確認や延長手続き、支払い情報の更新が行えます。"
+        />
       </Head>
       <div className="min-h-screen bg-white text-slate-900">
         <main className="mx-auto w-full max-w-5xl px-4 py-8 md:px-8 md:py-12">
@@ -192,7 +196,13 @@ text: '会員限定クーポンや新着車両をいち早くご案内' }].map(
                 <h2 className="text-xl font-semibold text-slate-900">ログイン / 新規登録</h2>
               </div>
               {error ? (
-                <p className="mb-4 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-600">{error}</p>
+                <p
+                  className="mb-4 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-600"
+                  role="alert"
+                  aria-live="assertive"
+                >
+                  {error}
+                </p>
               ) : null}
               {sessionUser ? (
                 <button
