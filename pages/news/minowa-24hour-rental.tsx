@@ -5,6 +5,54 @@ export default function Minowa24HourRentalPage() {
     <>
       <Head>
         <title>三ノ輪店｜24時間レンタルの借り方・注意事項 - ヤスカリ</title>
+        <meta
+          name="description"
+          content="ヤスカリ三ノ輪店（無人店舗）で24時間バイクを借りる流れと注意事項。スタッフ非常駐のため、深夜・早朝の利用前に必ずご確認ください。"
+        />
+        <link
+          rel="canonical"
+          href="https://yasukari.com/news/minowa-24hour-rental"
+        />
+        <meta property="og:type" content="article" />
+        <meta property="og:site_name" content="ヤスカリ" />
+        <meta
+          property="og:title"
+          content="三ノ輪店｜24時間レンタルの借り方・注意事項 - ヤスカリ"
+        />
+        <meta
+          property="og:description"
+          content="ヤスカリ三ノ輪店（無人店舗）で24時間バイクを借りる流れと注意事項。深夜・早朝の利用前に必ずご確認ください。"
+        />
+        <meta
+          property="og:url"
+          content="https://yasukari.com/news/minowa-24hour-rental"
+        />
+        <meta name="twitter:card" content="summary" />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'NewsArticle',
+              headline: '三ノ輪店｜24時間いつでも借りられます ― レンタルの流れと注意事項',
+              datePublished: '2026-04-28',
+              dateModified: '2026-04-28',
+              author: { '@type': 'Organization', name: 'ヤスカリ' },
+              publisher: {
+                '@type': 'Organization',
+                name: 'ヤスカリ',
+                logo: {
+                  '@type': 'ImageObject',
+                  url: 'https://yasukari-file.s3.ap-northeast-1.amazonaws.com/PhotoUploads/1769056104573-d731196a-700f-4cc2-948b-68cfdb40d14a-yasukari-logo.jpg',
+                },
+              },
+              mainEntityOfPage:
+                'https://yasukari.com/news/minowa-24hour-rental',
+              description:
+                'ヤスカリ三ノ輪店（無人店舗）で24時間バイクを借りる流れと注意事項。深夜・早朝の利用前に必ずご確認ください。',
+            }),
+          }}
+        />
       </Head>
 
       <div className="article-wrap">
