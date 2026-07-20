@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import Head from "next/head";
 import Link from "next/link";
+import ReserveStepProgress from "../../../components/ReserveStepProgress";
 import { useRouter } from "next/router";
 
 import type {
@@ -797,9 +798,9 @@ export default function ReserveFlowStep2() {
       </Head>
       <main className="min-h-screen bg-slate-50 pb-16">
         <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:px-8 space-y-8">
+          <ReserveStepProgress current={2} />
           <header className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-wide text-red-600">Step 2 / 3</p>
               <h1 className="text-2xl font-bold text-slate-900">オプションの選択</h1>
               <p className="text-sm text-slate-600">補償と用品オプションを選択し、お見積りを確認してください。</p>
             </div>

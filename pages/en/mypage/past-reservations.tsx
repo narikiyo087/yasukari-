@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 
 import type { Reservation } from '../../../lib/reservations';
+import ReservationStatusBadge from '../../../components/ReservationStatusBadge';
 
 const statusLabel = (status?: string) => {
   if (!status) return '-';
@@ -212,9 +213,10 @@ export default function PastReservationsPage() {
                               </p>
                             </div>
                             <div className="flex flex-col items-end gap-2">
-                              <span className="inline-flex items-center rounded bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-800">
-                                {statusLabel(reservation.status)}
-                              </span>
+                              <ReservationStatusBadge
+                                status={reservation.status}
+                                label={statusLabel(reservation.status)}
+                              />
                               <span
                                 className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold ${
                                   reservation.reservationCompletedFlag
