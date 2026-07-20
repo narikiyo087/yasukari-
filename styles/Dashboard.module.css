@@ -75,6 +75,49 @@
 .sidebarNav {
   margin: 0;
   padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+/* Collapsible group (To-Be IA: 6 groups) */
+.sidebarGroup {
+  margin-bottom: 0.25rem;
+}
+
+.sidebarGroupToggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  gap: 0.5rem;
+  padding: 0.5rem 0.6rem;
+  border: none;
+  background: transparent;
+  color: #0f172a;
+  font-weight: 700;
+  font-size: 0.9rem;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: background-color 0.15s ease;
+}
+
+.sidebarGroupToggle:hover,
+.sidebarGroupToggle:focus-visible {
+  outline: none;
+  background: #f1f5f9;
+}
+
+.sidebarGroupCaret {
+  color: #94a3b8;
+  font-size: 0.78rem;
+}
+
+.sidebarGroup .sidebarNavList {
+  margin: 0.1rem 0 0.35rem 0.35rem;
+  padding-left: 0.4rem;
+  border-left: 1px solid #e2e8f0;
 }
 
 .sidebarNavList {

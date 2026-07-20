@@ -16,7 +16,11 @@ type NavItem = {
   label: string;
   href?: string;
   disabled?: boolean;
-  children?: NavItem[];
+};
+
+type NavGroup = {
+  title: string;
+  items: NavItem[];
 };
 
 type Action = {
@@ -41,115 +45,73 @@ const MAX_SIDEBAR_WIDTH = 360;
 const MIN_MAIN_AREA_WIDTH = 520;
 const SIDEBAR_RESIZE_BREAKPOINT = 960;
 
-const NAV_ITEMS: NavItem[] = [
+// To-Be IA (docs: ヤスカリ_サイト構成_設計.md §7) — 6 collapsible groups.
+// Routes are unchanged; only the navigation grouping is reorganized.
+const NAV_GROUPS: NavGroup[] = [
   {
-    label: "ダッシュボード",
-    href: ADMIN_DASHBOARD_ROOT,
-  },
-  {
-    label: "新着情報管理",
-    href: `${ADMIN_DASHBOARD_ROOT}/announcements`,
-  },
-  {
-    label: "バイク管理",
-    href: `${ADMIN_DASHBOARD_ROOT}/bike`,
-    children: [
-      { label: "クラス一覧", href: `${ADMIN_DASHBOARD_ROOT}/bike-classes` },
-      { label: "車種一覧", href: `${ADMIN_DASHBOARD_ROOT}/bike-models` },
-      {
-        label: "料金設定",
-        href: `${ADMIN_DASHBOARD_ROOT}/bike-models/rental-pricing`,
-      },
-      { label: "車両一覧", href: `${ADMIN_DASHBOARD_ROOT}/vehicles` },
+    title: "① 今日の運用",
+    items: [
+      { label: "ダッシュボード", href: ADMIN_DASHBOARD_ROOT },
+      { label: "レンタル予約管理", href: `${ADMIN_DASHBOARD_ROOT}/reservations` },
+      { label: "承認待ち：免許証確認", href: `${ADMIN_DASHBOARD_ROOT}/photo-uploads/license-uploads` },
+      { label: "承認待ち：事故・転倒報告", href: `${ADMIN_DASHBOARD_ROOT}/photo-uploads/accident-reports` },
+      { label: "承認待ち：返却完了確認", href: `${ADMIN_DASHBOARD_ROOT}/photo-uploads/return-completions` },
+      { label: "写真アップロード一覧", href: `${ADMIN_DASHBOARD_ROOT}/photo-uploads` },
+      { label: "KEYBOX解錠キーの発行", href: `${ADMIN_DASHBOARD_ROOT}/keybox-issue` },
+      { label: "KEYBOX再発行", href: `${ADMIN_DASHBOARD_ROOT}/keybox-reissue` },
+      { label: "KEYBOX実行ログ", href: `${ADMIN_DASHBOARD_ROOT}/keybox-logs` },
       { label: "バイクスケジュール管理", href: `${ADMIN_DASHBOARD_ROOT}/bike-schedules` },
     ],
   },
   {
-    label: "オプション（用品）",
-    href: `${ADMIN_DASHBOARD_ROOT}/accessories/options`,
-    children: [
+    title: "② 会員・連絡",
+    items: [
+      { label: "会員一覧", href: `${ADMIN_DASHBOARD_ROOT}/members` },
+      { label: "メール送信履歴", href: `${ADMIN_DASHBOARD_ROOT}/mail-history` },
+      { label: "テストメール", href: `${ADMIN_DASHBOARD_ROOT}/test-mail` },
+      { label: "メルマガ設定", href: `${ADMIN_DASHBOARD_ROOT}/newsletter-settings` },
+      { label: "チャットボットQA管理", href: `${ADMIN_DASHBOARD_ROOT}/chatbot/faq` },
+      { label: "チャットボット問い合わせ一覧", href: `${ADMIN_DASHBOARD_ROOT}/chatbot/inquiries` },
+    ],
+  },
+  {
+    title: "③ 商品マスタ",
+    items: [
+      { label: "クラス一覧", href: `${ADMIN_DASHBOARD_ROOT}/bike-classes` },
+      { label: "車種一覧", href: `${ADMIN_DASHBOARD_ROOT}/bike-models` },
+      { label: "料金設定", href: `${ADMIN_DASHBOARD_ROOT}/bike-models/rental-pricing` },
+      { label: "車両一覧", href: `${ADMIN_DASHBOARD_ROOT}/vehicles` },
       { label: "用品一覧", href: `${ADMIN_DASHBOARD_ROOT}/accessories` },
-      { label: "用品登録", href: `${ADMIN_DASHBOARD_ROOT}/accessories/register` },
+      { label: "用品オプション", href: `${ADMIN_DASHBOARD_ROOT}/accessories/options` },
     ],
   },
   {
-    label: "会員管理",
-    href: `${ADMIN_DASHBOARD_ROOT}/members`,
-    children: [{ label: "会員一覧", href: `${ADMIN_DASHBOARD_ROOT}/members` }],
-  },
-  {
-    label: "レンタル予約管理",
-    href: `${ADMIN_DASHBOARD_ROOT}/reservations`,
-    children: [{ label: "バイクレンタル一覧", href: `${ADMIN_DASHBOARD_ROOT}/reservations` }],
-  },
-  {
-    label: "KEYBOX実行ログ",
-    href: `${ADMIN_DASHBOARD_ROOT}/keybox-logs`,
-  },
-  {
-    label: "KEYBOX再発行",
-    href: `${ADMIN_DASHBOARD_ROOT}/keybox-reissue`,
-  },
-  {
-    label: "メール送信履歴",
-    href: `${ADMIN_DASHBOARD_ROOT}/mail-history`,
-  },
-  {
-    label: "写真アップロード確認",
-    href: `${ADMIN_DASHBOARD_ROOT}/photo-uploads`,
-    children: [
-      { label: "アップロード一覧", href: `${ADMIN_DASHBOARD_ROOT}/photo-uploads` },
-      {
-        label: "事故・転倒報告",
-        href: `${ADMIN_DASHBOARD_ROOT}/photo-uploads/accident-reports`,
-      },
-      {
-        label: "バイクの返却完了",
-        href: `${ADMIN_DASHBOARD_ROOT}/photo-uploads/return-completions`,
-      },
-      {
-        label: "免許証画像",
-        href: `${ADMIN_DASHBOARD_ROOT}/photo-uploads/license-uploads`,
-      },
+    title: "④ 販促・カレンダー",
+    items: [
+      { label: "新着情報／告知バー", href: `${ADMIN_DASHBOARD_ROOT}/announcements` },
+      { label: "ブログ管理", href: `${ADMIN_DASHBOARD_ROOT}/blog` },
+      ...HOLIDAY_MANAGER_STORES.map((store) => ({
+        label: `休日管理：${store.label}`,
+        href: `${ADMIN_DASHBOARD_ROOT}/holiday-manager/${store.id}`,
+      })),
+      { label: "ハイシーズン設定", href: `${ADMIN_DASHBOARD_ROOT}/high-season-manager` },
+      { label: "クーポン管理", href: `${ADMIN_DASHBOARD_ROOT}/coupon-rules` },
     ],
   },
   {
-    label: "チャットボット",
-    href: `${ADMIN_DASHBOARD_ROOT}/chatbot/inquiries`,
-    children: [
-      {
-        label: "チャットボットQA管理",
-        href: `${ADMIN_DASHBOARD_ROOT}/chatbot/faq`,
-      },
-      {
-        label: "チャットボット問い合わせ一覧",
-        href: `${ADMIN_DASHBOARD_ROOT}/chatbot/inquiries`,
-      },
+    title: "⑤ 分析",
+    items: [
+      { label: "予約分析", href: `${ADMIN_DASHBOARD_ROOT}/analytics/reservations` },
+      { label: "会員分析", href: `${ADMIN_DASHBOARD_ROOT}/analytics/members` },
+      { label: "車両分析", href: `${ADMIN_DASHBOARD_ROOT}/analytics/vehicles` },
+      { label: "車種分析", href: `${ADMIN_DASHBOARD_ROOT}/analytics/bike-models` },
     ],
   },
   {
-    label: "ブログ管理",
-    href: `${ADMIN_DASHBOARD_ROOT}/blog`,
-  },
-  {
-    label: "休日管理",
-    href: `${ADMIN_DASHBOARD_ROOT}/holiday-manager`,
-    children: HOLIDAY_MANAGER_STORES.map((store) => ({
-      label: `${store.label}の休日`,
-      href: `${ADMIN_DASHBOARD_ROOT}/holiday-manager/${store.id}`,
-    })),
-  },
-  {
-    label: "ハイシーズン設定",
-    href: `${ADMIN_DASHBOARD_ROOT}/high-season-manager`,
-  },
-  {
-    label: "クーポン管理",
-    href: `${ADMIN_DASHBOARD_ROOT}/coupon-rules`,
-  },
-  {
-    label: "テストメール",
-    href: `${ADMIN_DASHBOARD_ROOT}/test-mail`,
+    title: "⑥ サイト設定",
+    items: [
+      { label: "サイト表示切替", href: `${ADMIN_DASHBOARD_ROOT}/site-visibility` },
+    ],
   },
 ];
 
@@ -181,12 +143,11 @@ export default function DashboardLayout({
   const resizeCleanupRef = useRef<(() => void) | null>(null);
 
   const activeHref = useMemo(() => {
-    const hrefs = NAV_ITEMS.flatMap((item) => [
-      ...(item.href ? [item.href] : []),
-      ...((item.children ?? [])
-        .map((child) => child.href)
-        .filter((href): href is string => Boolean(href))),
-    ]);
+    const hrefs = NAV_GROUPS.flatMap((group) =>
+      group.items
+        .map((item) => item.href)
+        .filter((href): href is string => Boolean(href))
+    );
 
     const matchingHrefs = hrefs.filter((href) =>
       isActivePath(router.pathname, href)
@@ -201,21 +162,36 @@ export default function DashboardLayout({
     );
   }, [router.pathname]);
 
-  const navigation = useMemo(() => {
-    return NAV_ITEMS.filter(
-      (item) => showDashboardLink || item.href !== ADMIN_DASHBOARD_ROOT
-    ).map((item) => ({
-      ...item,
-      isActive:
-        (item.href && item.href === activeHref) ||
-        (item.children?.some((child) => child.href === activeHref) ??
-          (!activeHref &&
-            (isActivePath(router.pathname, item.href) ||
-              (item.children?.some((child) =>
-                isActivePath(router.pathname, child.href)
-              ) ?? false)))),
-    }));
-  }, [activeHref, router.pathname, showDashboardLink]);
+  const activeGroupIndex = useMemo(
+    () =>
+      NAV_GROUPS.findIndex((group) =>
+        group.items.some((item) => isActivePath(router.pathname, item.href))
+      ),
+    [router.pathname]
+  );
+
+  const [openGroups, setOpenGroups] = useState<Record<number, boolean>>(() => {
+    const initial: Record<number, boolean> = {};
+    // First group (今日の運用) starts expanded; the rest collapsed.
+    NAV_GROUPS.forEach((_, index) => {
+      initial[index] = index === 0;
+    });
+    return initial;
+  });
+
+  useEffect(() => {
+    if (activeGroupIndex >= 0) {
+      setOpenGroups((prev) =>
+        prev[activeGroupIndex]
+          ? prev
+          : { ...prev, [activeGroupIndex]: true }
+      );
+    }
+  }, [activeGroupIndex]);
+
+  const toggleGroup = useCallback((index: number) => {
+    setOpenGroups((prev) => ({ ...prev, [index]: !prev[index] }));
+  }, []);
 
   const clampSidebarWidth = useCallback(
     (width: number) => {
@@ -346,51 +322,53 @@ export default function DashboardLayout({
           <div className={styles.sidebarBrand}>管理メニュー</div>
         </div>
         <nav className={styles.sidebarNav} aria-label="管理メニュー">
-          <ul className={styles.sidebarNavList}>
-            {navigation.map((item) => (
-              <li key={item.label} className={styles.sidebarNavItem}>
-                {item.href && !item.disabled ? (
-                  <Link
-                    href={item.href}
-                    className={`${styles.sidebarNavLink} ${
-                      item.isActive ? styles.sidebarNavLinkActive : ""
-                    }`}
-                    aria-current={item.isActive ? "page" : undefined}
-                  >
-                    {item.label}
-                  </Link>
-                ) : (
-                  <span
-                    className={`${styles.sidebarNavLink} ${styles.sidebarNavLinkDisabled}`}
-                    aria-disabled
-                  >
-                    {item.label}
+          {NAV_GROUPS.map((group, groupIndex) => {
+            const isOpen = openGroups[groupIndex] ?? false;
+            const items = group.items.filter(
+              (item) => showDashboardLink || item.href !== ADMIN_DASHBOARD_ROOT
+            );
+            if (items.length === 0) {
+              return null;
+            }
+            return (
+              <div key={group.title} className={styles.sidebarGroup}>
+                <button
+                  type="button"
+                  className={`${styles.sidebarGroupToggle} ${
+                    isOpen ? styles.sidebarGroupToggleOpen : ""
+                  }`}
+                  onClick={() => toggleGroup(groupIndex)}
+                  aria-expanded={isOpen}
+                >
+                  <span>{group.title}</span>
+                  <span className={styles.sidebarGroupCaret} aria-hidden>
+                    {isOpen ? "▾" : "▸"}
                   </span>
-                )}
-                {item.children && item.children.length > 0 && (
-                  <ul className={styles.sidebarSubNav}>
-                    {item.children.map((child) => {
-                      const childActive = activeHref
-                        ? child.href === activeHref
-                        : isActivePath(router.pathname, child.href);
+                </button>
+                {isOpen && (
+                  <ul className={styles.sidebarNavList}>
+                    {items.map((item) => {
+                      const itemActive = item.href
+                        ? item.href === activeHref
+                        : false;
                       return (
-                        <li key={child.label} className={styles.sidebarSubNavItem}>
-                          {child.href && !child.disabled ? (
+                        <li key={item.label} className={styles.sidebarNavItem}>
+                          {item.href && !item.disabled ? (
                             <Link
-                              href={child.href}
-                              className={`${styles.sidebarSubNavLink} ${
-                                childActive ? styles.sidebarNavLinkActive : ""
+                              href={item.href}
+                              className={`${styles.sidebarNavLink} ${
+                                itemActive ? styles.sidebarNavLinkActive : ""
                               }`}
-                              aria-current={childActive ? "page" : undefined}
+                              aria-current={itemActive ? "page" : undefined}
                             >
-                              {child.label}
+                              {item.label}
                             </Link>
                           ) : (
                             <span
-                              className={`${styles.sidebarSubNavLink} ${styles.sidebarNavLinkDisabled}`}
+                              className={`${styles.sidebarNavLink} ${styles.sidebarNavLinkDisabled}`}
                               aria-disabled
                             >
-                              {child.label}
+                              {item.label}
                             </span>
                           )}
                         </li>
@@ -398,9 +376,9 @@ export default function DashboardLayout({
                     })}
                   </ul>
                 )}
-              </li>
-            ))}
-          </ul>
+              </div>
+            );
+          })}
         </nav>
         {isSidebarResizable && (
           <div
