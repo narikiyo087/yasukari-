@@ -31,6 +31,21 @@ export default function AllProductsPageEn({ bikes, classes }: Props) {
     <>
       <Head>
         <title>All Bikes - ヤスカリ</title>
+        <meta name="description" content="Browse all rental motorcycles at Yasukari — mopeds, 125cc, mid/large-displacement and EV bikes, ready to book in Tokyo." />
+        <link rel="canonical" href="https://yasukari.com/en/products" />
+        <link rel="alternate" hrefLang="ja" href="https://yasukari.com/products" />
+        <link rel="alternate" hrefLang="en" href="https://yasukari.com/en/products" />
+        <link rel="alternate" hrefLang="x-default" href="https://yasukari.com/products" />
+        <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="Yasukari" />
+        <meta property="og:title" content="All Bikes - ヤスカリ" />
+        <meta property="og:description" content="Browse all rental motorcycles at Yasukari — mopeds, 125cc, mid/large-displacement and EV bikes, ready to book in Tokyo." />
+        <meta property="og:url" content="https://yasukari.com/en/products" />
+        <meta property="og:image" content="https://yasukari-file.s3.ap-northeast-1.amazonaws.com/PhotoUploads/slide.jpg" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="All Bikes - ヤスカリ" />
+        <meta name="twitter:description" content="Browse all rental motorcycles at Yasukari — mopeds, 125cc, mid/large-displacement and EV bikes, ready to book in Tokyo." />
+        <meta name="twitter:image" content="https://yasukari-file.s3.ap-northeast-1.amazonaws.com/PhotoUploads/slide.jpg" />
       </Head>
       <main className="p-6">
         <div className="max-w-6xl mx-auto space-y-6">

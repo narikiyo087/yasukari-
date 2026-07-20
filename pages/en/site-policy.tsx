@@ -5,6 +5,20 @@ export default function SitePolicyEn() {
     <div className="max-w-3xl mx-auto p-6 text-sm leading-relaxed">
       <Head>
         <title>Site Policy - ヤスカリ</title>
+        <meta name="description" content="Yasukari site policy." />
+        <link rel="canonical" href="https://yasukari.com/en/site-policy" />
+        <link rel="alternate" hrefLang="en" href="https://yasukari.com/en/site-policy" />
+        <link rel="alternate" hrefLang="x-default" href="https://yasukari.com/en/site-policy" />
+        <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="Yasukari" />
+        <meta property="og:title" content="Site Policy - ヤスカリ" />
+        <meta property="og:description" content="Yasukari site policy." />
+        <meta property="og:url" content="https://yasukari.com/en/site-policy" />
+        <meta property="og:image" content="https://yasukari-file.s3.ap-northeast-1.amazonaws.com/PhotoUploads/slide.jpg" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Site Policy - ヤスカリ" />
+        <meta name="twitter:description" content="Yasukari site policy." />
+        <meta name="twitter:image" content="https://yasukari-file.s3.ap-northeast-1.amazonaws.com/PhotoUploads/slide.jpg" />
       </Head>
       <h1 className="text-xl font-bold mb-4 text-center">Site Policy</h1>
       <section className="space-y-4">

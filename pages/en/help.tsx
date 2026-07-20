@@ -22,6 +22,21 @@ export default function HelpPageEn({ categories }: Props) {
     <div className="space-y-12">
       <Head>
         <title>Help - ヤスカリ</title>
+        <meta name="description" content="Yasukari help and FAQ — pricing, insurance, booking changes and how to contact us." />
+        <link rel="canonical" href="https://yasukari.com/en/help" />
+        <link rel="alternate" hrefLang="ja" href="https://yasukari.com/help" />
+        <link rel="alternate" hrefLang="en" href="https://yasukari.com/en/help" />
+        <link rel="alternate" hrefLang="x-default" href="https://yasukari.com/help" />
+        <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="Yasukari" />
+        <meta property="og:title" content="Help - ヤスカリ" />
+        <meta property="og:description" content="Yasukari help and FAQ — pricing, insurance, booking changes and how to contact us." />
+        <meta property="og:url" content="https://yasukari.com/en/help" />
+        <meta property="og:image" content="https://yasukari-file.s3.ap-northeast-1.amazonaws.com/PhotoUploads/slide.jpg" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Help - ヤスカリ" />
+        <meta name="twitter:description" content="Yasukari help and FAQ — pricing, insurance, booking changes and how to contact us." />
+        <meta name="twitter:image" content="https://yasukari-file.s3.ap-northeast-1.amazonaws.com/PhotoUploads/slide.jpg" />
       </Head>
 
       <section className="grid gap-6 rounded-lg border border-slate-200 bg-white p-6 shadow-sm md:grid-cols-[1.05fr,1fr] md:p-8">

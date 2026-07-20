@@ -5,6 +5,21 @@ export default function TokusyouhouEn() {
     <div className="max-w-3xl mx-auto p-6">
       <Head>
         <title>Act on Specified Commercial Transactions - ヤスカリ</title>
+        <meta name="description" content="Yasukari notation based on the Japanese Act on Specified Commercial Transactions." />
+        <link rel="canonical" href="https://yasukari.com/en/tokusyouhou" />
+        <link rel="alternate" hrefLang="ja" href="https://yasukari.com/tokusyouhou" />
+        <link rel="alternate" hrefLang="en" href="https://yasukari.com/en/tokusyouhou" />
+        <link rel="alternate" hrefLang="x-default" href="https://yasukari.com/tokusyouhou" />
+        <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="Yasukari" />
+        <meta property="og:title" content="Act on Specified Commercial Transactions - ヤスカリ" />
+        <meta property="og:description" content="Yasukari notation based on the Japanese Act on Specified Commercial Transactions." />
+        <meta property="og:url" content="https://yasukari.com/en/tokusyouhou" />
+        <meta property="og:image" content="https://yasukari-file.s3.ap-northeast-1.amazonaws.com/PhotoUploads/slide.jpg" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Act on Specified Commercial Transactions - ヤスカリ" />
+        <meta name="twitter:description" content="Yasukari notation based on the Japanese Act on Specified Commercial Transactions." />
+        <meta name="twitter:image" content="https://yasukari-file.s3.ap-northeast-1.amazonaws.com/PhotoUploads/slide.jpg" />
       </Head>
       <h1 className="text-xl font-bold mb-4 text-center">Act on Specified Commercial Transactions</h1>
       <table className="w-full border border-collapse text-sm">

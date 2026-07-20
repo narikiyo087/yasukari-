@@ -211,6 +211,44 @@ export default function ProductDetailPageEn({
     <>
       <Head>
         <title>{bike.modelName} - ヤスカリ</title>
+        <meta
+          name="description"
+          content={`Rental rates, specs, pickup stores and availability for the ${bike.modelName}. Book with Yasukari, Tokyo's affordable motorcycle rental.`}
+        />
+        <link
+          rel="canonical"
+          href={`https://yasukari.com/en/products/${bike.modelCode}`}
+        />
+        <link
+          rel="alternate"
+          hrefLang="ja"
+          href={`https://yasukari.com/products/${bike.modelCode}`}
+        />
+        <link
+          rel="alternate"
+          hrefLang="en"
+          href={`https://yasukari.com/en/products/${bike.modelCode}`}
+        />
+        <link
+          rel="alternate"
+          hrefLang="x-default"
+          href={`https://yasukari.com/products/${bike.modelCode}`}
+        />
+        <meta property="og:type" content="product" />
+        <meta property="og:site_name" content="Yasukari" />
+        <meta property="og:title" content={`${bike.modelName} - Yasukari`} />
+        <meta
+          property="og:description"
+          content={`Rental rates, specs, pickup stores and availability for the ${bike.modelName}. Book with Yasukari, Tokyo's affordable motorcycle rental.`}
+        />
+        <meta
+          property="og:url"
+          content={`https://yasukari.com/en/products/${bike.modelCode}`}
+        />
+        <meta property="og:image" content={bike.img} />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={`${bike.modelName} - Yasukari`} />
+        <meta name="twitter:image" content={bike.img} />
       </Head>
       <main className="min-h-screen bg-transparent pb-12">
         <div className="w-full py-8 space-y-10">
