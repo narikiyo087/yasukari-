@@ -39,6 +39,7 @@ type MenuSection = {
 // Dashboard body mirrors the sidebar's To-Be IA (docs §7): 6 groups.
 const dailyOpsLinks: MenuLink[] = [
   { label: "レンタル予約管理", href: `${ADMIN_DASHBOARD_ROOT}/reservations` },
+  { label: "承認待ち（統合ビュー）", href: `${ADMIN_DASHBOARD_ROOT}/approvals` },
   {
     label: "承認待ち：免許証確認",
     href: `${ADMIN_DASHBOARD_ROOT}/photo-uploads/license-uploads`,
