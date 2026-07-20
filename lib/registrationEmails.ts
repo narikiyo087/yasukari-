@@ -47,6 +47,78 @@ export async function deliverProvisionalRegistrationEmail(email: string) {
   return { simulated: false } as const;
 }
 
+export async function deliverExistingAccountNoticeEmail(
+  email: string,
+  options?: { loginUrl?: string; locale?: string }
+) {
+  const fromAddress = process.env.MAIL_FROM ?? DEFAULT_SOURCE_EMAIL;
+  const useEnglish = isEnglishLocale(options?.locale);
+  const loginUrl = options?.loginUrl;
+
+  const { subject, text, html } = buildBaseEmail(
+    useEnglish
+      ? '[Yasukari] This email address is already registered'
+      : '【ヤスカリ】このメールアドレスは既に登録されています',
+    useEnglish
+      ? [
+          'Thank you for trying to register with Yasukari.',
+          'The email address you entered is already registered as a member,',
+          'so there is no need to sign up again.',
+          '',
+          ...(loginUrl
+            ? ['You can sign in from the link below.', loginUrl, '']
+            : ['Please sign in from the login page on our website.', '']),
+          'If you have forgotten your password or have trouble signing in,',
+          'please reply to this email and let us know.',
+          '',
+          'This email was sent to the address entered during registration.',
+          'If the address was entered incorrectly, someone may have mistyped their address,',
+          'and this message may have reached the wrong person.',
+          'If this email does not apply to you, please discard it.',
+          '',
+          'For support, please reply to this email.',
+          'We are unable to provide support by phone for this inquiry.',
+          '',
+          ...EMAIL_FOOTER_TEXT_LINES,
+        ]
+      : [
+          'ヤスカリの会員登録をお試しいただき、ありがとうございます。',
+          'ご入力いただいたメールアドレスは、すでに会員登録が完了しています。',
+          'そのため、新たに仮登録を行っていただく必要はございません。',
+          '',
+          ...(loginUrl
+            ? ['▼ ログインはこちらから', loginUrl, '']
+            : ['お手数ですが、サイトのログイン画面からお進みください。', '']),
+          'パスワードをお忘れの場合や、ログインでお困りの場合は、',
+          '本メールにご返信のうえお問い合わせください。',
+          '',
+          '※本メールはお客様にご入力いただいたメールアドレスあてに発信しているため、',
+          '入力ミスなどの理由により、まったく別の方にメールが届く可能性があります。',
+          'もし本メールにお心当たりが無い場合は、どなたかがメールアドレスを',
+          '誤って入力した可能性がございます。お手数ですが、破棄していただけますようお願いします。',
+          '',
+          '※お問い合わせは、本メールにご返信ください。',
+          '大変恐れ入りますが、お電話でのお問い合わせはお受けしておりません。',
+          '',
+          ...EMAIL_FOOTER_TEXT_LINES,
+        ]
+  );
+
+  await enqueueEmail({
+    to: email,
+    subject,
+    text,
+    html,
+    replyTo: fromAddress,
+    category: '仮登録',
+    userIdForNotification: email,
+    notificationBody: text,
+    mirrorToSite: true,
+  });
+
+  return { simulated: false } as const;
+}
+
 export async function deliverFullRegistrationEmail(email: string, locale?: string) {
   const fromAddress = process.env.MAIL_FROM ?? DEFAULT_SOURCE_EMAIL;
   const useEnglish = isEnglishLocale(locale);

@@ -2,7 +2,13 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import { hasLightMemberByEmail } from '../../lib/mockUserDb';
 import { issueVerificationCode } from '../../lib/verificationCodeService';
 import { deliverVerificationEmail } from '../../lib/verificationEmail';
+import { deliverExistingAccountNoticeEmail } from '../../lib/registrationEmails';
 import { savePendingRegistration, clearPendingRegistration } from '../../lib/pendingRegistrations';
+
+// 新規・既登録のどちらでも同一のレスポンスを返し、アカウント列挙（どのメールが
+// 登録済みかを外部から総当たりで判別されること）を防ぐための共通メッセージ。
+const NEUTRAL_SUBMISSION_MESSAGE =
+  'ご入力いただいたメールアドレス宛にメールをお送りしました。メールの案内に従ってお手続きください。';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') {
@@ -42,8 +48,27 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(400).json({ message: '電話番号は10桁以上15桁以下の数字で入力してください。' });
   }
 
+  const forwardedProto = req.headers['x-forwarded-proto'];
+  const protoHeader = Array.isArray(forwardedProto) ? forwardedProto[0] : forwardedProto;
+  const hostHeader = Array.isArray(req.headers.host) ? req.headers.host[0] : req.headers.host;
+
+  const fallbackBaseUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'https://yasukari.com';
+  const protocol = protoHeader ?? (hostHeader?.includes('localhost') ? 'http' : 'https');
+  const baseUrl = hostHeader ? `${protocol}://${hostHeader}` : fallbackBaseUrl;
+
+  // 既に登録済みのメールアドレスの場合は、新規登録と見分けがつかない中立レスポンスを
+  // 返しつつ、「すでに登録済み」の案内メールを送る（認証コードは発行しない）。
+  // 画面上では既登録かどうかを開示しないことで、アカウント列挙を防止する。
   if (hasLightMemberByEmail(sanitizedEmail)) {
-    return res.status(409).json({ message: 'このメールアドレスは既に登録済みです。ログインしてください。' });
+    try {
+      await deliverExistingAccountNoticeEmail(sanitizedEmail, {
+        loginUrl: `${baseUrl}/login`,
+      });
+    } catch (error) {
+      // 案内メールの送信失敗はユーザーに開示しない（列挙対策のため成功と同じ応答を返す）。
+      console.error('Failed to send existing-account notice email', error);
+    }
+    return res.status(200).json({ message: NEUTRAL_SUBMISSION_MESSAGE });
   }
 
   try {
@@ -56,13 +81,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     const { code, expiresAt } = issueVerificationCode(sanitizedEmail);
 
-    const forwardedProto = req.headers['x-forwarded-proto'];
-    const protoHeader = Array.isArray(forwardedProto) ? forwardedProto[0] : forwardedProto;
-    const hostHeader = Array.isArray(req.headers.host) ? req.headers.host[0] : req.headers.host;
-
-    const fallbackBaseUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'https://yasukari.com';
-    const protocol = protoHeader ?? (hostHeader?.includes('localhost') ? 'http' : 'https');
-    const baseUrl = hostHeader ? `${protocol}://${hostHeader}` : fallbackBaseUrl;
     const verificationUrl = `${baseUrl}/register/auth?email=${encodeURIComponent(sanitizedEmail)}`;
 
     await deliverVerificationEmail({
@@ -73,7 +91,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     });
 
     return res.status(200).json({
-      message: '仮登録用の認証コードを送信しました。メールボックスをご確認ください。',
+      message: NEUTRAL_SUBMISSION_MESSAGE,
       expiresAt,
     });
   } catch (error) {
