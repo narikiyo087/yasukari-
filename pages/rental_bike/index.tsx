@@ -78,6 +78,8 @@ export default function BlogIndex({
     <div className="max-w-6xl mx-auto p-4 flex flex-row flex-wrap gap-6">
       <Head>
         <title>新着ブログ・お知らせ - ヤスカリ</title>
+        <meta name="description" content="ヤスカリのレンタルバイクに関するブログ・お知らせ一覧。お得な情報や活用法を発信しています。" />
+        <link rel="canonical" href="https://yasukari.com/rental_bike" />
       </Head>
       <div className="w-[70%]">
         <h1 className="text-xl font-bold mb-4">新着ブログ・お知らせ</h1>

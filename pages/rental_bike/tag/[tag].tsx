@@ -100,6 +100,16 @@ export default function TagPage({ tag, tagPosts, calendarPosts, posts, initialDa
     <div className="max-w-6xl mx-auto p-4 flex flex-row flex-wrap gap-6">
       <Head>
         <title>#{tag} の記事 - ヤスカリ</title>
+        <meta
+          name="description"
+          content={`「${tag}」に関するヤスカリの記事一覧です。レンタルバイクの活用法や店舗の最新情報をお届けします。`}
+        />
+        <link
+          rel="canonical"
+          href={`https://yasukari.com/rental_bike/tag/${encodeURIComponent(
+            tag
+          )}`}
+        />
       </Head>
       <div className="w-[70%]">
         <h1 className="text-xl font-bold mb-4">タグ: #{tag}</h1>
