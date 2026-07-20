@@ -175,6 +175,48 @@ export default function ProductDetailPage({
 
   const tagItems = [...(bike.tags ?? []), bike.badge].filter(Boolean) as string[];
 
+  const canonicalUrl = `https://yasukari.com/products/${bike.modelCode}`;
+  const productDescription =
+    bike.description ||
+    `${bike.modelName}のレンタル料金・スペック・取扱店舗・空き状況。東京の格安レンタルバイク「ヤスカリ」で予約できます。`;
+  const price24hValue = (() => {
+    const raw = adjustedPriceGuide["24h"];
+    if (!raw || raw === "-") return undefined;
+    const n = Number(String(raw).replace(/[^0-9]/g, ""));
+    return Number.isFinite(n) && n > 0 ? n : undefined;
+  })();
+  const productJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: bike.modelName,
+    image: bike.img,
+    description: productDescription,
+    url: canonicalUrl,
+    ...(price24hValue
+      ? {
+          offers: {
+            "@type": "Offer",
+            priceCurrency: "JPY",
+            price: price24hValue,
+            availability: hasStock
+              ? "https://schema.org/InStock"
+              : "https://schema.org/OutOfStock",
+            url: canonicalUrl,
+            description: "24時間レンタル基本料金",
+          },
+        }
+      : {}),
+  };
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "ホーム", item: "https://yasukari.com/" },
+      { "@type": "ListItem", position: 2, name: "車種・料金", item: "https://yasukari.com/products" },
+      { "@type": "ListItem", position: 3, name: bike.modelName, item: canonicalUrl },
+    ],
+  };
+
   const selectedVehicleStore = useMemo(
     () => vehicleOptions.find((option) => option.value === selectedVehicle)?.storeId,
     [selectedVehicle, vehicleOptions]
@@ -282,6 +324,14 @@ export default function ProductDetailPage({
         <meta
           name="twitter:image"
           content={bike.img}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
         />
       </Head>
       <main className="min-h-screen bg-transparent pb-12">
