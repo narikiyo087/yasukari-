@@ -35,7 +35,7 @@ function Node({ node, level = 0 }: { node: DirNode; level?: number }) {
     return (
       <li
         className={`mt-1 relative group ${
-          level === 0 ? 'odd:bg-white even:bg-pink-50 p-1' : ''
+          level === 0 ? 'odd:bg-white even:bg-slate-50 p-1' : ''
         }`}
       >
         <button
@@ -62,7 +62,7 @@ function Node({ node, level = 0 }: { node: DirNode; level?: number }) {
   return (
     <li
       className={`mt-1 relative group ${
-        level === 0 ? 'odd:bg-white even:bg-pink-50 p-1' : ''
+        level === 0 ? 'odd:bg-white even:bg-slate-50 p-1' : ''
       }`}
     >
       <Link href={`/source/${node.path}`} className="hover:underline text-red-700">

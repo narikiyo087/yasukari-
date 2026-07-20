@@ -74,8 +74,8 @@ export default function BeginnerGuidePage() {
       </section>
 
       <main className="mx-auto flex w-full max-w-5xl flex-col gap-8 px-4 py-10 sm:gap-10 sm:px-8 sm:py-14 lg:px-12">
-        <section className="rounded-3xl border border-slate-200 bg-white px-4 py-7 shadow-sm sm:px-8 sm:py-10">
-          <span className="inline-flex items-center rounded-full bg-indigo-50 px-3 py-1 text-xs font-semibold uppercase tracking-widest text-indigo-600">
+        <section className="rounded-lg border border-slate-200 bg-white px-4 py-7 shadow-sm sm:px-8 sm:py-10">
+          <span className="inline-flex items-center rounded bg-red-50 px-3 py-1 text-xs font-semibold uppercase tracking-widest text-red-600">
             Beginner Guide
           </span>
           <h1 className="mt-4 text-2xl font-bold text-slate-900">
@@ -97,7 +97,7 @@ export default function BeginnerGuidePage() {
           ].map((item) => (
             <div
               key={item.title}
-              className="rounded-2xl border border-white bg-white px-4 py-4 text-sm shadow-sm sm:px-6 sm:py-5"
+              className="rounded-lg border border-slate-200 bg-white px-4 py-4 text-sm shadow-sm sm:px-6 sm:py-5"
             >
               <p className="text-xs font-semibold uppercase tracking-widest text-slate-400">
                 {item.title}
@@ -109,10 +109,10 @@ export default function BeginnerGuidePage() {
           ))}
         </section>
 
-        <section className="rounded-3xl border border-slate-200 bg-white px-4 py-7 shadow-sm sm:px-8 sm:py-10">
+        <section className="rounded-lg border border-slate-200 bg-white px-4 py-7 shadow-sm sm:px-8 sm:py-10">
           <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-widest text-amber-500">
+              <p className="text-xs font-semibold uppercase tracking-widest text-red-600">
                 Steps
               </p>
               <h2 className="mt-2 text-xl font-bold text-slate-900">ご利用の流れ</h2>
@@ -123,7 +123,7 @@ export default function BeginnerGuidePage() {
           <div className="space-y-4">
             {steps.map((step, index) => (
               <div key={step.title}>
-                <div className="rounded-2xl border border-slate-100 bg-slate-50 px-4 py-6 sm:px-6 sm:py-7">
+                <div className="rounded-lg border border-slate-200 bg-slate-50 px-4 py-6 sm:px-6 sm:py-7">
                   <h3 className="text-lg font-semibold text-slate-900">
                     {step.title}
                   </h3>
@@ -131,7 +131,7 @@ export default function BeginnerGuidePage() {
                   <ul className="mt-4 space-y-2 text-sm text-slate-700">
                     {step.points.map((point) => (
                       <li key={point} className="flex gap-2">
-                        <span className="mt-1 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-amber-500" />
+                        <span className="mt-1 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-red-600" />
                         <span>{point}</span>
                       </li>
                     ))}
@@ -144,14 +144,14 @@ export default function BeginnerGuidePage() {
                   ) : null}
 
                   {step.title.startsWith('03') ? (
-                    <div className="mt-6 rounded-2xl border border-slate-200 bg-white px-3 py-4 sm:px-5 sm:py-6">
+                    <div className="mt-6 rounded-lg border border-slate-200 bg-white px-3 py-4 sm:px-5 sm:py-6">
                       <h4 className="text-sm font-semibold text-slate-900">
                         走行距離の目安
                       </h4>
                       <p className="mt-2 text-sm text-slate-600">
                         目安以上の距離を走行するためには整備が必要な場合があります。バイクを安全に乗るためには、オイル交換と整備が必要です。目安以上の距離を走行する場合、メンテナンスが必要な際にメンテナンスを怠り車両に故障や損害が発生した場合は、車両の時価額を請求いたします。
                       </p>
-                      <div className="mt-4 overflow-x-auto rounded-xl border border-slate-200">
+                      <div className="mt-4 overflow-x-auto rounded-md border border-slate-200">
                         <table className="min-w-[520px] w-full text-center text-[11px] sm:text-xs">
                           <thead className="bg-slate-100 text-slate-600">
                             <tr>
@@ -200,7 +200,7 @@ export default function BeginnerGuidePage() {
                   ) : null}
                 </div>
                 {index < steps.length - 1 ? (
-                  <div className="flex justify-center py-3 text-2xl text-amber-500">
+                  <div className="flex justify-center py-3 text-2xl text-red-600">
                     ↓
                   </div>
                 ) : null}
@@ -209,10 +209,10 @@ export default function BeginnerGuidePage() {
           </div>
         </section>
 
-        <section className="rounded-3xl bg-slate-900 px-4 py-7 text-white sm:px-8 sm:py-10">
+        <section className="rounded-lg bg-slate-900 px-4 py-7 text-white sm:px-8 sm:py-10">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-widest text-amber-400">
+              <p className="text-xs font-semibold uppercase tracking-widest text-red-400">
                 Contact
               </p>
               <h2 className="mt-2 text-xl font-bold">ご不明点はお気軽に</h2>
@@ -222,7 +222,7 @@ export default function BeginnerGuidePage() {
             </div>
             <Link
               href="/contact"
-              className="inline-flex w-full items-center justify-center rounded-full bg-amber-400 px-6 py-3 text-sm font-semibold text-slate-900 shadow-sm transition hover:bg-amber-300 sm:w-auto"
+              className="inline-flex w-full items-center justify-center rounded-md bg-red-600 px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-red-700 sm:w-auto"
             >
               お問い合わせはこちら
             </Link>

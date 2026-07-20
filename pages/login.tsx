@@ -138,39 +138,39 @@ export default function LoginPage() {
       <Head>
         <title>ログイン</title>
       </Head>
-      <div className="min-h-screen bg-white text-gray-900">
+      <div className="min-h-screen bg-white text-slate-900">
         <main className="mx-auto w-full max-w-5xl px-4 py-8 md:px-8 md:py-12">
           <nav aria-label="breadcrumb" className="mb-6">
-            <ol className="flex items-center space-x-2 text-sm text-gray-500">
+            <ol className="flex items-center space-x-2 text-sm text-slate-500">
               <li>
                 <Link href="/" className="text-blue-600 hover:underline">
                   ホーム
                 </Link>
               </li>
               <li aria-hidden="true">/</li>
-              <li className="text-gray-600">ログイン</li>
+              <li className="text-slate-600">ログイン</li>
             </ol>
           </nav>
 
           <div className="grid gap-6 md:grid-cols-2">
-            <section className="order-2 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm md:order-1">
-              <h1 className="text-2xl font-bold text-gray-900">マイページでレンタルをスムーズに管理</h1>
-              <p className="mt-3 text-sm leading-relaxed text-gray-600">
+            <section className="order-2 rounded-lg border border-slate-200 bg-white p-6 shadow-sm md:order-1">
+              <h1 className="text-2xl font-bold text-slate-900">マイページでレンタルをスムーズに管理</h1>
+              <p className="mt-3 text-sm leading-relaxed text-slate-600">
                 ご契約状況の確認や延長手続き、支払い情報の更新まで、マイページからまとめて行えます。
                 会員ならではの限定キャンペーンもこちらでお知らせしています。
               </p>
-              <ul className="mt-4 space-y-3 text-sm text-gray-700">
+              <ul className="mt-4 space-y-3 text-sm text-slate-700">
                 {[{ text: '最新のレンタル状況と履歴をいつでもチェック' }, { text: 'オンラインで延長・オプション追加が完結' }, {
 text: '会員限定クーポンや新着車両をいち早くご案内' }].map(
                   (item) => (
                     <li key={item.text} className="flex items-start gap-3">
-                      <span className="mt-1 h-2.5 w-2.5 rounded-full bg-red-500" aria-hidden="true" />
+                      <span className="mt-1 h-2.5 w-2.5 rounded-full bg-red-600" aria-hidden="true" />
                       <span>{item.text}</span>
                     </li>
                   )
                 )}
               </ul>
-              <div className="mt-6 rounded-xl bg-red-50 p-4 text-sm text-red-700">
+              <div className="mt-6 rounded-md bg-red-50 p-4 text-sm text-red-700">
                 <p className="font-semibold">はじめての方へ</p>
                 <p className="mt-1 leading-relaxed">
                   メールアドレスだけで仮登録が行えます。まだ会員でない方は
@@ -187,9 +187,9 @@ text: '会員限定クーポンや新着車両をいち早くご案内' }].map(
               </div>
             </section>
 
-            <div className="order-1 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm md:order-2">
+            <div className="order-1 rounded-lg border border-slate-200 bg-white p-6 shadow-sm md:order-2">
               <div className="mb-6 space-y-2 text-center">
-                <h2 className="text-xl font-semibold text-gray-900">ログイン / 新規登録</h2>
+                <h2 className="text-xl font-semibold text-slate-900">ログイン / 新規登録</h2>
               </div>
               {error ? (
                 <p className="mb-4 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-600">{error}</p>
@@ -198,7 +198,7 @@ text: '会員限定クーポンや新着車両をいち早くご案内' }].map(
                 <button
                   type="button"
                   onClick={handleLogout}
-                  className="inline-flex w-full items-center justify-center rounded-full bg-gray-800 px-6 py-3 text-sm font-semibold text-white transition hover:bg-gray-900 disabled:cursor-not-allowed disabled:opacity-60"
+                  className="inline-flex w-full items-center justify-center rounded-full bg-slate-800 px-6 py-3 text-sm font-semibold text-white transition hover:bg-slate-900 disabled:cursor-not-allowed disabled:opacity-60"
                   disabled={startingLogout}
                 >
                   {startingLogout
@@ -210,7 +210,7 @@ text: '会員限定クーポンや新着車両をいち早くご案内' }].map(
                   <button
                     type="button"
                     onClick={handleLogin}
-                    className="inline-flex w-full items-center justify-center rounded-full bg-red-600 px-6 py-3 text-sm font-semibold text-white transition hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-60"
+                    className="inline-flex w-full items-center justify-center rounded-md bg-red-600 px-6 py-3 text-sm font-semibold text-white transition hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-60"
                     disabled={checkingSession || startingLogin}
                   >
                     {checkingSession
@@ -229,12 +229,12 @@ text: '会員限定クーポンや新着車両をいち早くご案内' }].map(
                   </button>
                 </>
               )}
-              <div className="mt-3 text-center text-xs text-gray-500">
+              <div className="mt-3 text-center text-xs text-slate-500">
                 <div className="flex flex-wrap justify-center gap-3">
                   <button
                     type="button"
                     onClick={handleLoginEnglish}
-                    className="rounded-full border border-gray-300 px-4 py-2 font-semibold text-gray-700 transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-60"
+                    className="rounded-full border border-slate-300 px-4 py-2 font-semibold text-slate-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60"
                     disabled={checkingSession || startingLogin}
                   >
                     Login (English)
@@ -242,15 +242,15 @@ text: '会員限定クーポンや新着車両をいち早くご案内' }].map(
                   <button
                     type="button"
                     onClick={handleSignupEnglish}
-                    className="rounded-full border border-gray-300 px-4 py-2 font-semibold text-gray-700 transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-60"
+                    className="rounded-full border border-slate-300 px-4 py-2 font-semibold text-slate-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60"
                     disabled={startingSignup}
                   >
                     Sign up (English)
                   </button>
                 </div>
               </div>
-              <div className="mt-6 rounded-xl bg-gray-50 p-4 text-left text-xs leading-relaxed text-gray-600">
-                <p className="font-semibold text-gray-900">ログインの流れ</p>
+              <div className="mt-6 rounded-md bg-slate-50 p-4 text-left text-xs leading-relaxed text-slate-600">
+                <p className="font-semibold text-slate-900">ログインの流れ</p>
                 <ol className="mt-2 list-decimal space-y-1 pl-4">
                   <li>「ログイン画面へ進む」ボタンを押してログイン画面へ</li>
                   <li>認証後は {process.env.NEXT_PUBLIC_SITE_NAME ?? 'マイページ'} にリダイレクト</li>
@@ -258,7 +258,7 @@ text: '会員限定クーポンや新着車両をいち早くご案内' }].map(
                   <li>予約時に必要な情報を登録するため、本登録まで完了させてください</li>
                 </ol>
               </div>
-              <p className="mt-6 text-center text-xs text-gray-500">
+              <p className="mt-6 text-center text-xs text-slate-500">
                 アカウントをお持ちでない方は
                 <button
                   type="button"

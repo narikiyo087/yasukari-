@@ -43,7 +43,7 @@ export default function RecentlyViewedEn() {
         {bikes.slice(0, visibleCount).map((bike) => (
           <article
             key={bike.modelCode}
-            className="group overflow-hidden rounded-2xl border border-white/60 bg-white/80 shadow-[0_28px_42px_-30px_rgba(15,23,42,0.6)] transition duration-200 hover:-translate-y-1 hover:shadow-[0_36px_62px_-34px_rgba(220,38,38,0.45)]"
+            className="group overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm transition duration-200 hover:shadow-sm"
           >
             <Link href={`/en/products/${bike.modelCode}`} className="flex h-full flex-col">
               <div className="recently-viewed-card__image relative aspect-[3/4] w-full overflow-hidden">
@@ -58,13 +58,13 @@ export default function RecentlyViewedEn() {
                   className="text-base font-semibold text-slate-800"
                   dangerouslySetInnerHTML={{ __html: bike.modelName.replace(/\\n/g, "<br>") }}
                 />
-                <span className="text-sm font-semibold text-red-500">View details →</span>
+                <span className="text-sm font-semibold text-red-600">View details →</span>
               </div>
             </Link>
           </article>
         ))}
         {bikes.length > visibleCount ? (
-          <div className="flex flex-col items-center justify-center gap-4 rounded-2xl border border-dashed border-red-200 bg-red-50/60 p-6 text-center text-sm text-red-600">
+          <div className="flex flex-col items-center justify-center gap-4 rounded-lg border border-dashed border-red-200 bg-red-50/60 p-6 text-center text-sm text-red-600">
             <p className="font-semibold">See the full history</p>
             <Link href="/en/products" className="btn-primary">
               Explore more

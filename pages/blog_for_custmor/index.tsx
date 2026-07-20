@@ -96,7 +96,7 @@ export default function BlogIndex({
             <Link
               key={post.slug}
               href={`/blog_for_custmor/${post.slug}`}
-              className="block p-4 bg-white rounded shadow hover:bg-gray-50 hover-glow"
+              className="block p-4 bg-white rounded shadow hover:bg-slate-50 hover-glow"
             >
               {post.eyecatch && (
                 <img
@@ -107,7 +107,7 @@ export default function BlogIndex({
               )}
               <h2 className="font-semibold">{post.title}</h2>
               {post.date && (
-                <p className="text-gray-500 text-xs mb-1">{post.date}</p>
+                <p className="text-slate-500 text-xs mb-1">{post.date}</p>
               )}
               {post.tags && (
                 <p className="text-blue-600 text-xs mb-1">

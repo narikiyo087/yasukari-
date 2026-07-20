@@ -1,6 +1,6 @@
 .detailCard {
   background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
-  border-radius: 1rem;
+  border-radius: 8px;
   border: 1px solid rgba(226, 232, 240, 0.9);
   padding: 1.5rem;
   box-shadow: 0 1px 3px rgba(15, 23, 42, 0.08);
@@ -41,7 +41,7 @@
   flex-direction: column;
   gap: 0.3rem;
   padding: 0.85rem 1rem;
-  border-radius: 0.85rem;
+  border-radius: 8px;
   border: 1px solid rgba(226, 232, 240, 0.9);
   background: #fff;
 }
@@ -76,7 +76,7 @@
   color: #fff;
   border: none;
   padding: 0.6rem 1.3rem;
-  border-radius: 0.75rem;
+  border-radius: 6px;
   font-weight: 700;
   cursor: pointer;
   transition: all 0.15s ease;
@@ -107,7 +107,7 @@
 .noteTextarea {
   width: 100%;
   min-height: 96px;
-  border-radius: 0.85rem;
+  border-radius: 8px;
   border: 1px solid rgba(226, 232, 240, 0.9);
   padding: 0.85rem 1rem;
   resize: vertical;
@@ -144,7 +144,7 @@
   color: #0f172a;
   border: 1px solid rgba(148, 163, 184, 0.9);
   padding: 0.6rem 1.2rem;
-  border-radius: 0.75rem;
+  border-radius: 6px;
   font-weight: 700;
   cursor: pointer;
   transition: all 0.15s ease;
@@ -181,7 +181,7 @@
 }
 
 .statusBadgeOff {
-  background: rgba(248, 113, 113, 0.2);
+  background: rgba(214, 40, 40, 0.2);
   color: #b91c1c;
 }
 

@@ -108,7 +108,7 @@ export default function TagPage({ tag, tagPosts, calendarPosts, posts, initialDa
             <Link
               key={post.slug}
               href={`/rental_bike/${post.slug}`}
-              className="block p-4 bg-white rounded shadow hover:bg-gray-50"
+              className="block p-4 bg-white rounded shadow hover:bg-slate-50"
             >
               {post.eyecatch && (
                 <img
@@ -119,7 +119,7 @@ export default function TagPage({ tag, tagPosts, calendarPosts, posts, initialDa
               )}
               <h2 className="font-semibold">{post.title}</h2>
               {post.date && (
-                <p className="text-gray-500 text-xs mb-1">{post.date}</p>
+                <p className="text-slate-500 text-xs mb-1">{post.date}</p>
               )}
               {post.tags && (
                 <p className="text-blue-600 text-xs mb-1">
@@ -133,7 +133,7 @@ export default function TagPage({ tag, tagPosts, calendarPosts, posts, initialDa
             </Link>
           ))}
           {tagPosts.length === 0 && (
-            <p className="text-gray-500">該当する記事がありません。</p>
+            <p className="text-slate-500">該当する記事がありません。</p>
           )}
         </div>
       </div>

@@ -35,7 +35,7 @@ export default function CompanyPageEn() {
           </tr>
         </tbody>
       </table>
-      <p className="text-center text-gray-500">Copyright © 2025 ヤスカリ Inc.</p>
+      <p className="text-center text-slate-500">Copyright © 2025 ヤスカリ Inc.</p>
     </div>
   )
 }

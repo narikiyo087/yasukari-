@@ -256,19 +256,19 @@ export default function ReserveFlowStep1() {
       <Head>
         <title>Review reservation details - Step 1</title>
       </Head>
-      <main className="min-h-screen bg-gray-50 pb-16">
+      <main className="min-h-screen bg-slate-50 pb-16">
         <div className="mx-auto max-w-5xl px-4 py-10 sm:px-6 lg:px-8 space-y-8">
           <header className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-wide text-red-500">Step 1 / 3</p>
-              <h1 className="text-2xl font-bold text-gray-900">Review reservation details</h1>
-              <p className="text-sm text-gray-600">
+              <p className="text-xs font-semibold uppercase tracking-wide text-red-600">Step 1 / 3</p>
+              <h1 className="text-2xl font-bold text-slate-900">Review reservation details</h1>
+              <p className="text-sm text-slate-600">
                 Check your reservation details and choose your times. You cannot proceed until both times are selected.
               </p>
             </div>
             <Link
               href="/en/products"
-              className="inline-flex items-center justify-center rounded-full border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-700 shadow-sm hover:border-gray-300"
+              className="inline-flex items-center justify-center rounded-md border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm hover:border-slate-300"
             >
               Back to models
             </Link>
@@ -280,47 +280,47 @@ export default function ReserveFlowStep1() {
 
           <section className="grid gap-6 lg:grid-cols-5">
             <div className="lg:col-span-3 space-y-6">
-              <div className="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-gray-100 space-y-4">
+              <div className="rounded-lg bg-white p-6 shadow-sm ring-1 ring-slate-100 space-y-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">Vehicle</p>
-                    <h2 className="text-lg font-bold text-gray-900">{modelName}</h2>
+                    <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Vehicle</p>
+                    <h2 className="text-lg font-bold text-slate-900">{modelName}</h2>
                     {managementNumber ? (
-                      <p className="text-sm text-gray-600">Management number: {managementNumber}</p>
+                      <p className="text-sm text-slate-600">Management number: {managementNumber}</p>
                     ) : null}
                   </div>
-                  <span className="rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-700">{store}</span>
+                  <span className="rounded bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700">{store}</span>
                 </div>
               </div>
 
-              <div className="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-gray-100 space-y-4">
+              <div className="rounded-lg bg-white p-6 shadow-sm ring-1 ring-slate-100 space-y-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">Member info</p>
-                    <h2 className="text-lg font-bold text-gray-900">Customer</h2>
+                    <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Member info</p>
+                    <h2 className="text-lg font-bold text-slate-900">Customer</h2>
                   </div>
-                  <span className="text-xs text-gray-500">{membershipStatus}</span>
+                  <span className="text-xs text-slate-500">{membershipStatus}</span>
                 </div>
                 {registrationError ? (
                   <p className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{registrationError}</p>
                 ) : null}
                 <div className="grid gap-4 sm:grid-cols-2">
                   <label className="space-y-2 text-sm">
-                    <span className="text-gray-700">Name</span>
+                    <span className="text-slate-700">Name</span>
                     <input
                       type="text"
                       value={nameDisplay}
                       readOnly
-                      className="w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-3 text-gray-900 shadow-sm focus:border-red-500 focus:outline-none"
+                      className="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-3 text-slate-900 shadow-sm focus:border-red-500 focus:outline-none"
                     />
                   </label>
                   <label className="space-y-2 text-sm">
-                    <span className="text-gray-700">Email</span>
+                    <span className="text-slate-700">Email</span>
                     <input
                       type="email"
                       value={emailDisplay}
                       readOnly
-                      className="w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-3 text-gray-900 shadow-sm focus:border-red-500 focus:outline-none"
+                      className="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-3 text-slate-900 shadow-sm focus:border-red-500 focus:outline-none"
                     />
                   </label>
                 </div>
@@ -335,7 +335,7 @@ export default function ReserveFlowStep1() {
                         href="/en/mypage/registration"
                         target="_blank"
                         rel="noreferrer"
-                        className="inline-flex items-center justify-center rounded-full bg-red-500 px-4 py-2 text-xs font-semibold text-white shadow hover:bg-red-600 transition"
+                        className="inline-flex items-center justify-center rounded-md bg-red-600 px-4 py-2 text-xs font-semibold text-white shadow hover:bg-red-700 transition"
                       >
                         Open registration
                       </Link>
@@ -357,22 +357,22 @@ export default function ReserveFlowStep1() {
                 ) : null}
               </div>
 
-              <div className="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-gray-100 space-y-6">
+              <div className="rounded-lg bg-white p-6 shadow-sm ring-1 ring-slate-100 space-y-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">Pickup & return</p>
-                    <h2 className="text-lg font-bold text-gray-900">Choose times</h2>
+                    <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Pickup & return</p>
+                    <h2 className="text-lg font-bold text-slate-900">Choose times</h2>
                   </div>
                   <p className="text-xs text-red-600">Select times to move forward</p>
                 </div>
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div className="space-y-2">
-                    <p className="text-sm font-semibold text-gray-800">Pickup date</p>
-                    <p className="text-sm text-gray-600">{pickupLabel}</p>
+                    <p className="text-sm font-semibold text-slate-800">Pickup date</p>
+                    <p className="text-sm text-slate-600">{pickupLabel}</p>
                     <select
                       value={pickupTime}
                       onChange={(e) => setPickupTime(e.target.value)}
-                      className="w-full rounded-lg border border-gray-200 bg-white px-3 py-3 text-sm shadow-sm focus:border-red-500 focus:outline-none"
+                      className="w-full rounded-lg border border-slate-200 bg-white px-3 py-3 text-sm shadow-sm focus:border-red-500 focus:outline-none"
                     >
                       <option value="">Select a time</option>
                       {timeOptions.map((time) => (
@@ -383,12 +383,12 @@ export default function ReserveFlowStep1() {
                     </select>
                   </div>
                   <div className="space-y-2">
-                    <p className="text-sm font-semibold text-gray-800">Return date</p>
-                    <p className="text-sm text-gray-600">{returnLabel}</p>
+                    <p className="text-sm font-semibold text-slate-800">Return date</p>
+                    <p className="text-sm text-slate-600">{returnLabel}</p>
                     <select
                       value={returnTime}
                       disabled
-                      className="w-full rounded-lg border border-gray-200 bg-gray-100 px-3 py-3 text-sm shadow-sm text-gray-500"
+                      className="w-full rounded-lg border border-slate-200 bg-slate-100 px-3 py-3 text-sm shadow-sm text-slate-500"
                     >
                       <option value="">Automatically set from pickup date</option>
                       {timeOptions.map((time) => (
@@ -397,7 +397,7 @@ export default function ReserveFlowStep1() {
                         </option>
                       ))}
                     </select>
-                    <p className="text-xs text-gray-500">Return time is set 24 hours after pickup.</p>
+                    <p className="text-xs text-slate-500">Return time is set 24 hours after pickup.</p>
                   </div>
                 </div>
                 {!canProceed ? (
@@ -407,32 +407,32 @@ export default function ReserveFlowStep1() {
             </div>
 
             <div className="lg:col-span-2 space-y-4">
-              <div className="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-gray-100 space-y-4">
+              <div className="rounded-lg bg-white p-6 shadow-sm ring-1 ring-slate-100 space-y-4">
                 <div className="flex items-center justify-between">
-                  <p className="text-sm font-semibold text-gray-900">Reservation summary</p>
-                  <span className="rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-700">1 / 3</span>
+                  <p className="text-sm font-semibold text-slate-900">Reservation summary</p>
+                  <span className="rounded bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700">1 / 3</span>
                 </div>
-                <dl className="space-y-3 text-sm text-gray-700">
+                <dl className="space-y-3 text-sm text-slate-700">
                   <div className="flex items-start justify-between">
-                    <dt className="text-gray-500">Store</dt>
-                    <dd className="font-semibold text-gray-900">{store}</dd>
+                    <dt className="text-slate-500">Store</dt>
+                    <dd className="font-semibold text-slate-900">{store}</dd>
                   </div>
                   <div className="flex items-start justify-between">
-                    <dt className="text-gray-500">Model</dt>
-                    <dd className="font-semibold text-gray-900">{modelName}</dd>
+                    <dt className="text-slate-500">Model</dt>
+                    <dd className="font-semibold text-slate-900">{modelName}</dd>
                   </div>
                   <div className="flex items-start justify-between">
-                    <dt className="text-gray-500">Pickup</dt>
+                    <dt className="text-slate-500">Pickup</dt>
                     <dd className="text-right">
-                      <p className="font-semibold text-gray-900">{pickupLabel}</p>
-                      <p className="text-xs text-gray-600">{pickupTime || "Time not selected"}</p>
+                      <p className="font-semibold text-slate-900">{pickupLabel}</p>
+                      <p className="text-xs text-slate-600">{pickupTime || "Time not selected"}</p>
                     </dd>
                   </div>
                   <div className="flex items-start justify-between">
-                    <dt className="text-gray-500">Return</dt>
+                    <dt className="text-slate-500">Return</dt>
                     <dd className="text-right">
-                      <p className="font-semibold text-gray-900">{returnLabel}</p>
-                      <p className="text-xs text-gray-600">{returnTime || "Time not selected"}</p>
+                      <p className="font-semibold text-slate-900">{returnLabel}</p>
+                      <p className="text-xs text-slate-600">{returnTime || "Time not selected"}</p>
                     </dd>
                   </div>
                 </dl>
@@ -440,7 +440,7 @@ export default function ReserveFlowStep1() {
                   type="button"
                   disabled={!authChecked || !registrationChecked}
                   onClick={handleNext}
-                  className="mt-2 inline-flex w-full items-center justify-center rounded-full bg-red-500 px-5 py-3 text-sm font-semibold text-white shadow hover:bg-red-600 transition disabled:cursor-not-allowed disabled:bg-red-200"
+                  className="mt-2 inline-flex w-full items-center justify-center rounded-md bg-red-600 px-5 py-3 text-sm font-semibold text-white shadow hover:bg-red-700 transition disabled:cursor-not-allowed disabled:bg-red-200"
                 >
                   Continue to options
                 </button>
@@ -450,7 +450,7 @@ export default function ReserveFlowStep1() {
                   </p>
                 ) : null}
               </div>
-              <div className="rounded-2xl bg-red-50 p-4 text-sm text-red-800">
+              <div className="rounded-lg bg-red-50 p-4 text-sm text-red-800">
                 <p className="font-semibold">For logged-in members</p>
                 <p className="mt-2 leading-relaxed">
                   You can stay signed in from review through payment. If you are logged out, you will be redirected to the login page.

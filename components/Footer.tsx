@@ -4,12 +4,12 @@ import { FaInstagram } from "react-icons/fa6";
 
 export default function Footer() {
   return (
-    <footer className="bg-gray-100 border-t border-gray-200 text-sm text-gray-700">
+    <footer className="bg-slate-50 border-t border-slate-200 text-sm text-slate-600">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 gap-8 sm:grid-cols-3">
           {/* ブランド紹介と問い合わせ */}
           <div>
-            <h4 className="font-bold mb-2">ヤスカリ</h4>
+            <h4 className="font-bold text-slate-900 mb-2">ヤスカリ</h4>
             <p className="mb-3">
               バイクのレンタル・サブスク専門サイトです。原付から大型・EVバイクまで豊富なラインナップをご用意。
             </p>
@@ -25,7 +25,7 @@ export default function Footer() {
 
           {/* サイトポリシー */}
           <div>
-            <h4 className="font-bold mb-2">サイトポリシー</h4>
+            <h4 className="font-bold text-slate-900 mb-2">サイトポリシー</h4>
             <ul className="space-y-1">
               <li>
                 <Link href="/tokusyouhou" className="hover:underline">
@@ -62,7 +62,7 @@ export default function Footer() {
 
           {/* サービス案内 + SNS */}
           <div>
-            <h4 className="font-bold mb-2">サービス案内</h4>
+            <h4 className="font-bold text-slate-900 mb-2">サービス案内</h4>
             <ul className="space-y-1 mb-4">
               <li>
                 <Link href="/products" className="hover:underline">
@@ -96,7 +96,7 @@ export default function Footer() {
                 </Link>
               </li>
             </ul>
-            <h4 className="font-bold mb-2">SNS・動画</h4>
+            <h4 className="font-bold text-slate-900 mb-2">SNS・動画</h4>
             <ul className="space-y-2">
               <li className="flex items-center gap-2">
                 <FaInstagram /> <a href="https://www.instagram.com/yasukari_819" className="hover:underline">Instagram</a>
@@ -106,14 +106,14 @@ export default function Footer() {
         </div>
 
         {/* ロゴとコピーライト */}
-        <div className="border-t border-gray-300 mt-8 pt-6 text-center">
+        <div className="border-t border-slate-200 mt-8 pt-6 text-center">
           <img
             src="https://yasukari-file.s3.ap-northeast-1.amazonaws.com/PhotoUploads/1769056104573-d731196a-700f-4cc2-948b-68cfdb40d14a-yasukari-logo.jpg"
             alt="ヤスカリ ロゴ"
             width={120}
             className="mx-auto mb-2"
           />
-          <p className="text-gray-400">© 2025 ヤスカリ Inc.</p>
+          <p className="text-slate-400">© 2025 ヤスカリ Inc.</p>
         </div>
       </div>
     </footer>

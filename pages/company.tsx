@@ -6,36 +6,36 @@ export default function CompanyPage() {
       <Head>
         <title>運営会社情報 - ヤスカリ</title>
       </Head>
-      <h1 className="text-xl font-bold mb-4 text-center">運営会社情報</h1>
-      <table className="w-full border border-collapse mb-6">
+      <h1 className="text-2xl font-bold mb-6 text-center text-slate-900">運営会社情報</h1>
+      <table className="w-full border border-slate-200 border-collapse mb-6 text-slate-700">
         <tbody>
           <tr>
-            <th className="text-left w-40 p-2 border">会社名</th>
-            <td className="p-2 border">株式会社ケイジェット</td>
+            <th className="text-left w-40 p-3 border border-slate-200 bg-slate-50 font-semibold text-slate-900">会社名</th>
+            <td className="p-3 border border-slate-200">株式会社ケイジェット</td>
           </tr>
           <tr>
-            <th className="text-left w-40 p-2 border">代表者</th>
-            <td className="p-2 border">金森 真佐樹</td>
+            <th className="text-left w-40 p-3 border border-slate-200 bg-slate-50 font-semibold text-slate-900">代表者</th>
+            <td className="p-3 border border-slate-200">金森 真佐樹</td>
           </tr>
           <tr>
-            <th className="text-left w-40 p-2 border">所在地</th>
-            <td className="p-2 border">東京都足立区小台2-9-7 1階</td>
+            <th className="text-left w-40 p-3 border border-slate-200 bg-slate-50 font-semibold text-slate-900">所在地</th>
+            <td className="p-3 border border-slate-200">東京都足立区小台2-9-7 1階</td>
           </tr>
           <tr>
-            <th className="text-left w-40 p-2 border">電話番号</th>
-            <td className="p-2 border">03-5856-8200</td>
+            <th className="text-left w-40 p-3 border border-slate-200 bg-slate-50 font-semibold text-slate-900">電話番号</th>
+            <td className="p-3 border border-slate-200">03-5856-8200</td>
           </tr>
           <tr>
-            <th className="text-left w-40 p-2 border">メール</th>
-            <td className="p-2 border">info@yasukari.com</td>
+            <th className="text-left w-40 p-3 border border-slate-200 bg-slate-50 font-semibold text-slate-900">メール</th>
+            <td className="p-3 border border-slate-200">info@yasukari.com</td>
           </tr>
           <tr>
-            <th className="text-left w-40 p-2 border">事業内容</th>
-            <td className="p-2 border">バイクレンタル事業、関連サービスの運営</td>
+            <th className="text-left w-40 p-3 border border-slate-200 bg-slate-50 font-semibold text-slate-900">事業内容</th>
+            <td className="p-3 border border-slate-200">バイクレンタル事業、関連サービスの運営</td>
           </tr>
         </tbody>
       </table>
-      <p className="text-center text-gray-500">Copyright © 2025 ヤスカリ Inc.</p>
+      <p className="text-center text-slate-400">Copyright © 2025 ヤスカリ Inc.</p>
     </div>
   );
 }

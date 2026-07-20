@@ -7,9 +7,9 @@ export default function ContactPage() {
       <Head>
         <title>お問い合わせ - ヤスカリ</title>
       </Head>
-      <h1 className="text-xl font-bold mb-4 text-center">お問い合わせ</h1>
+      <h1 className="text-2xl font-bold mb-6 text-center text-slate-900">お問い合わせ</h1>
       <p className="mb-4">下記の連絡先までお気軽にご連絡ください。</p>
-      <ul className="space-y-2">
+      <ul className="space-y-2 rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
         <li>電話: 03-5856-8200</li>
         <li>メール: info@yasukari.com</li>
         <li>住所: 東京都足立区小台2-9-7 1階</li>

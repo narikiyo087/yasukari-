@@ -742,25 +742,25 @@ export default function ReserveFlowStep2() {
       <Head>
         <title>Select options - Step 2</title>
       </Head>
-      <main className="min-h-screen bg-gray-50 pb-16">
+      <main className="min-h-screen bg-slate-50 pb-16">
         <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:px-8 space-y-8">
           <header className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-wide text-red-500">Step 2 / 3</p>
-              <h1 className="text-2xl font-bold text-gray-900">Select options</h1>
-              <p className="text-sm text-gray-600">Choose protection and gear options to review your estimate.</p>
+              <p className="text-xs font-semibold uppercase tracking-wide text-red-600">Step 2 / 3</p>
+              <h1 className="text-2xl font-bold text-slate-900">Select options</h1>
+              <p className="text-sm text-slate-600">Choose protection and gear options to review your estimate.</p>
             </div>
             <div className="flex gap-2">
               <button
                 type="button"
                 onClick={handleBack}
-                className="inline-flex items-center justify-center rounded-full border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-700 shadow-sm hover:border-gray-300"
+                className="inline-flex items-center justify-center rounded-md border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm hover:border-slate-300"
               >
                 Back
               </button>
               <Link
                 href="/en/products"
-                className="inline-flex items-center justify-center rounded-full border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-700 shadow-sm hover:border-gray-300"
+                className="inline-flex items-center justify-center rounded-md border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm hover:border-slate-300"
               >
                 Back to models
               </Link>
@@ -773,20 +773,20 @@ export default function ReserveFlowStep2() {
 
           <section className="grid gap-6 lg:grid-cols-5">
             <div className="lg:col-span-3 space-y-6">
-              <div className="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-gray-100 space-y-4">
+              <div className="rounded-lg bg-white p-6 shadow-sm ring-1 ring-slate-100 space-y-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">Pickup & return</p>
-                    <h2 className="text-lg font-bold text-gray-900">{pickupLabel} {pickupTime} → {returnLabel} {returnTime}</h2>
+                    <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Pickup & return</p>
+                    <h2 className="text-lg font-bold text-slate-900">{pickupLabel} {pickupTime} → {returnLabel} {returnTime}</h2>
                   </div>
-                  <span className="rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-700">{store}</span>
+                  <span className="rounded bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700">{store}</span>
                 </div>
               </div>
 
-              <div className="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-gray-100 space-y-4">
+              <div className="rounded-lg bg-white p-6 shadow-sm ring-1 ring-slate-100 space-y-4">
                 <div className="flex items-center justify-between">
-                  <h3 className="text-sm font-semibold text-gray-900">Protection options</h3>
-                  <span className="text-xs text-gray-500">Optional</span>
+                  <h3 className="text-sm font-semibold text-slate-900">Protection options</h3>
+                  <span className="text-xs text-slate-500">Optional</span>
                 </div>
                 {protectionError ? (
                   <p className="text-xs text-red-600">{protectionError}</p>
@@ -795,20 +795,20 @@ export default function ReserveFlowStep2() {
                   {protectionOptions.map((option) => (
                     <label
                       key={option.key}
-                      className="flex items-center justify-between rounded-xl border border-gray-100 bg-gray-50 px-4 py-3 shadow-sm"
+                      className="flex items-center justify-between rounded-md border border-slate-100 bg-slate-50 px-4 py-3 shadow-sm"
                     >
                       <div className="space-y-1">
-                        <p className="text-sm font-semibold text-gray-900">{option.label}</p>
+                        <p className="text-sm font-semibold text-slate-900">{option.label}</p>
                       </div>
                       <div className="flex items-center gap-3">
-                        <span className="text-sm font-semibold text-gray-900">
+                        <span className="text-sm font-semibold text-slate-900">
                           {formatProtectionPrice(option.price)}
                         </span>
                         <input
                           type="checkbox"
                           checked={protectionSelection[option.key]}
                           onChange={() => toggleProtection(option.key)}
-                          className="h-5 w-5 rounded border-gray-300 text-red-500 focus:ring-red-500"
+                          className="h-5 w-5 rounded border-slate-300 text-red-600 focus:ring-red-500"
                         />
                       </div>
                     </label>
@@ -816,12 +816,12 @@ export default function ReserveFlowStep2() {
                 </div>
               </div>
 
-              <div className="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-gray-100 space-y-4">
+              <div className="rounded-lg bg-white p-6 shadow-sm ring-1 ring-slate-100 space-y-4">
                 <div className="flex items-center justify-between">
-                  <h3 className="text-sm font-semibold text-gray-900">Gear options</h3>
-                  <span className="text-xs text-gray-500">Select what you need</span>
+                  <h3 className="text-sm font-semibold text-slate-900">Gear options</h3>
+                  <span className="text-xs text-slate-500">Select what you need</span>
                 </div>
-                <p className="text-xs text-gray-500">
+                <p className="text-xs text-slate-500">
                   Options: up to 2 per type / up to 2 helmets total
                 </p>
                 <Link
@@ -839,13 +839,13 @@ export default function ReserveFlowStep2() {
                   {accessoryOptions.map((option) => (
                     <label
                       key={option.key}
-                      className="flex items-center justify-between rounded-xl border border-gray-100 bg-gray-50 px-4 py-3 shadow-sm"
+                      className="flex items-center justify-between rounded-md border border-slate-100 bg-slate-50 px-4 py-3 shadow-sm"
                     >
                       <div className="space-y-1">
-                        <p className="text-sm font-semibold text-gray-900">{option.label}</p>
+                        <p className="text-sm font-semibold text-slate-900">{option.label}</p>
                       </div>
                       <div className="flex items-center gap-3">
-                        <span className="text-sm font-semibold text-gray-900">{formatAccessoryPrice(option.price)}</span>
+                        <span className="text-sm font-semibold text-slate-900">{formatAccessoryPrice(option.price)}</span>
                         {(() => {
                           const isHelmetAccessory = HELMET_ACCESSORY_KEYS.has(option.key);
                           const currentValue = accessorySelection[option.key] ?? 0;
@@ -883,7 +883,7 @@ export default function ReserveFlowStep2() {
                               })(),
                             }));
                           }}
-                          className="rounded-lg border border-gray-200 px-2 py-1 text-sm shadow-sm focus:border-red-500 focus:outline-none focus:ring-1 focus:ring-red-500"
+                          className="rounded-lg border border-slate-200 px-2 py-1 text-sm shadow-sm focus:border-red-500 focus:outline-none focus:ring-1 focus:ring-red-500"
                           aria-label={`${option.label} quantity`}
                         >
                             {selectableCounts.map((count) => (
@@ -900,10 +900,10 @@ export default function ReserveFlowStep2() {
                 </div>
               </div>
 
-              <div className="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-gray-100 space-y-4">
+              <div className="rounded-lg bg-white p-6 shadow-sm ring-1 ring-slate-100 space-y-4">
                 <div className="flex items-center justify-between">
-                  <h3 className="text-sm font-semibold text-gray-900">Discount coupon</h3>
-                  <span className="text-xs text-gray-500">Optional</span>
+                  <h3 className="text-sm font-semibold text-slate-900">Discount coupon</h3>
+                  <span className="text-xs text-slate-500">Optional</span>
                 </div>
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
                   <input
@@ -916,12 +916,12 @@ export default function ReserveFlowStep2() {
                       setCouponMessage(null);
                       setCouponDiscount(0);
                     }}
-                    className="flex-1 rounded-lg border border-gray-200 px-3 py-3 text-sm shadow-sm focus:border-red-500 focus:outline-none"
+                    className="flex-1 rounded-lg border border-slate-200 px-3 py-3 text-sm shadow-sm focus:border-red-500 focus:outline-none"
                   />
                   <button
                     type="button"
                     onClick={handleApplyCoupon}
-                    className="inline-flex items-center justify-center rounded-full border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-700 shadow-sm hover:border-gray-300"
+                    className="inline-flex items-center justify-center rounded-md border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm hover:border-slate-300"
                   >
                     Apply
                   </button>
@@ -935,43 +935,43 @@ export default function ReserveFlowStep2() {
             </div>
 
             <div className="lg:col-span-2 space-y-4">
-              <div className="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-gray-100 space-y-4">
+              <div className="rounded-lg bg-white p-6 shadow-sm ring-1 ring-slate-100 space-y-4">
                 <div className="flex items-center justify-between">
-                  <p className="text-sm font-semibold text-gray-900">Estimate</p>
-                  <span className="rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-700">2 / 3</span>
+                  <p className="text-sm font-semibold text-slate-900">Estimate</p>
+                  <span className="rounded bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700">2 / 3</span>
                 </div>
-                <dl className="space-y-3 text-sm text-gray-700">
+                <dl className="space-y-3 text-sm text-slate-700">
                   <div className="flex items-center justify-between">
-                    <dt className="text-gray-500">Bike rental fee</dt>
-                    <dd className="font-semibold text-gray-900">{formatYen(adjustedRentalFee)}</dd>
+                    <dt className="text-slate-500">Bike rental fee</dt>
+                    <dd className="font-semibold text-slate-900">{formatYen(adjustedRentalFee)}</dd>
                   </div>
                   {rentalFeeError ? (
                     <p className="text-xs text-red-600">{rentalFeeError}</p>
                   ) : null}
                   <div className="flex items-center justify-between">
-                    <dt className="text-gray-500">Gear options</dt>
-                    <dd className="font-semibold text-gray-900">{formatYen(selectedAccessoryFee)}</dd>
+                    <dt className="text-slate-500">Gear options</dt>
+                    <dd className="font-semibold text-slate-900">{formatYen(selectedAccessoryFee)}</dd>
                   </div>
                   <div className="flex items-center justify-between">
-                    <dt className="text-gray-500">Protection options</dt>
-                    <dd className="font-semibold text-gray-900">{formatYen(selectedProtectionFee)}</dd>
+                    <dt className="text-slate-500">Protection options</dt>
+                    <dd className="font-semibold text-slate-900">{formatYen(selectedProtectionFee)}</dd>
                   </div>
                   <div className="flex items-center justify-between">
-                    <dt className="text-gray-500">High-season fee ({highSeasonDays} days)</dt>
-                    <dd className="font-semibold text-gray-900">{highSeasonFeeLabel}</dd>
+                    <dt className="text-slate-500">High-season fee ({highSeasonDays} days)</dt>
+                    <dd className="font-semibold text-slate-900">{highSeasonFeeLabel}</dd>
                   </div>
                   <div className="flex items-center justify-between">
-                    <dt className="text-gray-500">Coupon discount</dt>
-                    <dd className="font-semibold text-gray-900">-{formatYen(couponDiscount)}</dd>
+                    <dt className="text-slate-500">Coupon discount</dt>
+                    <dd className="font-semibold text-slate-900">-{formatYen(couponDiscount)}</dd>
                   </div>
                 </dl>
-                <div className="border-t border-gray-100 pt-4">
-                  <div className="flex items-center justify-between text-lg font-bold text-gray-900">
+                <div className="border-t border-slate-100 pt-4">
+                  <div className="flex items-center justify-between text-lg font-bold text-slate-900">
                     <span>Total (tax included)</span>
                     <span>{formatYen(totalAmount)}</span>
                   </div>
                 </div>
-                <p className="text-xs leading-relaxed text-gray-600">
+                <p className="text-xs leading-relaxed text-slate-600">
                   * An additional ¥550 per day applies during Golden Week, Obon, and year-end/New Year holidays.
                   <br />
                   * Payments are accepted by credit card only.
@@ -980,7 +980,7 @@ export default function ReserveFlowStep2() {
                   type="button"
                   onClick={handleNext}
                   disabled={!authChecked}
-                  className="inline-flex w-full items-center justify-center rounded-full bg-red-500 px-5 py-3 text-sm font-semibold text-white shadow hover:bg-red-600 transition disabled:cursor-not-allowed disabled:bg-red-200"
+                  className="inline-flex w-full items-center justify-center rounded-md bg-red-600 px-5 py-3 text-sm font-semibold text-white shadow hover:bg-red-700 transition disabled:cursor-not-allowed disabled:bg-red-200"
                 >
                   Enter payment information
                 </button>

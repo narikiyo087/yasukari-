@@ -134,12 +134,12 @@ export default function ReservationCompletePage() {
       <Head>
         <title>Reservation complete | Test payment</title>
       </Head>
-      <main className="min-h-screen bg-gray-50 pb-16">
+      <main className="min-h-screen bg-slate-50 pb-16">
         <div className="mx-auto max-w-4xl px-4 py-10 sm:px-6 lg:px-8 space-y-6">
           <header className="space-y-2 text-center">
             <p className="text-xs font-semibold uppercase tracking-wide text-emerald-600">Reservation Complete</p>
-            <h1 className="text-3xl font-bold text-gray-900">Your reservation is confirmed</h1>
-            <p className="text-sm text-gray-600">A summary of your reservation is listed below. You can also view it in your account.</p>
+            <h1 className="text-3xl font-bold text-slate-900">Your reservation is confirmed</h1>
+            <p className="text-sm text-slate-600">A summary of your reservation is listed below. You can also view it in your account.</p>
           </header>
 
           <section className="space-y-4">
@@ -147,22 +147,22 @@ export default function ReservationCompletePage() {
               <p className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 text-center">{error}</p>
             ) : null}
 
-            <div className="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-gray-100 space-y-4">
+            <div className="rounded-lg bg-white p-6 shadow-sm ring-1 ring-slate-100 space-y-4">
               <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                 <div>
-                  <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">Reservation ID</p>
-                  <p className="font-mono text-lg font-semibold text-gray-900">{reservationIdDisplay}</p>
+                  <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Reservation ID</p>
+                  <p className="font-mono text-lg font-semibold text-slate-900">{reservationIdDisplay}</p>
                 </div>
                 <div className="flex flex-wrap gap-2 justify-center sm:justify-end">
                   <Link
                     href="/en/mypage"
-                    className="inline-flex items-center justify-center rounded-full bg-red-500 px-4 py-2 text-sm font-semibold text-white shadow hover:bg-red-600 transition"
+                    className="inline-flex items-center justify-center rounded-md bg-red-600 px-4 py-2 text-sm font-semibold text-white shadow hover:bg-red-700 transition"
                   >
                     View in my page
                   </Link>
                   <Link
                     href="/en/products"
-                    className="inline-flex items-center justify-center rounded-full border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-700 shadow-sm hover:border-gray-300"
+                    className="inline-flex items-center justify-center rounded-md border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm hover:border-slate-300"
                   >
                     Back to models
                   </Link>
@@ -171,28 +171,28 @@ export default function ReservationCompletePage() {
 
               <dl className="grid gap-4 sm:grid-cols-2">
                 <div className="space-y-1">
-                  <dt className="text-xs font-semibold uppercase tracking-wide text-gray-500">Store</dt>
-                  <dd className="text-base font-semibold text-gray-900">{storeName}</dd>
+                  <dt className="text-xs font-semibold uppercase tracking-wide text-slate-500">Store</dt>
+                  <dd className="text-base font-semibold text-slate-900">{storeName}</dd>
                 </div>
                 <div className="space-y-1">
-                  <dt className="text-xs font-semibold uppercase tracking-wide text-gray-500">Vehicle</dt>
-                  <dd className="text-base font-semibold text-gray-900">{vehicleLabel}</dd>
+                  <dt className="text-xs font-semibold uppercase tracking-wide text-slate-500">Vehicle</dt>
+                  <dd className="text-base font-semibold text-slate-900">{vehicleLabel}</dd>
                 </div>
                 <div className="space-y-1">
-                  <dt className="text-xs font-semibold uppercase tracking-wide text-gray-500">Pickup</dt>
-                  <dd className="text-base font-semibold text-gray-900">{pickupLabel}</dd>
+                  <dt className="text-xs font-semibold uppercase tracking-wide text-slate-500">Pickup</dt>
+                  <dd className="text-base font-semibold text-slate-900">{pickupLabel}</dd>
                 </div>
                 <div className="space-y-1">
-                  <dt className="text-xs font-semibold uppercase tracking-wide text-gray-500">Return</dt>
-                  <dd className="text-base font-semibold text-gray-900">{returnLabel}</dd>
+                  <dt className="text-xs font-semibold uppercase tracking-wide text-slate-500">Return</dt>
+                  <dd className="text-base font-semibold text-slate-900">{returnLabel}</dd>
                 </div>
                 <div className="space-y-1">
-                  <dt className="text-xs font-semibold uppercase tracking-wide text-gray-500">Payment total</dt>
-                  <dd className="text-base font-semibold text-gray-900">¥{totalAmountLabel}</dd>
+                  <dt className="text-xs font-semibold uppercase tracking-wide text-slate-500">Payment total</dt>
+                  <dd className="text-base font-semibold text-slate-900">¥{totalAmountLabel}</dd>
                 </div>
                 <div className="space-y-1">
-                  <dt className="text-xs font-semibold uppercase tracking-wide text-gray-500">Status</dt>
-                  <dd className="text-base font-semibold text-gray-900">
+                  <dt className="text-xs font-semibold uppercase tracking-wide text-slate-500">Status</dt>
+                  <dd className="text-base font-semibold text-slate-900">
                     {reservation?.status || (loading ? "Checking reservation status..." : "Reservation received")}
                   </dd>
                 </div>

@@ -125,7 +125,7 @@ export default function KeyboxLogsPage() {
           {fromFallback || serverMessage ? (
             <div className={styles.placeholderCard}>
               <p className="font-semibold text-yellow-800">ログの取得に問題が発生したためキャッシュを表示中です。</p>
-              {serverMessage ? <p className="text-sm text-gray-700">{serverMessage}</p> : null}
+              {serverMessage ? <p className="text-sm text-slate-700">{serverMessage}</p> : null}
             </div>
           ) : null}
 
@@ -173,42 +173,42 @@ export default function KeyboxLogsPage() {
                             ) : (
                               "-"
                             )}
-                            <div className="text-xs text-gray-600">{log.storeName || "-"}</div>
+                            <div className="text-xs text-slate-600">{log.storeName || "-"}</div>
                           </td>
                           <td>
                             <div className="text-sm font-semibold">PIN: {log.pinCode || "-"}</div>
-                            <div className="text-xs text-gray-600">pinId: {log.pinId || "-"}</div>
-                            <div className="text-xs text-gray-600">unit: {log.unitId || "-"}</div>
+                            <div className="text-xs text-slate-600">pinId: {log.pinId || "-"}</div>
+                            <div className="text-xs text-slate-600">unit: {log.unitId || "-"}</div>
                           </td>
                           <td>
                             <div className="text-xs">{formatDateTime(log.windowStart)} 〜</div>
                             <div className="text-xs">{formatDateTime(log.windowEnd)}</div>
-                            <div className="text-xs text-gray-600">署名方式: {log.signUsed || "-"}</div>
+                            <div className="text-xs text-slate-600">署名方式: {log.signUsed || "-"}</div>
                           </td>
                           <td>
                             {log.qrImageUrl ? (
                               <img
                                 src={log.qrImageUrl}
                                 alt="keybox qr"
-                                className="h-16 w-16 rounded border border-gray-200 object-contain"
+                                className="h-16 w-16 rounded border border-slate-200 object-contain"
                                 loading="lazy"
                               />
                             ) : (
-                              <span className="text-xs text-gray-500">-</span>
+                              <span className="text-xs text-slate-500">-</span>
                             )}
                           </td>
                           <td>
                             <span className={statusBadge(log.success)}>{log.success ? "成功" : "失敗"}</span>
                             {failureReason ? (
-                              <div className="mt-1 text-xs text-gray-600">理由: {failureReason}</div>
+                              <div className="mt-1 text-xs text-slate-600">理由: {failureReason}</div>
                             ) : null}
                           </td>
                           <td>
-                            <div className="text-xs text-gray-800">{log.message || "-"}</div>
+                            <div className="text-xs text-slate-800">{log.message || "-"}</div>
                             {log.responseBody ? (
                               <details className="mt-1 text-xs">
-                                <summary className="cursor-pointer text-gray-600">レスポンス詳細</summary>
-                                <pre className="whitespace-pre-wrap break-words bg-gray-50 p-2 text-gray-800">
+                                <summary className="cursor-pointer text-slate-600">レスポンス詳細</summary>
+                                <pre className="whitespace-pre-wrap break-words bg-slate-50 p-2 text-slate-800">
                                   {JSON.stringify(log.responseBody, null, 2)}
                                 </pre>
                               </details>

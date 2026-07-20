@@ -173,17 +173,17 @@ export default function ReserveTermsAgreementEn() {
       <Head>
         <title>Review rental terms - Step 1</title>
       </Head>
-      <main className="min-h-screen bg-gray-50 pb-16">
+      <main className="min-h-screen bg-slate-50 pb-16">
         <div className="mx-auto max-w-5xl px-4 py-10 sm:px-6 lg:px-8 space-y-8">
           <header className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-wide text-red-500">Step 1 / 3</p>
-              <h1 className="text-2xl font-bold text-gray-900">Review reservation details</h1>
-              <p className="text-sm text-gray-600">Please read and agree to the motorcycle rental terms before moving to options.</p>
+              <p className="text-xs font-semibold uppercase tracking-wide text-red-600">Step 1 / 3</p>
+              <h1 className="text-2xl font-bold text-slate-900">Review reservation details</h1>
+              <p className="text-sm text-slate-600">Please read and agree to the motorcycle rental terms before moving to options.</p>
             </div>
             <Link
               href="/en/reserve/flow/step1"
-              className="inline-flex items-center justify-center rounded-full border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-700 shadow-sm hover:border-gray-300"
+              className="inline-flex items-center justify-center rounded-md border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm hover:border-slate-300"
             >
               Back to reservation review
             </Link>
@@ -199,15 +199,15 @@ export default function ReserveTermsAgreementEn() {
             <p className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{agreeError}</p>
           ) : null}
 
-          <section className="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-gray-100 space-y-4">
+          <section className="rounded-lg bg-white p-6 shadow-sm ring-1 ring-slate-100 space-y-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">Rental bike terms</p>
-                <h2 className="text-lg font-bold text-gray-900">Please review the content</h2>
+                <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Rental bike terms</p>
+                <h2 className="text-lg font-bold text-slate-900">Please review the content</h2>
               </div>
-              <span className="rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-700">{termsAgreed ? 'Agreed' : 'Not agreed'}</span>
+              <span className="rounded bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700">{termsAgreed ? 'Agreed' : 'Not agreed'}</span>
             </div>
-            <div className="max-h-[28rem] overflow-y-auto rounded-xl border border-gray-200 bg-gray-50 p-4">
+            <div className="max-h-[28rem] overflow-y-auto rounded-md border border-slate-200 bg-slate-50 p-4">
               <RentalBikeTermsContent />
             </div>
             <div className="flex flex-wrap gap-3">
@@ -215,7 +215,7 @@ export default function ReserveTermsAgreementEn() {
                 type="button"
                 onClick={handleAgree}
                 disabled={!isReadyToAgree}
-                className="inline-flex items-center justify-center rounded-full bg-red-600 px-5 py-3 text-sm font-semibold text-white shadow hover:bg-red-700 disabled:cursor-not-allowed disabled:bg-red-200"
+                className="inline-flex items-center justify-center rounded-md bg-red-600 px-5 py-3 text-sm font-semibold text-white shadow hover:bg-red-700 disabled:cursor-not-allowed disabled:bg-red-200"
               >
                 {agreeing ? 'Saving…' : termsAgreed ? 'Already agreed' : 'Agree and continue'}
               </button>
@@ -223,13 +223,13 @@ export default function ReserveTermsAgreementEn() {
                 href="/rental-bike-terms"
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex items-center justify-center rounded-full border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-700 shadow-sm hover:border-gray-300"
+                className="inline-flex items-center justify-center rounded-md border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm hover:border-slate-300"
               >
                 View terms in a new tab
               </Link>
             </div>
             {!registration && !loadingRegistration ? (
-              <p className="text-sm text-gray-700">
+              <p className="text-sm text-slate-700">
                 We cannot save your agreement without registration details. Please complete the registration form first.
               </p>
             ) : null}

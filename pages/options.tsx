@@ -64,28 +64,28 @@ export default function OptionsPage() {
       <Head>
         <title>用品オプションの説明 | Yasukari</title>
       </Head>
-      <main className="bg-gray-50 py-12">
+      <main className="bg-slate-50 py-12">
         <div className="mx-auto w-full max-w-5xl px-6">
-          <div className="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-gray-100 space-y-6">
+          <div className="rounded-lg bg-white p-6 shadow-sm ring-1 ring-slate-100 space-y-6">
             <div className="space-y-2">
-              <h1 className="text-lg font-bold text-gray-900">用品オプションの説明</h1>
-              <p className="text-sm text-gray-600">
+              <h1 className="text-lg font-bold text-slate-900">用品オプションの説明</h1>
+              <p className="text-sm text-slate-600">
                 ご希望の用品オプションをご確認いただけます。
               </p>
             </div>
             <img
               src="https://yasukari-file.s3.ap-northeast-1.amazonaws.com/PhotoUploads/1767026374539-623432f1-b568-4baa-ac07-b18b108d8751-rentalitem.jpg"
               alt="用品オプションの説明"
-              className="w-full rounded-xl border border-gray-100 object-cover"
+              className="w-full rounded-md border border-slate-100 object-cover"
             />
             <div className="space-y-2">
-              <h2 className="text-sm font-semibold text-gray-900">用品一覧</h2>
+              <h2 className="text-sm font-semibold text-slate-900">用品一覧</h2>
               {accessoryError ? (
                 <p className="text-xs text-red-600">{accessoryError}</p>
               ) : null}
               <div className="overflow-x-auto">
-                <table className="w-full text-left text-xs text-gray-700">
-                  <thead className="border-b border-gray-200 text-[11px] font-semibold text-gray-500">
+                <table className="w-full text-left text-xs text-slate-700">
+                  <thead className="border-b border-slate-200 text-[11px] font-semibold text-slate-500">
                     <tr>
                       <th className="px-3 py-2">レンタルオプション</th>
                       {accessoryTableColumns.map((column) => (
@@ -95,10 +95,10 @@ export default function OptionsPage() {
                       ))}
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-gray-100">
+                  <tbody className="divide-y divide-slate-100">
                     {accessories.map((accessory) => (
                       <tr key={accessory.accessory_id}>
-                        <td className="px-3 py-2 font-semibold text-gray-900">
+                        <td className="px-3 py-2 font-semibold text-slate-900">
                           {accessory.name}
                         </td>
                         {accessoryTableColumns.map((column) => (
@@ -114,7 +114,7 @@ export default function OptionsPage() {
                       <tr>
                         <td
                           colSpan={accessoryTableColumns.length + 1}
-                          className="px-3 py-3 text-center text-gray-500"
+                          className="px-3 py-3 text-center text-slate-500"
                         >
                           用品一覧のデータがありません。
                         </td>

@@ -131,7 +131,7 @@ export default function PastReservationsPage() {
         <title>Past Reservations</title>
       </Head>
       <main className="mx-auto flex min-h-screen w-full max-w-3xl flex-col gap-8 px-4 py-12">
-        <header className="space-y-2 text-sm text-gray-600">
+        <header className="space-y-2 text-sm text-slate-600">
           <nav aria-label="breadcrumb">
             <ol className="flex items-center gap-2">
               <li>
@@ -146,50 +146,50 @@ export default function PastReservationsPage() {
                 </Link>
               </li>
               <li aria-hidden="true">/</li>
-              <li className="text-gray-600">Past Reservations</li>
+              <li className="text-slate-600">Past Reservations</li>
             </ol>
           </nav>
-          <h1 className="text-2xl font-semibold text-gray-900">Past Reservations</h1>
-          <p className="text-sm text-gray-500">Review completed and canceled bookings.</p>
+          <h1 className="text-2xl font-semibold text-slate-900">Past Reservations</h1>
+          <p className="text-sm text-slate-500">Review completed and canceled bookings.</p>
         </header>
 
         {loading ? (
-          <section className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-            <p className="text-sm text-gray-700">Checking your sign-in status…</p>
+          <section className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
+            <p className="text-sm text-slate-700">Checking your sign-in status…</p>
           </section>
         ) : (
           <>
             {error ? (
-              <section className="rounded-2xl border border-red-200 bg-red-50 p-6 shadow-sm">
+              <section className="rounded-lg border border-red-200 bg-red-50 p-6 shadow-sm">
                 <p className="text-sm text-red-700">{error}</p>
               </section>
             ) : null}
 
-            <section className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+            <section className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
               <div className="flex flex-wrap items-start justify-between gap-4">
                 <div>
-                  <h2 className="text-lg font-semibold text-gray-900">Reservation history</h2>
-                  <p className="mt-1 text-sm text-gray-600">A list of previous bookings appears below.</p>
+                  <h2 className="text-lg font-semibold text-slate-900">Reservation history</h2>
+                  <p className="mt-1 text-sm text-slate-600">A list of previous bookings appears below.</p>
                 </div>
                 <Link
                   href="/en/mypage"
-                  className="inline-flex items-center rounded-full border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-700 transition hover:border-gray-300 hover:bg-gray-50"
+                  className="inline-flex items-center rounded-md border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-slate-300 hover:bg-slate-50"
                 >
                   Back to reservations
                 </Link>
               </div>
 
-              <div className="mt-4 space-y-3 text-sm text-gray-700">
+              <div className="mt-4 space-y-3 text-sm text-slate-700">
                 {reservationsError ? (
                   <p className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-red-700">
                     {reservationsError}
                   </p>
                 ) : loadingReservations ? (
-                  <p className="rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-gray-700">
+                  <p className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-slate-700">
                     Loading reservation data…
                   </p>
                 ) : reservations.length === 0 ? (
-                  <p className="rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-gray-700">
+                  <p className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-slate-700">
                     You do not have any past reservations yet.
                   </p>
                 ) : (
@@ -200,19 +200,19 @@ export default function PastReservationsPage() {
                       return (
                         <li
                           key={reservation.id}
-                          className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm ring-1 ring-gray-100"
+                          className="rounded-md border border-slate-200 bg-white p-4 shadow-sm ring-1 ring-slate-100"
                         >
                           <div className="flex flex-wrap items-start justify-between gap-3">
                             <div>
-                              <p className="text-sm font-semibold text-gray-900">
+                              <p className="text-sm font-semibold text-slate-900">
                                 {reservation.storeName} / {reservation.vehicleModel}
                               </p>
-                              <p className="text-xs text-gray-600">
+                              <p className="text-xs text-slate-600">
                                 {reservation.vehicleCode} {reservation.vehiclePlate}
                               </p>
                             </div>
                             <div className="flex flex-col items-end gap-2">
-                              <span className="inline-flex items-center rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-800">
+                              <span className="inline-flex items-center rounded bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-800">
                                 {statusLabel(reservation.status)}
                               </span>
                               <span
@@ -233,37 +233,37 @@ export default function PastReservationsPage() {
                             </p>
                           )}
                           <dl className="mt-3 grid gap-2 sm:grid-cols-2">
-                            <div className="rounded-lg bg-gray-50 px-3 py-2">
-                              <dt className="text-xs text-gray-500">Pickup → Return</dt>
-                              <dd className="font-semibold text-gray-900">
+                            <div className="rounded-lg bg-slate-50 px-3 py-2">
+                              <dt className="text-xs text-slate-500">Pickup → Return</dt>
+                              <dd className="font-semibold text-slate-900">
                                 {formatReservationDatetime(reservation.pickupAt)} →{' '}
                                 {formatReservationDatetime(reservation.returnAt)}
                               </dd>
                             </div>
-                            <div className="rounded-lg bg-gray-50 px-3 py-2">
-                              <dt className="text-xs text-gray-500">Reservation details</dt>
-                              <dd className="font-semibold text-gray-900">
+                            <div className="rounded-lg bg-slate-50 px-3 py-2">
+                              <dt className="text-xs text-slate-500">Reservation details</dt>
+                              <dd className="font-semibold text-slate-900">
                                 Vehicle code: {reservation.vehicleCode || '-'} / Plate number:{' '}
                                 {reservation.vehiclePlate || 'Not set'}
                               </dd>
                             </div>
-                            <div className="rounded-lg bg-gray-50 px-3 py-2">
-                              <dt className="text-xs text-gray-500">Payment amount</dt>
-                              <dd className="font-semibold text-gray-900">
+                            <div className="rounded-lg bg-slate-50 px-3 py-2">
+                              <dt className="text-xs text-slate-500">Payment amount</dt>
+                              <dd className="font-semibold text-slate-900">
                                 {reservation.paymentAmount} yen
                               </dd>
                             </div>
-                            <div className="rounded-lg bg-gray-50 px-3 py-2">
-                              <dt className="text-xs text-gray-500">Payment date</dt>
-                              <dd className="font-semibold text-gray-900">
+                            <div className="rounded-lg bg-slate-50 px-3 py-2">
+                              <dt className="text-xs text-slate-500">Payment date</dt>
+                              <dd className="font-semibold text-slate-900">
                                 {reservation.paymentDate
                                   ? formatReservationDatetime(reservation.paymentDate)
                                   : 'Not recorded'}
                               </dd>
                             </div>
-                            <div className="rounded-lg bg-gray-50 px-3 py-2">
-                              <dt className="text-xs text-gray-500">Completion date (storage only)</dt>
-                              <dd className="font-semibold text-gray-900">
+                            <div className="rounded-lg bg-slate-50 px-3 py-2">
+                              <dt className="text-xs text-slate-500">Completion date (storage only)</dt>
+                              <dd className="font-semibold text-slate-900">
                                 {reservation.rentalCompletedAt
                                   ? formatReservationDatetime(reservation.rentalCompletedAt)
                                   : 'Not set'}

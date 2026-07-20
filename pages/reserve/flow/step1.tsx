@@ -261,19 +261,19 @@ export default function ReserveFlowStep1() {
       <Head>
         <title>予約内容の確認 - ステップ1</title>
       </Head>
-      <main className="min-h-screen bg-gray-50 pb-16">
+      <main className="min-h-screen bg-slate-50 pb-16">
         <div className="mx-auto max-w-5xl px-4 py-10 sm:px-6 lg:px-8 space-y-8">
           <header className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-wide text-red-500">Step 1 / 3</p>
-              <h1 className="text-2xl font-bold text-gray-900">予約内容を確認する</h1>
-              <p className="text-sm text-gray-600">
+              <p className="text-xs font-semibold uppercase tracking-wide text-red-600">Step 1 / 3</p>
+              <h1 className="text-2xl font-bold text-slate-900">予約内容を確認する</h1>
+              <p className="text-sm text-slate-600">
                 予約内容を確認して時間を指定してください。時間の選択が完了するまで次に進めません。
               </p>
             </div>
             <Link
               href="/products"
-              className="inline-flex items-center justify-center rounded-full border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-700 shadow-sm hover:border-gray-300"
+              className="inline-flex items-center justify-center rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm hover:border-slate-300"
             >
               車種一覧に戻る
             </Link>
@@ -285,47 +285,47 @@ export default function ReserveFlowStep1() {
 
           <section className="grid gap-6 lg:grid-cols-5">
             <div className="lg:col-span-3 space-y-6">
-              <div className="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-gray-100 space-y-4">
+              <div className="rounded-lg bg-white p-6 shadow-sm ring-1 ring-slate-100 space-y-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">車両選択</p>
-                    <h2 className="text-lg font-bold text-gray-900">{modelName}</h2>
+                    <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">車両選択</p>
+                    <h2 className="text-lg font-bold text-slate-900">{modelName}</h2>
                     {managementNumber ? (
-                      <p className="text-sm text-gray-600">管理番号: {managementNumber}</p>
+                      <p className="text-sm text-slate-600">管理番号: {managementNumber}</p>
                     ) : null}
                   </div>
-                  <span className="rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-700">{store}</span>
+                  <span className="rounded bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700">{store}</span>
                 </div>
               </div>
 
-              <div className="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-gray-100 space-y-4">
+              <div className="rounded-lg bg-white p-6 shadow-sm ring-1 ring-slate-100 space-y-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">会員情報</p>
-                    <h2 className="text-lg font-bold text-gray-900">ご本人さま</h2>
+                    <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">会員情報</p>
+                    <h2 className="text-lg font-bold text-slate-900">ご本人さま</h2>
                   </div>
-                  <span className="text-xs text-gray-500">{membershipStatus}</span>
+                  <span className="text-xs text-slate-500">{membershipStatus}</span>
                 </div>
                 {registrationError ? (
                   <p className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{registrationError}</p>
                 ) : null}
                 <div className="grid gap-4 sm:grid-cols-2">
                   <label className="space-y-2 text-sm">
-                    <span className="text-gray-700">お名前</span>
+                    <span className="text-slate-700">お名前</span>
                     <input
                       type="text"
                       value={nameDisplay}
                       readOnly
-                      className="w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-3 text-gray-900 shadow-sm focus:border-red-500 focus:outline-none"
+                      className="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-3 text-slate-900 shadow-sm focus:border-red-500 focus:outline-none"
                     />
                   </label>
                   <label className="space-y-2 text-sm">
-                    <span className="text-gray-700">メールアドレス</span>
+                    <span className="text-slate-700">メールアドレス</span>
                     <input
                       type="email"
                       value={emailDisplay}
                       readOnly
-                      className="w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-3 text-gray-900 shadow-sm focus:border-red-500 focus:outline-none"
+                      className="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-3 text-slate-900 shadow-sm focus:border-red-500 focus:outline-none"
                     />
                   </label>
                 </div>
@@ -340,7 +340,7 @@ export default function ReserveFlowStep1() {
                         href="/mypage/registration"
                         target="_blank"
                         rel="noreferrer"
-                        className="inline-flex items-center justify-center rounded-full bg-red-500 px-4 py-2 text-xs font-semibold text-white shadow hover:bg-red-600 transition"
+                        className="inline-flex items-center justify-center rounded-md bg-red-600 px-4 py-2 text-xs font-semibold text-white shadow hover:bg-red-700 transition"
                       >
                         本登録ページを開く
                       </Link>
@@ -348,7 +348,7 @@ export default function ReserveFlowStep1() {
                         href="/mypage"
                         target="_blank"
                         rel="noreferrer"
-                        className="inline-flex items-center justify-center rounded-full border border-red-200 px-4 py-2 text-xs font-semibold text-red-700 hover:bg-red-50 transition"
+                        className="inline-flex items-center justify-center rounded-md border border-red-200 px-4 py-2 text-xs font-semibold text-red-700 hover:bg-red-50 transition"
                       >
                         マイページで確認
                       </Link>
@@ -362,22 +362,22 @@ export default function ReserveFlowStep1() {
                 ) : null}
               </div>
 
-              <div className="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-gray-100 space-y-6">
+              <div className="rounded-lg bg-white p-6 shadow-sm ring-1 ring-slate-100 space-y-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">貸出・返却日時</p>
-                    <h2 className="text-lg font-bold text-gray-900">日時の指定</h2>
+                    <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">貸出・返却日時</p>
+                    <h2 className="text-lg font-bold text-slate-900">日時の指定</h2>
                   </div>
                   <p className="text-xs text-red-600">時間を選択すると進めます</p>
                 </div>
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div className="space-y-2">
-                    <p className="text-sm font-semibold text-gray-800">貸出希望日</p>
-                    <p className="text-sm text-gray-600">{pickupLabel}</p>
+                    <p className="text-sm font-semibold text-slate-800">貸出希望日</p>
+                    <p className="text-sm text-slate-600">{pickupLabel}</p>
                     <select
                       value={pickupTime}
                       onChange={(e) => setPickupTime(e.target.value)}
-                      className="w-full rounded-lg border border-gray-200 bg-white px-3 py-3 text-sm shadow-sm focus:border-red-500 focus:outline-none"
+                      className="w-full rounded-lg border border-slate-200 bg-white px-3 py-3 text-sm shadow-sm focus:border-red-500 focus:outline-none"
                     >
                       <option value="">時間を選択</option>
                       {timeOptions.map((time) => (
@@ -388,12 +388,12 @@ export default function ReserveFlowStep1() {
                     </select>
                   </div>
                   <div className="space-y-2">
-                    <p className="text-sm font-semibold text-gray-800">返却日時</p>
-                    <p className="text-sm text-gray-600">{returnLabel}</p>
+                    <p className="text-sm font-semibold text-slate-800">返却日時</p>
+                    <p className="text-sm text-slate-600">{returnLabel}</p>
                     <select
                       value={returnTime}
                       disabled
-                      className="w-full rounded-lg border border-gray-200 bg-gray-100 px-3 py-3 text-sm shadow-sm text-gray-500"
+                      className="w-full rounded-lg border border-slate-200 bg-slate-100 px-3 py-3 text-sm shadow-sm text-slate-500"
                     >
                       <option value="">貸出希望日から自動設定されます</option>
                       {timeOptions.map((time) => (
@@ -402,10 +402,10 @@ export default function ReserveFlowStep1() {
                         </option>
                       ))}
                     </select>
-                    <p className="text-xs text-gray-500">貸出希望日の24時間後が返却日時になります。</p>
+                    <p className="text-xs text-slate-500">貸出希望日の24時間後が返却日時になります。</p>
                   </div>
                 </div>
-                {storeNotice ? <p className="text-xs text-gray-500">{storeNotice}</p> : null}
+                {storeNotice ? <p className="text-xs text-slate-500">{storeNotice}</p> : null}
                 {!canProceed ? (
                   <p className="text-sm text-red-600">貸出と返却の時間を選択すると、オプション選択へ進めます。</p>
                 ) : null}
@@ -413,32 +413,32 @@ export default function ReserveFlowStep1() {
             </div>
 
             <div className="lg:col-span-2 space-y-4">
-              <div className="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-gray-100 space-y-4">
+              <div className="rounded-lg bg-white p-6 shadow-sm ring-1 ring-slate-100 space-y-4">
                 <div className="flex items-center justify-between">
-                  <p className="text-sm font-semibold text-gray-900">ご予約の概要</p>
-                  <span className="rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-700">1 / 3</span>
+                  <p className="text-sm font-semibold text-slate-900">ご予約の概要</p>
+                  <span className="rounded bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700">1 / 3</span>
                 </div>
-                <dl className="space-y-3 text-sm text-gray-700">
+                <dl className="space-y-3 text-sm text-slate-700">
                   <div className="flex items-start justify-between">
-                    <dt className="text-gray-500">店舗</dt>
-                    <dd className="font-semibold text-gray-900">{store}</dd>
+                    <dt className="text-slate-500">店舗</dt>
+                    <dd className="font-semibold text-slate-900">{store}</dd>
                   </div>
                   <div className="flex items-start justify-between">
-                    <dt className="text-gray-500">車種</dt>
-                    <dd className="font-semibold text-gray-900">{modelName}</dd>
+                    <dt className="text-slate-500">車種</dt>
+                    <dd className="font-semibold text-slate-900">{modelName}</dd>
                   </div>
                   <div className="flex items-start justify-between">
-                    <dt className="text-gray-500">貸出日時</dt>
+                    <dt className="text-slate-500">貸出日時</dt>
                     <dd className="text-right">
-                      <p className="font-semibold text-gray-900">{pickupLabel}</p>
-                      <p className="text-xs text-gray-600">{pickupTime || "時間未選択"}</p>
+                      <p className="font-semibold text-slate-900">{pickupLabel}</p>
+                      <p className="text-xs text-slate-600">{pickupTime || "時間未選択"}</p>
                     </dd>
                   </div>
                   <div className="flex items-start justify-between">
-                    <dt className="text-gray-500">返却日時</dt>
+                    <dt className="text-slate-500">返却日時</dt>
                     <dd className="text-right">
-                      <p className="font-semibold text-gray-900">{returnLabel}</p>
-                      <p className="text-xs text-gray-600">{returnTime || "時間未選択"}</p>
+                      <p className="font-semibold text-slate-900">{returnLabel}</p>
+                      <p className="text-xs text-slate-600">{returnTime || "時間未選択"}</p>
                     </dd>
                   </div>
                 </dl>
@@ -446,7 +446,7 @@ export default function ReserveFlowStep1() {
                   type="button"
                   disabled={!authChecked || !registrationChecked}
                   onClick={handleNext}
-                  className="mt-2 inline-flex w-full items-center justify-center rounded-full bg-red-500 px-5 py-3 text-sm font-semibold text-white shadow hover:bg-red-600 transition disabled:cursor-not-allowed disabled:bg-red-200"
+                  className="mt-2 inline-flex w-full items-center justify-center rounded-md bg-red-600 px-5 py-3 text-sm font-semibold text-white shadow hover:bg-red-700 transition disabled:cursor-not-allowed disabled:bg-red-200"
                 >
                   オプション選択へ
                 </button>
@@ -456,7 +456,7 @@ export default function ReserveFlowStep1() {
                   </p>
                 ) : null}
               </div>
-              <div className="rounded-2xl bg-red-50 p-4 text-sm text-red-800">
+              <div className="rounded-lg bg-red-50 p-4 text-sm text-red-800">
                 <p className="font-semibold">ログイン中の会員さま専用</p>
                 <p className="mt-2 leading-relaxed">
                   予約内容の確認から決済まで、すべてログイン状態でご利用いただけます。ログアウト中の場合はログインページへリダイレクトされます。

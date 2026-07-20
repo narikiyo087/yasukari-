@@ -222,7 +222,7 @@ const ProfileSetupPage: NextPage = () => {
         <title>基本情報の登録</title>
       </Head>
       <main className="mx-auto flex min-h-screen w-full max-w-3xl flex-col gap-8 px-4 py-10">
-        <header className="space-y-2 text-sm text-gray-600">
+        <header className="space-y-2 text-sm text-slate-600">
           <nav aria-label="breadcrumb">
             <ol className="flex items-center gap-2">
               <li>
@@ -237,27 +237,27 @@ const ProfileSetupPage: NextPage = () => {
                 </Link>
               </li>
               <li aria-hidden="true">/</li>
-              <li className="text-gray-700">基本情報の登録</li>
+              <li className="text-slate-700">基本情報の登録</li>
             </ol>
           </nav>
-          <h1 className="text-2xl font-semibold text-gray-900">基本情報の登録</h1>
-          <p className="text-sm text-gray-500">
+          <h1 className="text-2xl font-semibold text-slate-900">基本情報の登録</h1>
+          <p className="text-sm text-slate-500">
             電話番号、ハンドルネーム、ロケーションと言語、表示名を設定してください。入力済みの項目は更新できます。
           </p>
         </header>
 
         {loading ? (
-          <section className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-            <p className="text-sm text-gray-700">情報を読み込み中です…</p>
+          <section className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
+            <p className="text-sm text-slate-700">情報を読み込み中です…</p>
           </section>
         ) : (
           <>
             {missingKeys.length === 0 ? (
-              <div className="rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800">
+              <div className="rounded-md border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800">
                 基本情報を編集するボタンを押すと更新できます
               </div>
             ) : (
-              <div className="flex items-start gap-3 rounded-xl border-2 border-red-300 bg-red-50 px-4 py-3 text-sm font-semibold text-red-700 shadow-sm">
+              <div className="flex items-start gap-3 rounded-md border-2 border-red-300 bg-red-50 px-4 py-3 text-sm font-semibold text-red-700 shadow-sm">
                 <span aria-hidden className="text-lg">⚠️</span>
                 <p className="leading-relaxed">
                   未入力の項目があります。<br />
@@ -267,10 +267,10 @@ const ProfileSetupPage: NextPage = () => {
             )}
 
             {error ? (
-              <p className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{error}</p>
+              <p className="rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{error}</p>
             ) : null}
             {success ? (
-              <p className="rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700">{success}</p>
+              <p className="rounded-md border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700">{success}</p>
             ) : null}
 
             {missingKeys.length === 0 && !showForm ? (
@@ -286,18 +286,18 @@ const ProfileSetupPage: NextPage = () => {
             ) : null}
 
             {showForm ? (
-              <section className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-                <h2 className="text-lg font-semibold text-gray-900">基本情報</h2>
+              <section className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
+                <h2 className="text-lg font-semibold text-slate-900">基本情報</h2>
                 <form className="mt-4 space-y-6" onSubmit={handleSubmit}>
                   <div className="space-y-2">
-                    <label htmlFor="phone_country" className="block text-sm font-medium text-gray-700">
+                    <label htmlFor="phone_country" className="block text-sm font-medium text-slate-700">
                       電話番号
                     </label>
                     <div className="grid gap-2 sm:grid-cols-[auto,1fr]">
                       <select
                         id="phone_country"
                         name="phone_country"
-                        className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 shadow-sm focus:border-red-500 focus:outline-none"
+                        className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-900 shadow-sm focus:border-red-500 focus:outline-none"
                         defaultValue={phoneCountry}
                         required
                       >
@@ -311,15 +311,15 @@ const ProfileSetupPage: NextPage = () => {
                         type="tel"
                         defaultValue={phoneNational}
                         placeholder="例: 08012341234"
-                        className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 shadow-sm focus:border-red-500 focus:outline-none"
+                        className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-900 shadow-sm focus:border-red-500 focus:outline-none"
                         required
                       />
                     </div>
-                    <p className="text-xs text-gray-500">国番号と先頭の0を除いた番号で登録されます。</p>
+                    <p className="text-xs text-slate-500">国番号と先頭の0を除いた番号で登録されます。</p>
                   </div>
 
                   <div className="space-y-2">
-                    <label htmlFor="handle" className="block text-sm font-medium text-gray-700">
+                    <label htmlFor="handle" className="block text-sm font-medium text-slate-700">
                       ハンドルネーム（ユーザーID）
                     </label>
                     <input
@@ -328,14 +328,14 @@ const ProfileSetupPage: NextPage = () => {
                       type="text"
                       defaultValue={attributes['custom:handle'] ?? ''}
                       placeholder="3〜30文字"
-                      className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 shadow-sm focus:border-red-500 focus:outline-none"
+                      className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-900 shadow-sm focus:border-red-500 focus:outline-none"
                       required
                     />
-                    <p className="text-xs text-gray-500">サイト内での識別に使用されます。</p>
+                    <p className="text-xs text-slate-500">サイト内での識別に使用されます。</p>
                   </div>
 
                   <div className="space-y-2">
-                    <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+                    <label htmlFor="name" className="block text-sm font-medium text-slate-700">
                       ニックネーム
                     </label>
                     <input
@@ -343,20 +343,20 @@ const ProfileSetupPage: NextPage = () => {
                       name="name"
                       type="text"
                       defaultValue={attributes.name ?? ''}
-                      className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 shadow-sm focus:border-red-500 focus:outline-none"
+                      className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-900 shadow-sm focus:border-red-500 focus:outline-none"
                       required
                     />
                   </div>
 
                   <div className="space-y-2">
-                    <label htmlFor="locale" className="block text-sm font-medium text-gray-700">
+                    <label htmlFor="locale" className="block text-sm font-medium text-slate-700">
                       ロケーション / 言語
                     </label>
                     <select
                       id="locale"
                       name="locale"
                       defaultValue={localeSelectValue()}
-                      className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 shadow-sm focus:border-red-500 focus:outline-none"
+                      className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-900 shadow-sm focus:border-red-500 focus:outline-none"
                       required
                     >
                       <option value="" disabled>
@@ -365,20 +365,20 @@ const ProfileSetupPage: NextPage = () => {
                       <option value="jp">日本語</option>
                       <option value="en">英語圏</option>
                     </select>
-                    <p className="text-xs text-gray-500">選択したロケーションに応じてサイト表示を調整します。</p>
+                    <p className="text-xs text-slate-500">選択したロケーションに応じてサイト表示を調整します。</p>
                   </div>
 
                   <div className="flex items-center gap-3">
                     <button
                       type="submit"
                       disabled={saving}
-                      className="inline-flex items-center justify-center rounded-full bg-red-600 px-6 py-3 text-sm font-semibold text-white transition hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-60"
+                      className="inline-flex items-center justify-center rounded-md bg-red-600 px-6 py-3 text-sm font-semibold text-white transition hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-60"
                     >
                       {saving ? '保存中…' : '登録する'}
                     </button>
                     <Link
                       href={applyLocaleToPath('/mypage')}
-                      className="text-sm font-semibold text-gray-700 underline underline-offset-4 hover:text-gray-900"
+                      className="text-sm font-semibold text-slate-700 underline underline-offset-4 hover:text-slate-900"
                     >
                       戻る
                     </Link>
@@ -387,24 +387,24 @@ const ProfileSetupPage: NextPage = () => {
               </section>
             ) : null}
 
-            <section className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-              <h2 className="text-lg font-semibold text-gray-900">現在の登録状況</h2>
-              <dl className="mt-4 grid gap-4 text-sm text-gray-700 md:grid-cols-2">
+            <section className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
+              <h2 className="text-lg font-semibold text-slate-900">現在の登録状況</h2>
+              <dl className="mt-4 grid gap-4 text-sm text-slate-700 md:grid-cols-2">
                 <div>
-                  <dt className="font-medium text-gray-600">電話番号</dt>
-                  <dd className="mt-1 text-gray-900">{formatPhoneLabel(attributes.phone_number)}</dd>
+                  <dt className="font-medium text-slate-600">電話番号</dt>
+                  <dd className="mt-1 text-slate-900">{formatPhoneLabel(attributes.phone_number)}</dd>
                 </div>
                 <div>
-                  <dt className="font-medium text-gray-600">ハンドルネーム</dt>
-                  <dd className="mt-1 text-gray-900">{attributes['custom:handle'] ?? '未設定'}</dd>
+                  <dt className="font-medium text-slate-600">ハンドルネーム</dt>
+                  <dd className="mt-1 text-slate-900">{attributes['custom:handle'] ?? '未設定'}</dd>
                 </div>
                 <div>
-                  <dt className="font-medium text-gray-600">ロケーション / 言語</dt>
-                  <dd className="mt-1 text-gray-900">{localeLabel(attributes['custom:locale'])}</dd>
+                  <dt className="font-medium text-slate-600">ロケーション / 言語</dt>
+                  <dd className="mt-1 text-slate-900">{localeLabel(attributes['custom:locale'])}</dd>
                 </div>
                 <div>
-                  <dt className="font-medium text-gray-600">ニックネーム</dt>
-                  <dd className="mt-1 text-gray-900">{attributes.name ?? '未設定'}</dd>
+                  <dt className="font-medium text-slate-600">ニックネーム</dt>
+                  <dd className="mt-1 text-slate-900">{attributes.name ?? '未設定'}</dd>
                 </div>
               </dl>
             </section>

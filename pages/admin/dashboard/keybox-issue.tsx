@@ -235,10 +235,10 @@ export default function KeyboxIssuePage() {
                             <img
                               src={result.qrImageUrl}
                               alt="発行されたQRコード"
-                              className="h-32 w-32 rounded border border-gray-200 object-contain"
+                              className="h-32 w-32 rounded border border-slate-200 object-contain"
                             />
                           ) : (
-                            <span className="text-xs text-gray-500">-</span>
+                            <span className="text-xs text-slate-500">-</span>
                           )}
                         </td>
                       </tr>
