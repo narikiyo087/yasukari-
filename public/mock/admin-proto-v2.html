@@ -320,7 +320,7 @@
         <div class="navwrap">
           <a class="item" data-s="keybox" onclick="navGroup(this,'keybox')"><span class="ic"><svg viewBox="0 0 16 16"><circle cx="5.6" cy="5.6" r="3"/><path d="M7.7 7.7L13 13"/><path d="M11 11l1.4 1.4"/></svg></span>KEYBOX<span class="caret">▾</span></a>
           <div class="subnav">
-            <a class="subitem" onclick="subgo('keybox','発行',this)">発行</a>
+            
             <a class="subitem" onclick="subgo('keybox','実行ログ',this)">実行ログ</a>
             <a class="subitem" onclick="subgo('keybox','再発行',this)">再発行</a>
           </div>
@@ -1314,30 +1314,10 @@
 
       <!-- lighter screens -->
       <section class="screen" id="keybox">
-        <div class="pgh"><h2>KEYBOX</h2><div class="act"><div class="viewtoggle"><a class="vt on" onclick="vsw('kb','list',this)">発行</a><a class="vt" onclick="vsw('kb','board',this)">実行ログ</a><a class="vt" onclick="vsw('kb','gantt',this)">再発行</a></div></div></div>
-
-        <!-- 発行 -->
-        <div id="kb-list">
-          <p class="sub" style="margin-bottom:12px">解錠ウィンドウとPINを指定してAPI経由でキーを発行します。未入力の場合はランダムなPIN・ユニットIDが採番されます。</p>
-          <div class="am-fld" style="max-width:460px;margin-bottom:16px"><label>対象の予約・顧客</label><select><option>選択しない（手動発行）</option><option>YK-…0031 ／ 山田 太郎 ／ PCX ／ 三ノ輪</option><option>YK-…0044 ／ 佐藤 花子 ／ レブル250 ／ 足立</option><option>YK-…0038 ／ 田中 次郎 ／ クロスカブ ／ 足立</option></select></div>
-          <div class="cols2">
-            <div class="card"><h3>解錠ウィンドウ</h3>
-              <div class="am-fld"><label>有効開始</label><input type="datetime-local"></div>
-              <div class="am-fld"><label>有効終了</label><input type="datetime-local"></div>
-            </div>
-            <div class="card"><h3>PIN・ユニット・店舗</h3>
-              <div class="am-fld"><label>PINコード（任意）</label><input placeholder="未入力の場合は自動生成"></div>
-              <div class="am-fld"><label>ターゲット名（任意）</label><input value="管理者発行PIN"></div>
-              <div class="am-fld"><label>ユニットID（任意）</label><input placeholder="未入力の場合は自動生成"></div>
-              <div class="am-fld"><label>店舗名・備考（任意）</label><input placeholder="三ノ輪店"></div>
-            </div>
-          </div>
-          <a class="btn btn-primary" style="margin-top:12px" onclick="M('keybox')">PINを発行する</a>
-          <p class="sub" style="margin-top:10px">発行結果：ステータス／PIN／pinId／ユニットID／署名方式／有効時間／QR を表示。</p>
-        </div>
+        <div class="pgh"><h2>KEYBOX</h2><div class="act"><div class="viewtoggle"><a class="vt on" onclick="vsw('kb','board',this)">実行ログ</a><a class="vt" onclick="vsw('kb','gantt',this)">再発行</a></div></div></div>
 
         <!-- 実行ログ -->
-        <div id="kb-board" style="display:none">
+        <div id="kb-board" style="display:block">
           <div class="kpis" style="margin-bottom:16px"><div class="kpi ok"><div class="ic">🔓</div><div><div class="lbl">最新の実行</div><div class="num" style="font-size:20px">成功</div></div></div><div class="kpi info"><div class="ic">📊</div><div><div class="lbl">成功 / 全体</div><div class="num">12<span class="u">/12</span></div></div></div></div>
           <div class="tbl-wrap"><table style="min-width:760px"><thead><tr><th>実行日時</th><th>予約ID / 顧客 / 店舗</th><th>PIN情報</th><th>有効時間</th><th>QR</th><th>ステータス</th><th>備考</th></tr></thead><tbody>
             <tr><td class="mono">7/14 10:01</td><td class="mono">YK-…0031 / 山田 太郎 / 三ノ輪</td><td class="mono">PIN 4821 / unit MW-0125</td><td class="mono">10:00〜18:30</td><td>🔳</td><td><span class="badge b-ok">成功</span></td><td>解錠</td></tr>
