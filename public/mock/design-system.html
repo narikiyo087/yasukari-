@@ -1,0 +1,261 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ヤスカリ デザインシステム（ショーケース）</title>
+<style>
+:root{
+  /* Brand */
+  --brand:#d62828; --brand-dark:#b91c1c; --brand-strong:#c1121f; --brand-100:#fee2e2; --brand-050:#fff5f5;
+  /* Ink */
+  --ink-900:#0f172a; --ink-800:#1f2937; --ink-600:#475569; --ink-400:#94a3b8;
+  /* Surface */
+  --white:#fff; --bg:#f8fafc; --line:#e2e8f0;
+  /* Status */
+  --success:#059669; --success-bg:#ecfdf5; --success-ln:#a7f3d0;
+  --warning:#f59e0b; --warning-bg:#fff7ed; --warning-ln:#fed7aa;
+  --error:#dc2626; --error-bg:#fef2f2; --error-ln:#fecaca;
+  --info:#2563eb; --info-bg:#eff6ff; --info-ln:#bfdbfe;
+  --font:"Inter","Noto Sans JP","Helvetica Neue",Arial,"Hiragino Kaku Gothic ProN","Hiragino Sans",Meiryo,sans-serif;
+  --r:12px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{overflow-x:hidden}
+body{font-family:var(--font);color:var(--ink-800);background:var(--bg);line-height:1.7;font-size:16px;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1080px;margin:0 auto;padding:24px 16px 60px}
+.top{background:linear-gradient(120deg,#0f172a,#334155);color:#fff;border-radius:16px;padding:24px}
+.top h1{font-size:1.5rem}.top p{color:#cbd5e1;font-size:.9rem;margin-top:6px}
+h2.sec{font-size:1.15rem;margin:34px 0 12px;padding-left:10px;border-left:5px solid var(--brand);color:var(--ink-900)}
+.panel{background:#fff;border:1px solid var(--line);border-radius:16px;padding:20px}
+.grid{display:grid;gap:12px}
+.muted{color:var(--ink-600);font-size:.85rem}
+.mono{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.72rem;color:var(--ink-400)}
+
+/* color swatches */
+.sw-grid{grid-template-columns:repeat(2,1fr)}
+@media(min-width:641px){.sw-grid{grid-template-columns:repeat(4,1fr)}}
+.sw{border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.sw .chip{height:56px}.sw .meta{padding:8px 10px}.sw .nm{font-size:.8rem;font-weight:700}
+
+/* type scale */
+.type div{border-bottom:1px dashed var(--line);padding:8px 0}
+.t-h1{font-size:2rem;font-weight:700;letter-spacing:-.01em;line-height:1.25}
+.t-h2{font-size:1.4rem;font-weight:700}
+.t-h3{font-size:1.1rem;font-weight:700}
+.t-body{font-size:1rem}.t-sub{font-size:.85rem;color:var(--ink-600)}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;font-weight:700;border-radius:12px;padding:12px 22px;font-size:.95rem;cursor:pointer;border:2px solid transparent;transition:.15s}
+.btn-primary{background:var(--brand);color:#fff}.btn-primary:hover{background:var(--brand-dark)}
+.btn-outline{background:#fff;color:var(--brand);border-color:var(--brand)}.btn-outline:hover{background:var(--brand-050)}
+.btn-ghost{background:transparent;color:var(--ink-800);border-color:var(--line)}.btn-ghost:hover{background:var(--bg)}
+.btn-sm{padding:8px 14px;font-size:.82rem;border-radius:10px}
+.btn-lg{padding:15px 28px;font-size:1.02rem}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+
+/* chips / badges */
+.chip2{border:1px solid var(--line);background:#f1f5f9;border-radius:999px;padding:5px 12px;font-size:.78rem;font-weight:600;color:#334155}
+.chip2.check{background:var(--success-bg);border-color:var(--success-ln);color:#065f46}
+.badge{border-radius:999px;padding:3px 10px;font-size:.72rem;font-weight:700;display:inline-flex;align-items:center;gap:5px}
+.b-success{background:var(--success-bg);color:#065f46;border:1px solid var(--success-ln)}
+.b-warning{background:var(--warning-bg);color:#92400e;border:1px solid var(--warning-ln)}
+.b-error{background:var(--error-bg);color:#991b1b;border:1px solid var(--error-ln)}
+.b-info{background:var(--info-bg);color:#1e40af;border:1px solid var(--info-ln)}
+.b-neutral{background:#f1f5f9;color:#334155;border:1px solid var(--line)}
+
+/* alerts */
+.alert{border-radius:12px;padding:12px 14px;font-size:.88rem;display:flex;gap:10px;border:1px solid}
+.alert .ic{font-weight:800}
+.a-success{background:var(--success-bg);border-color:var(--success-ln);color:#065f46}
+.a-warning{background:var(--warning-bg);border-color:var(--warning-ln);color:#92400e}
+.a-error{background:var(--error-bg);border-color:var(--error-ln);color:#991b1b}
+.a-info{background:var(--info-bg);border-color:var(--info-ln);color:#1e40af}
+
+/* card + section head */
+.card-demo{border:1px solid var(--line);border-radius:16px;padding:16px}
+.card-demo .h{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.card-demo .bar{width:4px;height:20px;border-radius:2px;background:var(--warning)}
+.card-demo h3{font-size:1.05rem}
+
+/* form */
+label.f{display:block;font-size:.82rem;font-weight:700;color:var(--ink-800);margin-bottom:4px}
+.inp{width:100%;border:1.5px solid var(--line);border-radius:10px;padding:11px 12px;font-size:.95rem;font-family:inherit}
+.inp:focus{outline:none;border-color:var(--brand);box-shadow:0 0 0 3px rgba(214,40,40,.15)}
+.inp.err{border-color:var(--error);box-shadow:0 0 0 3px rgba(220,38,38,.12)}
+.help{font-size:.76rem;margin-top:4px}.help.err{color:var(--error)}
+
+/* accordion */
+.acc{border-top:1px dashed var(--line);padding-top:10px;margin-top:10px}
+.acc summary{cursor:pointer;font-size:.82rem;font-weight:700;color:var(--brand);list-style:none}
+.acc .body{font-size:.86rem;color:var(--ink-600);margin-top:8px}
+
+/* steps */
+.timeline{display:flex;gap:0;flex-wrap:wrap}
+.tl{flex:1;min-width:130px;text-align:center;position:relative;padding:0 6px}
+.tl .dot{width:36px;height:36px;border-radius:50%;background:var(--brand);color:#fff;font-weight:800;display:flex;align-items:center;justify-content:center;margin:0 auto 6px}
+.tl .lb{font-size:.82rem;font-weight:700}.tl .ds{font-size:.72rem;color:var(--ink-600);margin-top:2px}
+
+/* table */
+.tbl-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px}
+table.dt{width:100%;border-collapse:collapse;font-size:.82rem;min-width:420px}
+table.dt th,table.dt td{border-bottom:1px solid var(--line);padding:9px 12px;text-align:left}
+table.dt th{background:#f1f5f9;color:var(--ink-600);font-weight:700}
+table.dt tr:last-child td{border-bottom:none}
+
+/* hero demo */
+.herodemo{position:relative;border-radius:16px;overflow:hidden;background:linear-gradient(120deg,#0f172a,#3f4a5f);color:#fff;padding:34px 24px;min-height:150px}
+.herodemo .eb{font-size:.7rem;letter-spacing:.18em;font-weight:700;color:#fca5a5}
+.herodemo h3{font-size:1.6rem;margin-top:6px}
+.herodemo p{color:#e2e8f0;font-size:.9rem;margin-top:6px;max-width:30rem}
+
+.two{display:grid;grid-template-columns:1fr;gap:16px}
+@media(min-width:641px){.two{grid-template-columns:1fr 1fr}}
+</style></head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <h1>ヤスカリ デザインシステム</h1>
+    <p>配色・タイポグラフィ・コンポーネントの共通仕様（本番トークン準拠：ブランド赤 #d62828 ／ Inter + Noto Sans JP ／ 640pxブレークポイント）。各ページはこの部品で組み立てます。</p>
+  </div>
+
+  <!-- COLORS -->
+  <h2 class="sec">1. カラートークン</h2>
+  <div class="panel">
+    <p class="muted" style="margin-bottom:10px">ブランド赤は「CTA・強調」専用。エラー赤とは用途を分け、状態色（成功/警告/エラー/情報）はアイコン＋文言と併用します。</p>
+    <p class="muted" style="font-weight:700;margin:6px 0">ブランド</p>
+    <div class="grid sw-grid">
+      <div class="sw"><div class="chip" style="background:#d62828"></div><div class="meta"><div class="nm">Brand</div><div class="mono">#d62828</div></div></div>
+      <div class="sw"><div class="chip" style="background:#b91c1c"></div><div class="meta"><div class="nm">Brand Dark</div><div class="mono">#b91c1c</div></div></div>
+      <div class="sw"><div class="chip" style="background:#fee2e2"></div><div class="meta"><div class="nm">Brand 100</div><div class="mono">#fee2e2</div></div></div>
+      <div class="sw"><div class="chip" style="background:#fff5f5"></div><div class="meta"><div class="nm">Brand Surface</div><div class="mono">#fff5f5</div></div></div>
+    </div>
+    <p class="muted" style="font-weight:700;margin:16px 0 6px">インク／サーフェス</p>
+    <div class="grid sw-grid">
+      <div class="sw"><div class="chip" style="background:#0f172a"></div><div class="meta"><div class="nm">Ink 900</div><div class="mono">#0f172a</div></div></div>
+      <div class="sw"><div class="chip" style="background:#1f2937"></div><div class="meta"><div class="nm">Ink 800（本文）</div><div class="mono">#1f2937</div></div></div>
+      <div class="sw"><div class="chip" style="background:#475569"></div><div class="meta"><div class="nm">Ink 600（補足）</div><div class="mono">#475569</div></div></div>
+      <div class="sw"><div class="chip" style="background:#f8fafc;border-bottom:1px solid #e2e8f0"></div><div class="meta"><div class="nm">BG</div><div class="mono">#f8fafc</div></div></div>
+    </div>
+    <p class="muted" style="font-weight:700;margin:16px 0 6px">状態色</p>
+    <div class="grid sw-grid">
+      <div class="sw"><div class="chip" style="background:#059669"></div><div class="meta"><div class="nm">Success</div><div class="mono">#059669</div></div></div>
+      <div class="sw"><div class="chip" style="background:#f59e0b"></div><div class="meta"><div class="nm">Warning</div><div class="mono">#f59e0b</div></div></div>
+      <div class="sw"><div class="chip" style="background:#dc2626"></div><div class="meta"><div class="nm">Error</div><div class="mono">#dc2626</div></div></div>
+      <div class="sw"><div class="chip" style="background:#2563eb"></div><div class="meta"><div class="nm">Info</div><div class="mono">#2563eb</div></div></div>
+    </div>
+  </div>
+
+  <!-- TYPE -->
+  <h2 class="sec">2. タイポグラフィ</h2>
+  <div class="panel type">
+    <div><span class="t-h1">見出し H1</span> <span class="mono">28–32px / 700 / -0.01em</span></div>
+    <div><span class="t-h2">見出し H2</span> <span class="mono">20–24px / 700</span></div>
+    <div><span class="t-h3">見出し H3</span> <span class="mono">16–18px / 700</span></div>
+    <div><span class="t-body">本文テキスト：ヤスカリは東京の格安レンタルバイクです。</span> <span class="mono">14–16px / 1.7</span></div>
+    <div><span class="t-sub">補足テキスト：料金・注記など。</span> <span class="mono">12–13px / muted</span></div>
+  </div>
+
+  <!-- BUTTONS -->
+  <h2 class="sec">3. ボタン</h2>
+  <div class="panel">
+    <div class="row" style="margin-bottom:12px">
+      <button class="btn btn-primary">車種を見て予約する →</button>
+      <button class="btn btn-outline">料金・空き状況を確認</button>
+      <button class="btn btn-ghost">お問い合わせ</button>
+      <button class="btn btn-primary" disabled>無効</button>
+    </div>
+    <div class="row">
+      <button class="btn btn-primary btn-sm">Small</button>
+      <button class="btn btn-primary">Default</button>
+      <button class="btn btn-primary btn-lg">Large</button>
+    </div>
+  </div>
+
+  <!-- CHIPS / BADGES -->
+  <h2 class="sec">4. チップ ／ ステータスバッジ</h2>
+  <div class="panel">
+    <p class="muted" style="font-weight:700;margin-bottom:8px">チップ（要点・持ち物）</p>
+    <div class="row" style="margin-bottom:14px">
+      <span class="chip2">予約可能：90日前〜前営業日17時</span>
+      <span class="chip2">18歳以上</span>
+      <span class="chip2 check">✔ 運転免許証</span>
+      <span class="chip2 check">✔ ヘルメット</span>
+    </div>
+    <p class="muted" style="font-weight:700;margin-bottom:8px">予約ステータス（マイページ等）</p>
+    <div class="row">
+      <span class="badge b-info">● 予約受付完了</span>
+      <span class="badge b-success">● ご利用完了（返却済み）</span>
+      <span class="badge b-warning">● 利用中</span>
+      <span class="badge b-error">● キャンセル</span>
+      <span class="badge b-neutral">● 下書き</span>
+    </div>
+  </div>
+
+  <!-- ALERTS -->
+  <h2 class="sec">5. アラート ／ コールアウト</h2>
+  <div class="panel grid" style="gap:10px">
+    <div class="alert a-info"><span class="ic">ℹ</span><span>ご予約の変更はお問い合わせから承ります。</span></div>
+    <div class="alert a-success"><span class="ic">✓</span><span>ご予約が完了しました。確認メールをお送りしました。</span></div>
+    <div class="alert a-warning"><span class="ic">⚠</span><span>当日に必要書類をお持ちでない場合は貸出をお断りします（キャンセル料100%）。</span></div>
+    <div class="alert a-error"><span class="ic">✕</span><span>メールアドレスまたはパスワードが正しくありません。</span></div>
+  </div>
+
+  <!-- CARD + FORM -->
+  <h2 class="sec">6. カード ／ フォーム</h2>
+  <div class="two">
+    <div class="panel">
+      <div class="card-demo">
+        <div class="h"><span class="bar"></span><h3>補償・保険</h3></div>
+        <p class="muted">全車両は自賠責保険と任意保険に加入済みです。</p>
+        <div class="acc"><details><summary>＋ 詳しく</summary><div class="body">車両補償に加入すると、修理代のご負担が免責5万円を上限になります。</div></details></div>
+      </div>
+    </div>
+    <div class="panel">
+      <label class="f">メールアドレス</label>
+      <input class="inp" placeholder="example@yasukari.com" value="soumu@example.com">
+      <div class="help muted">ログインに使用します。</div>
+      <label class="f" style="margin-top:14px">パスワード</label>
+      <input class="inp err" type="password" value="123">
+      <div class="help err">パスワードは8文字以上で入力してください。</div>
+    </div>
+  </div>
+
+  <!-- STEPS -->
+  <h2 class="sec">7. ステップ ／ タイムライン</h2>
+  <div class="panel">
+    <div class="timeline">
+      <div class="tl"><div class="dot">1</div><div class="lb">予約</div><div class="ds">車種と日時を選択</div></div>
+      <div class="tl"><div class="dot">2</div><div class="lb">来店</div><div class="ds">免許証をご持参</div></div>
+      <div class="tl"><div class="dot">3</div><div class="lb">利用</div><div class="ds">安全に走行</div></div>
+      <div class="tl"><div class="dot">4</div><div class="lb">返却</div><div class="ds">満タン＋返却写真</div></div>
+    </div>
+  </div>
+
+  <!-- TABLE -->
+  <h2 class="sec">8. テーブル（レスポンシブ）</h2>
+  <div class="panel">
+    <div class="tbl-wrap">
+      <table class="dt">
+        <thead><tr><th>クラス</th><th>24時間</th><th>1週間</th><th>1ヶ月</th></tr></thead>
+        <tbody>
+          <tr><td>50cc 原付</td><td>4,480円</td><td>9,480円</td><td>25,480円</td></tr>
+          <tr><td>126〜250cc</td><td>8,480円</td><td>20,300円</td><td>40,300円</td></tr>
+          <tr><td>400cc超</td><td>15,980円</td><td>33,800円</td><td>58,800円</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- HERO -->
+  <h2 class="sec">9. ヒーロー（画像バナー）</h2>
+  <div class="panel">
+    <div class="herodemo">
+      <div class="eb">BEGINNER GUIDE</div>
+      <h3>ご利用案内</h3>
+      <p>ご予約 → ご来店 → ご利用 → ご返却。4ステップでかんたん。</p>
+    </div>
+    <p class="muted" style="margin-top:8px">実運用ではChatGPT生成のバナー画像（文字入り）に差し替え。左側に文字用の余白を確保。</p>
+  </div>
+
+  <p class="muted" style="text-align:center;margin-top:24px">ヤスカリ デザインシステム ショーケース ／ 本番トークン準拠</p>
+</div>
+</body></html>

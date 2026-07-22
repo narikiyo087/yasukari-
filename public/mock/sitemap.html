@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ヤスカリ サイトマップ全体図（顧客／管理）</title>
+<style>
+  :root{
+    --red:#d62828; --red-dark:#b91c1c; --red-050:#fee2e2;
+    --ink:#0f172a; --ink-2:#1f2937; --muted:#64748b;
+    --surface:#ffffff; --surface-2:#f8fafc; --line:#e2e8f0;
+    --ok:#059669; --warn:#f59e0b; --err:#dc2626; --info:#2563eb;
+    --radius:0.75rem;
+    --font:"Inter","Noto Sans JP","Hiragino Kaku Gothic ProN",system-ui,sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:var(--font);color:var(--ink-2);background:var(--surface-2);line-height:1.7;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1160px;margin:0 auto;padding:24px 16px 64px}
+  header.hero{background:linear-gradient(135deg,#0f172a,#3b1414 70%,var(--red-dark));color:#fff;border-radius:var(--radius);padding:28px 24px;margin-bottom:8px}
+  header.hero h1{margin:0 0 6px;font-size:clamp(22px,4vw,30px);letter-spacing:.02em}
+  header.hero p{margin:0;color:#e5e7eb;font-size:14px}
+  .legend{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0 8px}
+  .chip{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;padding:4px 10px;border-radius:999px;border:1px solid var(--line);background:#fff}
+  .dot{width:10px;height:10px;border-radius:50%}
+  .d-red{background:var(--red)} .d-info{background:var(--info)} .d-ok{background:var(--ok)} .d-warn{background:var(--warn)} .d-muted{background:var(--muted)}
+  h2.sec{font-size:20px;margin:34px 0 4px;padding-left:12px;border-left:5px solid var(--red)}
+  h2.sec.admin{border-left-color:var(--info)}
+  .sub{color:var(--muted);font-size:13px;margin:0 0 14px;padding-left:12px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(268px,1fr));gap:14px}
+  .col{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:14px 14px 12px;box-shadow:0 1px 2px rgba(15,23,42,.04)}
+  .col h3{margin:0 0 10px;font-size:15px;display:flex;align-items:center;gap:8px}
+  .col h3 .num{background:var(--red-050);color:var(--red-dark);font-size:12px;font-weight:800;border-radius:8px;padding:1px 8px}
+  .admin .col h3 .num{background:#dbeafe;color:#1d4ed8}
+  ul.tree{list-style:none;margin:0;padding:0}
+  ul.tree li{position:relative;padding:5px 0 5px 18px;font-size:13.5px;border-bottom:1px dashed var(--line)}
+  ul.tree li:last-child{border-bottom:0}
+  ul.tree li::before{content:"";position:absolute;left:2px;top:13px;width:7px;height:7px;border-radius:50%;background:var(--line)}
+  ul.tree li.cta::before{background:var(--red)}
+  ul.tree li.auth::before{background:var(--warn)}
+  ul.tree li.new::before{background:var(--ok)}
+  code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;color:var(--muted)}
+  .tag{display:inline-block;font-size:10.5px;font-weight:800;border-radius:6px;padding:0 6px;margin-left:6px;vertical-align:middle}
+  .t-cta{background:var(--red);color:#fff}
+  .t-new{background:var(--ok);color:#fff}
+  .t-auth{background:var(--warn);color:#fff}
+  .t-merge{background:#ede9fe;color:#6d28d9}
+  .note{background:#fff7ed;border:1px solid #fed7aa;color:#9a3412;border-radius:var(--radius);padding:12px 14px;font-size:13px;margin:14px 0}
+  .flowbar{display:flex;flex-wrap:wrap;align-items:center;gap:8px;background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:12px 14px;margin:10px 0 4px}
+  .step{background:var(--surface-2);border:1px solid var(--line);border-radius:999px;padding:6px 14px;font-size:13px;font-weight:700}
+  .step.cta{background:var(--red);color:#fff;border-color:var(--red)}
+  .arrow{color:var(--muted);font-weight:900}
+  footer{margin-top:36px;color:var(--muted);font-size:12px;text-align:center}
+  @media (prefers-color-scheme: dark){
+    body{background:#0b1220;color:#e5e7eb}
+    .col,.chip,.flowbar,.step{background:#111827;border-color:#1f2937}
+    .col h3 .num{background:#3b1418;color:#fecaca}
+    .admin .col h3 .num{background:#172554;color:#bfdbfe}
+    ul.tree li{border-color:#1f2937}
+    .sub,.muted,code{color:#94a3b8}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="hero">
+    <h1>ヤスカリ サイトマップ全体図</h1>
+    <p>顧客サイト（日本語／英語）と管理画面の「あるべき構成（To-Be）」。ここで全体を固めてから、1ページずつ実装を調整します。</p>
+  </header>
+
+  <div class="legend">
+    <span class="chip"><span class="dot d-red"></span>主要CTA（予約導線）</span>
+    <span class="chip"><span class="dot d-warn"></span>認証が必要</span>
+    <span class="chip"><span class="dot d-ok"></span>統合・新設</span>
+    <span class="chip"><span class="dot d-info"></span>管理画面</span>
+    <span class="chip"><span class="dot d-muted"></span>通常ページ</span>
+  </div>
+
+  <!-- 顧客サイト -->
+  <h2 class="sec">顧客サイト（日本語 / 英語は同構造）</h2>
+  <p class="sub">設計原則：主導線（車種→予約）を最短に／情報は5グループに集約／開発用ページは公開ナビから隔離</p>
+
+  <div class="flowbar">
+    <span class="step">トップ</span><span class="arrow">→</span>
+    <span class="step">車種一覧</span><span class="arrow">→</span>
+    <span class="step">車種詳細</span><span class="arrow">→</span>
+    <span class="step">空き確認</span><span class="arrow">→</span>
+    <span class="step cta">予約 step1–3 → 完了</span>
+  </div>
+
+  <div class="grid">
+    <div class="col">
+      <h3><span class="num">1</span>バイクを探す</h3>
+      <ul class="tree">
+        <li>トップ <code>/</code></li>
+        <li>車種一覧 <code>/products</code></li>
+        <li class="new">ジャンル別フィルタ<span class="tag t-merge">/t/genre を統合</span></li>
+        <li>車種詳細 <code>/products/[code]</code></li>
+      </ul>
+    </div>
+
+    <div class="col">
+      <h3><span class="num">2</span>予約する</h3>
+      <ul class="tree">
+        <li>空き確認 <code>/reserve/…/availability</code></li>
+        <li class="cta">予約フロー step1 → 2 → 3<span class="tag t-cta">CTA</span></li>
+        <li class="cta">予約完了 <code>/reserve/flow/complete</code></li>
+        <li>貸渡約款 <code>/…/rental-bike-terms</code></li>
+        <li>決済完了 <code>/payment-info/complete</code></li>
+      </ul>
+    </div>
+
+    <div class="col">
+      <h3><span class="num">3</span>はじめての方</h3>
+      <ul class="tree">
+        <li>はじめてガイド <code>/beginner</code><span class="tag t-new">改善版済</span></li>
+        <li>料金・補償 <code>/pricing・/insurance</code></li>
+        <li>店舗案内 <code>/stores</code>（足立/三ノ輪）</li>
+        <li class="new"><code>/guide</code> は統合・廃止<span class="tag t-merge">統合</span></li>
+      </ul>
+    </div>
+
+    <div class="col">
+      <h3><span class="num">4</span>会員（要ログイン）</h3>
+      <ul class="tree">
+        <li class="auth">ログイン <code>/login</code><span class="tag t-auth">1本化</span></li>
+        <li class="auth">会員登録 <code>/signup → /register</code></li>
+        <li class="auth">マイページ <code>/mypage</code></li>
+        <li class="auth">レンタル詳細・延長 <code>/mypage/rentals/[id]</code></li>
+        <li class="auth">過去の予約・会員情報・お知らせ</li>
+      </ul>
+    </div>
+
+    <div class="col">
+      <h3><span class="num">5</span>サポート</h3>
+      <ul class="tree">
+        <li>ヘルプ/FAQ <code>/help</code></li>
+        <li>問い合わせ <code>/contact</code>＋チャット</li>
+        <li>会社情報 <code>/company</code></li>
+      </ul>
+    </div>
+
+    <div class="col">
+      <h3><span class="num">6</span>お知らせ・ブログ</h3>
+      <ul class="tree">
+        <li>お知らせ <code>/news</code></li>
+        <li class="new">ブログ <code>/blog</code><span class="tag t-merge">3系統を統合</span></li>
+        <li><code>blog_for_custmor/customer_blog/rental_bike</code> を集約</li>
+      </ul>
+    </div>
+
+    <div class="col">
+      <h3><span class="num">法</span>法務（フッターのみ）</h3>
+      <ul class="tree">
+        <li>利用規約 <code>/terms</code></li>
+        <li>プライバシー <code>/privacy</code></li>
+        <li>特商法 <code>/tokusyouhou</code></li>
+        <li>貸渡約款 <code>/rental-bike-terms</code></li>
+      </ul>
+    </div>
+
+    <div class="col">
+      <h3><span class="num">隔</span>公開ナビから隔離</h3>
+      <ul class="tree">
+        <li><code>/register/test</code>（開発用着地・要撤去）</li>
+        <li><code>/test・/chat-design・/source</code></li>
+        <li><code>/monitor・/wait・/maintenance</code></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="note">
+    <b>英語版 /en</b>：現状は日本語版とほぼ全ページ二重化（HeaderEn/FooterEn 等も別実装）。To-Beは<b>日英で構造を完全一致</b>させ、差分はテキストと価格ロジックだけに閉じ込める。新デザインは日本語版を正として作り、英語版に翻訳適用。
+  </div>
+
+  <!-- 管理画面 -->
+  <h2 class="sec admin">管理画面 <code>/admin/dashboard</code></h2>
+  <p class="sub">設計原則：「今日やること」を最上位に／マスタ設定と日次運用を分離／承認待ちを1箇所に集約（現状は平坦30項目超）</p>
+
+  <div class="admin">
+  <div class="grid">
+    <div class="col">
+      <h3><span class="num">①</span>今日の運用（Daily Ops）</h3>
+      <ul class="tree">
+        <li class="new">ダッシュボード（本日の予約/返却/承認待ちサマリ）<span class="tag t-new">運用サマリ化</span></li>
+        <li>予約管理 <code>reservations</code></li>
+        <li class="new">承認待ち（統合）<span class="tag t-merge">4種を集約</span></li>
+        <li>　└ 免許証 / 事故報告 / 返却完了 / 写真</li>
+        <li>KEYBOX（発行/再発行/ログ）</li>
+        <li>バイクスケジュール</li>
+      </ul>
+    </div>
+
+    <div class="col">
+      <h3><span class="num">②</span>会員・連絡</h3>
+      <ul class="tree">
+        <li>会員管理 <code>members</code></li>
+        <li>メール送信履歴 / テスト送信</li>
+        <li>メルマガ設定</li>
+        <li>チャットボット（QA / 問い合わせ）</li>
+      </ul>
+    </div>
+
+    <div class="col">
+      <h3><span class="num">③</span>商品マスタ（Catalog）</h3>
+      <ul class="tree">
+        <li>クラス <code>bike-classes</code>（＋月額料金）</li>
+        <li>車種 <code>bike-models</code>（＋レンタル料金）</li>
+        <li>車両 <code>vehicles</code></li>
+        <li>用品・オプション <code>accessories</code></li>
+      </ul>
+    </div>
+
+    <div class="col">
+      <h3><span class="num">④</span>販促・カレンダー</h3>
+      <ul class="tree">
+        <li>新着情報/告知バー <code>announcements</code></li>
+        <li>ブログ <code>blog</code></li>
+        <li>休日管理 / ハイシーズン</li>
+        <li>クーポン <code>coupon-rules</code></li>
+      </ul>
+    </div>
+
+    <div class="col">
+      <h3><span class="num">⑤</span>分析（Analytics）</h3>
+      <ul class="tree">
+        <li>予約 / 会員 / 車両 / 車種</li>
+      </ul>
+    </div>
+
+    <div class="col">
+      <h3><span class="num">⑥</span>サイト設定</h3>
+      <ul class="tree">
+        <li>サイト公開状態 <code>site-visibility</code></li>
+      </ul>
+    </div>
+  </div>
+  </div>
+
+  <div class="note">
+    <b>管理画面の要点</b>：① 承認待ち（免許/事故/返却/写真）を1グループに集約して見落とし防止／② サイドバーを6グループの折りたたみに／③ ダッシュボード初期表示を「本日の予約・返却・承認待ち件数」の運用サマリに。
+  </div>
+
+  <!-- フランチャイズ -->
+  <h2 class="sec admin">フランチャイズ前提（店舗が増えたとき）</h2>
+  <p class="sub">本部（ケイジェット）＝仕入れ・整備・マスタを一括／現地オーナー＝自店の運営。ロール＋店舗スコープが土台。</p>
+
+  <div class="flowbar">
+    <span class="step">トップ（全店を広く）</span><span class="arrow">→</span>
+    <span class="step">車種詳細（取扱店舗・空き）</span><span class="arrow">→</span>
+    <span class="step cta">仮登録（メアド+PW+国）</span><span class="arrow">→</span>
+    <span class="step">受取店舗を確定</span><span class="arrow">→</span>
+    <span class="step cta">予約 step1–3</span>
+  </div>
+
+  <div class="admin">
+  <div class="grid">
+    <div class="col" style="border-left:4px solid var(--red)">
+      <h3><span class="num" style="background:var(--red-050);color:var(--red-dark)">本部</span>ケイジェット（全店）</h3>
+      <ul class="tree">
+        <li>車種・クラスのマスタ</li>
+        <li>料金ベース（基本は全店統一）</li>
+        <li>車両の仕入れ登録・整備手配</li>
+        <li>全店の予約・会員・分析</li>
+        <li class="new">店舗マスタ / スタッフ・ロール管理<span class="tag t-new">HQのみ新設</span></li>
+        <li>サイト公開設定</li>
+      </ul>
+    </div>
+    <div class="col" style="border-left:4px solid var(--info)">
+      <h3><span class="num">現地</span>店舗オーナー（自店のみ）</h3>
+      <ul class="tree">
+        <li>自店の予約管理</li>
+        <li>自店の承認（免許・事故・返却）</li>
+        <li>自店の KEYBOX</li>
+        <li>自店の休日・営業設定</li>
+        <li>店舗限定クーポン / 用品の表示ON/OFF</li>
+        <li class="auth">※ マスタ・料金ベース・全社分析は不可<span class="tag t-auth">閲覧のみ</span></li>
+      </ul>
+    </div>
+    <div class="col">
+      <h3><span class="num">基盤</span>土台（本丸・要追加見積もり）</h3>
+      <ul class="tree">
+        <li class="new">ロール＋店舗スコープ（自動フィルタ）</li>
+        <li class="new">店舗（store）を第一級データに</li>
+        <li>各一覧に店舗フィルタ（予約/承認/車両/KEYBOX/クーポン）</li>
+        <li>会員は<b>全社共通</b>を推奨（履歴は店舗単位で可視）</li>
+      </ul>
+    </div>
+  </div>
+  </div>
+
+  <div class="note">
+    <b>2つの土台</b>：(A) データの店舗化（車両/予約/用品/休日/クーポンに店舗を紐付け）と (B) 権限の店舗化（現地オーナーが自店だけ見える仕組み）。見積もりに載っているのは主に(A)。<b>(B)＝権限基盤は未計上＝Phase 1で追加見積もりが必要</b>。
+  </div>
+
+  <footer>ヤスカリ サイト構成設計 — 詳細は <code>docs/ヤスカリ_サイト構成_設計.md</code>｜デザイン土台：デザインシステム・ショーケース</footer>
+</div>
+</body>
+</html>

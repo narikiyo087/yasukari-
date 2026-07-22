@@ -1,0 +1,145 @@
+<!doctype html><meta charset="utf-8">
+<style>
+  :root{--ink:#0f172a;--sub:#475569;--mut:#94a3b8;--line:#e2e8f0;--bg:#f8fafc;--red:#d63c2b;--amber:#f59e0b;--teal:#0f766e;--warnbg:#fff7ed;--warnln:#fed7aa}
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  body{font-family:-apple-system,"Hiragino Kaku Gothic ProN","Noto Sans JP",sans-serif;color:var(--ink);background:#eef2f6;padding:24px}
+  .frame{max-width:430px;margin:0 auto;background:var(--bg);border-radius:26px;overflow:hidden;box-shadow:0 12px 40px rgba(15,23,42,.16);border:1px solid #dfe5ec}
+  .hero{position:relative;height:150px;background:linear-gradient(120deg,#111827,#334155);color:#fff;display:flex;flex-direction:column;justify-content:center;padding:0 20px}
+  .hero .eyebrow{font-size:11px;letter-spacing:.18em;color:#fca5a5;font-weight:700}
+  .hero h1{font-size:23px;margin-top:6px}
+  .hero p{font-size:12.5px;color:#e2e8f0;margin-top:6px}
+  .wrap{padding:16px}
+  /* quick facts */
+  .facts{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:-30px;position:relative;z-index:2}
+  .fact{background:#fff;border:1px solid var(--line);border-radius:14px;padding:10px 12px;box-shadow:0 4px 14px rgba(15,23,42,.05)}
+  .fact .ic{font-size:18px}
+  .fact .k{font-size:10.5px;color:var(--mut);font-weight:700;margin-top:3px}
+  .fact .v{font-size:12.5px;font-weight:700;margin-top:1px}
+  /* primary CTA */
+  .cta{display:block;text-align:center;background:var(--red);color:#fff;font-weight:800;font-size:15px;padding:14px;border-radius:14px;margin-top:14px;text-decoration:none;box-shadow:0 6px 18px rgba(214,60,43,.28)}
+  .cta.sub{background:#fff;color:var(--red);border:1.5px solid var(--red);box-shadow:none;font-size:13.5px;padding:11px;margin-top:8px}
+  /* step timeline */
+  .sec-h{display:flex;align-items:center;gap:8px;margin:22px 4px 10px}
+  .sec-h .bar{width:4px;height:18px;background:var(--amber);border-radius:2px}
+  .sec-h h2{font-size:16px}
+  .rail{display:flex;justify-content:space-between;background:#fff;border:1px solid var(--line);border-radius:14px;padding:10px 6px;margin-bottom:12px}
+  .rail .n{flex:1;text-align:center;font-size:10.5px;color:var(--sub)}
+  .rail .n .dot{width:26px;height:26px;border-radius:50%;background:#fee2e2;color:var(--red);font-weight:800;display:flex;align-items:center;justify-content:center;margin:0 auto 4px;font-size:12px}
+  .step{background:#fff;border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:10px}
+  .step .top{display:flex;align-items:center;gap:10px}
+  .step .badge{width:34px;height:34px;border-radius:10px;background:var(--red);color:#fff;font-weight:800;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+  .step .ttl{font-size:15px;font-weight:800}
+  .step .lead{font-size:12.5px;color:var(--sub);margin-top:8px;line-height:1.6}
+  .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+  .chip{font-size:11.5px;background:#f1f5f9;border:1px solid var(--line);border-radius:999px;padding:4px 10px;font-weight:600;color:#334155}
+  .chip.item{background:#ecfdf5;border-color:#a7f3d0;color:#065f46}
+  details{margin-top:10px;border-top:1px dashed var(--line);padding-top:8px}
+  summary{font-size:12px;color:var(--red);font-weight:700;cursor:pointer;list-style:none}
+  summary::after{content:" ＋詳しく"}
+  details[open] summary::after{content:" －閉じる"}
+  details p,details li{font-size:11.5px;color:var(--sub);line-height:1.65;margin-top:6px}
+  details ul{padding-left:16px}
+  /* warning callout */
+  .warn{background:var(--warnbg);border:1px solid var(--warnln);border-radius:14px;padding:12px 14px;margin-top:6px}
+  .warn h3{font-size:13px;color:#b45309;display:flex;align-items:center;gap:6px}
+  .warn ul{padding-left:2px;margin-top:8px;list-style:none}
+  .warn li{font-size:11.5px;color:#7c4a13;line-height:1.6;margin-top:6px;display:flex;gap:7px}
+  .warn li b{color:#b45309}
+  .warn li .x{color:var(--amber);flex-shrink:0}
+  /* gas table */
+  .mini{width:100%;border-collapse:collapse;font-size:11px;margin-top:8px}
+  .mini th,.mini td{border:1px solid var(--line);padding:5px 4px;text-align:center}
+  .mini th{background:#f1f5f9;color:#475569}
+  .foot-cta{background:#0f172a;border-radius:16px;padding:16px;margin-top:18px;text-align:center;color:#fff}
+  .foot-cta h3{font-size:15px}
+  .foot-cta p{font-size:11.5px;color:#cbd5e1;margin-top:5px}
+  .note{font-size:10.5px;color:var(--mut);text-align:center;margin-top:16px}
+</style>
+<div class="frame">
+  <div class="hero">
+    <div class="eyebrow">BEGINNER GUIDE</div>
+    <h1>はじめてガイド</h1>
+    <p>予約 → 来店 → 利用 → 返却。4ステップでかんたん。</p>
+  </div>
+  <div class="wrap">
+
+    <div class="facts">
+      <div class="fact"><div class="ic">🕒</div><div class="k">受付時間</div><div class="v">10:00〜18:30</div></div>
+      <div class="fact"><div class="ic">💳</div><div class="k">お支払い</div><div class="v">クレジットカード</div></div>
+      <div class="fact"><div class="ic">🪪</div><div class="k">対象年齢</div><div class="v">18歳以上</div></div>
+      <div class="fact"><div class="ic">📍</div><div class="k">店舗</div><div class="v">足立小台 / 三ノ輪</div></div>
+    </div>
+
+    <a class="cta" href="#">車種を見て予約する →</a>
+    <a class="cta sub" href="#">料金・空き状況を確認</a>
+
+    <div class="sec-h"><span class="bar"></span><h2>ご利用の流れ</h2></div>
+
+    <div class="rail">
+      <div class="n"><div class="dot">1</div>予約</div>
+      <div class="n"><div class="dot">2</div>来店</div>
+      <div class="n"><div class="dot">3</div>利用</div>
+      <div class="n"><div class="dot">4</div>返却</div>
+    </div>
+
+    <div class="step">
+      <div class="top"><div class="badge">1</div><div class="ttl">ご予約</div></div>
+      <div class="lead">車両ページで空き状況を確認して予約。お支払いはクレジットカードのみ。</div>
+      <div class="chips"><span class="chip">90日前〜前営業日17時まで</span><span class="chip">18歳以上</span></div>
+      <details><summary>変更・キャンセルについて</summary>
+        <p>予約変更は「お問い合わせ」からご連絡のうえ再予約をお願いします。</p>
+        <ul><li>キャンセル：4日前まで無料／3日前〜当日はレンタル料金の50%</li></ul>
+      </details>
+    </div>
+
+    <div class="step">
+      <div class="top"><div class="badge">2</div><div class="ttl">ご来店（持ち物）</div></div>
+      <div class="lead">予約日の10:00〜18:30にご来店ください（手続きに時間がかかるため）。</div>
+      <div class="chips"><span class="chip item">✔ 運転免許証</span><span class="chip item">✔ ヘルメット※</span></div>
+      <details><summary>ヘルメット・運営について</summary>
+        <ul><li>※ヘルメットをオプション申込みでない方はご持参ください。</li>
+        <li>運営はリバイクルK-JET。ご来店時はK-JETスタッフへお声かけください。</li></ul>
+      </details>
+    </div>
+
+    <div class="step">
+      <div class="top"><div class="badge">3</div><div class="ttl">ご利用</div></div>
+      <div class="lead">安全にご利用いただくためのご案内です。契約者ご本人のみ運転できます。</div>
+      <div class="warn">
+        <h3>⚠ 大切なご注意</h3>
+        <ul>
+          <li><span class="x">•</span><span>貸出・返却は<b>必ず契約者ご本人</b>が時間内に。ご本人以外の運転は不可（法人名貸出は要相談）。</span></li>
+          <li><span class="x">•</span><span>駐車違反は警察署へ出頭し反則金をお支払い＋当店へ連絡・領収書提示。<b>未確認は1件2万円</b>。</span></li>
+        </ul>
+      </div>
+      <details><summary>走行距離の目安と整備</summary>
+        <p>目安以上の走行には整備が必要な場合があります。整備を怠り故障・損害が発生した場合は車両の時価額を請求します。</p>
+        <table class="mini"><thead><tr><th>クラス</th><th>1日</th><th>3日</th><th>2週</th><th>1ヶ月</th></tr></thead>
+        <tbody>
+          <tr><th>原付</th><td>200</td><td>600</td><td>800</td><td>+800*</td></tr>
+          <tr><th>125以下</th><td>300</td><td>800</td><td>1000</td><td>+1000*</td></tr>
+          <tr><th>126〜</th><td>500</td><td>1000</td><td>1500</td><td>-</td></tr>
+        </tbody></table>
+        <p>走行中の不具合は営業時間内に契約店舗へ。時間外はロードサービスをご利用ください。</p>
+      </details>
+    </div>
+
+    <div class="step">
+      <div class="top"><div class="badge">4</div><div class="ttl">ご返却</div></div>
+      <div class="lead">返却日の10:00〜18:30にご来店ください。<b>ガソリン満タン</b>でお願いします。</div>
+      <div class="chips"><span class="chip">満タン返却</span><span class="chip">給油不足は規定費用</span></div>
+      <details><summary>給油不足時の費用</summary>
+        <ul><li>原付 3,000円 ／ 原付二種・ジャイロキャノピー 5,000円 ／ それ以上 5,000円</li></ul>
+      </details>
+    </div>
+
+    <div class="foot-cta">
+      <h3>準備はOKですか？</h3>
+      <p>空き状況を確認して、そのまま予約できます。</p>
+      <a class="cta" href="#" style="margin-top:12px">車種を見て予約する →</a>
+      <a class="cta sub" href="#" style="background:transparent;color:#fff;border-color:#475569">ご不明点はお問い合わせ</a>
+    </div>
+
+    <p class="note">※ これは改善モックです（スマホ表示イメージ）</p>
+  </div>
+</div>
