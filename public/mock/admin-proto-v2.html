@@ -232,7 +232,7 @@
   .gt-legend{display:flex;gap:10px;margin-left:auto;font-size:11px;color:var(--muted);flex-wrap:wrap}
   .gt-legend i{display:inline-block;width:11px;height:11px;border-radius:3px;vertical-align:-1px;margin-right:3px}
   /* 2ペイン：固定ラベル列＋横スクロール列（Safari等でも確実に固定） */
-  .gt-body{display:grid;grid-template-columns:150px 1fr}
+  .gt-body{display:grid;grid-template-columns:150px 1fr}#sv-gantt .gt-body{max-height:calc(100vh - 300px);min-height:240px;overflow-y:auto}
   .gt-fixed{border-right:2px solid var(--line-2);box-shadow:3px 0 6px -2px rgba(15,23,42,.12);z-index:2;background:#fff}
   .gt-fixed>div{border-bottom:1px solid var(--line);box-sizing:border-box;display:flex;align-items:center;padding:0 10px}
   .gt-corner{height:42px;font-weight:800;color:var(--muted);font-size:11px}
@@ -325,7 +325,7 @@
             <a class="subitem" onclick="subgo('keybox','再発行',this)">再発行</a>
           </div>
         </div>
-        <a class="item" data-s="schedule" onclick="go(this)"><span class="ic"><svg viewBox="0 0 16 16"><rect x="2" y="3" width="12" height="11" rx="1.5"/><line x1="2" y1="6" x2="14" y2="6"/><line x1="5" y1="1.5" x2="5" y2="4"/><line x1="11" y1="1.5" x2="11" y2="4"/><line x1="5" y1="9" x2="11" y2="9"/><line x1="5" y1="11.3" x2="9" y2="11.3"/></svg></span>スケジュール</a>
+        <a class="item" data-s="schedule" onclick="go(this)"><span class="ic"><svg viewBox="0 0 16 16"><rect x="2" y="3" width="12" height="11" rx="1.5"/><line x1="2" y1="6" x2="14" y2="6"/><line x1="5" y1="1.5" x2="5" y2="4"/><line x1="11" y1="1.5" x2="11" y2="4"/><line x1="5" y1="9" x2="11" y2="9"/><line x1="5" y1="11.3" x2="9" y2="11.3"/></svg></span>バイクスケジュール</a>
         <a class="item" data-s="maint" onclick="go(this)"><span class="ic"><svg viewBox="0 0 16 16"><path d="M10.4 2.3a3 3 0 0 0-3.3 4.1L2.6 11l2.4 2.4 4.6-4.6a3 3 0 0 0 4.1-3.3l-2 2-1.6-.5-.5-1.6 2-2z"/></svg></span>整備アラート<span class="b">2</span></a>
       </div>
       <div class="grp"><div class="gt">会員・連絡</div>
@@ -1348,7 +1348,7 @@
       </section>
 
       <section class="screen" id="schedule">
-        <div class="pgh"><h2>予約・スケジュール</h2><div class="act"><div class="viewtoggle"><a class="vt on" onclick="schedView('gantt',this);gtReveal('svg')">ガント</a><a class="vt" onclick="schedView('board',this)">ボード</a><a class="vt" onclick="schedView('list',this)">一覧</a></div><select><option>全店</option><option>足立</option><option>三ノ輪</option></select></div></div>
+        <div class="pgh"><h2>バイクスケジュール</h2><div class="act"><div class="viewtoggle"><a class="vt on" onclick="schedView('gantt',this);gtReveal('svg')">ガント</a><a class="vt" onclick="schedView('board',this)">ボード</a><a class="vt" onclick="schedView('list',this)">一覧</a></div><select><option>全店</option><option>足立</option><option>三ノ輪</option></select></div></div>
 
         <div id="sv-gantt"><div class="gt-comp"><div class="gt-tools"><label>表示範囲</label><select id="svg-range" onchange="buildGantt('svg')"><option value="30,90">30日前 〜 90日後（120日）</option><option value="7,30">7日前 〜 30日後</option><option value="0,14">今日 〜 14日後</option><option value="0,30">今日 〜 30日後</option></select><span class="sub">今日基準</span><span class="gt-legend"><span><i style="background:#dbeafe"></i>予約</span><span><i style="background:#dcfce7"></i>貸出</span><span><i style="background:#fef3c7"></i>整備</span><span><i style="background:#b91c1c"></i>自賠/車検 期限</span><span><i style="background:#fbdada"></i>期限1ヶ月前</span></span></div><div class="gt-body"><div class="gt-fixed" id="svg-fixed"></div><div class="gt-scroll" id="svg-scroll"><div class="gt-grid" id="svg-grid"></div></div></div><div class="gt-lever">◀<input type="range" min="0" max="1000" value="0" id="svg-lever" aria-label="左右スクロール">▶</div></div></div>
 
@@ -1594,9 +1594,9 @@
   /* ===== 動的ガント ===== */
   // 車両ダミー75台（直営＋フランチャイズ加盟店）を決定的に生成
   var GT_STORES=['足立小台','三ノ輪','(加盟)北千住','(加盟)王子','(加盟)綾瀬'];
-  var GT_MODELS=[['PCX','MW'],['レブル250','RB'],['タクト','AD'],['クロスカブ','CR'],['CB400','CB'],['リード125','LD'],['ジャイロ','GY'],['アドレス125','AS'],['グロム','GR'],['GB350','GB']];
-  function genBikes(n){var a=[];for(var i=0;i<n;i++){var m=GT_MODELS[i%GT_MODELS.length];var store=GT_STORES[i%GT_STORES.length];var code=m[1]+'-'+(1000+i);var spans=[];var s1=((i*7)%110)-25;spans.push([s1,1+(i%3),['out','resv','resv'][i%3]]);var s2=s1+5+(i%9);spans.push([s2,2+(i%4),'resv']);if(i%8===0)spans.push([(i%40),2,'maint']);if(i%5===0)spans.push([s2+12+(i%20),3,'resv']);var jib=((i*13)%135)-10;var big=['CB400','GB350','レブル250'].indexOf(m[0])>=0;var sha=big?(((i*19)%150)-5):null;a.push({code:code,name:m[0],store:store,spans:spans,jib:jib,sha:sha});}return a;}
-  var GT_ROWS=genBikes(75);
+  var GT_MODELS=[['PCX','MW',125],['レブル250','RB',250],['タクト','AD',50],['クロスカブ','CR',110],['CB400','CB',400],['リード125','LD',125],['ジャイロ','GY',50],['アドレス125','AS',125],['グロム','GR',125],['GB350','GB',350]];
+  function genBikes(n){var a=[];for(var i=0;i<n;i++){var m=GT_MODELS[i%GT_MODELS.length];var store=GT_STORES[i%GT_STORES.length];var code=m[1]+'-'+(1000+i);var spans=[];var s1=((i*7)%110)-25;spans.push([s1,1+(i%3),['out','resv','resv'][i%3]]);var s2=s1+5+(i%9);spans.push([s2,2+(i%4),'resv']);if(i%8===0)spans.push([(i%40),2,'maint']);if(i%5===0)spans.push([s2+12+(i%20),3,'resv']);var jib=((i*13)%135)-10;var big=['CB400','GB350','レブル250'].indexOf(m[0])>=0;var sha=big?(((i*19)%150)-5):null;a.push({code:code,name:m[0],store:store,cc:m[2],spans:spans,jib:jib,sha:sha});}return a;}
+  var GT_ROWS=genBikes(75);GT_ROWS.sort(function(a,b){var s=GT_STORES.indexOf(a.store)-GT_STORES.indexOf(b.store);return s!==0?s:(a.cc-b.cc);});
   var GT_ST={out:['#dcfce7','#166534','貸出'],resv:['#dbeafe','#1d4ed8','予約'],maint:['#fef3c7','#92400e','整備']};
   function buildGantt(p){
     var grid=document.getElementById(p+'-grid'), fixed=document.getElementById(p+'-fixed'); if(!grid||!fixed)return;
