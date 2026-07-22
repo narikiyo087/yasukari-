@@ -155,22 +155,25 @@ export default function HomePage({ blogSlides, blogTags, bikeModelsAll, bikeClas
             }}
           >
             {stores.map((store) => (
-              <SwiperSlide key={store.name} className="h-auto">
-                <article className="group h-full overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm transition duration-200 hover:border-slate-300 hover:shadow-md">
-                  <div className="store-card__image relative aspect-[3/4] w-full overflow-hidden">
+              <SwiperSlide key={store.name} className="h-auto" style={{ height: 'auto' }}>
+                <article className="group flex h-full flex-col overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm transition duration-200 hover:border-slate-300 hover:shadow-md">
+                  <div
+                    className="store-card__image relative w-full overflow-hidden"
+                    style={{ aspectRatio: '4 / 3' }}
+                  >
                     <img
                       src={store.img}
                       alt={store.name}
-                      className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                      className="absolute inset-0 h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
                     />
                     <span className="absolute left-4 top-4 inline-flex items-center gap-1 rounded border border-slate-200 bg-white/95 px-2.5 py-1 text-xs font-semibold text-red-600">
                       <FaMapMarkerAlt />
                       {store.name}
                     </span>
                   </div>
-                  <div className="flex flex-col gap-3 px-4 py-4 sm:px-6 sm:py-6">
+                  <div className="flex flex-1 flex-col gap-3 px-4 py-4 sm:px-6 sm:py-6">
                     <p className="text-sm text-slate-600">{store.description}</p>
-                    <Link href={store.href} className="inline-flex items-center gap-2 text-sm font-semibold text-red-600">
+                    <Link href={store.href} className="mt-auto inline-flex items-center gap-2 text-sm font-semibold text-red-600">
                       詳細を見る
                       <span aria-hidden>→</span>
                     </Link>
