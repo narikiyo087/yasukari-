@@ -71,7 +71,7 @@
   body.role-store .scopebar{display:flex}
 
   .content{padding:24px;flex:1;overflow-y:auto}
-  .screen{display:none}.screen.on{display:block;animation:fade .18s}
+  .screen{display:none;max-width:1200px}.screen.on{display:block;animation:fade .18s}
   @keyframes fade{from{opacity:0}to{opacity:1}}
   .crumb{font-size:13px;color:var(--muted);margin-bottom:12px}
   .pgh{display:flex;align-items:center;gap:12px;margin-bottom:20px;flex-wrap:wrap}
@@ -423,11 +423,13 @@
         </div>
         <div class="panel" style="border-top:3px solid var(--red);margin-bottom:22px">
           <div class="ph"><h3>📋 今日のタスク（上から順に対応すればOK）</h3><a onclick="M('manual')">業務マニュアル ›</a></div>
-          <div class="row"><span class="badge b-warn">① 免許確認</span><div class="m"><b>3件</b>の予約が免許確認待ち（予約停止中）</div><a class="btn btn-primary btn-sm st" onclick="jump('license')">確認する</a></div>
-          <div class="row"><span class="badge b-info">② 返却承認</span><div class="m"><b>2件</b>の返却写真を承認</div><a class="btn btn-primary btn-sm st" onclick="jump('approvals')">承認へ</a></div>
-          <div class="row"><span class="badge b-ok">③ 受取準備</span><div class="m"><b>3台</b>本日の受取（鍵・車両チェック・KEYBOX発行）</div><a class="btn btn-outline btn-sm st" onclick="jump('reservations')">一覧</a></div>
-          <div class="row"><span class="badge b-red">④ 新規予約</span><div class="m"><b>3件</b>の新規予約｜<b>貸渡契約書を印刷</b>（現場で顧客に記入・保管）</div><a class="btn btn-primary btn-sm st" onclick="jump('reservations')">印刷タスクへ</a></div>
-          <div class="row"><span class="badge b-red">④ 事故報告</span><div class="m"><b>1件</b>の転倒報告を確認</div><a class="btn btn-outline btn-sm st" onclick="jump('approvals')">確認</a></div><div class="row"><span class="badge" style="background:#0f172a;color:#fff">⑤ キャンセル希望</span><div class="m"><b>2件</b>のキャンセル希望（問い合わせ経由・キャンセル料判定）</div><a class="btn btn-primary btn-sm st" onclick="jump('cancels')">対応</a></div><div class="row"><span class="badge b-warn">⑥ 問い合わせ/チャット</span><div class="m"><b>3件</b>の未対応メッセージに返信</div><a class="btn btn-primary btn-sm st" onclick="jump('chatbot')">返信</a></div>
+          <div class="row"><span class="badge b-red">① 新規予約・契約書印刷</span><div class="m"><b>3件</b>の新規予約｜<b>貸渡契約書を印刷</b>（現場で顧客に記入・保管）</div><a class="btn btn-primary btn-sm st" onclick="jump('reservations')">印刷タスクへ</a></div>
+          <div class="row"><span class="badge b-ok">② 受取準備</span><div class="m"><b>3台</b>本日の受取（鍵・車両チェック・KEYBOX発行）</div><a class="btn btn-outline btn-sm st" onclick="jump('reservations')">一覧</a></div>
+          <div class="row"><span class="badge badge" style="background:#0f172a;color:#fff">③ キャンセル希望</span><div class="m"><b>2件</b>のキャンセル希望（問い合わせ経由・キャンセル料判定）</div><a class="btn btn-primary btn-sm st" onclick="jump('cancels')">対応</a></div>
+          <div class="row"><span class="badge b-info">④ 返却承認</span><div class="m"><b>2件</b>の返却写真を承認</div><a class="btn btn-primary btn-sm st" onclick="jump('approvals')">承認へ</a></div>
+          <div class="row"><span class="badge b-red">⑤ 事故報告</span><div class="m"><b>1件</b>の転倒報告を確認</div><a class="btn btn-outline btn-sm st" onclick="jump('approvals')">確認</a></div>
+          <div class="row"><span class="badge b-warn">⑥ 免許確認</span><div class="m"><b>3件</b>の予約が免許確認待ち（予約停止中）</div><a class="btn btn-primary btn-sm st" onclick="jump('license')">確認する</a></div>
+          <div class="row"><span class="badge b-warn">⑦ 問い合わせ/チャット</span><div class="m"><b>3件</b>の未対応メッセージに返信</div><a class="btn btn-primary btn-sm st" onclick="jump('chatbot')">返信</a></div>
         </div>
         <div class="panel" style="border-left:4px solid var(--warn);margin-bottom:22px">
           <div class="ph"><h3>デポジット返金予定（残り15日以内）<span class="badge b-warn" style="margin-left:8px">2件</span></h3><a onclick="jump('deposits')">預かり一覧 ›</a></div>
