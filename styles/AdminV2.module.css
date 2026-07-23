@@ -87,7 +87,7 @@
 .row:last-child { border-bottom: 0; }
 .row .m { flex: 1; min-width: 0; color: var(--t2); }
 .row .m b { color: var(--ink); }
-.rowBadge { min-width: 168px; }
+.rowBadge { min-width: 190px; font-size: 13.5px; padding: 4px 10px; }
 .rowBtn { min-width: 104px; justify-content: center; text-align: center; }
 
 /* badge */
