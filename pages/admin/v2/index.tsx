@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import type { ReactNode } from 'react';
 import Head from 'next/head';
 import type { NextPage } from 'next';
 import AdminV2Shell from '../../../components/admin/AdminV2Shell';
@@ -13,14 +14,64 @@ import styles from '../../../styles/AdminV2.module.css';
 
 const TUTORIAL_KEY = 'adminV2TutorialDone';
 
-type Kpi = { lbl: string; num: string; unit?: string; hint?: string };
+type IconName = 'users' | 'key' | 'return' | 'bike' | 'check';
+type Kpi = { lbl: string; num: string; unit?: string; hint?: string; icon: IconName };
 const KPIS: Kpi[] = [
-  { lbl: '会員数', num: '1,290', hint: '本登録 715 / 仮登録 575' },
-  { lbl: '本日の受取', num: '3', unit: '台', hint: '鍵・車両チェック' },
-  { lbl: '本日の返却', num: '2', unit: '件', hint: '返却写真の承認待ち' },
-  { lbl: '稼働台数', num: '41', unit: '/ 75', hint: '貸出中 + 予約' },
-  { lbl: '承認待ち', num: '7', unit: '件', hint: '免許・返却・事故' },
+  { lbl: '会員数', num: '1,290', hint: '本登録 715 / 仮登録 575', icon: 'users' },
+  { lbl: '本日の貸出', num: '3', unit: '台', hint: '鍵・車両チェック', icon: 'key' },
+  { lbl: '本日の返却', num: '2', unit: '件', hint: '返却写真の承認待ち', icon: 'return' },
+  { lbl: '稼働台数', num: '41', unit: '/ 75', hint: '貸出中 + 予約', icon: 'bike' },
+  { lbl: '承認待ち', num: '7', unit: '件', hint: '免許・返却・事故', icon: 'check' },
 ];
+
+const ICON_PATHS: Record<IconName, ReactNode> = {
+  users: (
+    <>
+      <circle cx="9" cy="8" r="3.2" />
+      <path d="M3.5 19c0-3 2.6-5 5.5-5s5.5 2 5.5 5" />
+      <path d="M16 5.4a3 3 0 0 1 0 6" />
+      <path d="M20.5 19c0-2.4-1.2-4.1-3-4.8" />
+    </>
+  ),
+  key: (
+    <>
+      <circle cx="8" cy="8" r="4" />
+      <path d="M11 11l8.5 8.5" />
+      <path d="M16.5 16.5l2-2" />
+      <path d="M19 19l1.6-1.6" />
+    </>
+  ),
+  return: (
+    <>
+      <path d="M9 7h6a4 4 0 0 1 0 8H7" />
+      <path d="M10.5 4L7 7l3.5 3" />
+    </>
+  ),
+  bike: (
+    <>
+      <circle cx="6" cy="16.5" r="3" />
+      <circle cx="18" cy="16.5" r="3" />
+      <path d="M6 16.5l4-6.5h4.5l1.8 6.5" />
+      <path d="M10 10L8.7 7.5H6.4" />
+      <path d="M14.5 10H18l1.2 3.4" />
+    </>
+  ),
+  check: (
+    <>
+      <rect x="5.5" y="4" width="13" height="16" rx="2.2" />
+      <path d="M9 4V3h6v1" />
+      <path d="M9.3 12.2l2 2 3.6-4.2" />
+    </>
+  ),
+};
+
+const KpiIcon = ({ name }: { name: IconName }) => (
+  <span className={styles.kpiIcon}>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.7} strokeLinecap="round" strokeLinejoin="round">
+      {ICON_PATHS[name]}
+    </svg>
+  </span>
+);
 
 type Task = { no: string; badge: string; label: string; body: string; cta: string; primary?: boolean };
 // 並びは左メニュー順（予約管理 → 承認待ち → 免許確認 → その他）
@@ -80,6 +131,7 @@ const AdminV2Dashboard: NextPage = () => {
           <div className={styles.kpiRow}>
             {KPIS.map((k) => (
               <div className={styles.kpi} key={k.lbl}>
+                <KpiIcon name={k.icon} />
                 <div className={styles.lbl}>{k.lbl}</div>
                 <div className={styles.num}>
                   {k.num}
