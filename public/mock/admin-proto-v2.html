@@ -375,7 +375,7 @@
         <a class="item" data-s="waitlist" onclick="go(this)"><span class="ic"><svg viewBox="0 0 16 16"><path d="M8 2.2a3.8 3.8 0 0 0-3.8 3.8c0 3.8-1.4 4.8-1.4 4.8h10.4S11.8 9.8 11.8 6A3.8 3.8 0 0 0 8 2.2z"/><path d="M6.6 13.2a1.5 1.5 0 0 0 2.8 0"/></svg></span>空き通知リクエスト<span class="b">5</span></a>
       </div>
       <div class="grp"><div class="gt">売上・分析</div>
-        <a class="item" data-s="revenue" onclick="go(this)"><span class="ic"><svg viewBox="0 0 16 16"><rect x="2" y="4.4" width="12" height="8.2" rx="1.5"/><path d="M2 5A1.5 1.5 0 0 1 3.5 3.5h7"/><circle cx="11" cy="8.5" r="1" fill="currentColor" stroke="none"/></svg></span>売上・精算</a>
+        <a class="item" data-s="revenue" onclick="go(this)"><span class="ic"><svg viewBox="0 0 16 16"><rect x="2" y="4.4" width="12" height="8.2" rx="1.5"/><path d="M2 5A1.5 1.5 0 0 1 3.5 3.5h7"/><circle cx="11" cy="8.5" r="1" fill="currentColor" stroke="none"/></svg></span>売上・精算</a><a class="item" data-s="deposits" onclick="go(this)"><span class="ic"><svg viewBox="0 0 16 16"><rect x="2.2" y="4" width="11.6" height="8.6" rx="1.6"/><path d="M2.2 7.2h11.6"/></svg></span>デポジット管理</a>
         <div class="navwrap hqonly">
           <a class="item" data-s="analytics" onclick="navGroup(this,'analytics')"><span class="ic"><svg viewBox="0 0 16 16"><path d="M2 11l3.6-3.6 2.4 2.4L13 5"/><path d="M10 5h3v3"/></svg></span>全店分析<span class="caret">▾</span></a>
           <div class="subnav">
@@ -472,10 +472,10 @@
         <!-- 貸渡契約書 印刷タスク（現場作業・見落とし防止） -->
         <div class="panel" style="border-left:4px solid var(--red);margin-bottom:18px">
           <div class="ph"><h3>貸渡契約書の印刷タスク（本日の新規予約）<span class="badge b-red" id="pr-count" style="margin-left:8px">3件 未印刷</span></h3></div>
-          <div style="font-size:12.5px;color:var(--muted);padding:2px 2px 10px">現場で契約書を印刷し、顧客に記入・保管してもらう作業です。印刷が済んだら「印刷済みにする」を押してください。<b>ログイン操作が難しいスタッフでも見落とさないよう、予約管理の最上部に固定表示しています。</b></div>
-          <div class="pr-row row" style="padding:11px 2px"><span class="tm">受取 10:00</span><div class="m"><b>#10231 山田 太郎</b> ／ PCX ／ 三ノ輪</div><a class="btn btn-outline btn-sm" onclick="M('contractpdf')">契約書を印刷</a><a class="btn btn-primary btn-sm" style="margin-left:8px" onclick="prDone(this)">印刷済みにする</a></div>
-          <div class="pr-row row" style="padding:11px 2px"><span class="tm">受取 11:30</span><div class="m"><b>#10250 田中 次郎</b> ／ クロスカブ ／ 足立</div><a class="btn btn-outline btn-sm" onclick="M('contractpdf')">契約書を印刷</a><a class="btn btn-primary btn-sm" style="margin-left:8px" onclick="prDone(this)">印刷済みにする</a></div>
-          <div class="pr-row row" style="padding:11px 2px"><span class="tm">受取 14:00</span><div class="m"><b>#10244 佐藤 花子</b> ／ レブル250 ／ 三ノ輪</div><a class="btn btn-outline btn-sm" onclick="M('contractpdf')">契約書を印刷</a><a class="btn btn-primary btn-sm" style="margin-left:8px" onclick="prDone(this)">印刷済みにする</a></div>
+          <div style="font-size:12.5px;color:var(--muted);padding:2px 20px 10px">現場で契約書を印刷し、顧客に記入・保管してもらう作業です。印刷が済んだら「印刷済みにする」を押してください。<b>ログイン操作が難しいスタッフでも見落とさないよう、予約管理の最上部に固定表示しています。</b></div>
+          <div class="pr-row row" style="padding:11px 20px"><span class="tm">受取 10:00</span><div class="m"><b>#10231 山田 太郎</b> ／ PCX ／ 三ノ輪</div><a class="btn btn-outline btn-sm" onclick="M('contractpdf')">契約書を印刷</a><a class="btn btn-primary btn-sm" style="margin-left:8px" onclick="prDone(this)">印刷済みにする</a></div>
+          <div class="pr-row row" style="padding:11px 20px"><span class="tm">受取 11:30</span><div class="m"><b>#10250 田中 次郎</b> ／ クロスカブ ／ 足立</div><a class="btn btn-outline btn-sm" onclick="M('contractpdf')">契約書を印刷</a><a class="btn btn-primary btn-sm" style="margin-left:8px" onclick="prDone(this)">印刷済みにする</a></div>
+          <div class="pr-row row" style="padding:11px 20px"><span class="tm">受取 14:00</span><div class="m"><b>#10244 佐藤 花子</b> ／ レブル250 ／ 三ノ輪</div><a class="btn btn-outline btn-sm" onclick="M('contractpdf')">契約書を印刷</a><a class="btn btn-primary btn-sm" style="margin-left:8px" onclick="prDone(this)">印刷済みにする</a></div>
         </div>
         <div class="toolbar">
           <input placeholder="🔍 予約ID・顧客名で検索" class="grow">
@@ -860,9 +860,9 @@
 
       <!-- PRICING (料金設計：クラス/車種の2層) -->
       <section class="screen" id="pricing">
-        <div class="pgh"><h2>料金設計</h2><span class="sub">クラス料金（デフォルト）＋車種料金（個別）の2層</span><div class="act"><div class="viewtoggle"><a class="vt on" onclick="vsw('pr','list',this)">クラス料金</a><a class="vt" onclick="vsw('pr','board',this)">車種料金</a></div></div></div>
+        <div class="pgh"><h2>料金設計</h2><span class="sub">クラス料金（デフォルト）／車種料金（個別）／海外（別建て）</span><div class="act"><div class="viewtoggle"><a class="vt on" onclick="vsw('pr','list',this)">クラス料金</a><a class="vt" onclick="vsw('pr','board',this)">車種料金</a><a class="vt" onclick="vsw('pr','gantt',this)">海外</a></div></div></div>
         <div style="background:#eff6ff;border:1px solid #bfdbfe;color:#1e40af;border-radius:8px;padding:10px 14px;font-size:12.5px;margin-bottom:14px">💡 <b>車種で個別料金を登録しなければ、そのクラスの料金が適用</b>されます（クラス＝デフォルト、車種＝個別上書き）。どちらも「6つの基準日→自動補間」で設計。</div>
-        <div class="card" style="margin-bottom:16px;border-left:4px solid var(--red)"><h3>海外向け設定（居住国が日本以外の会員に自動適用）</h3>
+        <div id="pr-gantt" style="display:none"><div class="card" style="margin-bottom:16px;border-left:4px solid var(--red)"><h3>海外向け設定（居住国が日本以外の会員に自動適用）</h3>
           <div class="cols2">
             <div class="am-fld"><label>海外レート倍率（基準価格 × 倍率）</label><div style="display:flex;align-items:center;gap:8px"><input type="number" value="200" style="max-width:120px"><b>%</b></div><div style="font-size:11.5px;color:var(--muted);margin-top:5px">基準 ¥2,000 → <b class="mono">¥4,000</b>（200%）。<b>別料金表は作らず</b>、この倍率だけを調整。全クラス/車種の基準価格に自動で掛かります。</div></div>
             <div class="am-fld"><label>事前予約リードタイム</label><select><option>前日15:00まで（当日予約不可）</option><option>前々日まで</option><option>3日前まで</option></select><div style="font-size:11.5px;color:var(--muted);margin-top:5px">海外の方は当日予約を不可にし、書類確認の時間を確保。</div></div>
@@ -893,7 +893,7 @@
           <p style="font-size:11px;color:var(--muted);margin-top:10px">※ 許可国以外は登録可・予約不可（目視フローでも確認）。言語は登録時の居住国に基づき固定表示。</p>
           <a class="btn btn-outline btn-sm" style="margin-top:6px" onclick="jump('deposits')">💰 デポジット預かりリストを開く</a>
         </div>
-        <div id="pr-list">
+        </div><div id="pr-list">
           <div class="tbl-wrap"><table><thead><tr><th>クラスID</th><th>クラス名</th><th>基準料金(24時間)</th><th>料金登録</th><th></th></tr></thead><tbody>
             <tr onclick="openClassPrice('pricing')"><td class="mono">C-50S</td><td class="strong">50ccスクーター</td><td class="mono">¥2,000〜</td><td><span class="badge b-ok">登録済み</span></td><td><a class="btn btn-outline btn-sm" onclick="openClassPrice('pricing')">設定</a></td></tr>
             <tr onclick="openClassPrice('pricing')"><td class="mono">C-125S</td><td class="strong">125ccスクーター</td><td class="mono">¥2,500〜</td><td><span class="badge b-ok">登録済み</span></td><td><a class="btn btn-outline btn-sm" onclick="openClassPrice('pricing')">設定</a></td></tr>
