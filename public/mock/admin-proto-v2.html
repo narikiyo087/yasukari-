@@ -328,13 +328,13 @@
         <a class="item" data-s="schedule" onclick="go(this)"><span class="ic"><svg viewBox="0 0 16 16"><rect x="2" y="3" width="12" height="11" rx="1.5"/><line x1="2" y1="6" x2="14" y2="6"/><line x1="5" y1="1.5" x2="5" y2="4"/><line x1="11" y1="1.5" x2="11" y2="4"/><line x1="5" y1="9" x2="11" y2="9"/><line x1="5" y1="11.3" x2="9" y2="11.3"/></svg></span>バイクスケジュール</a>
         <a class="item" data-s="maint" onclick="go(this)"><span class="ic"><svg viewBox="0 0 16 16"><path d="M10.4 2.3a3 3 0 0 0-3.3 4.1L2.6 11l2.4 2.4 4.6-4.6a3 3 0 0 0 4.1-3.3l-2 2-1.6-.5-.5-1.6 2-2z"/></svg></span>整備アラート<span class="b">2</span></a>
       </div>
-      <div class="grp"><div class="gt">会員・連絡</div>
+      <div class="grp"><div class="gt">会員・サポート</div>
         <a class="item" data-s="members" onclick="go(this)"><span class="ic"><svg viewBox="0 0 16 16"><circle cx="6" cy="6" r="2.4"/><path d="M2.2 13c0-2.1 1.7-3.8 3.8-3.8s3.8 1.7 3.8 3.8"/><path d="M11 4.3a2.3 2.3 0 0 1 0 4.4"/><path d="M12 13c0-1.5-.6-2.9-1.6-3.6"/></svg></span>会員管理</a>
         <a class="item" data-s="activity" onclick="go(this)"><span class="ic"><svg viewBox="0 0 16 16"><line x1="3.5" y1="13" x2="3.5" y2="8"/><line x1="8" y1="13" x2="8" y2="4"/><line x1="12.5" y1="13" x2="12.5" y2="10"/></svg></span>顧客アクティビティ</a>
-        <a class="item" data-s="campaign" onclick="go(this)"><span class="ic"><svg viewBox="0 0 16 16"><path d="M13.5 3L5 7H3a1 1 0 0 0-1 1v0a1 1 0 0 0 1 1h2l8.5 4z"/><path d="M5 9v3"/></svg></span>メール配信/キャンペーン</a>
+        
         <a class="item" data-s="mail" onclick="go(this)"><span class="ic"><svg viewBox="0 0 16 16"><rect x="2" y="3.5" width="12" height="9" rx="1.5"/><path d="M2.5 4.6l5.5 4 5.5-4"/></svg></span>メール履歴</a>
         <div class="navwrap">
-          <a class="item" data-s="mailtmpl" onclick="navGroup(this,'mailtmpl')"><span class="ic"><svg viewBox="0 0 16 16"><path d="M8.8 2H4.2A1.5 1.5 0 0 0 2.7 3.5v9A1.5 1.5 0 0 0 4.2 14h7.6a1.5 1.5 0 0 0 1.5-1.5V6.3z"/><path d="M8.8 2v4.3h4.3"/><line x1="5" y1="9" x2="11" y2="9"/><line x1="5" y1="11" x2="9" y2="11"/></svg></span>メール文面<span class="caret">▾</span></a>
+          <a class="item" data-s="mailtmpl" onclick="navGroup(this,'mailtmpl')"><span class="ic"><svg viewBox="0 0 16 16"><path d="M8.8 2H4.2A1.5 1.5 0 0 0 2.7 3.5v9A1.5 1.5 0 0 0 4.2 14h7.6a1.5 1.5 0 0 0 1.5-1.5V6.3z"/><path d="M8.8 2v4.3h4.3"/><line x1="5" y1="9" x2="11" y2="9"/><line x1="5" y1="11" x2="9" y2="11"/></svg></span>メールテンプレート<span class="caret">▾</span></a>
           <div class="subnav">
             <a class="subitem" onclick="subgo('mailtmpl','取引メール',this)">取引メール</a>
             <a class="subitem" onclick="subgo('mailtmpl','メルマガ',this)">メルマガ</a>
@@ -347,11 +347,11 @@
             <a class="subitem" onclick="subgo('chatbot','QA管理',this)">QA管理</a>
           </div>
         </div>
-        <a class="item" data-s="waitlist" onclick="go(this)"><span class="ic"><svg viewBox="0 0 16 16"><path d="M8 2.2a3.8 3.8 0 0 0-3.8 3.8c0 3.8-1.4 4.8-1.4 4.8h10.4S11.8 9.8 11.8 6A3.8 3.8 0 0 0 8 2.2z"/><path d="M6.6 13.2a1.5 1.5 0 0 0 2.8 0"/></svg></span>空き通知リクエスト<span class="b">5</span></a>
+        
       </div>
       <div class="grp hqonly"><div class="gt">商品マスタ（本部）</div>
         <div class="navwrap">
-          <a class="item" data-s="catalog" onclick="navGroup(this,'catalog')"><span class="ic"><svg viewBox="0 0 16 16"><path d="M8 2l6 3-6 3-6-3 6-3z"/><path d="M2 8l6 3 6-3"/><path d="M2 11l6 3 6-3"/></svg></span>クラス/車種/車両<span class="caret">▾</span></a>
+          <a class="item" data-s="catalog" onclick="navGroup(this,'catalog')"><span class="ic"><svg viewBox="0 0 16 16"><path d="M8 2l6 3-6 3-6-3 6-3z"/><path d="M2 8l6 3 6-3"/><path d="M2 11l6 3 6-3"/></svg></span>車両登録・編集<span class="caret">▾</span></a>
           <div class="subnav">
             <a class="subitem" onclick="catNav('class',this)">クラス</a>
             <a class="subitem" onclick="catNav('model',this)">車種</a>
@@ -367,9 +367,11 @@
         </div>
         <a class="item" data-s="accessories" onclick="go(this)"><span class="ic"><svg viewBox="0 0 16 16"><path d="M3.6 5.2h8.8l-.7 8.3H4.3z"/><path d="M6 5.2V4.2a2 2 0 0 1 4 0v1"/></svg></span>用品・オプション</a>
       </div>
-      <div class="grp"><div class="gt">販促・カレンダー</div>
+      <div class="grp"><div class="gt">販促・お知らせ</div>
         <a class="item" data-s="promo" onclick="go(this)"><span class="ic"><svg viewBox="0 0 16 16"><rect x="2" y="3" width="12" height="10" rx="1"/><line x1="4.4" y1="6" x2="9" y2="6"/><line x1="4.4" y1="8.4" x2="9" y2="8.4"/><line x1="4.4" y1="10.8" x2="7" y2="10.8"/><rect x="10.4" y="6" width="2" height="2.4"/></svg></span>お知らせ/ブログ</a>
         <a class="item" data-s="coupons" onclick="go(this)"><span class="ic"><svg viewBox="0 0 16 16"><path d="M2 5.6a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1a1.2 1.2 0 0 0 0 2.8v1a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1v-1a1.2 1.2 0 0 0 0-2.8z"/></svg></span>クーポン</a>
+        <a class="item" data-s="campaign" onclick="go(this)"><span class="ic"><svg viewBox="0 0 16 16"><path d="M13.5 3L5 7H3a1 1 0 0 0-1 1v0a1 1 0 0 0 1 1h2l8.5 4z"/><path d="M5 9v3"/></svg></span>メール配信/キャンペーン</a>
+        <a class="item" data-s="waitlist" onclick="go(this)"><span class="ic"><svg viewBox="0 0 16 16"><path d="M8 2.2a3.8 3.8 0 0 0-3.8 3.8c0 3.8-1.4 4.8-1.4 4.8h10.4S11.8 9.8 11.8 6A3.8 3.8 0 0 0 8 2.2z"/><path d="M6.6 13.2a1.5 1.5 0 0 0 2.8 0"/></svg></span>空き通知リクエスト<span class="b">5</span></a>
       </div>
       <div class="grp"><div class="gt">売上・分析</div>
         <a class="item" data-s="revenue" onclick="go(this)"><span class="ic"><svg viewBox="0 0 16 16"><rect x="2" y="4.4" width="12" height="8.2" rx="1.5"/><path d="M2 5A1.5 1.5 0 0 1 3.5 3.5h7"/><circle cx="11" cy="8.5" r="1" fill="currentColor" stroke="none"/></svg></span>売上・精算</a>
@@ -387,7 +389,7 @@
         <a class="item" data-s="contract" onclick="go(this)"><span class="ic"><svg viewBox="0 0 16 16"><path d="M8.8 2H4.6A1.5 1.5 0 0 0 3.1 3.5v9A1.5 1.5 0 0 0 4.6 14h6.8a1.5 1.5 0 0 0 1.5-1.5V5.9z"/><path d="M8.8 2v4h4"/></svg></span>契約書・約款 書式</a>
         <a class="item" data-s="apikeys" onclick="go(this)"><span class="ic"><svg viewBox="0 0 16 16"><path d="M6.6 9.4l2.8-2.8"/><path d="M7.2 5.2l1-1a2.4 2.4 0 0 1 3.4 3.4l-1 1"/><path d="M8.8 10.8l-1 1a2.4 2.4 0 0 1-3.4-3.4l1-1"/></svg></span>APIキー管理</a>
         <a class="item" data-s="audit" onclick="go(this)"><span class="ic"><svg viewBox="0 0 16 16"><path d="M4 2h8v12l-1.3-1-1.4 1L8 13l-1.3 1L5.3 13 4 14z"/><line x1="6" y1="5.5" x2="10" y2="5.5"/><line x1="6" y1="8" x2="10" y2="8"/></svg></span>監査ログ</a>
-        <a class="item" data-s="settings" onclick="go(this)"><span class="ic"><svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="6"/><line x1="2" y1="8" x2="14" y2="8"/><path d="M8 2c1.7 1.7 2.7 3.8 2.7 6S9.7 12.3 8 14c-1.7-1.7-2.7-3.8-2.7-6S6.3 3.7 8 2z"/></svg></span>サイト公開状態</a>
+        <a class="item" data-s="settings" onclick="go(this)"><span class="ic"><svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="6"/><line x1="2" y1="8" x2="14" y2="8"/><path d="M8 2c1.7 1.7 2.7 3.8 2.7 6S9.7 12.3 8 14c-1.7-1.7-2.7-3.8-2.7-6S6.3 3.7 8 2z"/></svg></span>公開/メンテナンス</a>
       </div>
     </div>
   </aside>
@@ -1000,7 +1002,7 @@
 
       <!-- MAIL TEMPLATES -->
       <section class="screen" id="mailtmpl">
-        <div class="pgh"><h2>メール文面</h2><div class="act"><div class="viewtoggle"><a class="vt on" onclick="vsw('mt','list',this)">取引メール</a><a class="vt" onclick="vsw('mt','board',this)">メルマガ</a></div></div></div>
+        <div class="pgh"><h2>メールテンプレート</h2><div class="act"><div class="viewtoggle"><a class="vt on" onclick="vsw('mt','list',this)">取引メール</a><a class="vt" onclick="vsw('mt','board',this)">メルマガ</a></div></div></div>
         <div id="mt-list">
           <div class="cols-detail" style="grid-template-columns:300px 1fr">
             <div class="card"><h3>テンプレート</h3>
@@ -1549,7 +1551,7 @@
           <div class="card"><h3>事業者情報 / 返金口座</h3><dl class="kv"><dt>会社名</dt><dd>株式会社ケイジェット</dd><dt>所在地</dt><dd>足立区小台2-9-7 1階</dd><dt>電話</dt><dd class="mono">03-5856-8200</dd><dt>返金口座</dt><dd>（設定）</dd></dl><a class="btn btn-outline btn-sm" style="margin-top:12px;width:100%;justify-content:center" onclick="M('edit')">編集</a></div>
         </div>
       </section>
-      <section class="screen" id="settings"><div class="pgh"><h2>サイト公開状態</h2></div>
+      <section class="screen" id="settings"><div class="pgh"><h2>公開/メンテナンス</h2></div>
         <div class="card" style="max-width:560px"><div class="row" style="padding:14px 0"><div class="m"><b>サイト公開</b><div class="muted">OFFでメンテナンス画面を表示</div></div><div class="tg on" onclick="this.classList.toggle('on')"></div></div><div class="row" style="padding:14px 0"><div class="m"><b>新規予約の受付</b><div class="muted">一時停止できます</div></div><div class="tg on" onclick="this.classList.toggle('on')"></div></div><div class="row" style="padding:14px 0"><div class="m"><b>告知バーの表示</b></div><div class="tg on" onclick="this.classList.toggle('on')"></div></div><div class="row" style="padding:14px 0"><div class="m"><b>キャンセルの自動化</b><div class="muted">ON：顧客がマイページからキャンセル料を確認して自分でキャンセル（Pay.jp部分返金を自動処理・履歴とアクティビティに記録）。OFF：問い合わせ経由でスタッフが対応（今日のタスクに表示）。</div></div><div class="tg" onclick="this.classList.toggle('on')"></div></div></div>
       </section>
 
@@ -1561,7 +1563,7 @@
 <div class="amodal" id="amodal" onclick="if(event.target===this)closeM()"><div class="am-sheet"><div id="ambody"></div></div></div>
 
 <script>
-  var titles={dash:'ダッシュボード',reservations:'予約管理',reservation:'予約詳細',approvals:'承認待ち',license:'免許確認',keybox:'KEYBOX',schedule:'スケジュール',maint:'整備アラート',members:'会員管理',member:'会員詳細',activity:'顧客アクティビティ',vehicle:'車両詳細',coupondetail:'クーポン詳細',pricing:'料金設計',pricingdetail:'車種料金設定',classpricing:'クラス料金設定',deposits:'デポジット預かり',storedetail:'店舗設定',cancels:'キャンセル希望',promoedit:'お知らせ編集',mailtmpl:'メール文面',classdetail:'クラス詳細',chatconv:'チャット会話',accidentdetail:'事故報告',returndetail:'返却確認',apikeys:'APIキー管理',audit:'監査ログ',mail:'メール履歴',chatbot:'チャットボット',waitlist:'空き通知',campaign:'メール配信/キャンペーン',catalog:'商品マスタ',accessories:'用品・オプション',promo:'お知らせ/ブログ',calendar:'休日/ハイシーズン',coupons:'クーポン',revenue:'売上・精算',analytics:'全店分析',stores:'店舗/スタッフ',contract:'契約書・約款 書式',settings:'サイト公開状態'};
+  var titles={dash:'ダッシュボード',reservations:'予約管理',reservation:'予約詳細',approvals:'承認待ち',license:'免許確認',keybox:'KEYBOX',schedule:'スケジュール',maint:'整備アラート',members:'会員管理',member:'会員詳細',activity:'顧客アクティビティ',vehicle:'車両詳細',coupondetail:'クーポン詳細',pricing:'料金設計',pricingdetail:'車種料金設定',classpricing:'クラス料金設定',deposits:'デポジット預かり',storedetail:'店舗設定',cancels:'キャンセル希望',promoedit:'お知らせ編集',mailtmpl:'メールテンプレート',classdetail:'クラス詳細',chatconv:'チャット会話',accidentdetail:'事故報告',returndetail:'返却確認',apikeys:'APIキー管理',audit:'監査ログ',mail:'メール履歴',chatbot:'チャットボット',waitlist:'空き通知',campaign:'メール配信/キャンペーン',catalog:'商品マスタ',accessories:'用品・オプション',promo:'お知らせ/ブログ',calendar:'休日/ハイシーズン',coupons:'クーポン',revenue:'売上・精算',analytics:'全店分析',stores:'店舗/スタッフ',contract:'契約書・約款 書式',settings:'公開/メンテナンス'};
   function _show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));var el=document.getElementById(id);if(el){el.classList.add('on');}document.querySelectorAll('.nav a.item').forEach(a=>a.classList.toggle('on',a.dataset.s===id));
     // サイドバー：アクティブ画面のドロップダウンを開き、他は閉じる
     document.querySelectorAll('.nav .navwrap').forEach(function(w){var it=w.querySelector('a.item');var active=!!it&&it.dataset.s===id;w.classList.toggle('open',active);if(!active)w.querySelectorAll('a.subitem').forEach(function(a){a.classList.remove('on');});});
