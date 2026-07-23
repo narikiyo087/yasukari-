@@ -1,13 +1,17 @@
+import { useEffect, useState } from 'react';
 import Head from 'next/head';
 import type { NextPage } from 'next';
 import AdminV2Shell from '../../../components/admin/AdminV2Shell';
+import InfoPopover from '../../../components/admin/InfoPopover';
+import AdminTutorial from '../../../components/admin/AdminTutorial';
 import styles from '../../../styles/AdminV2.module.css';
 
 /**
  * 管理画面 v2 — ダッシュボード（実装 / ダミーデータ）
  * デザイン見本帳(UI Design Foundation)準拠。プロト埋め込みではなく React 実装。
- * 以後、画面単位で本実装を追加していく。
  */
+
+const TUTORIAL_KEY = 'adminV2TutorialDone';
 
 type Kpi = { lbl: string; num: string; unit?: string; hint?: string };
 const KPIS: Kpi[] = [
@@ -18,14 +22,7 @@ const KPIS: Kpi[] = [
   { lbl: '承認待ち', num: '7', unit: '件', hint: '免許・返却・事故' },
 ];
 
-type Task = {
-  no: string;
-  badge: string; // styles key
-  label: string;
-  body: string; // may contain <b>
-  cta: string;
-  primary?: boolean;
-};
+type Task = { no: string; badge: string; label: string; body: string; cta: string; primary?: boolean };
 // 並びは左メニュー順（予約管理 → 承認待ち → 免許確認 → その他）
 const TASKS: Task[] = [
   { no: '①', badge: 'bBad', label: '新規予約・契約書印刷', body: '<b>3件</b>の新規予約｜<b>貸渡契約書を印刷</b>（現場で顧客に記入・保管）', cta: '印刷タスクへ', primary: true },
@@ -38,6 +35,26 @@ const TASKS: Task[] = [
 ];
 
 const AdminV2Dashboard: NextPage = () => {
+  const [tutOpen, setTutOpen] = useState(false);
+
+  // 初回アクセス時は自動でチュートリアルを表示
+  useEffect(() => {
+    try {
+      if (!localStorage.getItem(TUTORIAL_KEY)) setTutOpen(true);
+    } catch {
+      /* localStorage 不可でも無視 */
+    }
+  }, []);
+
+  const closeTutorial = () => {
+    setTutOpen(false);
+    try {
+      localStorage.setItem(TUTORIAL_KEY, '1');
+    } catch {
+      /* noop */
+    }
+  };
+
   return (
     <>
       <Head>
@@ -49,6 +66,15 @@ const AdminV2Dashboard: NextPage = () => {
           <div className={styles.pgh}>
             <h1>ダッシュボード</h1>
             <span className={styles.sub}>本日の運用状況とタスク</span>
+            <div className={styles.act}>
+              <button
+                type="button"
+                className={`${styles.btn} ${styles.btnOutline} ${styles.btnSm}`}
+                onClick={() => setTutOpen(true)}
+              >
+                ▶ チュートリアル
+              </button>
+            </div>
           </div>
 
           <div className={styles.kpiRow}>
@@ -66,8 +92,17 @@ const AdminV2Dashboard: NextPage = () => {
 
           <div className={`${styles.panel} ${styles.panelRed}`}>
             <div className={styles.ph}>
-              <h2>📋 今日のタスク（上から順に対応すればOK）</h2>
-              <button type="button">業務マニュアル ›</button>
+              <h2 style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+                📋 今日のタスク
+                <InfoPopover title="今日のタスクとは">
+                  上から順に対応すれば、当日の運用は完了します。契約書の印刷など現場作業も見落とさないよう集約しています。
+                  <div style={{ marginTop: 8 }}>
+                    <a href="#" style={{ color: 'var(--brand-strong)', fontWeight: 700, textDecoration: 'none' }}>
+                      業務マニュアルを見る ›
+                    </a>
+                  </div>
+                </InfoPopover>
+              </h2>
             </div>
             {TASKS.map((t) => (
               <div className={styles.row} key={t.no}>
@@ -88,6 +123,8 @@ const AdminV2Dashboard: NextPage = () => {
           </div>
         </div>
       </AdminV2Shell>
+
+      <AdminTutorial open={tutOpen} onClose={closeTutorial} />
     </>
   );
 };

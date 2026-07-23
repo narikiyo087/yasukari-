@@ -70,7 +70,7 @@
 /* KPI */
 .kpiRow { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 14px; margin-bottom: 22px; }
 .kpi { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; }
-.kpi .lbl { font-size: 12px; color: var(--t3); font-weight: 700; }
+.kpi .lbl { font-size: 12.5px; color: var(--t2); font-weight: 800; }
 .kpi .num { font-size: 26px; font-weight: 800; margin-top: 4px; }
 .kpi .num span { font-size: 13px; font-weight: 700; color: var(--t3); margin-left: 3px; }
 .kpi .hint { font-size: 11.5px; color: var(--t3); margin-top: 2px; }
@@ -105,3 +105,24 @@
 .btnPrimary:hover { background: var(--brand-strong); }
 .btnOutline { background: var(--card); color: var(--ink); border-color: var(--line-2); }
 .btnOutline:hover { border-color: var(--t3); }
+
+/* ===== Info popover ===== */
+.infoWrap { position: relative; display: inline-flex; align-items: center; }
+.infoBtn { width: 18px; height: 18px; border-radius: 999px; border: 1.5px solid var(--line-2); color: var(--t2); background: var(--card); font-size: 11px; font-weight: 800; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; padding: 0; line-height: 1; }
+.infoBtn:hover { border-color: var(--brand); color: var(--brand-strong); }
+.infoPop { position: absolute; top: 26px; left: 0; z-index: 40; width: 280px; background: var(--card); border: 1px solid var(--line); border-radius: 10px; box-shadow: 0 12px 28px rgba(15, 23, 42, 0.14); padding: 12px 14px; font-size: 12.5px; color: var(--t2); font-weight: 400; line-height: 1.65; }
+.infoPop h4 { margin: 0 0 6px; font-size: 12.5px; color: var(--ink); }
+
+/* ===== Tutorial ===== */
+.tutBtn { margin-left: 6px; }
+.tutOverlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.5); z-index: 200; display: flex; align-items: center; justify-content: center; padding: 20px; }
+.tutCard { background: var(--card); border-radius: 16px; box-shadow: 0 24px 48px rgba(15, 23, 42, 0.28); max-width: 460px; width: 100%; padding: 24px 24px 20px; }
+.tutStepNo { font-size: 11px; font-weight: 800; letter-spacing: 0.12em; color: var(--brand-strong); text-transform: uppercase; }
+.tutTitle { font-size: 21px; font-weight: 800; margin: 6px 0 10px; letter-spacing: -0.01em; }
+.tutBody { color: var(--t2); font-size: 14px; line-height: 1.75; }
+.tutNav { display: flex; align-items: center; gap: 10px; margin-top: 22px; }
+.tutDots { display: flex; gap: 6px; margin-right: auto; }
+.tutDot { width: 7px; height: 7px; border-radius: 999px; background: var(--line-2); }
+.tutDotOn { background: var(--brand); }
+.tutSkip { background: none; border: 0; color: var(--t3); font: inherit; font-size: 12.5px; cursor: pointer; }
+.tutSkip:hover { color: var(--t2); }
