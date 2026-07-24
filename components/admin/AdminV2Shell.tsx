@@ -41,7 +41,16 @@ export const NAV_GROUPS: NavGroup[] = [
   {
     title: '商品マスタ（本部）',
     items: [
-      { key: 'catalog', label: '車両登録・編集', sub: [{ label: 'クラス' }, { label: '車種' }, { label: '車両' }] },
+      {
+        key: 'catalog',
+        label: '車両登録・編集',
+        href: '/admin/catalog',
+        sub: [
+          { label: 'クラス', href: '/admin/catalog?tab=class' },
+          { label: '車種', href: '/admin/catalog?tab=model' },
+          { label: '車両', href: '/admin/catalog?tab=vehicle' },
+        ],
+      },
       {
         key: 'pricing',
         label: '料金設計',
