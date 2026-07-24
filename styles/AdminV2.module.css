@@ -69,7 +69,7 @@
 
 /* KPI */
 .kpiRow { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 14px; margin-bottom: 22px; }
-.kpi { display: flex; align-items: center; gap: 14px; background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 16px; box-shadow: 0 3px 10px rgba(15, 23, 42, 0.12); }
+.kpi { display: flex; align-items: center; gap: 14px; background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 16px; box-shadow: 0 4px 14px rgba(15, 23, 42, 0.18); }
 .kpiIcon { flex: 0 0 auto; width: 50px; height: 50px; border-radius: 13px; background: color-mix(in srgb, var(--brand) 9%, var(--card)); color: var(--brand-strong); display: inline-flex; align-items: center; justify-content: center; }
 .kpiIcon svg { width: 27px; height: 27px; }
 .kpiText { min-width: 0; }
