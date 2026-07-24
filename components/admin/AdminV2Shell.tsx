@@ -11,7 +11,7 @@ export const NAV_GROUPS: NavGroup[] = [
   {
     title: '今日の運用',
     items: [
-      { key: 'dash', label: 'ダッシュボード', href: '/admin/v2' },
+      { key: 'dash', label: 'ダッシュボード', href: '/admin' },
       { key: 'reservations', label: '予約管理' },
       { key: 'approvals', label: '承認待ち', count: 7 },
       { key: 'license', label: '免許確認', count: 3 },

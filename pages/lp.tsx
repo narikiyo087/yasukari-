@@ -1,0 +1,390 @@
+import React from "react";
+import Head from "next/head";
+import Link from "next/link";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Autoplay, Navigation, Pagination } from "swiper/modules";
+import fs from "fs";
+import path from "path";
+import { GetStaticProps } from "next";
+import { FaClock, FaTruck, FaStar, FaHashtag, FaMapMarkerAlt } from "react-icons/fa";
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
+import BikeModelCarousel from "../components/BikeModelCarousel";
+import BikeLineup from "../components/BikeLineup";
+import HeroSlider from "../components/HeroSlider";
+import RecentlyViewed from "../components/RecentlyViewed";
+import HowToUse from "../components/HowToUse";
+import SectionHeading from "../components/SectionHeading";
+import FaqAccordion, { FAQItem } from "../components/FaqAccordion";
+import { readChatbotFaq } from "../lib/server/chatbotFaq";
+import { getBikeClasses, getBikeModels, BikeClass, BikeModel } from "../lib/bikes";
+
+type BlogSlide = {
+  title: string;
+  href: string;
+  img: string;
+};
+
+interface Props {
+  blogSlides: BlogSlide[];
+  blogTags: string[];
+  bikeModelsAll: BikeModel[];
+  bikeClasses: BikeClass[];
+  faqItems: FAQItem[];
+}
+
+export default function HomePage({ blogSlides, blogTags, bikeModelsAll, bikeClasses, faqItems }: Props) {
+  const heroSlides = [
+    { img: "https://yasukari-file.s3.ap-northeast-1.amazonaws.com/PhotoUploads/slide.jpg" },
+    { img: "https://yasukari-file.s3.ap-northeast-1.amazonaws.com/PhotoUploads/slide2.jpg" },
+  ];
+
+  const faqs = faqItems;
+
+  const hotKeywords = blogTags.slice(0, 12).map((tag) => ({
+    label: tag,
+    href: `/blog_for_custmor/tag/${encodeURIComponent(tag)}?click_from=top_keywords`,
+  }));
+
+  const featureHighlights = [
+    {
+      icon: <FaClock className="text-3xl text-red-600" />,
+      title: "24時間スマート予約",
+      text: "お支払いまでオンラインで完結。マイページで変更も柔軟に行えます。",
+    },
+    {
+      icon: <FaTruck className="text-3xl text-red-600" />,
+      title: "メンテナンス済みの安心車両",
+      text: "プロの整備士がコンディションをチェックし、いつでもベストな状態でご用意。",
+    },
+    {
+      icon: <FaStar className="text-3xl text-red-600" />,
+      title: "レンタル特典とサポート",
+      text: "充実の装備レンタルとロードサービスで、初めての長距離でも安心です。",
+    },
+  ];
+
+  const stores = [
+    {
+      name: "足立小台本店",
+      description: "足立区にある格安バイク屋です。",
+      img: "https://yasukari-file.s3.ap-northeast-1.amazonaws.com/PhotoUploads/1769056287667-dc75b5a4-20d8-46f7-93be-38c35767e257-adachiten-001.jpg",
+      href: "/stores#adachi",
+    },
+    {
+      name: "三ノ輪店",
+      description: "東京都台東区の国道4号線沿いにあるレンタルバイク店です。",
+      img: "https://yasukari-file.s3.ap-northeast-1.amazonaws.com/PhotoUploads/1767016149538-9b1cfb29-74c6-4fad-b328-2ce52642b64f-unnamed.webp",
+      href: "/stores#minowa",
+    },
+  ];
+
+  return (
+    <>
+      <Head>
+        <title>ヤスカリ | 東京の格安レンタルバイク・原付ならヤスカリ</title>
+        <meta
+          name="description"
+          content="東京で格安のレンタルバイク・原付をお探しならヤスカリ。足立小台本店・三ノ輪店の2店舗で、整備済みバイクをスムーズに予約できます。"
+        />
+        <meta
+          name="keywords"
+          content="ヤスカリ, レンタルバイク, 格安, 東京, 原付, バイクレンタル, 二輪レンタル, 足立区, 三ノ輪"
+        />
+        <link rel="canonical" href="https://yasukari.com/" />
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content="ヤスカリ | 東京の格安レンタルバイク・原付ならヤスカリ" />
+        <meta
+          property="og:description"
+          content="東京で格安のレンタルバイク・原付をお探しならヤスカリ。足立小台本店・三ノ輪店の2店舗で、整備済みバイクをスムーズに予約できます。"
+        />
+        <meta property="og:url" content="https://yasukari.com/" />
+        <meta property="og:image" content="https://yasukari-file.s3.ap-northeast-1.amazonaws.com/PhotoUploads/slide.jpg" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="ヤスカリ | 東京の格安レンタルバイク・原付ならヤスカリ" />
+        <meta
+          name="twitter:description"
+          content="東京で格安のレンタルバイク・原付をお探しならヤスカリ。足立小台本店・三ノ輪店の2店舗で、整備済みバイクをスムーズに予約できます。"
+        />
+        <meta name="twitter:image" content="https://yasukari-file.s3.ap-northeast-1.amazonaws.com/PhotoUploads/slide.jpg" />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Organization",
+              name: "ヤスカリ",
+              legalName: "株式会社ケイジェット",
+              url: "https://yasukari.com/",
+              logo: "https://yasukari-file.s3.ap-northeast-1.amazonaws.com/PhotoUploads/1769056104573-d731196a-700f-4cc2-948b-68cfdb40d14a-yasukari-logo.jpg",
+              telephone: "+81-3-5856-8200",
+              email: "info@yasukari.com",
+              sameAs: [
+                "https://www.instagram.com/yasukari_819",
+                "https://x.com/yasukari_819",
+                "https://www.youtube.com/@yasukari_819",
+                "https://line.me/R/ti/p/@yasukari_819",
+              ],
+            }),
+          }}
+        />
+      </Head>
+
+      <HeroSlider slides={heroSlides} />
+
+      <RecentlyViewed />
+
+      <BikeLineup bikes={bikeModelsAll} classes={bikeClasses} />
+
+      <section className="section-surface section-padding">
+        <SectionHeading
+          eyebrow="Stores"
+          title="お近くの店舗を選ぶ"
+          description="都内2店舗で営業中。アクセスの良い立地と広々としたピットで、受け取りから返却まで快適にご利用いただけます。三ノ輪店はセルフ店（セルフサービス）です。"
+        />
+        <div className="mt-8">
+          <Swiper
+            modules={[Pagination]}
+            pagination={{ clickable: true }}
+            spaceBetween={16}
+            breakpoints={{
+              0: { slidesPerView: 1.05 },
+              640: { slidesPerView: 2 },
+              1024: { slidesPerView: 2 },
+            }}
+          >
+            {stores.map((store) => (
+              <SwiperSlide key={store.name} className="h-auto" style={{ height: 'auto' }}>
+                <article className="group flex h-full flex-col overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm transition duration-200 hover:border-slate-300 hover:shadow-md">
+                  <div
+                    className="store-card__image relative w-full overflow-hidden"
+                    style={{ aspectRatio: '4 / 3' }}
+                  >
+                    <img
+                      src={store.img}
+                      alt={store.name}
+                      className="absolute inset-0 h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                    />
+                    <span className="absolute left-4 top-4 inline-flex items-center gap-1 rounded border border-slate-200 bg-white/95 px-2.5 py-1 text-xs font-semibold text-red-600">
+                      <FaMapMarkerAlt />
+                      {store.name}
+                    </span>
+                  </div>
+                  <div className="flex flex-1 flex-col gap-3 px-4 py-4 sm:px-6 sm:py-6">
+                    <p className="text-sm text-slate-600">{store.description}</p>
+                    <Link href={store.href} className="mt-auto inline-flex items-center gap-2 text-sm font-semibold text-red-600">
+                      詳細を見る
+                      <span aria-hidden>→</span>
+                    </Link>
+                  </div>
+                </article>
+              </SwiperSlide>
+            ))}
+          </Swiper>
+        </div>
+      </section>
+
+      <BikeModelCarousel
+        items={bikeModelsAll}
+        title="人気モデル"
+        subtitle="ライダーに選ばれる定番モデル"
+        headingTitle="ライダーに選ばれる定番モデル"
+        headingDescription="快適さとデザイン、価格のバランスに優れ、初めてのレンタルにもおすすめのラインアップです。"
+      />
+
+      <section className="section-surface section-padding">
+        <SectionHeading
+          eyebrow="Why ヤスカリ"
+          title="選ばれる3つの理由"
+          description="スムーズな予約体験、整備士による徹底管理、そしてライダー目線のサポート。最新のオンライン体験で、旅の準備時間をぐっと短縮します。"
+        />
+        <div className="mt-8">
+          <Swiper
+            modules={[Pagination]}
+            pagination={{ clickable: true }}
+            spaceBetween={16}
+            breakpoints={{
+              0: { slidesPerView: 1.1 },
+              640: { slidesPerView: 2 },
+              1024: { slidesPerView: 3 },
+            }}
+          >
+            {featureHighlights.map((feature) => (
+              <SwiperSlide key={feature.title} className="h-auto">
+                <FeatureHighlight {...feature} />
+              </SwiperSlide>
+            ))}
+          </Swiper>
+        </div>
+      </section>
+
+      <HowToUse />
+
+      <section className="section-surface section-padding faq-section">
+        <div className="faq-section__inner">
+          <SectionHeading
+            eyebrow="FAQ"
+            title="よくある質問"
+            description="料金・保険・予約変更など、よくいただく質問をまとめました。もっと詳しく知りたいときは、ヘルプページもご覧ください。"
+          />
+          <FaqAccordion faqs={faqs} hideToggle />
+          <div className="faq-section__actions mt-8">
+            <Link href="/beginner" className="btn-primary w-full justify-center sm:w-auto">
+              はじめてガイドで利用の流れを詳しく知る
+            </Link>
+            <Link href="/help" className="btn-primary w-full justify-center sm:w-auto">
+              その他のよくあるご質問をもっと見る
+            </Link>
+          </div>
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{
+              __html: JSON.stringify({
+                "@context": "https://schema.org",
+                "@type": "FAQPage",
+                mainEntity: faqs.map((f) => ({
+                  "@type": "Question",
+                  name: f.q,
+                  acceptedAnswer: { "@type": "Answer", text: f.a },
+                })),
+              }),
+            }}
+          />
+        </div>
+      </section>
+
+      <section className="section-surface section-padding">
+        <SectionHeading
+          eyebrow="News & Blog"
+          title="新着ブログ・お知らせ"
+          description="店舗からのお知らせや、レンタルのコツをスタッフが発信中。旅前の準備に役立つコンテンツを毎週更新しています。"
+        />
+        <div className="mt-8">
+          <Swiper
+            modules={[Autoplay, Navigation, Pagination]}
+            spaceBetween={16}
+            navigation
+            pagination={{ clickable: true }}
+            autoplay={{ delay: 3200 }}
+            loop
+            breakpoints={{
+              0: { slidesPerView: 1 },
+              640: { slidesPerView: 2 },
+              1024: { slidesPerView: 3 },
+            }}
+          >
+            {blogSlides.map((card, index) => (
+              <SwiperSlide key={index}>
+                <Link href={card.href} className="block h-full">
+                  <div className="blog-slide blog-slide--compact h-full">
+                    <img src={card.img} alt={card.title} className="h-full w-full object-cover" />
+                    <div className="blog-slide-title">{card.title}</div>
+                  </div>
+                </Link>
+              </SwiperSlide>
+            ))}
+          </Swiper>
+        </div>
+      </section>
+
+      <section className="section-surface section-padding">
+        <SectionHeading
+          eyebrow="Trending Now"
+          title="注目キーワード"
+          description="季節のおすすめや人気カテゴリから、気になるトピックをすぐにチェックできます。気軽な散策から本格ツーリングまで、あなたの目的に合うキーワードをピックアップ。"
+        />
+        <div className="flex flex-wrap items-center gap-3 pb-2">
+          {hotKeywords.map((k, idx) => (
+            <Link
+              key={idx}
+              href={k.href}
+              className="group inline-flex items-center gap-2 rounded-md border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm transition hover:border-slate-300 hover:bg-slate-50 whitespace-nowrap md:whitespace-normal"
+            >
+              <FaHashtag className="text-base text-red-600" />
+              <span>{k.label}</span>
+            </Link>
+          ))}
+        </div>
+      </section>
+    </>
+  );
+}
+
+function FeatureHighlight({
+  icon,
+  title,
+  text,
+}: {
+  icon: React.ReactNode;
+  title: string;
+  text: string;
+}) {
+  return (
+    <article className="feature-highlight-card flex h-full flex-col gap-4 rounded-lg border border-slate-200 bg-white p-6 text-center shadow-sm transition duration-200 hover:border-slate-300 hover:shadow-md">
+      <div className="feature-highlight-card__icon mx-auto flex h-16 w-16 items-center justify-center rounded-lg bg-red-50 text-red-600">
+        {icon}
+      </div>
+      <h3 className="card-title text-lg font-semibold text-slate-800">{title}</h3>
+      <p className="feature-highlight-card__text text-sm leading-relaxed text-slate-600">{text}</p>
+    </article>
+  );
+}
+
+export const getStaticProps: GetStaticProps<Props> = async () => {
+  const faqData = await readChatbotFaq();
+  const faqs: FAQItem[] = (faqData.categories ?? []).flatMap((c) => c.faqs);
+  for (let i = faqs.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [faqs[i], faqs[j]] = [faqs[j], faqs[i]];
+  }
+  const faqItems = faqs.slice(0, 10);
+  const dir = path.join(process.cwd(), "blog_for_custmor");
+  const files = fs.readdirSync(dir).filter((f) => f.endsWith(".md"));
+  const posts = files.map((file) => {
+    const slug = file.replace(/\.md$/, "");
+    const md = fs.readFileSync(path.join(dir, file), "utf8");
+    const lines = md.split(/\r?\n/);
+    let idx = 0;
+    const meta: Record<string, string> = {};
+    if (lines[idx] === "---") {
+      idx++;
+      while (idx < lines.length && lines[idx] !== "---") {
+        const [k, ...v] = lines[idx].split(":");
+        if (k) meta[k.trim()] = v.join(":").trim().replace(/^"|"$/g, "");
+        idx++;
+      }
+      idx++;
+    }
+    const heading = lines.find((l) => l.startsWith("# "));
+    const title = meta.title || (heading ? heading.replace(/^#\s*/, "") : slug);
+    const date = meta.date || slug.match(/^\d{4}-\d{2}-\d{2}/)?.[0] || "";
+    const eyecatch = meta.eyecatch || undefined;
+    const tags = meta.tags;
+    const showJa = meta.showJa !== "false";
+    if (!showJa) return null;
+    return { slug, title, date, eyecatch, tags };
+  }).filter((post): post is NonNullable<typeof post> => post !== null);
+
+  posts.sort((a, b) => b.date.localeCompare(a.date));
+  const tagSet = new Set<string>();
+  posts.forEach((post) => {
+    post.tags?.split(",").forEach((tag) => {
+      const trimmed = tag.trim();
+      if (trimmed) tagSet.add(trimmed);
+    });
+  });
+  const blogTags = Array.from(tagSet);
+
+  const blogSlides: BlogSlide[] = posts.slice(0, 10).map((p) => ({
+    title: p.title,
+    href: `/blog_for_custmor/${p.slug}`,
+    img: p.eyecatch || "",
+  }));
+  const [bikeModelsAll, bikeClasses] = await Promise.all([
+    getBikeModels(),
+    getBikeClasses(),
+  ]);
+
+  return { props: { blogSlides, blogTags, bikeModelsAll, bikeClasses, faqItems }, revalidate: 60 };
+};
