@@ -65,6 +65,15 @@ const ICON_PATHS: Record<IconName, ReactNode> = {
   ),
 };
 
+// タスク種類の色（名前はタグではなくプレーン太字＋色ドットで表現）
+const DOT_COLOR: Record<string, string> = {
+  bBad: 'var(--bad)',
+  bOk: 'var(--ok)',
+  bInk: 'var(--ink)',
+  bInfo: 'var(--info)',
+  bWarn: 'var(--warn)',
+};
+
 const KpiIcon = ({ name }: { name: IconName }) => (
   <span className={styles.kpiIcon}>
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.7} strokeLinecap="round" strokeLinejoin="round">
@@ -160,7 +169,8 @@ const AdminV2Dashboard: NextPage = () => {
             </div>
             {TASKS.map((t) => (
               <div className={styles.row} key={t.no}>
-                <span className={`${styles.badge} ${styles[t.badge]} ${styles.rowBadge}`}>
+                <span className={styles.taskName}>
+                  <span className={styles.dot} style={{ background: DOT_COLOR[t.badge] }} />
                   {t.no} {t.label}
                 </span>
                 <div className={styles.m} dangerouslySetInnerHTML={{ __html: t.body }} />

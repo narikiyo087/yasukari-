@@ -91,6 +91,8 @@
 .row .m { flex: 1; min-width: 0; color: var(--t2); }
 .row .m b { color: var(--ink); }
 .rowBadge { min-width: 190px; font-size: 13.5px; padding: 4px 10px; }
+.taskName { min-width: 200px; display: inline-flex; align-items: center; gap: 9px; font-size: 14px; font-weight: 800; color: var(--ink); }
+.dot { width: 9px; height: 9px; border-radius: 999px; flex: 0 0 auto; }
 .rowBtn { min-width: 104px; justify-content: center; text-align: center; }
 
 /* badge */
@@ -111,8 +113,8 @@
 
 /* ===== Info popover ===== */
 .infoWrap { position: relative; display: inline-flex; align-items: center; }
-.infoBtn { width: 18px; height: 18px; border-radius: 999px; border: 1.5px solid var(--line-2); color: var(--t2); background: var(--card); font-size: 11px; font-weight: 800; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; padding: 0; line-height: 1; }
-.infoBtn:hover { border-color: var(--brand); color: var(--brand-strong); }
+.infoBtn { width: 20px; height: 20px; border-radius: 999px; border: 0; color: #fff; background: #64748b; font-size: 12px; font-weight: 800; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; padding: 0; line-height: 1; }
+.infoBtn:hover { background: var(--brand); }
 .infoPop { position: absolute; top: 26px; left: 0; z-index: 40; width: 280px; background: var(--card); border: 1px solid var(--line); border-radius: 10px; box-shadow: 0 12px 28px rgba(15, 23, 42, 0.14); padding: 12px 14px; font-size: 12.5px; color: var(--t2); font-weight: 400; line-height: 1.65; }
 .infoPop h4 { margin: 0 0 6px; font-size: 12.5px; color: var(--ink); }
 
