@@ -132,12 +132,14 @@ const AdminV2Dashboard: NextPage = () => {
             {KPIS.map((k) => (
               <div className={styles.kpi} key={k.lbl}>
                 <KpiIcon name={k.icon} />
-                <div className={styles.lbl}>{k.lbl}</div>
-                <div className={styles.num}>
-                  {k.num}
-                  {k.unit && <span>{k.unit}</span>}
+                <div className={styles.kpiText}>
+                  <div className={styles.lbl}>{k.lbl}</div>
+                  <div className={styles.num}>
+                    {k.num}
+                    {k.unit && <span>{k.unit}</span>}
+                  </div>
+                  {k.hint && <div className={styles.hint}>{k.hint}</div>}
                 </div>
-                {k.hint && <div className={styles.hint}>{k.hint}</div>}
               </div>
             ))}
           </div>
