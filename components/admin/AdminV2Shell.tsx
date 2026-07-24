@@ -31,7 +31,7 @@ export const NAV_GROUPS: NavGroup[] = [
   {
     title: '会員・サポート',
     items: [
-      { key: 'members', label: '会員管理' },
+      { key: 'members', label: '会員管理', href: '/admin/members' },
       { key: 'activity', label: '顧客アクティビティ' },
       { key: 'mail', label: 'メール履歴' },
       { key: 'mailtmpl', label: 'メールテンプレート', sub: [{ label: '取引メール' }, { label: 'メルマガ' }] },
@@ -42,7 +42,16 @@ export const NAV_GROUPS: NavGroup[] = [
     title: '商品マスタ（本部）',
     items: [
       { key: 'catalog', label: '車両登録・編集', sub: [{ label: 'クラス' }, { label: '車種' }, { label: '車両' }] },
-      { key: 'pricing', label: '料金設計', sub: [{ label: 'クラス料金' }, { label: '車種料金' }, { label: '海外' }] },
+      {
+        key: 'pricing',
+        label: '料金設計',
+        href: '/admin/pricing',
+        sub: [
+          { label: 'クラス料金', href: '/admin/pricing?tab=class' },
+          { label: '車種料金', href: '/admin/pricing?tab=model' },
+          { label: '海外', href: '/admin/pricing?tab=intl' },
+        ],
+      },
       { key: 'accessories', label: '用品・オプション' },
     ],
   },
