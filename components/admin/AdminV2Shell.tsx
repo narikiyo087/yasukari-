@@ -13,11 +13,11 @@ export const NAV_GROUPS: NavGroup[] = [
     items: [
       { key: 'dash', label: 'ダッシュボード', href: '/admin' },
       { key: 'reservations', label: '予約管理', href: '/admin/reservations' },
-      { key: 'approvals', label: '承認待ち', count: 7 },
-      { key: 'license', label: '免許確認', count: 3 },
+      { key: 'approvals', label: '承認待ち', href: '/admin/approvals', count: 7 },
+      { key: 'license', label: '免許確認', href: '/admin/license', count: 3 },
       { key: 'keybox', label: 'KEYBOX', sub: [{ label: '実行ログ' }, { label: '再発行' }] },
       { key: 'schedule', label: 'バイクスケジュール' },
-      { key: 'maint', label: '整備アラート', count: 2 },
+      { key: 'maint', label: '整備アラート', href: '/admin/maint', count: 2 },
     ],
   },
   {

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import type { ReactNode } from 'react';
 import Head from 'next/head';
+import Link from 'next/link';
 import type { NextPage } from 'next';
 import AdminV2Shell from '../../components/admin/AdminV2Shell';
 import InfoPopover from '../../components/admin/InfoPopover';
@@ -82,15 +83,15 @@ const KpiIcon = ({ name }: { name: IconName }) => (
   </span>
 );
 
-type Task = { no: string; badge: string; label: string; body: string; cta: string; primary?: boolean };
+type Task = { no: string; badge: string; label: string; body: string; cta: string; primary?: boolean; href?: string };
 // 並びは左メニュー順（予約管理 → 承認待ち → 免許確認 → その他）
 const TASKS: Task[] = [
-  { no: '①', badge: 'bBad', label: '新規予約・契約書印刷', body: '<b>3件</b>の新規予約｜<b>貸渡契約書を印刷</b>（現場で顧客に記入・保管）', cta: '印刷タスクへ', primary: true },
-  { no: '②', badge: 'bOk', label: '受取準備', body: '<b>3台</b>本日の受取（鍵・車両チェック・KEYBOX発行）', cta: '一覧' },
-  { no: '③', badge: 'bInk', label: 'キャンセル希望', body: '<b>2件</b>のキャンセル希望（問い合わせ経由・キャンセル料判定）', cta: '対応', primary: true },
-  { no: '④', badge: 'bInfo', label: '返却承認', body: '<b>2件</b>の返却写真を承認', cta: '承認へ', primary: true },
-  { no: '⑤', badge: 'bBad', label: '事故報告', body: '<b>1件</b>の転倒報告を確認', cta: '確認' },
-  { no: '⑥', badge: 'bWarn', label: '免許確認', body: '<b>3件</b>の予約が免許確認待ち（予約停止中）', cta: '確認する', primary: true },
+  { no: '①', badge: 'bBad', label: '新規予約・契約書印刷', body: '<b>3件</b>の新規予約｜<b>貸渡契約書を印刷</b>（現場で顧客に記入・保管）', cta: '印刷タスクへ', primary: true, href: '/admin/reservations' },
+  { no: '②', badge: 'bOk', label: '受取準備', body: '<b>3台</b>本日の受取（鍵・車両チェック・KEYBOX発行）', cta: '一覧', href: '/admin/reservations' },
+  { no: '③', badge: 'bInk', label: 'キャンセル希望', body: '<b>2件</b>のキャンセル希望（問い合わせ経由・キャンセル料判定）', cta: '対応', primary: true, href: '/admin/reservations' },
+  { no: '④', badge: 'bInfo', label: '返却承認', body: '<b>2件</b>の返却写真を承認', cta: '承認へ', primary: true, href: '/admin/approvals' },
+  { no: '⑤', badge: 'bBad', label: '事故報告', body: '<b>1件</b>の転倒報告を確認', cta: '確認', href: '/admin/approvals' },
+  { no: '⑥', badge: 'bWarn', label: '免許確認', body: '<b>3件</b>の予約が免許確認待ち（予約停止中）', cta: '確認する', primary: true, href: '/admin/license' },
   { no: '⑦', badge: 'bWarn', label: '問い合わせ/チャット', body: '<b>3件</b>の未対応メッセージに返信', cta: '返信', primary: true },
 ];
 
@@ -174,14 +175,25 @@ const AdminV2Dashboard: NextPage = () => {
                   {t.no} {t.label}
                 </span>
                 <div className={styles.m} dangerouslySetInnerHTML={{ __html: t.body }} />
-                <button
-                  type="button"
-                  className={`${styles.btn} ${styles.btnSm} ${styles.rowBtn} ${
-                    t.primary ? styles.btnPrimary : styles.btnOutline
-                  }`}
-                >
-                  {t.cta}
-                </button>
+                {t.href ? (
+                  <Link
+                    href={t.href}
+                    className={`${styles.btn} ${styles.btnSm} ${styles.rowBtn} ${
+                      t.primary ? styles.btnPrimary : styles.btnOutline
+                    }`}
+                  >
+                    {t.cta}
+                  </Link>
+                ) : (
+                  <button
+                    type="button"
+                    className={`${styles.btn} ${styles.btnSm} ${styles.rowBtn} ${
+                      t.primary ? styles.btnPrimary : styles.btnOutline
+                    }`}
+                  >
+                    {t.cta}
+                  </button>
+                )}
               </div>
             ))}
           </div>

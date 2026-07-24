@@ -12,6 +12,9 @@ type L = { label: string; href: string; ext?: boolean; note?: string };
 const ADMIN: L[] = [
   { label: '管理ダッシュボード', href: '/admin', note: '新・実装済み' },
   { label: '予約管理', href: '/admin/reservations', note: '新・実装済み' },
+  { label: '承認待ち', href: '/admin/approvals', note: '新・実装済み' },
+  { label: '免許確認', href: '/admin/license', note: '新・実装済み' },
+  { label: '整備アラート', href: '/admin/maint', note: '新・実装済み' },
 ];
 
 const CUSTOMER: L[] = [
