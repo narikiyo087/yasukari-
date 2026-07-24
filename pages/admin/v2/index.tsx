@@ -156,7 +156,7 @@ const AdminV2Dashboard: NextPage = () => {
           <div className={`${styles.panel} ${styles.panelRed}`}>
             <div className={styles.ph}>
               <h2 style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
-                📋 今日のタスク
+                今日のタスク
                 <InfoPopover title="今日のタスクとは">
                   上から順に対応すれば、当日の運用は完了します。契約書の印刷など現場作業も見落とさないよう集約しています。
                   <div style={{ marginTop: 8 }}>

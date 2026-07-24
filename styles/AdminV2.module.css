@@ -64,12 +64,12 @@
 /* page header */
 .pgh { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }
 .pgh h1 { font-size: 22px; font-weight: 800; margin: 0; letter-spacing: -0.01em; }
-.pgh .sub { font-size: 13px; color: var(--t3); }
+.pgh .sub { font-size: 13px; color: var(--ink); }
 .pgh .act { margin-left: auto; display: flex; gap: 10px; flex-wrap: wrap; }
 
 /* KPI */
 .kpiRow { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 14px; margin-bottom: 22px; }
-.kpi { display: flex; align-items: center; gap: 14px; background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 16px; }
+.kpi { display: flex; align-items: center; gap: 14px; background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 16px; box-shadow: 0 3px 10px rgba(15, 23, 42, 0.12); }
 .kpiIcon { flex: 0 0 auto; width: 50px; height: 50px; border-radius: 13px; background: color-mix(in srgb, var(--brand) 9%, var(--card)); color: var(--brand-strong); display: inline-flex; align-items: center; justify-content: center; }
 .kpiIcon svg { width: 27px; height: 27px; }
 .kpiText { min-width: 0; }
@@ -113,8 +113,8 @@
 
 /* ===== Info popover ===== */
 .infoWrap { position: relative; display: inline-flex; align-items: center; }
-.infoBtn { width: 20px; height: 20px; border-radius: 999px; border: 0; color: #fff; background: var(--info); font-size: 12px; font-weight: 800; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; padding: 0; line-height: 1; box-shadow: 0 1px 2px rgba(37, 99, 235, 0.35); }
-.infoBtn:hover { background: #1d4ed8; }
+.infoBtn { width: 20px; height: 20px; border-radius: 999px; border: 1px solid var(--line); color: var(--brand); background: #fff; font-size: 12px; font-weight: 800; font-style: italic; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; padding: 0; line-height: 1; box-shadow: 0 1px 3px rgba(15, 23, 42, 0.18); }
+.infoBtn:hover { background: #1e293b; color: #fff; border-color: #1e293b; }
 .infoPop { position: absolute; top: 26px; left: 0; z-index: 40; width: 280px; background: var(--card); border: 1px solid var(--line); border-radius: 10px; box-shadow: 0 12px 28px rgba(15, 23, 42, 0.14); padding: 12px 14px; font-size: 12.5px; color: var(--t2); font-weight: 400; line-height: 1.65; }
 .infoPop h4 { margin: 0 0 6px; font-size: 12.5px; color: var(--ink); }
 
