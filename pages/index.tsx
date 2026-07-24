@@ -14,6 +14,8 @@ const ADMIN: L[] = [
   { label: '予約管理', href: '/admin/reservations', note: '新・実装済み' },
   { label: '承認待ち', href: '/admin/approvals', note: '新・実装済み' },
   { label: '免許確認', href: '/admin/license', note: '新・実装済み' },
+  { label: 'KEYBOX', href: '/admin/keybox', note: '新・実装済み' },
+  { label: 'バイクスケジュール', href: '/admin/schedule', note: '新・実装済み' },
   { label: '整備アラート', href: '/admin/maint', note: '新・実装済み' },
 ];
 

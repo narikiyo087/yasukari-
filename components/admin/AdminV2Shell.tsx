@@ -2,7 +2,7 @@ import Link from 'next/link';
 import type { ReactNode } from 'react';
 import styles from '../../styles/AdminV2.module.css';
 
-type SubItem = { label: string };
+type SubItem = { label: string; href?: string };
 type NavItem = { key: string; label: string; href?: string; count?: number; sub?: SubItem[] };
 type NavGroup = { title: string; items: NavItem[] };
 
@@ -15,8 +15,16 @@ export const NAV_GROUPS: NavGroup[] = [
       { key: 'reservations', label: '予約管理', href: '/admin/reservations' },
       { key: 'approvals', label: '承認待ち', href: '/admin/approvals', count: 7 },
       { key: 'license', label: '免許確認', href: '/admin/license', count: 3 },
-      { key: 'keybox', label: 'KEYBOX', sub: [{ label: '実行ログ' }, { label: '再発行' }] },
-      { key: 'schedule', label: 'バイクスケジュール' },
+      {
+        key: 'keybox',
+        label: 'KEYBOX',
+        href: '/admin/keybox',
+        sub: [
+          { label: '実行ログ', href: '/admin/keybox?tab=log' },
+          { label: '再発行', href: '/admin/keybox?tab=reissue' },
+        ],
+      },
+      { key: 'schedule', label: 'バイクスケジュール', href: '/admin/schedule' },
       { key: 'maint', label: '整備アラート', href: '/admin/maint', count: 2 },
     ],
   },
@@ -108,11 +116,17 @@ export default function AdminV2Shell({ active, title = 'ヤスカリ 管理画�
                   )}
                   {isActive && item.sub && (
                     <div className={styles.subnav}>
-                      {item.sub.map((s) => (
-                        <span key={s.label} className={styles.subitem}>
-                          {s.label}
-                        </span>
-                      ))}
+                      {item.sub.map((s) =>
+                        s.href ? (
+                          <Link key={s.label} href={s.href} className={styles.subitem}>
+                            {s.label}
+                          </Link>
+                        ) : (
+                          <span key={s.label} className={styles.subitem}>
+                            {s.label}
+                          </span>
+                        ),
+                      )}
                     </div>
                   )}
                 </div>
