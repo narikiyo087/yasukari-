@@ -20,6 +20,7 @@ const ADMIN: L[] = [
   { label: '会員管理', href: '/admin/members', note: '新・実装済み' },
   { label: '料金設計', href: '/admin/pricing', note: '新・実装済み' },
   { label: '車両登録・編集', href: '/admin/catalog', note: '新・実装済み' },
+  { label: '用品・オプション', href: '/admin/accessories', note: '新・実装済み' },
 ];
 
 const CUSTOMER: L[] = [

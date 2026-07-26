@@ -61,7 +61,7 @@ export const NAV_GROUPS: NavGroup[] = [
           { label: '海外', href: '/admin/pricing?tab=intl' },
         ],
       },
-      { key: 'accessories', label: '用品・オプション' },
+      { key: 'accessories', label: '用品・オプション', href: '/admin/accessories' },
     ],
   },
   {
