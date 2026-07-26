@@ -28,6 +28,11 @@ const ADMIN: L[] = [
   { label: '売上・精算', href: '/admin/revenue', note: '新・実装済み' },
   { label: 'デポジット管理', href: '/admin/deposits', note: '新・実装済み' },
   { label: '全店分析', href: '/admin/analytics', note: '新・実装済み' },
+  { label: '店舗設定', href: '/admin/stores', note: '新・実装済み' },
+  { label: '契約書・約款 書式', href: '/admin/contract', note: '新・実装済み' },
+  { label: 'APIキー管理', href: '/admin/apikeys', note: '新・実装済み' },
+  { label: '監査ログ', href: '/admin/audit', note: '新・実装済み' },
+  { label: '公開/メンテナンス', href: '/admin/settings', note: '新・実装済み' },
 ];
 
 const CUSTOMER: L[] = [

@@ -93,11 +93,11 @@ export const NAV_GROUPS: NavGroup[] = [
   {
     title: '設定（本部）',
     items: [
-      { key: 'stores', label: '店舗設定' },
-      { key: 'contract', label: '契約書・約款 書式' },
-      { key: 'apikeys', label: 'APIキー管理' },
-      { key: 'audit', label: '監査ログ' },
-      { key: 'settings', label: '公開/メンテナンス' },
+      { key: 'stores', label: '店舗設定', href: '/admin/stores' },
+      { key: 'contract', label: '契約書・約款 書式', href: '/admin/contract' },
+      { key: 'apikeys', label: 'APIキー管理', href: '/admin/apikeys' },
+      { key: 'audit', label: '監査ログ', href: '/admin/audit' },
+      { key: 'settings', label: '公開/メンテナンス', href: '/admin/settings' },
     ],
   },
 ];
