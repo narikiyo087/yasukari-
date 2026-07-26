@@ -179,6 +179,34 @@
 .segTotal { margin-top: 12px; padding: 10px 12px; background: #fde8e8; border-radius: 8px; font-size: 13px; font-weight: 700; color: var(--ink); }
 .segTotal b { color: var(--brand); font-size: 15px; }
 
+/* ===== 分析・売上のチャート（モックのデザインを移植） ===== */
+/* 売上：1年間の折れ線グラフ */
+.linechart { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 18px 20px 10px; margin-bottom: 18px; }
+.lcHead { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; margin-bottom: 6px; }
+.lcHead h3 { margin: 0; font-size: 15px; font-weight: 800; }
+.lcVals { display: flex; gap: 14px; flex-wrap: wrap; font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace; font-size: 12px; color: var(--t3); }
+.lcVals b { color: var(--ink); }
+.linechart svg { width: 100%; height: 150px; display: block; }
+.lcAxis { display: flex; justify-content: space-between; font-size: 10.5px; color: var(--t3); font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace; margin-top: 2px; padding: 0 4px; }
+
+/* 縦棒グラフ */
+.bars { display: flex; align-items: flex-end; gap: 12px; height: 170px; padding: 22px 0 4px; }
+.bar { flex: 1; background: linear-gradient(180deg, var(--brand), var(--brand-strong)); border-radius: 5px 5px 0 0; position: relative; min-width: 18px; }
+.barVal { position: absolute; top: -20px; left: 0; right: 0; text-align: center; font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace; font-size: 11px; color: var(--ink); font-weight: 800; }
+.barLabel { position: absolute; bottom: -22px; left: 0; right: 0; text-align: center; font-size: 11px; color: var(--t3); font-style: normal; }
+
+/* 横棒グラフ */
+.hbar { display: flex; align-items: center; gap: 10px; margin: 9px 0; }
+.hbarLbl { width: 96px; font-size: 12.5px; color: var(--t2); font-weight: 600; flex: none; }
+.hbarTrack { flex: 1; background: var(--bg-2); border-radius: 6px; height: 22px; overflow: hidden; }
+.hbarFill { height: 100%; background: linear-gradient(90deg, var(--brand), var(--brand-strong)); border-radius: 6px; display: flex; align-items: center; justify-content: flex-end; padding-right: 8px; color: #fff; font-size: 11px; font-weight: 800; font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace; min-width: 26px; }
+
+/* 全店分析：赤を抑えた落ち着いた配色（青系） */
+.analyticsBlue .bar { background: linear-gradient(180deg, #7dd3fc, #0284c7); }
+.analyticsBlue .hbarFill { background: linear-gradient(90deg, #7dd3fc, #0284c7); }
+.analyticsBlue .bars { padding: 28px 12px 26px; }
+.analyticsBlue .hbar { margin: 12px 4px; }
+
 /* トグルスイッチ */
 .tg { width: 44px; height: 26px; border-radius: 999px; background: var(--line-2); position: relative; cursor: pointer; flex: 0 0 auto; border: 0; padding: 0; }
 .tg::after { content: ""; position: absolute; top: 3px; left: 3px; width: 20px; height: 20px; border-radius: 50%; background: #fff; transition: 0.15s; }

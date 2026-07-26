@@ -25,6 +25,9 @@ const ADMIN: L[] = [
   { label: 'クーポン', href: '/admin/coupons', note: '新・実装済み' },
   { label: 'メール配信/キャンペーン', href: '/admin/campaign', note: '新・実装済み' },
   { label: '空き通知リクエスト', href: '/admin/waitlist', note: '新・実装済み' },
+  { label: '売上・精算', href: '/admin/revenue', note: '新・実装済み' },
+  { label: 'デポジット管理', href: '/admin/deposits', note: '新・実装済み' },
+  { label: '全店分析', href: '/admin/analytics', note: '新・実装済み' },
 ];
 
 const CUSTOMER: L[] = [

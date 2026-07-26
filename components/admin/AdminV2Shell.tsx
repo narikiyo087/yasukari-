@@ -76,9 +76,18 @@ export const NAV_GROUPS: NavGroup[] = [
   {
     title: '売上・分析',
     items: [
-      { key: 'revenue', label: '売上・精算' },
-      { key: 'deposits', label: 'デポジット管理' },
-      { key: 'analytics', label: '全店分析', sub: [{ label: '予約分析' }, { label: '会員分析' }, { label: '車両分析' }] },
+      { key: 'revenue', label: '売上・精算', href: '/admin/revenue' },
+      { key: 'deposits', label: 'デポジット管理', href: '/admin/deposits' },
+      {
+        key: 'analytics',
+        label: '全店分析',
+        href: '/admin/analytics',
+        sub: [
+          { label: '予約分析', href: '/admin/analytics?tab=reservation' },
+          { label: '会員分析', href: '/admin/analytics?tab=member' },
+          { label: '車両分析', href: '/admin/analytics?tab=vehicle' },
+        ],
+      },
     ],
   },
   {
