@@ -159,6 +159,26 @@
 .crmD { font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace; font-size: 11.5px; color: var(--t3); }
 .crmB { font-size: 13px; color: var(--t2); line-height: 1.6; }
 
+/* リッチテキストエディタ（お知らせ本文） */
+.rteTb { display: flex; flex-wrap: wrap; gap: 4px; border: 1px solid var(--line-2); border-bottom: 0; border-radius: 8px 8px 0 0; padding: 6px; background: var(--bg-2); }
+.rteTb button { border: 1px solid transparent; background: var(--card); border-radius: 6px; padding: 6px 11px; font-size: 13px; font-weight: 700; cursor: pointer; color: var(--t2); }
+.rteTb button:hover { border-color: var(--line-2); }
+.rteSep { width: 1px; background: var(--line); margin: 2px 3px; }
+.rte { border: 1px solid var(--line-2); border-radius: 0 0 8px 8px; min-height: 240px; padding: 15px; font-size: 14px; line-height: 1.85; outline: none; background: var(--card); color: var(--ink); }
+.rte:focus { border-color: var(--brand); }
+.rte h2 { font-size: 18px; font-weight: 800; margin: 14px 0 6px; border-left: 4px solid var(--brand); padding-left: 8px; }
+.rte h3 { font-size: 15px; font-weight: 800; margin: 10px 0 6px; }
+.rte ul, .rte ol { padding-left: 22px; margin: 6px 0; }
+
+/* セグメント複数選択チェック（メール配信） */
+.segchk { display: flex; align-items: center; gap: 9px; padding: 9px 11px; border: 1px solid var(--line); border-radius: 8px; font-size: 13px; font-weight: 600; color: var(--t2); cursor: pointer; }
+.segchk:hover { border-color: var(--line-2); }
+.segchk input { width: 17px; height: 17px; accent-color: var(--brand); flex: none; }
+.segchk .cnt { margin-left: auto; color: var(--t3); font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace; }
+.segchkOn { border-color: var(--brand); background: #fde8e8; color: var(--ink); }
+.segTotal { margin-top: 12px; padding: 10px 12px; background: #fde8e8; border-radius: 8px; font-size: 13px; font-weight: 700; color: var(--ink); }
+.segTotal b { color: var(--brand); font-size: 15px; }
+
 /* トグルスイッチ */
 .tg { width: 44px; height: 26px; border-radius: 999px; background: var(--line-2); position: relative; cursor: pointer; flex: 0 0 auto; border: 0; padding: 0; }
 .tg::after { content: ""; position: absolute; top: 3px; left: 3px; width: 20px; height: 20px; border-radius: 50%; background: #fff; transition: 0.15s; }

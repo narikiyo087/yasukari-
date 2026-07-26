@@ -67,10 +67,10 @@ export const NAV_GROUPS: NavGroup[] = [
   {
     title: '販促・お知らせ',
     items: [
-      { key: 'promo', label: 'お知らせ/ブログ' },
-      { key: 'coupons', label: 'クーポン' },
-      { key: 'campaign', label: 'メール配信/キャンペーン' },
-      { key: 'waitlist', label: '空き通知リクエスト', count: 5 },
+      { key: 'promo', label: 'お知らせ/ブログ', href: '/admin/promo' },
+      { key: 'coupons', label: 'クーポン', href: '/admin/coupons' },
+      { key: 'campaign', label: 'メール配信/キャンペーン', href: '/admin/campaign' },
+      { key: 'waitlist', label: '空き通知リクエスト', href: '/admin/waitlist', count: 5 },
     ],
   },
   {
