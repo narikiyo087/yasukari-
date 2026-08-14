@@ -63,7 +63,9 @@ const membersCommsLinks: MenuLink[] = [
   { label: "会員一覧", href: `${ADMIN_DASHBOARD_ROOT}/members` },
   { label: "メール送信履歴", href: `${ADMIN_DASHBOARD_ROOT}/mail-history` },
   { label: "テストメール", href: `${ADMIN_DASHBOARD_ROOT}/test-mail` },
-  { label: "メルマガ設定", href: `${ADMIN_DASHBOARD_ROOT}/newsletter-settings` },
+  { label: "メルマガ設定・配信", href: `${ADMIN_DASHBOARD_ROOT}/newsletter-settings` },
+  { label: "全体通知の配信", href: `${ADMIN_DASHBOARD_ROOT}/broadcast` },
+  { label: "レンタル前日リマインド", href: `${ADMIN_DASHBOARD_ROOT}/rental-reminders` },
   { label: "チャットボットQA管理", href: `${ADMIN_DASHBOARD_ROOT}/chatbot/faq` },
   {
     label: "チャットボット問い合わせ一覧",

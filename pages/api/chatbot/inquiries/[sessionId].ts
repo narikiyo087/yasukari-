@@ -4,6 +4,11 @@ import { GetCommand, PutCommand, QueryCommand, UpdateCommand } from "@aws-sdk/li
 
 import { getDocumentClient } from "../../../../lib/dynamodb";
 import { ChatHistoryEntry } from "../../../../lib/chatbot/inquiries";
+import { EMAIL_FOOTER_TEXT_LINES } from "../../../../lib/emailFooter";
+import { addMailHistory } from "../../../../lib/mailHistory";
+import { enqueueEmail } from "../../../../lib/mailQueue";
+import { fetchMemberEmail } from "../../../../lib/memberContact";
+import { recordUserNotification } from "../../../../lib/userNotifications";
 
 type ChatSessionRecord = {
   session_id: string;
@@ -44,6 +49,10 @@ type InquiryDetailResponse = {
       messageIndex: number;
     }>;
     history?: ChatHistoryEntry[];
+  };
+  notification?: {
+    siteNotified: boolean;
+    emailStatus: "sent" | "skipped" | "not_available";
   };
 };
 
@@ -211,6 +220,101 @@ async function appendReply(session: ChatSessionRecord, content: string) {
   };
 }
 
+type ReplyNotificationResult = {
+  siteNotified: boolean;
+  emailStatus: "sent" | "skipped" | "not_available";
+};
+
+const REPLY_SUBJECT = "【ヤスカリ】お問い合わせに返信がありました";
+
+const hasSmtpConfig = (): boolean =>
+  Boolean(process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS);
+
+const buildReplyNotificationBody = (content: string): string =>
+  [
+    "ヤスカリへのお問い合わせに、スタッフから返信がありました。",
+    "",
+    "■返信内容",
+    "----------------------------------------",
+    content,
+    "----------------------------------------",
+    "",
+    "続きのやり取りは、サイト右下のチャットからご確認いただけます。",
+    "",
+    "※お問い合わせは、本メールにご返信いただいても対応いたします。",
+    "",
+    ...EMAIL_FOOTER_TEXT_LINES,
+  ].join("\n");
+
+async function notifyCustomerOfReply(
+  session: ChatSessionRecord,
+  content: string
+): Promise<ReplyNotificationResult> {
+  const result: ReplyNotificationResult = {
+    siteNotified: false,
+    emailStatus: "not_available",
+  };
+
+  const userId = typeof session.user_id === "string" && session.user_id ? session.user_id : null;
+  if (!userId) {
+    return result;
+  }
+
+  const body = buildReplyNotificationBody(content);
+  const memberEmail = await fetchMemberEmail(userId);
+
+  if (memberEmail && hasSmtpConfig()) {
+    try {
+      await enqueueEmail({
+        to: memberEmail,
+        subject: REPLY_SUBJECT,
+        text: body,
+        category: "問い合わせ",
+        userIdForNotification: userId,
+        notificationBody: body,
+        mirrorToSite: true,
+      });
+      result.siteNotified = true;
+      result.emailStatus = "sent";
+      return result;
+    } catch (error) {
+      console.error("[chatbot] Failed to send reply email", { sessionId: session.session_id, error });
+    }
+  } else if (memberEmail) {
+    result.emailStatus = "skipped";
+    try {
+      await addMailHistory({
+        to: memberEmail,
+        subject: REPLY_SUBJECT,
+        status: "skipped",
+        category: "問い合わせ",
+        errorMessage: "SMTP設定不足のため送信できませんでした。",
+      });
+    } catch (error) {
+      console.error("[chatbot] Failed to record skipped mail history", error);
+    }
+  }
+
+  try {
+    await recordUserNotification({
+      userId,
+      subject: REPLY_SUBJECT,
+      body,
+      category: "問い合わせ",
+      channels: ["site"],
+      recipientEmail: memberEmail ?? undefined,
+    });
+    result.siteNotified = true;
+  } catch (error) {
+    console.error("[chatbot] Failed to record reply notification", {
+      sessionId: session.session_id,
+      error,
+    });
+  }
+
+  return result;
+}
+
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<InquiryDetailResponse | { error: string }>
@@ -234,12 +338,14 @@ export default async function handler(
     }
 
     const reply = await appendReply(session, content);
+    const notification = await notifyCustomerOfReply(session, content);
     return res.status(200).json({
       inquiry: {
         ...normalizeSession({ ...session, last_activity_at: reply.lastActivityAt }),
         messages: [reply],
         history: reply.history,
       },
+      notification,
     });
   }
 

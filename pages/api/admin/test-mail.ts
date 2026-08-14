@@ -4,6 +4,7 @@ import { addMailHistory } from "../../../lib/mailHistory";
 import { deliverFullRegistrationEmail, deliverProvisionalRegistrationEmail } from "../../../lib/registrationEmails";
 import { sendReservationCompletionEmail } from "../../../lib/reservationCompletionEmail";
 import { sendRentalExtensionCompletionEmail } from "../../../lib/rentalExtensionCompletionEmail";
+import { sendRentalReminderEmail } from "../../../lib/rentalReminderEmail";
 import type { Reservation } from "../../../lib/reservations";
 
 type TestMailType =
@@ -15,7 +16,9 @@ type TestMailType =
   | "reservation_adachi_en"
   | "reservation_minowa_en"
   | "extension"
-  | "extension_en";
+  | "extension_en"
+  | "reminder"
+  | "reminder_en";
 
 type TestMailResponse = {
   message: string;
@@ -27,7 +30,7 @@ const MAIL_DEFINITIONS: Record<
   {
     label: string;
     subject: string;
-    category: "仮登録" | "本登録" | "予約完了" | "レンタル延長";
+    category: "仮登録" | "本登録" | "予約完了" | "レンタル延長" | "レンタル前日";
   }
 > = {
   provisional: {
@@ -74,6 +77,16 @@ const MAIL_DEFINITIONS: Record<
     label: "レンタル延長決済完了（英語版）",
     subject: "[Yasukari] Rental extension payment completed",
     category: "レンタル延長",
+  },
+  reminder: {
+    label: "レンタル前日リマインド",
+    subject: "【ヤスカリ】明日はレンタル開始日です",
+    category: "レンタル前日",
+  },
+  reminder_en: {
+    label: "レンタル前日リマインド（英語版）",
+    subject: "[Yasukari] Your rental starts tomorrow",
+    category: "レンタル前日",
   },
 };
 
@@ -225,7 +238,8 @@ export default async function handler(
     const isEnglishReservation =
       selectedType === "reservation_adachi_en" ||
       selectedType === "reservation_minowa_en" ||
-      selectedType === "extension_en";
+      selectedType === "extension_en" ||
+      selectedType === "reminder_en";
     const sampleReservation =
       selectedType === "reservation_minowa" || selectedType === "reservation_minowa_en"
         ? buildSampleReservation(normalizedEmail, "三ノ輪店", isEnglishReservation)
@@ -234,6 +248,17 @@ export default async function handler(
     if (selectedType === "reservation_minowa" || selectedType === "reservation_minowa_en") {
       sampleReservation.keyboxPinCode = "1234";
       sampleReservation.keyboxQrImageUrl = "https://example.com/keybox/test-qr";
+    }
+
+    if (selectedType === "reminder" || selectedType === "reminder_en") {
+      const result = await sendRentalReminderEmail(sampleReservation);
+      res.status(200).json({
+        message: result.simulated
+          ? "SMTP設定不足のため送信をスキップしました。"
+          : "レンタル前日リマインドのテストメールを送信しました。",
+        status: result.simulated ? "skipped" : "sent",
+      });
+      return;
     }
 
     if (selectedType === "extension" || selectedType === "extension_en") {

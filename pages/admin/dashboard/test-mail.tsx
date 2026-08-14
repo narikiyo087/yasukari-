@@ -21,6 +21,8 @@ const MAIL_TYPE_OPTIONS = [
   { value: "reservation_minowa_en", label: "予約受付完了（三ノ輪店・英語版）" },
   { value: "extension", label: "レンタル延長決済完了" },
   { value: "extension_en", label: "レンタル延長決済完了（英語版）" },
+  { value: "reminder", label: "レンタル前日リマインド" },
+  { value: "reminder_en", label: "レンタル前日リマインド（英語版）" },
 ];
 
 const statusText = (status?: TestMailStatus) => {
@@ -43,6 +45,14 @@ export default function TestMailPage() {
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+
+    const confirmed = window.confirm(
+      `「${selectedLabel}」のテストメールを ${email} に送信します。よろしいですか？`
+    );
+    if (!confirmed) {
+      return;
+    }
+
     setSending(true);
     setError(null);
     setNotice(null);

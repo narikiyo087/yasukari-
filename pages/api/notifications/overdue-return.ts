@@ -1,6 +1,9 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 
 import { COGNITO_ID_TOKEN_COOKIE, verifyCognitoIdToken } from '../../../lib/cognitoServer';
+import { EMAIL_FOOTER_TEXT_LINES } from '../../../lib/emailFooter';
+import { addMailHistory } from '../../../lib/mailHistory';
+import { enqueueEmail } from '../../../lib/mailQueue';
 import { fetchUserNotifications, recordUserNotification } from '../../../lib/userNotifications';
 
 const AUTH_REQUIRED_MESSAGE = '通知を受け取るには、ログインを完了してください。';
@@ -25,10 +28,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   let userId: string | null = null;
+  let userEmail: string | null = null;
   try {
     const token = req.cookies?.[COGNITO_ID_TOKEN_COOKIE];
     const payload = await verifyCognitoIdToken(token);
     userId = payload?.sub ?? null;
+    userEmail = payload?.email ?? null;
   } catch (error) {
     console.error('Failed to verify authentication for overdue return notification', error);
     return res.status(503).json({
@@ -78,9 +83,49 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       body: bodyLines.join('\n'),
       category: '返却期限',
       channels: ['site'],
+      recipientEmail: userEmail ?? undefined,
     });
 
-    return res.status(200).json({ message: 'recorded' });
+    let emailStatus: 'sent' | 'skipped' | 'not_available' = 'not_available';
+    if (userEmail) {
+      const emailBody = [...bodyLines, '', ...EMAIL_FOOTER_TEXT_LINES].join('\n');
+      const hasSmtpConfig = Boolean(
+        process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS
+      );
+
+      if (hasSmtpConfig) {
+        try {
+          await enqueueEmail({
+            to: userEmail,
+            subject,
+            text: emailBody,
+            category: '返却期限超過',
+            userIdForNotification: userId,
+            notificationBody: emailBody,
+            mirrorToSite: false,
+          });
+          emailStatus = 'sent';
+        } catch (emailError) {
+          console.error('Failed to send overdue return email', emailError);
+          emailStatus = 'skipped';
+        }
+      } else {
+        emailStatus = 'skipped';
+        try {
+          await addMailHistory({
+            to: userEmail,
+            subject,
+            status: 'skipped',
+            category: '返却期限超過',
+            errorMessage: 'SMTP設定不足のため送信できませんでした。',
+          });
+        } catch (historyError) {
+          console.error('Failed to record skipped overdue mail history', historyError);
+        }
+      }
+    }
+
+    return res.status(200).json({ message: 'recorded', emailStatus });
   } catch (error) {
     console.error('Failed to record overdue return notification', error);
     return res.status(500).json({ message: '返却期限の通知保存に失敗しました。' });

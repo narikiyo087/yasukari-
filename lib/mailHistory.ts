@@ -23,6 +23,7 @@ export type MailHistoryCategory =
   | "全体通知"
   | "メルマガ"
   | "クーポン"
+  | "問い合わせ"
   | "その他";
 
 export type MailHistoryEntry = {
@@ -63,6 +64,7 @@ const toCategory = (value?: string): MailHistoryCategory => {
     case "全体通知":
     case "メルマガ":
     case "クーポン":
+    case "問い合わせ":
       return value;
     default:
       return "その他";

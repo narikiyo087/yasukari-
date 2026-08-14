@@ -5,9 +5,18 @@ import {
   hasPendingVerification,
   issueVerificationCode,
   verifyVerificationCode,
+  type VerificationResult,
 } from '../lib/verificationCodeService';
 
 const TEST_EMAIL = 'test@example.com';
+
+type VerificationFailure = Extract<VerificationResult, { success: false }>;
+
+// strict: false のため判別可能ユニオンの絞り込みが効かず、失敗ケースはキャストで扱う
+const expectFailure = (result: VerificationResult): VerificationFailure => {
+  expect(result.success).toBe(false);
+  return result as VerificationFailure;
+};
 
 describe('verificationCodeService', () => {
   afterEach(() => {
@@ -29,17 +38,14 @@ describe('verificationCodeService', () => {
   it('rejects mismatched codes and tracks attempts', () => {
     issueVerificationCode(TEST_EMAIL);
 
-    const mismatch = verifyVerificationCode(TEST_EMAIL, 'wrong1');
-    expect(mismatch.success).toBe(false);
+    const mismatch = expectFailure(verifyVerificationCode(TEST_EMAIL, 'wrong1'));
     expect(mismatch.reason).toBe('mismatch');
     expect(mismatch.attemptsRemaining).toBe(4);
 
     verifyVerificationCode(TEST_EMAIL, 'wrong2');
     verifyVerificationCode(TEST_EMAIL, 'wrong3');
     verifyVerificationCode(TEST_EMAIL, 'wrong4');
-    const locked = verifyVerificationCode(TEST_EMAIL, 'wrong5');
-
-    expect(locked.success).toBe(false);
+    const locked = expectFailure(verifyVerificationCode(TEST_EMAIL, 'wrong5'));
     expect(locked.reason).toBe('too_many_attempts');
     expect(hasPendingVerification(TEST_EMAIL)).toBe(false);
   });
@@ -54,8 +60,7 @@ describe('verificationCodeService', () => {
     const now = Date.now;
     Date.now = () => expiresAt + 1;
     try {
-      const result = verifyVerificationCode(TEST_EMAIL, code);
-      expect(result.success).toBe(false);
+      const result = expectFailure(verifyVerificationCode(TEST_EMAIL, code));
       expect(result.reason).toBe('expired');
     } finally {
       Date.now = now;
@@ -63,8 +68,7 @@ describe('verificationCodeService', () => {
   });
 
   it('handles unknown emails', () => {
-    const result = verifyVerificationCode('unknown@example.com', 'ABC123');
-    expect(result.success).toBe(false);
+    const result = expectFailure(verifyVerificationCode('unknown@example.com', 'ABC123'));
     expect(result.reason).toBe('not_found');
   });
 

@@ -31,6 +31,7 @@ export default function ChatbotInquiryDetailPage() {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const [notifyNotice, setNotifyNotice] = useState<string | null>(null);
 
   useEffect(() => {
     if (!router.isReady || !sessionId) {
@@ -98,8 +99,26 @@ export default function ChatbotInquiryDetailPage() {
           throw new Error(`Failed to save reply: ${response.status}`);
         }
 
-        const data = (await response.json()) as { inquiry?: ChatbotInquiryDetail };
+        const data = (await response.json()) as {
+          inquiry?: ChatbotInquiryDetail;
+          notification?: { siteNotified: boolean; emailStatus: "sent" | "skipped" | "not_available" };
+        };
         const nextInquiry = data.inquiry;
+
+        if (data.notification) {
+          const { siteNotified, emailStatus } = data.notification;
+          if (emailStatus === "sent") {
+            setNotifyNotice("お客様へメールとサイト内通知でお知らせしました。");
+          } else if (siteNotified) {
+            setNotifyNotice(
+              emailStatus === "skipped"
+                ? "サイト内通知を記録しました（SMTP未設定のためメールはスキップ）。"
+                : "サイト内通知を記録しました。"
+            );
+          } else {
+            setNotifyNotice("未ログインのお問い合わせのため、お客様への通知は送信されません。");
+          }
+        }
         if (nextInquiry?.messages) {
           setInquiry((previous) => {
             if (!previous) {
@@ -285,6 +304,21 @@ export default function ChatbotInquiryDetailPage() {
                     <label className={styles.replyLabel} htmlFor="chatbot-reply">
                       返信内容
                     </label>
+                    {notifyNotice && (
+                      <p
+                        style={{
+                          margin: "0 0 0.5rem",
+                          padding: "0.5rem 0.75rem",
+                          borderRadius: "0.5rem",
+                          background: "#ecfdf5",
+                          border: "1px solid #a7f3d0",
+                          color: "#047857",
+                          fontSize: "0.8125rem",
+                        }}
+                      >
+                        {notifyNotice}
+                      </p>
+                    )}
                     <textarea
                       id="chatbot-reply"
                       className={styles.replyTextarea}

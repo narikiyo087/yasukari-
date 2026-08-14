@@ -11,12 +11,29 @@ const DEFAULT_SETTINGS: NewsletterSettings = {
   htmlContent: "",
 };
 
+type DeliveryPreview = {
+  smtpConfigured: boolean;
+  subject: string;
+  recipientCount: number;
+  excludedOptedOut: number;
+  excludedNoEmail: number;
+  excludedInactive: number;
+};
+
 export default function NewsletterSettingsPage() {
   const [formState, setFormState] = useState<NewsletterSettings>(DEFAULT_SETTINGS);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
+  const [testEmail, setTestEmail] = useState("");
+  const [testSending, setTestSending] = useState(false);
+  const [deliveryPreview, setDeliveryPreview] = useState<DeliveryPreview | null>(null);
+  const [previewLoading, setPreviewLoading] = useState(false);
+  const [confirmingSend, setConfirmingSend] = useState(false);
+  const [bulkSending, setBulkSending] = useState(false);
+  const [deliveryError, setDeliveryError] = useState<string | null>(null);
+  const [deliveryNotice, setDeliveryNotice] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchSettings = async () => {
@@ -74,7 +91,7 @@ export default function NewsletterSettingsPage() {
 
       const savedSettings = payload as NewsletterSettings;
       setFormState((prev) => ({ ...prev, updatedAt: savedSettings.updatedAt }));
-      setNotice("メルマガ設定を保存しました。配信機能は別途追加予定です。");
+      setNotice("メルマガ設定を保存しました。下の配信カードからテスト配信・本配信ができます。");
     } catch (submitError) {
       console.error(submitError);
       setError(submitError instanceof Error ? submitError.message : "保存に失敗しました。");
@@ -118,6 +135,91 @@ export default function NewsletterSettingsPage() {
     }, 1000);
   };
 
+  const handleTestSend = async () => {
+    setTestSending(true);
+    setDeliveryError(null);
+    setDeliveryNotice(null);
+
+    try {
+      const response = await fetch("/api/admin/newsletter-send", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ mode: "test", email: testEmail }),
+      });
+      const payload = (await response.json()) as { message?: string };
+
+      if (!response.ok) {
+        throw new Error(payload.message || "テスト配信に失敗しました。");
+      }
+
+      setDeliveryNotice(payload.message ?? "テスト配信を送信しました。");
+    } catch (sendError) {
+      console.error(sendError);
+      setDeliveryError(sendError instanceof Error ? sendError.message : "テスト配信に失敗しました。");
+    } finally {
+      setTestSending(false);
+    }
+  };
+
+  const handlePrepareSend = async () => {
+    setPreviewLoading(true);
+    setDeliveryError(null);
+    setDeliveryNotice(null);
+
+    try {
+      const response = await fetch("/api/admin/newsletter-send", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ mode: "preview" }),
+      });
+      const payload = (await response.json()) as DeliveryPreview | { message?: string };
+
+      if (!response.ok) {
+        throw new Error(
+          "message" in payload && payload.message ? payload.message : "配信対象の取得に失敗しました。"
+        );
+      }
+
+      setDeliveryPreview(payload as DeliveryPreview);
+      setConfirmingSend(true);
+    } catch (previewError) {
+      console.error(previewError);
+      setDeliveryError(
+        previewError instanceof Error ? previewError.message : "配信対象の取得に失敗しました。"
+      );
+    } finally {
+      setPreviewLoading(false);
+    }
+  };
+
+  const handleBulkSend = async () => {
+    setBulkSending(true);
+    setDeliveryError(null);
+    setDeliveryNotice(null);
+
+    try {
+      const response = await fetch("/api/admin/newsletter-send", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ mode: "send" }),
+      });
+      const payload = (await response.json()) as { message?: string };
+
+      if (!response.ok) {
+        throw new Error(payload.message || "メルマガ配信に失敗しました。");
+      }
+
+      setDeliveryNotice(payload.message ?? "メルマガ配信が完了しました。");
+      setConfirmingSend(false);
+    } catch (sendError) {
+      console.error(sendError);
+      setDeliveryError(sendError instanceof Error ? sendError.message : "メルマガ配信に失敗しました。");
+      setConfirmingSend(false);
+    } finally {
+      setBulkSending(false);
+    }
+  };
+
   return (
     <>
       <Head>
@@ -125,7 +227,7 @@ export default function NewsletterSettingsPage() {
       </Head>
       <DashboardLayout
         title="メルマガ配信設定"
-        description="メルマガ配信用の件名やHTML本文を保存します。配信機能は今後追加予定です。"
+        description="メルマガ配信用の件名やHTML本文を保存し、テスト配信・本配信を行います。本配信はメルマガ受信をオンにした会員（オプトイン）のみが対象です。"
       >
         <form onSubmit={handleSubmit} className={formStyles.cardStack}>
           <div className={formStyles.card}>
@@ -239,6 +341,84 @@ export default function NewsletterSettingsPage() {
                   )}
                 </div>
               </div>
+            </div>
+          </div>
+
+          <div className={formStyles.card}>
+            <div className={formStyles.header}>
+              <h2 className={formStyles.title}>配信</h2>
+              <p className={formStyles.description}>
+                保存済みの内容をテスト配信または本配信します。本配信の対象は通知設定で「メルマガ・クーポン」をオンにした会員のみです（オプトイン制）。
+              </p>
+            </div>
+
+            {deliveryError && <div className={formStyles.error}>{deliveryError}</div>}
+            {deliveryNotice && <div className={formStyles.success}>{deliveryNotice}</div>}
+
+            <div className={formStyles.body}>
+              <div className={formStyles.field}>
+                <label htmlFor="newsletterTestEmail">テスト配信の宛先</label>
+                <input
+                  id="newsletterTestEmail"
+                  type="email"
+                  value={testEmail}
+                  onChange={(event) => setTestEmail(event.target.value)}
+                  placeholder="sample@example.com"
+                  disabled={testSending || bulkSending}
+                />
+                <p className={formStyles.hint}>
+                  保存済みの件名・HTML本文を、指定した1件のアドレスにだけ送信します。
+                </p>
+              </div>
+            </div>
+
+            <div className={formStyles.actions}>
+              <button
+                type="button"
+                className={formStyles.secondaryButton}
+                onClick={() => void handleTestSend()}
+                disabled={!testEmail || testSending || bulkSending || loading}
+              >
+                {testSending ? "テスト配信中..." : "テスト配信を送信"}
+              </button>
+
+              {confirmingSend && deliveryPreview ? (
+                <>
+                  <span className={formStyles.hint}>
+                    配信対象 {deliveryPreview.recipientCount}名（オプトアウト除外{" "}
+                    {deliveryPreview.excludedOptedOut}名）に「{deliveryPreview.subject}
+                    」を配信します。
+                    {!deliveryPreview.smtpConfigured &&
+                      "SMTP未設定のため、メールはスキップされサイト内通知のみ配信されます。"}
+                    よろしいですか？
+                  </span>
+                  <button
+                    type="button"
+                    className={formStyles.primaryButton}
+                    onClick={() => void handleBulkSend()}
+                    disabled={bulkSending}
+                  >
+                    {bulkSending ? "配信中..." : "本配信を実行する"}
+                  </button>
+                  <button
+                    type="button"
+                    className={formStyles.secondaryButton}
+                    onClick={() => setConfirmingSend(false)}
+                    disabled={bulkSending}
+                  >
+                    キャンセル
+                  </button>
+                </>
+              ) : (
+                <button
+                  type="button"
+                  className={formStyles.primaryButton}
+                  onClick={() => void handlePrepareSend()}
+                  disabled={previewLoading || bulkSending || loading}
+                >
+                  {previewLoading ? "配信対象を確認中..." : "本配信の対象を確認する"}
+                </button>
+              )}
             </div>
           </div>
         </form>
