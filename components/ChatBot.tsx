@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { ChatbotFaqCategory } from "../types/chatbotFaq";
-import { FaRobot, FaArrowLeft, FaTimes, FaPaperPlane } from "react-icons/fa";
+import { searchFaqs, type FaqSuggestion } from "../lib/chatbot/faqSearch";
+import { FaRobot, FaArrowLeft, FaTimes, FaPaperPlane, FaLightbulb } from "react-icons/fa";
 import styles from "../styles/ChatSupport.module.css";
 
 interface Message {
@@ -37,7 +38,24 @@ export default function ChatBot({
   const [faqError, setFaqError] = useState<string | null>(null);
   const [showAllCategories, setShowAllCategories] = useState(false);
   const [showLoginPrompt, setShowLoginPrompt] = useState(false);
+  const [freeText, setFreeText] = useState("");
+  const [suggestions, setSuggestions] = useState<FaqSuggestion[]>([]);
+  const [confirmingSubmit, setConfirmingSubmit] = useState(false);
   const storageKey = "chatbot_saved_messages";
+
+  // 入力中のテキストから関連FAQを探す（250msデバウンス）
+  useEffect(() => {
+    if (step !== "free") {
+      setSuggestions([]);
+      return;
+    }
+
+    const timer = window.setTimeout(() => {
+      setSuggestions(searchFaqs(freeText, faqCategories));
+    }, 250);
+
+    return () => window.clearTimeout(timer);
+  }, [freeText, faqCategories, step]);
 
   useEffect(() => {
     const el = scrollRef.current;
@@ -157,22 +175,39 @@ export default function ChatBot({
     setStep("free");
     addMessage(
       "bot",
-      "ご自由にお問い合わせ内容を入力してください。該当するFAQがない場合はスタッフが回答いたします。"
+      "ご自由にお問い合わせ内容を入力してください。入力中に関連するFAQを自動でご案内します。FAQで解決しない場合はスタッフが回答いたします。"
     );
   }
 
   async function handleFreeSubmit(e: React.FormEvent) {
     e.preventDefault();
+    const text = freeText.trim();
+    if (!text) return;
+
+    // 関連FAQがある場合は、送信前に一度FAQでの自己解決を促す
+    if (suggestions.length > 0 && !confirmingSubmit) {
+      setConfirmingSubmit(true);
+      return;
+    }
+
     if (!userId) {
       setShowLoginPrompt(true);
       return;
     }
-    const form = e.target as HTMLFormElement;
-    const input = form.elements.namedItem("free") as HTMLInputElement;
-    const text = input.value.trim();
-    if (!text) return;
+
+    await submitInquiry(text);
+  }
+
+  function handleSuggestionSelect(faq: FaqSuggestion) {
+    setConfirmingSubmit(false);
+    handleQuestion(faq);
+  }
+
+  async function submitInquiry(text: string) {
     addMessage("user", text);
-    input.value = "";
+    setFreeText("");
+    setSuggestions([]);
+    setConfirmingSubmit(false);
 
     const ensuredClientId = clientId ?? crypto.randomUUID?.() ?? `client-${Date.now()}`;
     if (!clientId) {
@@ -222,14 +257,6 @@ export default function ChatBot({
     }
   }
 
-  function handleInputRequireLogin(event: React.SyntheticEvent) {
-    if (!userId) {
-      event.preventDefault();
-      event.stopPropagation();
-      setShowLoginPrompt(true);
-    }
-  }
-
   function handleYes() {
     onClose?.();
     setShowFeedback(false);
@@ -249,6 +276,7 @@ export default function ChatBot({
   function handleBack() {
     setSelectedCategory(null);
     setStep("survey");
+    setConfirmingSubmit(false);
   }
 
   function handleBackButton() {
@@ -470,6 +498,71 @@ export default function ChatBot({
           </div>
         )}
 
+        {step === "free" && suggestions.length > 0 && !confirmingSubmit && (
+          <div className="w-full px-3 pb-1">
+            <div className="rounded-lg border border-yellow-200 bg-yellow-50 p-2">
+              <p className="mb-1 flex items-center text-xs font-semibold text-yellow-800">
+                <FaLightbulb className="mr-1" aria-hidden="true" />
+                入力内容に近いFAQが見つかりました
+              </p>
+              <div>
+                {suggestions.map((faq, idx) => (
+                  <button
+                    key={`${faq.categoryTitle}-${idx}`}
+                    type="button"
+                    className="block w-full rounded-md bg-white px-2 py-1.5 mb-1 text-left text-xs text-gray-800 shadow-sm hover:bg-yellow-100"
+                    onClick={() => handleSuggestionSelect(faq)}
+                  >
+                    <span className="mr-1 text-xs text-yellow-700">
+                      [{faq.categoryTitle}]
+                    </span>
+                    {faq.q}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {step === "free" && confirmingSubmit && (
+          <div className="w-full px-3 pb-1">
+            <div className="rounded-lg border border-red-200 bg-red-50 p-2">
+              <p className="mb-1 text-xs font-semibold text-red-800">
+                送信前にご確認ください。こちらのFAQで解決しませんか？
+              </p>
+              <div>
+                {suggestions.map((faq, idx) => (
+                  <button
+                    key={`confirm-${faq.categoryTitle}-${idx}`}
+                    type="button"
+                    className="block w-full rounded-md bg-white px-2 py-1.5 mb-1 text-left text-xs text-gray-800 shadow-sm hover:bg-red-100"
+                    onClick={() => handleSuggestionSelect(faq)}
+                  >
+                    <span className="mr-1 text-xs text-red-700">
+                      [{faq.categoryTitle}]
+                    </span>
+                    {faq.q}
+                  </button>
+                ))}
+              </div>
+              <button
+                type="button"
+                className="mt-2 block w-full rounded-md border border-red-300 bg-white px-2 py-1.5 text-xs font-semibold text-red-700 hover:bg-red-100"
+                onClick={() => {
+                  if (!userId) {
+                    setShowLoginPrompt(true);
+                    return;
+                  }
+                  void submitInquiry(freeText.trim());
+                }}
+                disabled={isSubmitting}
+              >
+                FAQでは解決しないため、この内容で問い合わせる
+              </button>
+            </div>
+          </div>
+        )}
+
         {step === "free" ? (
           <form onSubmit={handleFreeSubmit} className={styles.composer}>
             <input
@@ -478,17 +571,17 @@ export default function ChatBot({
               className={styles.input}
               placeholder="質問を入力してください"
               disabled={isSubmitting}
-              readOnly={!userId}
-              aria-readonly={!userId}
-              onFocus={handleInputRequireLogin}
-              onClick={handleInputRequireLogin}
+              value={freeText}
+              onChange={(event) => {
+                setFreeText(event.target.value);
+                setConfirmingSubmit(false);
+              }}
             />
             <button
               type="submit"
               className={`${styles.composerButton} ${styles.sendButton}`}
               aria-label="送信する"
               disabled={isSubmitting}
-              onClick={handleInputRequireLogin}
             >
               <FaPaperPlane />
             </button>
@@ -505,7 +598,7 @@ export default function ChatBot({
             <div className={styles.loginPromptCard} role="dialog" aria-modal="true">
               <h2 className={styles.loginPromptTitle}>ログインが必要です</h2>
               <p className={styles.loginPromptBody}>
-                その他の質問を入力するにはログインが必要です。ログイン後に再度お試しください。
+                お問い合わせの送信にはログインが必要です。FAQの検索・閲覧はログインなしでご利用いただけます。
               </p>
               <div className={styles.loginPromptActions}>
                 <button
