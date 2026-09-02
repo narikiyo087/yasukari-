@@ -1,4 +1,9 @@
-export const INTERNATIONAL_PRICE_MULTIPLIER = 2;
+// 海外のお客様向けの料金倍率。既定は2倍。
+// 変更は環境変数 NEXT_PUBLIC_INTL_PRICE_MULTIPLIER で（クライアント側でも使うため NEXT_PUBLIC_）。
+// ビルド時に埋め込まれるので、変更後は再デプロイが必要。
+const parsedMultiplier = Number(process.env.NEXT_PUBLIC_INTL_PRICE_MULTIPLIER);
+export const INTERNATIONAL_PRICE_MULTIPLIER =
+  Number.isFinite(parsedMultiplier) && parsedMultiplier > 0 ? parsedMultiplier : 2;
 
 export const isInternationalLocale = (locale?: string): boolean => {
   if (!locale) return false;

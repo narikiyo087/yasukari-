@@ -59,7 +59,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   // 既に登録済みのメールアドレスの場合は、新規登録と見分けがつかない中立レスポンスを
   // 返しつつ、「すでに登録済み」の案内メールを送る（認証コードは発行しない）。
   // 画面上では既登録かどうかを開示しないことで、アカウント列挙を防止する。
-  if (hasLightMemberByEmail(sanitizedEmail)) {
+  if (await hasLightMemberByEmail(sanitizedEmail)) {
     try {
       await deliverExistingAccountNoticeEmail(sanitizedEmail, {
         loginUrl: `${baseUrl}/login`,
@@ -72,14 +72,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
-    savePendingRegistration({
+    await savePendingRegistration({
       email: sanitizedEmail,
       password: rawPassword,
       fullName: trimmedFullName,
       phoneNumber: normalizedPhoneNumber,
     });
 
-    const { code, expiresAt } = issueVerificationCode(sanitizedEmail);
+    const { code, expiresAt } = await issueVerificationCode(sanitizedEmail);
 
     const verificationUrl = `${baseUrl}/register/auth?email=${encodeURIComponent(sanitizedEmail)}`;
 
@@ -95,7 +95,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       expiresAt,
     });
   } catch (error) {
-    clearPendingRegistration(sanitizedEmail);
+    await clearPendingRegistration(sanitizedEmail).catch(() => undefined);
     const message = error instanceof Error ? error.message : '登録に失敗しました';
     return res.status(500).json({ message });
   }

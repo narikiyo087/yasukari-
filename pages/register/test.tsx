@@ -3,8 +3,17 @@ import Head from 'next/head';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 
-import type { NextPage } from 'next';
+import type { GetServerSideProps, NextPage } from 'next';
 import verificationPreview from '../../data/registerVerificationMock.json';
+
+// 表示確認用のテストページ（ダミーデータ data/registerVerificationMock.json を使う）。
+// 本番では404にする（利用開始前チェック D-5）。確認したいときだけ ALLOW_TEST_PAGES=1 で開ける。
+export const getServerSideProps: GetServerSideProps = async () => {
+  if (process.env.NODE_ENV === 'production' && process.env.ALLOW_TEST_PAGES !== '1') {
+    return { notFound: true };
+  }
+  return { props: {} };
+};
 import { uploadLicenseImage } from '../../lib/licenseUpload';
 
 type RegisterFormData = {

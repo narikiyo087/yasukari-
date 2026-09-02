@@ -28,8 +28,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(400).json({ message: 'テストアカウントの認証コードが正しくありません。' });
     }
 
-    const existingMember = findLightMemberByEmail(sanitizedEmail);
-    const member = existingMember ?? createLightMember({ email: sanitizedEmail, username: TEST_USERNAME });
+    const existingMember = await findLightMemberByEmail(sanitizedEmail);
+    const member = existingMember ?? (await createLightMember({ email: sanitizedEmail, username: TEST_USERNAME }));
 
     res.setHeader('Set-Cookie', `auth=${member.id}; Path=/; HttpOnly; Max-Age=${60 * 60 * 24}; SameSite=Lax`);
 
@@ -47,11 +47,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     });
   }
 
-  if (hasLightMemberByEmail(sanitizedEmail)) {
+  if (await hasLightMemberByEmail(sanitizedEmail)) {
     return res.status(200).json({ message: 'すでに本登録が完了しています。ログイン画面からアクセスしてください。' });
   }
 
-  const result = verifyVerificationCode(sanitizedEmail, sanitizedCode);
+  const result = await verifyVerificationCode(sanitizedEmail, sanitizedCode);
 
   if (!result.success) {
     if (!('reason' in result)) {
@@ -74,20 +74,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
   }
 
-  const pendingRegistration = getPendingRegistration(sanitizedEmail);
+  const pendingRegistration = await getPendingRegistration(sanitizedEmail);
   let member: LightMember;
   try {
     member = pendingRegistration
-      ? createLightMember({
+      ? await createLightMember({
           email: sanitizedEmail,
           username: pendingRegistration.fullName,
-          password: pendingRegistration.password,
+          passwordHash: pendingRegistration.passwordHash,
           phoneNumber: pendingRegistration.phoneNumber,
           registrationStatus: 'provisional',
         })
-      : createLightMember({ email: sanitizedEmail });
+      : await createLightMember({ email: sanitizedEmail });
   } finally {
-    clearPendingRegistration(sanitizedEmail);
+    await clearPendingRegistration(sanitizedEmail).catch(() => undefined);
   }
   res.setHeader('Set-Cookie', `auth=${member.id}; Path=/; HttpOnly; Max-Age=${60 * 60 * 24}; SameSite=Lax`);
 

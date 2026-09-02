@@ -1,4 +1,9 @@
 import { randomBytes } from 'crypto';
+import { kvDelete, kvGet, kvPut } from './registrationStore';
+
+// メール認証コード。以前はインメモリ（new Map()）で、送った直後に再起動・デプロイが
+// 入ると「コードが見つかりません」になっていた。lib/registrationStore.ts 経由で
+// DynamoDB に保存し、期限は TTL で自動掃除する。
 
 export const VERIFICATION_CODE_LENGTH = 6;
 const CODE_EXPIRATION_MS = 24 * 60 * 60 * 1000; // 24時間
@@ -12,7 +17,7 @@ type VerificationRecord = {
   attempts: number;
 };
 
-const records = new Map<string, VerificationRecord>();
+const KEY = (email: string) => `code#${email}`;
 
 function normalizeEmail(email: string): string {
   return email.trim().toLowerCase();
@@ -28,20 +33,24 @@ function generateCode(length: number): string {
   return result;
 }
 
+// TTL は「期限切れの案内を出すため」に期限より少し長く残す
+const ttlOf = (expiresAt: number) => Math.floor(expiresAt / 1000) + 60 * 60;
+
 export type IssuedVerificationCode = {
   email: string;
   code: string;
   expiresAt: number;
 };
 
-export function issueVerificationCode(rawEmail: string): IssuedVerificationCode {
+export async function issueVerificationCode(rawEmail: string): Promise<IssuedVerificationCode> {
   const email = normalizeEmail(rawEmail);
   if (!email) {
     throw new Error('メールアドレスを指定してください');
   }
   const code = generateCode(VERIFICATION_CODE_LENGTH);
   const expiresAt = Date.now() + CODE_EXPIRATION_MS;
-  records.set(email, { code, expiresAt, attempts: 0 });
+  const record: VerificationRecord = { code, expiresAt, attempts: 0 };
+  await kvPut(KEY(email), record, ttlOf(expiresAt));
   return { email, code, expiresAt };
 }
 
@@ -51,65 +60,59 @@ export type VerificationResult =
   | { success: true }
   | { success: false; reason: VerificationFailureReason; attemptsRemaining?: number };
 
-export function verifyVerificationCode(rawEmail: string, rawCode: string): VerificationResult {
+export async function verifyVerificationCode(
+  rawEmail: string,
+  rawCode: string
+): Promise<VerificationResult> {
   const email = normalizeEmail(rawEmail);
   const code = rawCode.trim();
   if (!email || !code) {
     return { success: false, reason: 'not_found' };
   }
-  const record = records.get(email);
+  const record = await kvGet<VerificationRecord>(KEY(email));
   if (!record) {
     return { success: false, reason: 'not_found' };
   }
   if (Date.now() > record.expiresAt) {
-    records.delete(email);
+    await kvDelete(KEY(email));
     return { success: false, reason: 'expired' };
   }
   if (record.code !== code) {
-    record.attempts += 1;
-    const attemptsRemaining = Math.max(0, MAX_ATTEMPTS - record.attempts);
-    if (record.attempts >= MAX_ATTEMPTS) {
-      records.delete(email);
+    const attempts = record.attempts + 1;
+    if (attempts >= MAX_ATTEMPTS) {
+      await kvDelete(KEY(email));
       return { success: false, reason: 'too_many_attempts' };
     }
-    return { success: false, reason: 'mismatch', attemptsRemaining };
+    await kvPut(KEY(email), { ...record, attempts }, ttlOf(record.expiresAt));
+    return { success: false, reason: 'mismatch', attemptsRemaining: MAX_ATTEMPTS - attempts };
   }
-  records.delete(email);
+  await kvDelete(KEY(email));
   return { success: true };
 }
 
-export function hasPendingVerification(rawEmail: string): boolean {
+export async function hasPendingVerification(rawEmail: string): Promise<boolean> {
   const email = normalizeEmail(rawEmail);
-  if (!email) {
-    return false;
-  }
-  return records.has(email);
+  if (!email) return false;
+  return Boolean(await kvGet(KEY(email)));
 }
 
-export function clearVerificationCodes(): void {
-  records.clear();
-}
-
-export function getVerificationAttemptsRemaining(rawEmail: string): number | null {
+export async function getVerificationAttemptsRemaining(rawEmail: string): Promise<number | null> {
   const email = normalizeEmail(rawEmail);
-  if (!email) {
-    return null;
-  }
-  const record = records.get(email);
-  if (!record) {
-    return null;
-  }
+  if (!email) return null;
+  const record = await kvGet<VerificationRecord>(KEY(email));
+  if (!record) return null;
   return Math.max(0, MAX_ATTEMPTS - record.attempts);
 }
 
-export function getCodeExpiration(rawEmail: string): number | null {
+export async function getCodeExpiration(rawEmail: string): Promise<number | null> {
   const email = normalizeEmail(rawEmail);
-  if (!email) {
-    return null;
-  }
-  const record = records.get(email);
-  if (!record) {
-    return null;
-  }
-  return record.expiresAt;
+  if (!email) return null;
+  const record = await kvGet<VerificationRecord>(KEY(email));
+  return record ? record.expiresAt : null;
+}
+
+export async function clearVerificationCode(rawEmail: string): Promise<void> {
+  const email = normalizeEmail(rawEmail);
+  if (!email) return;
+  await kvDelete(KEY(email));
 }

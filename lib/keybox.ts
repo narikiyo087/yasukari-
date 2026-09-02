@@ -2,11 +2,17 @@ import crypto from "crypto";
 
 import { addKeyboxLog, KeyboxLog } from "./keyboxLogs";
 import { Reservation } from "./reservations";
+import { STORES } from "./stores";
 
 const BASE_URL = process.env.KEYBOX_BASE_URL ?? "https://eco.blockchainlock.io";
 const API_KEY = process.env.KEYBOX_API_KEY ?? process.env.API_KEY ?? "";
 const SECRET_KEY = process.env.KEYBOX_SECRET_KEY ?? process.env.SECRET_KEY ?? "";
-const DEFAULT_UNIT_ID = "65ba13340cc4545240154f6c";
+// KEYBOXのユニットIDは店舗マスタ（lib/stores.ts）が出所。
+// 現状セルフ店は三ノ輪店の1つなので、その値を既定にしている。
+// 店舗が増えたら、呼び出し側で予約の店舗から keyboxUnitIdOf(storeName) を引いて
+// params.unitId に渡すこと（この関数は params.unitId を優先する）。
+const DEFAULT_UNIT_ID =
+  STORES.find((s) => !s.staffed && s.keyboxUnitId)?.keyboxUnitId ?? "";
 const UNIT_ID_OVERRIDE =
   process.env.KEYBOX_UNIT_ID_OVERRIDE ?? process.env.UNIT_ID_OVERRIDE ?? DEFAULT_UNIT_ID;
 

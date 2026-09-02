@@ -1,4 +1,5 @@
 import { EMAIL_FOOTER_HTML, EMAIL_FOOTER_TEXT_LINES } from "./emailFooter";
+import { STORES, isSelfStore } from "./stores";
 import type { Reservation } from "./reservations";
 import { addMailHistory } from "./mailHistory";
 import { enqueueEmail } from "./mailQueue";
@@ -69,13 +70,22 @@ const buildTextBody = (reservation: Reservation): string => {
   const optionLines = buildOptionLines(reservation);
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://yasukari.com";
   const myPageUrl = `${siteUrl.replace(/\/$/, "")}/mypage`;
-  const isMinowaStore = reservation.storeName === "三ノ輪店";
-  const minowaAccessLines = isMinowaStore
+  // セルフ（無人）店かどうかは店舗マスタ（lib/stores.ts）で判定。店舗が増えても文面が追従する
+  const selfStore = isSelfStore(reservation.storeName);
+  const selfAccessLines = selfStore
     ? [
         "",
-        "■三ノ輪店ご利用時の入庫情報",
+        `■${reservation.storeName}ご利用時の入庫情報`,
         `解除コード: ${reservation.keyboxPinCode || "-"}`,
         `QR URL: ${reservation.keyboxQrImageUrl || "-"}`,
+      ]
+    : [];
+  // 日本語本文にだけ足すセルフ店の案内（英語本文には元々この案内が無い）
+  const selfGuideLines = selfStore
+    ? [
+        "",
+        `${reservation.storeName}は24時間セルフ対応の店舗です。`,
+        "受取から返却まで、マイページのマニュアルに沿ってお手続きいただけます。",
       ]
     : [];
 
@@ -96,7 +106,7 @@ const buildTextBody = (reservation: Reservation): string => {
       "Options:",
       ...optionLines,
       `Total: ¥${reservation.paymentAmount}`,
-      ...minowaAccessLines,
+      ...selfAccessLines,
       "",
       "My page",
       myPageUrl,
@@ -131,7 +141,8 @@ const buildTextBody = (reservation: Reservation): string => {
     ...optionLines,
     "■合計金額",
     `${reservation.paymentAmount}円`,
-    ...minowaAccessLines,
+    ...selfAccessLines,
+    ...selfGuideLines,
     "",
     "予約詳細ページはこちらから",
     myPageUrl,
@@ -158,13 +169,30 @@ const buildHtmlBody = (reservation: Reservation): string => {
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://yasukari.com";
   const myPageUrl = `${siteUrl.replace(/\/$/, "")}/mypage`;
   const optionItems = optionLines.map((line) => `<li>${line}</li>`).join("");
-  const isMinowaStore = reservation.storeName === "三ノ輪店";
-  const minowaAccessSection = isMinowaStore
+  // セルフ（無人）店かどうかは店舗マスタ（lib/stores.ts）で判定。店舗が増えても文面が追従する
+  const selfStore = isSelfStore(reservation.storeName);
+  const selfAccessSection = selfStore
     ? `
     <p>
-      <strong>■三ノ輪店ご利用時の入庫情報</strong><br />
+      <strong>■${reservation.storeName}ご利用時の入庫情報</strong><br />
       解除コード: ${reservation.keyboxPinCode || "-"}<br />
       QR URL: ${reservation.keyboxQrImageUrl || "-"}
+    </p>
+`
+    : "";
+  // セルフ店の案内。セルフを第一の売りとする方針のため、有人店へ誘導する書き方はしない。
+  // 有人店の名前は店舗マスタから拾う（3店舗目以降も文面が追従する）
+  const staffedStoreNames = STORES.filter((s) => s.staffed).map((s) => s.label).join("・");
+  const selfGuideSection = selfStore
+    ? `
+    <p>
+      ${reservation.storeName}は<strong>24時間セルフ対応</strong>の店舗です。<br />
+      受取から返却まで、マイページのマニュアルに沿ってお手続きいただけます。
+    </p>
+
+    <p>
+      ご不明な点は本メールへの返信でサポートいたします。<br />
+      スタッフと対面での受け渡しをご希望の場合は、有人店（${staffedStoreNames}）もご利用いただけます。
     </p>
 `
     : "";
@@ -185,7 +213,7 @@ const buildHtmlBody = (reservation: Reservation): string => {
     <p><strong>Options</strong></p>
     <ul>${optionItems}</ul>
     <p><strong>Total:</strong> ¥${reservation.paymentAmount}</p>
-    ${minowaAccessSection}
+    ${selfAccessSection}
     <p>My page: <a href="${myPageUrl}">${myPageUrl}</a></p>
     <p>For inquiries, please reply to this email.</p>
     ${EMAIL_FOOTER_HTML}
@@ -214,17 +242,7 @@ const buildHtmlBody = (reservation: Reservation): string => {
       ＝＝＝＝＝＝＝＝＝＝＝
     </p>
 
-    <p>
-      また、三ノ輪店でご予約された方に関しまして、<br />
-      三ノ輪店は完全セルフ対応の店舗となっております。
-    </p>
-
-    <p>
-      バイクの扱いに関しましてご不安があるお客様は、<br />
-      <strong><span style="text-decoration: underline;">三ノ輪店（無人）ではスタッフのサポートがありません</span>ので、</strong><br />
-      足立店（有人）でのご予約を推奨しております。
-    </p>
-
+${selfGuideSection}
     <p>
       <strong>■予約番号</strong><br />
       ${reservation.id}<br />
@@ -250,7 +268,7 @@ const buildHtmlBody = (reservation: Reservation): string => {
       ${reservation.paymentAmount}円
     </p>
 
-    ${minowaAccessSection}
+    ${selfAccessSection}
 
     <p>
       <strong>※レンタル・返却時の注意点※</strong><br /><br />

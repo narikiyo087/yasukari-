@@ -1,4 +1,10 @@
 import Head from 'next/head';
+import { getStoreInfo } from '../lib/stores';
+
+// 住所・営業時間・アクセスは lib/stores.ts（店舗マスタ）が唯一の出所。
+// 店舗を追加・変更するときはマスタを直す（このページの直書きは残さない）。
+const ADACHI = getStoreInfo('足立小台店')!;
+const MINOWA = getStoreInfo('三ノ輪店')!;
 
 const LOGO_URL =
   'https://yasukari-file.s3.ap-northeast-1.amazonaws.com/PhotoUploads/1769056104573-d731196a-700f-4cc2-948b-68cfdb40d14a-yasukari-logo.jpg';
@@ -88,9 +94,7 @@ export default function StoresPage() {
         <h2 className="text-lg font-semibold text-slate-900">足立小台本店</h2>
         <p>足立区にある格安バイク屋です。</p>
         <ul className="list-disc list-inside space-y-1">
-          <li>舎人ライナー『足立小台』駅から徒歩15分</li>
-          <li>都電荒川線(東京さくらトラム)『小台』駅から徒歩15分</li>
-          <li>JR田端駅から・都バス【東43】荒川土手行き・江北駅前行き・豊島五丁目団地行き乗車・小台二丁目下車</li>
+          {ADACHI.access.map((line) => <li key={line}>{line}</li>)}
         </ul>
         <table className="w-full border border-slate-200 border-collapse text-slate-700">
           <tbody>
@@ -108,7 +112,7 @@ export default function StoresPage() {
             </tr>
             <tr>
               <th className="text-left w-32 p-3 border border-slate-200 bg-slate-50 font-semibold text-slate-900">所在地</th>
-              <td className="p-3 border border-slate-200">東京都足立区小台2-9-7 1階</td>
+              <td className="p-3 border border-slate-200">{ADACHI.address}</td>
             </tr>
             <tr>
               <th className="text-left w-32 p-3 border border-slate-200 bg-slate-50 font-semibold text-slate-900">メール</th>
@@ -116,7 +120,7 @@ export default function StoresPage() {
             </tr>
             <tr>
               <th className="text-left w-32 p-3 border border-slate-200 bg-slate-50 font-semibold text-slate-900">営業時間</th>
-              <td className="p-3 border border-slate-200">10:00 〜 19:00 （月曜・木曜定休）</td>
+              <td className="p-3 border border-slate-200">{ADACHI.hoursLabel}</td>
             </tr>
           </tbody>
         </table>
@@ -134,10 +138,9 @@ export default function StoresPage() {
 
       <section id="minowa" className="space-y-2">
         <h2 className="text-lg font-semibold text-slate-900">三ノ輪店</h2>
-        <p>東京都台東区の国道4号線沿いにあるレンタルバイク店です。</p>
+        <p>東京都台東区の国道4号線沿いにある、24時間セルフ対応のレンタルバイク店です。</p>
         <ul className="list-disc list-inside space-y-1">
-          <li>東京メトロ日比谷線 三ノ輪駅 徒歩4分</li>
-          <li>東京メトロ日比谷線 入谷駅 徒歩7分</li>
+          {MINOWA.access.map((line) => <li key={line}>{line}</li>)}
         </ul>
         <table className="w-full border border-slate-200 border-collapse text-slate-700">
           <tbody>
@@ -151,7 +154,7 @@ export default function StoresPage() {
             </tr>
             <tr>
               <th className="text-left w-32 p-3 border border-slate-200 bg-slate-50 font-semibold text-slate-900">所在地</th>
-              <td className="p-3 border border-slate-200">東京都台東区下谷3ー16ー14</td>
+              <td className="p-3 border border-slate-200">{MINOWA.address}</td>
             </tr>
             <tr>
               <th className="text-left w-32 p-3 border border-slate-200 bg-slate-50 font-semibold text-slate-900">メール</th>
@@ -159,7 +162,7 @@ export default function StoresPage() {
             </tr>
             <tr>
               <th className="text-left w-32 p-3 border border-slate-200 bg-slate-50 font-semibold text-slate-900">営業時間</th>
-              <td className="p-3 border border-slate-200">10:00 〜 19:00 （月曜・木曜定休）</td>
+              <td className="p-3 border border-slate-200">{MINOWA.hoursLabel}{MINOWA.hoursNote ? ` ${MINOWA.hoursNote}` : ''}</td>
             </tr>
           </tbody>
         </table>

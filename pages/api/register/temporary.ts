@@ -17,11 +17,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(400).json({ message: 'メールアドレスを入力してください。' });
   }
 
-  if (hasLightMemberByEmail(sanitizedEmail)) {
+  if (await hasLightMemberByEmail(sanitizedEmail)) {
     return res.status(200).json({ message: 'すでに登録済みのメールアドレスです。ログインしてください。' });
   }
 
-  const pendingRegistration = getPendingRegistration(sanitizedEmail);
+  const pendingRegistration = await getPendingRegistration(sanitizedEmail);
 
   if (!pendingRegistration) {
     return res.status(404).json({ message: '仮登録情報が見つかりませんでした。最初からやり直してください。' });
@@ -30,10 +30,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   let member: LightMember;
 
   try {
-    member = createLightMember({
+    member = await createLightMember({
       email: pendingRegistration.email,
       username: pendingRegistration.fullName,
-      password: pendingRegistration.password,
+      passwordHash: pendingRegistration.passwordHash,
       phoneNumber: pendingRegistration.phoneNumber,
       registrationStatus: 'provisional',
     });
@@ -43,7 +43,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const message = error instanceof Error ? error.message : '登録処理に失敗しました。';
     return res.status(400).json({ message });
   } finally {
-    clearPendingRegistration(sanitizedEmail);
+    await clearPendingRegistration(sanitizedEmail).catch(() => undefined);
   }
 
   res.setHeader('Set-Cookie', `auth=${member.id}; Path=/; HttpOnly; Max-Age=${60 * 60 * 24}; SameSite=Lax`);

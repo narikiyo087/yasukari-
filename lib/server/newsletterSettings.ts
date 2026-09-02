@@ -1,52 +1,28 @@
-import { promises as fs } from "fs";
-import path from "path";
-
 import { NewsletterSettings } from "../../types/newsletter";
+import { loadSettingDoc, saveSettingDoc } from "./settingsStore";
 
-const DATA_FILE_PATH = path.join(process.cwd(), "data", "newsletter-settings.json");
+// メルマガの件名・本文の下書き。保存は lib/server/settingsStore.ts（DynamoDB、
+// ローカルは data/newsletter-settings.json）。デプロイで消えないようにするため。
 
-async function ensureDataFile(): Promise<void> {
-  try {
-    await fs.access(DATA_FILE_PATH);
-  } catch (error: unknown) {
-    if ((error as NodeJS.ErrnoException).code === "ENOENT") {
-      await fs.mkdir(path.dirname(DATA_FILE_PATH), { recursive: true });
-      const initialData: NewsletterSettings = {
-        subject: "",
-        htmlContent: "",
-      };
-      await fs.writeFile(DATA_FILE_PATH, `${JSON.stringify(initialData, null, 2)}\n`, "utf-8");
-    } else {
-      throw error;
-    }
-  }
-}
+const KEY = "newsletter-settings";
+const FILE = "newsletter-settings.json";
 
 export async function readNewsletterSettings(): Promise<NewsletterSettings> {
-  await ensureDataFile();
-  const raw = await fs.readFile(DATA_FILE_PATH, "utf-8");
-
-  try {
-    const parsed = JSON.parse(raw) as Partial<NewsletterSettings>;
-    return {
-      subject: typeof parsed.subject === "string" ? parsed.subject : "",
-      previewText:
-        typeof parsed.previewText === "string" && parsed.previewText.trim().length > 0
-          ? parsed.previewText
-          : undefined,
-      htmlContent: typeof parsed.htmlContent === "string" ? parsed.htmlContent : "",
-      updatedAt: typeof parsed.updatedAt === "string" ? parsed.updatedAt : undefined,
-    } satisfies NewsletterSettings;
-  } catch (error) {
-    console.error("Failed to parse newsletter settings", error);
-    return {
-      subject: "",
-      htmlContent: "",
-    };
+  const parsed = (await loadSettingDoc(KEY, FILE)) as Partial<NewsletterSettings> | null;
+  if (!parsed) {
+    return { subject: "", htmlContent: "" };
   }
+  return {
+    subject: typeof parsed.subject === "string" ? parsed.subject : "",
+    previewText:
+      typeof parsed.previewText === "string" && parsed.previewText.trim().length > 0
+        ? parsed.previewText
+        : undefined,
+    htmlContent: typeof parsed.htmlContent === "string" ? parsed.htmlContent : "",
+    updatedAt: typeof parsed.updatedAt === "string" ? parsed.updatedAt : undefined,
+  } satisfies NewsletterSettings;
 }
 
 export async function writeNewsletterSettings(settings: NewsletterSettings): Promise<void> {
-  await ensureDataFile();
-  await fs.writeFile(DATA_FILE_PATH, `${JSON.stringify(settings, null, 2)}\n`, "utf-8");
+  await saveSettingDoc(KEY, FILE, settings);
 }

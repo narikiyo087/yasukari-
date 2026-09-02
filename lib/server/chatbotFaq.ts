@@ -1,42 +1,12 @@
-import { promises as fs } from "fs";
-import path from "path";
-
 import { ChatbotFaqCategory, ChatbotFaqData, ChatbotFaqItem } from "../../types/chatbotFaq";
+import { loadSettingDoc, saveSettingDoc } from "./settingsStore";
 
-const DATA_FILE_PATH = path.join(process.cwd(), "data", "chatbot-faq.json");
-const LEGACY_FILE_PATH = path.join(process.cwd(), "data", "faq.json");
+// チャットボット・FAQのデータ。保存は lib/server/settingsStore.ts（DynamoDB、
+// ローカルは data/chatbot-faq.json）。デプロイで編集内容が消えないようにするため。
+// ※ data/faq.json は初回シード時代の旧ファイル。移行初期値は chatbot-faq.json 側を使う。
 
-async function ensureDataFile(): Promise<void> {
-  try {
-    await fs.access(DATA_FILE_PATH);
-    return;
-  } catch (error: unknown) {
-    if ((error as NodeJS.ErrnoException).code !== "ENOENT") {
-      throw error;
-    }
-  }
-
-  await fs.mkdir(path.dirname(DATA_FILE_PATH), { recursive: true });
-
-  let seedData: ChatbotFaqData = { categories: [] };
-
-  try {
-    const legacyRaw = await fs.readFile(LEGACY_FILE_PATH, "utf-8");
-    const parsedLegacy = JSON.parse(legacyRaw) as Partial<ChatbotFaqData>;
-    if (Array.isArray(parsedLegacy.categories)) {
-      seedData = {
-        categories: parsedLegacy.categories,
-        updatedAt: new Date().toISOString(),
-      };
-    }
-  } catch (legacyError) {
-    if ((legacyError as NodeJS.ErrnoException).code !== "ENOENT") {
-      console.warn("Failed to read legacy FAQ data", legacyError);
-    }
-  }
-
-  await fs.writeFile(DATA_FILE_PATH, `${JSON.stringify(seedData, null, 2)}\n`, "utf-8");
-}
+const KEY = "chatbot-faq";
+const FILE = "chatbot-faq.json";
 
 function sanitizeFaqItem(item: ChatbotFaqItem): ChatbotFaqItem | null {
   if (!item) return null;
@@ -85,25 +55,19 @@ function normalizeData(data: Partial<ChatbotFaqData>): ChatbotFaqData {
 }
 
 export async function readChatbotFaq(): Promise<ChatbotFaqData> {
-  await ensureDataFile();
-  const raw = await fs.readFile(DATA_FILE_PATH, "utf-8");
-
-  try {
-    return normalizeData(JSON.parse(raw) as Partial<ChatbotFaqData>);
-  } catch (error) {
-    console.error("Failed to parse chatbot FAQ data", error);
+  const doc = (await loadSettingDoc(KEY, FILE)) as Partial<ChatbotFaqData> | null;
+  if (!doc) {
     return { categories: [] };
   }
+  return normalizeData(doc);
 }
 
 export async function writeChatbotFaq(data: ChatbotFaqData): Promise<ChatbotFaqData> {
-  await ensureDataFile();
   const sanitized = normalizeData(data);
   const payload: ChatbotFaqData = {
     ...sanitized,
     updatedAt: new Date().toISOString(),
   };
-
-  await fs.writeFile(DATA_FILE_PATH, `${JSON.stringify(payload, null, 2)}\n`, "utf-8");
+  await saveSettingDoc(KEY, FILE, payload);
   return payload;
 }

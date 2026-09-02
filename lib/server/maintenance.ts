@@ -1,42 +1,20 @@
-import { promises as fs } from "fs";
-import path from "path";
+import { loadSettingDoc, saveSettingDoc } from "./settingsStore";
 
-const DATA_FILE_PATH = path.join(process.cwd(), "data", "maintenance.json");
+// メンテナンスモードのON/OFF。保存は lib/server/settingsStore.ts（DynamoDB、
+// ローカルは data/maintenance.json）。デプロイで設定が戻らないようにするため。
+
+const KEY = "maintenance";
+const FILE = "maintenance.json";
 
 type MaintenanceStatus = {
   enabled: boolean;
 };
 
-async function ensureDataFile(): Promise<void> {
-  try {
-    await fs.access(DATA_FILE_PATH);
-  } catch (error: unknown) {
-    if ((error as NodeJS.ErrnoException).code === "ENOENT") {
-      await fs.mkdir(path.dirname(DATA_FILE_PATH), { recursive: true });
-      await fs.writeFile(DATA_FILE_PATH, `${JSON.stringify({ enabled: false }, null, 2)}\n`, "utf-8");
-    } else {
-      throw error;
-    }
-  }
-}
-
 export async function readMaintenanceStatus(): Promise<MaintenanceStatus> {
-  await ensureDataFile();
-  const raw = await fs.readFile(DATA_FILE_PATH, "utf-8");
-  try {
-    const parsed = JSON.parse(raw) as Partial<MaintenanceStatus>;
-    return { enabled: Boolean(parsed.enabled) };
-  } catch (error) {
-    console.error("Failed to parse maintenance status", error);
-    return { enabled: false };
-  }
+  const doc = (await loadSettingDoc(KEY, FILE)) as Partial<MaintenanceStatus> | null;
+  return { enabled: Boolean(doc?.enabled) };
 }
 
 export async function setMaintenanceStatus(enabled: boolean): Promise<void> {
-  await ensureDataFile();
-  await fs.writeFile(
-    DATA_FILE_PATH,
-    `${JSON.stringify({ enabled }, null, 2)}\n`,
-    "utf-8"
-  );
+  await saveSettingDoc(KEY, FILE, { enabled });
 }

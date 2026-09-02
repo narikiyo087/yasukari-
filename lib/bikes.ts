@@ -73,6 +73,21 @@ export interface BikeVehicle {
   storeId?: string;
 }
 
+// 車両データの取得元の記録（利用開始前チェック E-1）。
+// DynamoDBに繋がらず data/bikes.json に切り替わったことが「見た目では分からない」問題があったため、
+// 直近の取得元を記録して /api/monitor から確認できるようにする。
+// BIKES_DISABLE_STATIC_FALLBACK=1 を設定すると、本番でフォールバックせずエラーにする
+// （テーブル未設定のまま公開してしまう事故を、起動直後に気づける形にする）。
+let lastModelsSource: "dynamodb" | "static-fallback" | null = null;
+let lastFallbackAt: string | null = null;
+
+export function getBikeDataSourceStatus(): {
+  lastModelsSource: "dynamodb" | "static-fallback" | null;
+  lastFallbackAt: string | null;
+} {
+  return { lastModelsSource, lastFallbackAt };
+}
+
 /**
  * Fetch list of bike models.
  */
@@ -88,6 +103,7 @@ export async function getBikeModels(): Promise<BikeModel[]> {
       .filter((model) => (model.publishStatus ?? "ON") === "ON")
       .sort((a, b) => a.modelId - b.modelId);
 
+    lastModelsSource = "dynamodb";
     return published.map((model) => {
       const spec: BikeSpec = {
         license: getRequiredLicenseLabel(model.requiredLicense),
@@ -114,12 +130,19 @@ export async function getBikeModels(): Promise<BikeModel[]> {
         modelCode: String(model.modelId ?? model.modelName),
         modelId: model.modelId,
         classId: model.classId,
-        img: model.mainImageUrl ?? "https://placehold.co/600x400?text=Bike",
+        // プレースホルダは外部サービスに依存せず同梱の画像を使う（利用開始前チェック E-3）
+        img: model.mainImageUrl ?? "/image/bike-placeholder.svg",
         description: descriptionParts.join(" ") || undefined,
         spec,
       };
     });
   } catch (error) {
+    if (process.env.BIKES_DISABLE_STATIC_FALLBACK === "1") {
+      // 本番でテーブル未設定・権限切れのまま「静的データで正常に見える」事故を防ぐ
+      throw error;
+    }
+    lastModelsSource = "static-fallback";
+    lastFallbackAt = new Date().toISOString();
     console.error("Failed to fetch bike models from DynamoDB, falling back to static data", error);
     return bikesData.bikes as BikeModel[];
   }

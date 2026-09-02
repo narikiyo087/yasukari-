@@ -1,12 +1,14 @@
+import { STORES } from "../stores";
+
+// 店舗の選択肢。出所は lib/stores.ts の店舗マスタ（ここでは形を変えるだけ）。
+// 店舗を追加するときは lib/stores.ts を直す。
+
 export type StoreOption = {
   id: string;
   label: string;
 };
 
-export const STORE_OPTIONS: StoreOption[] = [
-  { id: "足立小台店", label: "足立小台店" },
-  { id: "三ノ輪店", label: "三ノ輪店" },
-];
+export const STORE_OPTIONS: StoreOption[] = STORES.map((s) => ({ id: s.id, label: s.label }));
 
 export const getStoreLabel = (storeId?: string | null): string => {
   if (!storeId) {
