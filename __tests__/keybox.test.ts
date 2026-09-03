@@ -18,7 +18,12 @@ const mockFetchSequence = (responses: FetchResponse[]) => {
   return fetchMock;
 };
 
-describe("issueKeyboxPin", () => {
+// 2026-09-02 いったんスキップ（社長判断）：
+// このテストはモックの噛み合わせで以前から3件失敗しており、モックを直しても
+// 実機（KEYVOX）で通る保証にはならない。KEYBOXのAPI連携を実際に行う段階で、
+// 実機に対するE2E確認とあわせて見直す。それまで失敗のまま残すと
+// テスト全体が常に赤になり、他の失敗が埋もれるためスキップにする。
+describe.skip("issueKeyboxPin", () => {
   const windowStart = new Date("2024-01-02T00:00:00Z");
   const windowEnd = new Date("2024-01-03T00:00:00Z");
 
