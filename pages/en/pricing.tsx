@@ -53,7 +53,7 @@ const categories = [
     name: 'Class 2 Scooter',
     prices: [
       { period: 'Base 24h', price: '12,960 JPY〜' },
-      { period: 'Base 2 days', price: '18,840 JPY〜' },
+      { period: 'Base 2 days', price: '16,160 JPY〜' },
       { period: 'Base 4 days', price: '22,600 JPY〜' },
       { period: 'Base 1 week', price: '26,600 JPY〜' },
       { period: 'Base 2 weeks', price: '40,600 JPY〜' },
@@ -64,12 +64,12 @@ const categories = [
   {
     name: 'Class 2 Manual',
     prices: [
-      { period: 'Base 24h', price: '14,960 JPY〜' },
+      { period: 'Base 24h', price: '12,960 JPY〜' },
       { period: 'Base 2 days', price: '18,840 JPY〜' },
-      { period: 'Base 4 days', price: '26,600 JPY〜' },
-      { period: 'Base 1 week', price: '32,600 JPY〜' },
-      { period: 'Base 2 weeks', price: '44,600 JPY〜' },
-      { period: 'Base 1 month', price: '68,600 JPY〜' },
+      { period: 'Base 4 days', price: '22,600 JPY〜' },
+      { period: 'Base 1 week', price: '26,600 JPY〜' },
+      { period: 'Base 2 weeks', price: '40,600 JPY〜' },
+      { period: 'Base 1 month', price: '60,600 JPY〜' },
       { period: 'Extra 24h', price: '29,920 JPY〜' },
     ],
   },
