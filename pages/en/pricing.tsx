@@ -10,7 +10,7 @@ const categories = [
       { period: 'Base 1 week', price: '18,960 JPY〜' },
       { period: 'Base 2 weeks', price: '30,960 JPY〜' },
       { period: 'Base 1 month', price: '50,960 JPY〜' },
-      { period: 'Extra 24h', price: '17,520 JPY〜' },
+      { period: 'Extra 24h', price: '8,760 JPY〜' },
     ],
   },
   {
@@ -22,7 +22,7 @@ const categories = [
       { period: 'Base 1 week', price: '21,960 JPY〜' },
       { period: 'Base 2 weeks', price: '34,960 JPY〜' },
       { period: 'Base 1 month', price: '60,960 JPY〜' },
-      { period: 'Extra 24h', price: '21,920 JPY〜' },
+      { period: 'Extra 24h', price: '10,960 JPY〜' },
     ],
   },
   {
@@ -34,7 +34,7 @@ const categories = [
       { period: 'Base 1 week', price: '22,960 JPY〜' },
       { period: 'Base 2 weeks', price: '39,960 JPY〜' },
       { period: 'Base 1 month', price: '62,960 JPY〜' },
-      { period: 'Extra 24h', price: '23,920 JPY〜' },
+      { period: 'Extra 24h', price: '11,960 JPY〜' },
     ],
   },
   {
@@ -46,7 +46,7 @@ const categories = [
       { period: 'Base 1 week', price: '26,600 JPY〜' },
       { period: 'Base 2 weeks', price: '40,600 JPY〜' },
       { period: 'Base 1 month', price: '60,600 JPY〜' },
-      { period: 'Extra 24h', price: '25,920 JPY〜' },
+      { period: 'Extra 24h', price: '12,960 JPY〜' },
     ],
   },
   {
@@ -58,7 +58,7 @@ const categories = [
       { period: 'Base 1 week', price: '26,600 JPY〜' },
       { period: 'Base 2 weeks', price: '40,600 JPY〜' },
       { period: 'Base 1 month', price: '60,600 JPY〜' },
-      { period: 'Extra 24h', price: '25,920 JPY〜' },
+      { period: 'Extra 24h', price: '12,960 JPY〜' },
     ],
   },
   {
@@ -70,7 +70,7 @@ const categories = [
       { period: 'Base 1 week', price: '26,600 JPY〜' },
       { period: 'Base 2 weeks', price: '40,600 JPY〜' },
       { period: 'Base 1 month', price: '60,600 JPY〜' },
-      { period: 'Extra 24h', price: '29,920 JPY〜' },
+      { period: 'Extra 24h', price: '14,960 JPY〜' },
     ],
   },
   {
@@ -82,7 +82,7 @@ const categories = [
       { period: 'Base 1 week', price: '40,600 JPY〜' },
       { period: 'Base 2 weeks', price: '64,600 JPY〜' },
       { period: 'Base 1 month', price: '80,600 JPY〜' },
-      { period: 'Extra 24h', price: '39,920 JPY〜' },
+      { period: 'Extra 24h', price: '19,960 JPY〜' },
     ],
   },
   {
@@ -94,7 +94,7 @@ const categories = [
       { period: 'Base 1 week', price: '48,600 JPY〜' },
       { period: 'Base 2 weeks', price: '76,600 JPY〜' },
       { period: 'Base 1 month', price: '110,600 JPY〜' },
-      { period: 'Extra 24h', price: '53,920 JPY〜' },
+      { period: 'Extra 24h', price: '26,960 JPY〜' },
     ],
   },
   {
@@ -106,7 +106,7 @@ const categories = [
       { period: 'Base 1 week', price: '67,600 JPY〜' },
       { period: 'Base 2 weeks', price: '89,600 JPY〜' },
       { period: 'Base 1 month', price: '117,600 JPY〜' },
-      { period: 'Extra 24h', price: '61,920 JPY〜' },
+      { period: 'Extra 24h', price: '30,960 JPY〜' },
     ],
   },
 ]
